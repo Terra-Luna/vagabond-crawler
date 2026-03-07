@@ -31,7 +31,7 @@ Hooks.once("init", () => {
   // Crawl state persistence
   game.settings.register(MODULE_ID, "crawlState", {
     scope: "world", config: false, type: Object,
-    default: { active: false, members: [], currentIndex: 0, turnCount: 0, elapsedMins: 0 }
+    default: { active: false, members: [], phase: "heroes", paused: false, turnCount: 0, elapsedMins: 0 }
   });
 
   // Encounter roll result visibility

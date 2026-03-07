@@ -2,7 +2,7 @@
   "id": "vagabond-crawler",
   "title": "Vagabond Crawler",
   "description": "Dungeon crawl management for the Vagabond RPG system. Provides a crawl turn tracker, movement enforcement, random encounter tools, light tracking, morale, and rest/breather — all from a unified bottom bar.",
-  "version": "0.1.0",
+  "version": "0.2.87",
   "authors": [
     { "name": "Patrick" },
     { "name": "DimitroffVodka" }

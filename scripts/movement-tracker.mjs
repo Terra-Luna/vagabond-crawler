@@ -158,7 +158,7 @@ class VCSTokenRuler extends foundry.canvas.placeables.tokens.TokenRuler {
 
 export const MovementTracker = {
 
-  _lastPos: {},
+  _turnStartPos: {},  // tokenId → {x, y} snapshotted at turn/round start
 
   registerSettings() {
     game.settings.register(MODULE_ID, "enforceCrawlMovement", {
@@ -178,28 +178,61 @@ export const MovementTracker = {
     Hooks.on("canvasReady", () => this._installRulers());
 
     canvas.tokens?.placeables?.forEach(t => {
-      this._lastPos[t.id] = { x: t.x, y: t.y };
+      // turn-start positions are populated by resetAll(), not here
     });
 
-    Hooks.on("createToken", doc => {
-      this._lastPos[doc.id] = { x: doc.x, y: doc.y };
+    Hooks.on("createToken", _doc => {
+      // turn-start positions populated by resetAll()
     });
 
-    Hooks.on("preUpdateToken", (doc, changes, _opts, userId) => {
+    Hooks.on("preUpdateToken", (doc, changes, opts, userId) => {
+      if (opts?.[MODULE_ID]?.rollback) return; // skip accounting for rollback moves
+      if (changes.x !== undefined || changes.y !== undefined) {
+
+        // Compute and cache the distance now, while we still have old position
+        // updateToken receives doc.x/y already updated to new position
+        if (CrawlState.active) {
+          const scene    = doc.parent;
+          const gridSize = scene?.grid?.size     ?? 100;
+          const gridDist = scene?.grid?.distance ?? 5;
+          const dx = ((changes.x ?? doc.x) - doc.x) / gridSize;
+          const dy = ((changes.y ?? doc.y) - doc.y) / gridSize;
+          const distanceFt = Math.round((Math.max(Math.abs(dx), Math.abs(dy)) * gridDist) / 5) * 5;
+          this._pendingDeduct ??= {};
+          this._pendingDeduct[doc.id] = distanceFt;
+        }
+      }
+      // Block move if it exceeds remaining movement
       return this._onPreUpdate(doc, changes, userId);
     });
 
-    Hooks.on("updateToken", (doc, changes) => {
+    Hooks.on("updateToken", (doc, changes, opts) => {
+      if (opts?.[MODULE_ID]?.rollback) return;
       if (changes.x !== undefined || changes.y !== undefined) {
-        this._lastPos[doc.id] = { x: doc.x, y: doc.y };
-        // Delay clear to after #continueMovement finishes all segments
+        // Deduct movement after the move has successfully committed
+        if (CrawlState.active) {
+          const actor = doc.actor;
+          if (actor?.type === "character" && CrawlState.members.find(m => m.actorId === actor.id)) {
+            const distanceFt = this._pendingDeduct?.[doc.id] ?? 0;
+            delete this._pendingDeduct?.[doc.id];
+            if (distanceFt > 0) {
+              const s             = actor.system.speed;
+              const moveRemaining = actor.getFlag(MODULE_ID, "moveRemaining")
+                ?? (CrawlState.paused ? (s?.base ?? 0) : (s?.crawl ?? 0));
+              const newRemaining  = Math.max(0, Math.round((moveRemaining - distanceFt) / 5) * 5);
+              actor.setFlag(MODULE_ID, "moveRemaining", newRemaining)
+                .then(() => CrawlStrip.updateMember(actor.id));
+            }
+          }
+        }
+
+        // Delay ruler clear to after #continueMovement finishes all segments
         const tokenId = doc.id;
         clearTimeout(this._clearTimers?.[tokenId]);
         this._clearTimers ??= {};
         this._clearTimers[tokenId] = setTimeout(() => {
           const token = canvas.tokens?.get(tokenId);
           token?.ruler?.clear();
-          // Also hide the grid highlight layer directly
           const highlight = canvas.interface.grid.highlight.children
             ?.find(c => c.name === `TokenRuler.${tokenId}`);
           if (highlight) highlight.visible = false;
@@ -207,16 +240,22 @@ export const MovementTracker = {
       }
     });
 
-    Hooks.on("getTokenContextOptions", (token, options) => {
+    Hooks.on("renderTokenHUD", (hud, html, data) => {
       if (!game.user.isGM) return;
+      if (!CrawlState.active || !CrawlState.isHeroesPhase) return;
+      const token = hud.object;
       const member = CrawlState.members.find(m => m.tokenId === token.id);
       if (!member || member.type !== "player") return;
-      options.push({
-        name: "Rollback Movement",
-        icon: '<i class="fas fa-rotate-left"></i>',
-        condition: () => CrawlState.active && CrawlState.isHeroesPhase,
-        callback: () => this.rollback(token.id),
+
+      const btn = document.createElement("div");
+      btn.classList.add("control-icon");
+      btn.title = "Rollback Movement";
+      btn.innerHTML = `<i class="fas fa-rotate-left"></i>`;
+      btn.addEventListener("click", () => {
+        hud.clear();
+        this.rollback(token.id);
       });
+      html.querySelector(".col.left")?.appendChild(btn);
     });
 
     Hooks.on("controlToken", (token, controlled) => {
@@ -296,47 +335,31 @@ export const MovementTracker = {
         return false;
       }
     }
-
-    // ── Deduct this segment ───────────────────────────────────────────────
-    const dx = ((changes.x ?? doc.x) - doc.x) / gridSize;
-    const dy = ((changes.y ?? doc.y) - doc.y) / gridSize;
-    const distanceFt = Math.round((Math.max(Math.abs(dx), Math.abs(dy)) * gridDist) / 5) * 5;
-    if (distanceFt === 0) return;
-
-    const newRemaining = Math.max(0, Math.round((moveRemaining - distanceFt) / 5) * 5);
-    actor.setFlag(MODULE_ID, "moveRemaining", newRemaining)
-      .then(() => CrawlStrip.updateMember(actor.id));
   },
 
   // ── Rollback ──────────────────────────────────────────────────────────────
 
   async rollback(tokenId) {
-    const last = this._lastPos[tokenId];
-    if (!last) { ui.notifications.warn("No previous position recorded."); return; }
+    const start = this._turnStartPos[tokenId];
+    if (!start) { ui.notifications.warn("No turn-start position recorded for this token."); return; }
 
     const token = canvas.tokens?.get(tokenId);
     const doc   = token?.document;
     if (!doc) return;
 
-    const actor    = doc.actor;
-    const scene    = doc.parent;
-    const gridSize = scene?.grid?.size     ?? 100;
-    const gridDist = scene?.grid?.distance ?? 5;
+    const actor = doc.actor;
 
-    const dx = (doc.x - last.x) / gridSize;
-    const dy = (doc.y - last.y) / gridSize;
-    const refundFt = Math.round((Math.max(Math.abs(dx), Math.abs(dy)) * gridDist) / 5) * 5;
+    // Move token back to turn-start position
+    await doc.update({ x: start.x, y: start.y }, { [MODULE_ID]: { rollback: true } });
 
-    await doc.update({ x: last.x, y: last.y });
-
+    // Refund full turn movement
     if (actor?.type === "character") {
       const s        = actor.system.speed;
       const maxSpeed = CrawlState.paused ? (s?.base ?? 0) : (s?.crawl ?? 0);
-      const current  = actor.getFlag(MODULE_ID, "moveRemaining") ?? 0;
-      const refunded = Math.min(current + refundFt, maxSpeed);
-      await actor.setFlag(MODULE_ID, "moveRemaining", Math.round(refunded / 5) * 5);
+      const fullSpeed = Math.round(maxSpeed / 5) * 5;
+      await actor.setFlag(MODULE_ID, "moveRemaining", fullSpeed);
       CrawlStrip.updateMember(actor.id);
-      ui.notifications.info(`${actor.name} rolled back — ${refunded}ft restored.`);
+      ui.notifications.info(`${actor.name} rolled back to turn start — movement restored.`);
     }
   },
 
@@ -353,6 +376,12 @@ export const MovementTracker = {
       if (!member.actorId) continue;
       const actor = game.actors.get(member.actorId);
       if (actor) await this.resetActor(actor);
+      // Snapshot turn-start position for each member's token
+      if (member.tokenId) {
+        const token = canvas.tokens?.get(member.tokenId)
+          ?? canvas.tokens?.placeables?.find(t => t.actor?.id === member.actorId);
+        if (token) this._turnStartPos[token.id] = { x: token.document.x, y: token.document.y };
+      }
     }
     CrawlStrip.render();
   },

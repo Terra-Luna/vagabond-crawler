@@ -54,27 +54,33 @@ function _matchSource(name) {
 
 function _injectContextEntry(card, item) {
   card.addEventListener("contextmenu", () => {
-    // Wait for Vagabond's context menu to appear in the DOM
-    setTimeout(() => {
+    // Poll for the context menu rather than blindly waiting 60ms
+    let attempts = 0;
+    const poll = setInterval(() => {
       const menu = document.querySelector(".inventory-context-menu");
-      if (!menu || menu.querySelector(".vcl-ctx-item")) return;
+      if (menu) {
+        clearInterval(poll);
+        if (menu.querySelector(".vcl-ctx-item")) return;
 
-      const isLit = !!item.getFlag(MODULE_ID, "lit");
-      const secs  = item.getFlag(MODULE_ID, "remainingSecs") ?? 0;
+        const isLit = !!item.getFlag(MODULE_ID, "lit");
+        const secs  = item.getFlag(MODULE_ID, "remainingSecs") ?? 0;
 
-      const li = document.createElement("li");
-      li.className = "vcl-ctx-item";
-      li.style.cssText = "padding:6px 12px;cursor:pointer;display:flex;align-items:center;gap:8px;font-weight:bold;border-bottom:1px solid #555;list-style:none;";
-      li.innerHTML = `<i class="fas fa-${isLit ? "wind" : "fire"}" style="width:14px"></i> ${isLit ? `Extinguish (${LightTracker._formatTime(secs)} left)` : "Light"}`;
-      li.addEventListener("mouseenter", () => li.style.background = "rgba(240,192,64,0.15)");
-      li.addEventListener("mouseleave", () => li.style.background = "");
-      li.addEventListener("click", async ev => {
-        ev.stopPropagation();
-        menu.remove();
-        await LightTracker._toggleLight(item);
-      });
-      menu.insertBefore(li, menu.firstChild);
-    }, 60);
+        const li = document.createElement("li");
+        li.className = "vcl-ctx-item";
+        li.style.cssText = "padding:6px 12px;cursor:pointer;display:flex;align-items:center;gap:8px;font-weight:bold;border-bottom:1px solid #555;list-style:none;";
+        li.innerHTML = `<i class="fas fa-${isLit ? "wind" : "fire"}" style="width:14px"></i> ${isLit ? `Extinguish (${LightTracker._formatTime(secs)} left)` : "Light"}`;
+        li.addEventListener("mouseenter", () => li.style.background = "rgba(240,192,64,0.15)");
+        li.addEventListener("mouseleave", () => li.style.background = "");
+        li.addEventListener("click", async ev => {
+          ev.stopPropagation();
+          menu.remove();
+          await LightTracker._toggleLight(item);
+        });
+        menu.insertBefore(li, menu.firstChild);
+      } else if (++attempts >= 10) {
+        clearInterval(poll); // give up after 100ms
+      }
+    }, 10);
   });
 }
 
@@ -125,10 +131,13 @@ export const LightTracker = {
   // ── Real-time engine ─────────────────────────────────────────────────────────
 
   _intervalId: null,
+  _tickAccum:  0,      // accumulated seconds not yet flushed to world time
+  _TICK_FLUSH: 6,      // flush to DB every N real seconds (1 game round)
 
   startRealTime() {
     if (!game.user.isGM) return;
     if (this._intervalId) return;
+    this._tickAccum  = 0;
     this._intervalId = setInterval(() => this._tick(), 1000);
     console.log(`vagabond-crawler | Real-time light tracking started.`);
   },
@@ -137,6 +146,10 @@ export const LightTracker = {
     if (this._intervalId) {
       clearInterval(this._intervalId);
       this._intervalId = null;
+      if (this._tickAccum > 0) {
+        game.time.advance(this._tickAccum);
+        this._tickAccum = 0;
+      }
       console.log(`vagabond-crawler | Real-time light tracking stopped.`);
     }
   },
@@ -144,8 +157,11 @@ export const LightTracker = {
   _tick() {
     if (game.paused) return;
     if (!game.user.isGM) return;
-    // advance 1 second of game time — updateWorldTime hook does the burn
-    game.time.advance(1);
+    this._tickAccum += 1;
+    if (this._tickAccum >= this._TICK_FLUSH) {
+      game.time.advance(this._tickAccum);
+      this._tickAccum = 0;
+    }
   },
 
   init() {
@@ -227,11 +243,10 @@ export const LightTracker = {
     await item.setFlag(MODULE_ID, "remainingSecs", remaining);
     await item.setFlag(MODULE_ID, "sourceKey",     key);
 
-    // Apply light to the actor's token on the current scene
+    // Apply light to all of the actor's active tokens on the current scene
     const actor = item.parent;
     if (actor) {
-      const token = canvas.tokens?.placeables?.find(t => t.actor?.id === actor.id);
-      if (token) {
+      for (const token of actor.getActiveTokens()) {
         await token.document.update({
           light: {
             bright:    def.bright,
@@ -250,8 +265,7 @@ export const LightTracker = {
     await item.setFlag(MODULE_ID, "lit", false);
     const actor = item.parent;
     if (actor) {
-      const token = canvas.tokens?.placeables?.find(t => t.actor?.id === actor.id);
-      if (token) {
+      for (const token of actor.getActiveTokens()) {
         await token.document.update({
           light: { bright: 0, dim: 0, animation: { type: "none" } },
         });
@@ -264,8 +278,9 @@ export const LightTracker = {
     await item.setFlag(MODULE_ID, "lit",          false);
     await item.setFlag(MODULE_ID, "remainingSecs", 0);
 
-    const token = canvas.tokens?.placeables?.find(t => t.actor?.id === actor.id);
-    if (token) await token.document.update({ light: { bright: 0, dim: 0 } });
+    for (const token of actor.getActiveTokens()) {
+      await token.document.update({ light: { bright: 0, dim: 0 } });
+    }
 
     const key = item.getFlag(MODULE_ID, "sourceKey");
     const def = key ? LIGHT_SOURCES[key] : null;
@@ -274,20 +289,33 @@ export const LightTracker = {
       const qty = item.system.quantity ?? 1;
       if (qty <= 1) {
         await item.delete();
+        await ChatMessage.create({
+          content: `<div class="vagabond-crawler-chat light-out">
+            <i class="fas fa-fire-flame-curved"></i>
+            <strong>${actor.name}'s last ${item.name} has burned out!</strong>
+          </div>`,
+          speaker: { alias: "Light Tracker" },
+        });
       } else {
         await item.update({ "system.quantity": qty - 1 });
         await item.setFlag(MODULE_ID, "remainingSecs", def.longevitySecs);
-        return; // still has torches — don't post burned-out message
+        await ChatMessage.create({
+          content: `<div class="vagabond-crawler-chat light-out">
+            <i class="fas fa-fire-flame-curved"></i>
+            <strong>${actor.name}'s ${item.name} has burned out! (${qty - 1} remaining)</strong>
+          </div>`,
+          speaker: { alias: "Light Tracker" },
+        });
       }
+    } else {
+      await ChatMessage.create({
+        content: `<div class="vagabond-crawler-chat light-out">
+          <i class="fas fa-fire-flame-curved"></i>
+          <strong>${actor.name}'s ${item.name} ${def?.consumable ? "has burned out!" : "needs refueling!"}</strong>
+        </div>`,
+        speaker: { alias: "Light Tracker" },
+      });
     }
-
-    await ChatMessage.create({
-      content: `<div class="vagabond-crawler-chat light-out">
-        <i class="fas fa-fire-flame-curved"></i>
-        <strong>${actor.name}'s ${item.name} ${def?.consumable ? "has burned out!" : "needs refueling!"}</strong>
-      </div>`,
-      speaker: { alias: "Light Tracker" },
-    });
   },
 
   // ── Helpers ──────────────────────────────────────────────────────────────────

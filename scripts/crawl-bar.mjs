@@ -320,6 +320,7 @@ export const CrawlBar = {
         type,
         actorId: token.actor.id,
         tokenId: token.id,
+        source:  type === "npc" ? "combat" : undefined,
       });
     }
 
@@ -383,9 +384,9 @@ Hooks.on("deleteCombat", async () => {
   if (!game.user.isGM || !CrawlState.paused) return;
   await new Promise(r => setTimeout(r, 500));
 
-  // Remove NPC combat members, restore GM if they were removed
+  // Remove only NPCs that were added for this combat (not persistent crawl NPCs)
   const npcIds = CrawlState.members
-    .filter(m => m.type === "npc")
+    .filter(m => m.type === "npc" && m.source === "combat")
     .map(m => m.id);
   for (const id of npcIds) await CrawlState.removeMember(id);
 
