@@ -57,6 +57,13 @@ Hooks.once("init", () => {
     onChange: () => { game.vagabondCrawler?.strip?.render(); },
   });
 
+  game.settings.register(MODULE_ID, "npcActionMenu", {
+    name: "NPC Action Menu",
+    hint: "Show a hover dropdown on NPC cards during combat with their Actions and Abilities. Players can only use actions on actors they own.",
+    scope: "world", config: true, type: Boolean, default: true,
+    onChange: () => { game.vagabondCrawler?.strip?.render(); },
+  });
+
   // Register all sub-module settings
   MovementTracker.registerSettings();
   LightTracker.registerSettings();

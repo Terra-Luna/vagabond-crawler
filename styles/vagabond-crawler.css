@@ -203,13 +203,16 @@
 
 #vagabond-crawler-strip {
   display: none;
-  position: relative;
-  width: fit-content;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
   max-width: 100%;
-  flex-shrink: 0;
   z-index: 65;
   font-family: var(--vcb-font);
   pointer-events: none;
+  overflow: visible;
+  box-sizing: border-box;
 }
 #vagabond-crawler-strip.vcs-visible {
   display: block;
@@ -222,6 +225,8 @@
   display: flex;
   align-items: stretch;
   background: #1c1c20;
+  width: 100%;
+  overflow: visible;
 }
 
 /* ── Hero / NPC groups ────────────────────────────────────────────────────── */
@@ -237,7 +242,7 @@
   font-size: 11px;
   font-weight: 800;
   letter-spacing: 0.12em;
-  padding: 8px 5px;
+  padding: 6px 3px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -258,34 +263,99 @@
 /* ── Turn number — floating badge to the left of the strip ───────────────── */
 
 .vcs-turn-num {
-  position: absolute;
-  left: -48px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 40px;
-  height: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
+  width: 36px;
+  min-width: 36px;
   font-size: 20px;
   font-weight: 800;
   color: rgba(255,255,255,0.85);
   background: rgba(0,0,0,0.55);
-  border: 2px solid rgba(255,255,255,0.2);
-  border-radius: 6px;
+  border-right: 2px solid rgba(255,255,255,0.2);
   pointer-events: none;
   text-shadow: 0 1px 4px rgba(0,0,0,0.9);
-  backdrop-filter: blur(2px);
 }
+
+/* ── Combat controls panel (replaces turn num during combat) ──────────────── */
+
+.vcs-combat-controls {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 36px;
+  min-width: 36px;
+  background: rgba(0,0,0,0.55);
+  border-right: 2px solid rgba(255,255,255,0.2);
+  padding: 2px 0;
+  gap: 1px;
+}
+
+.vcs-round-num {
+  font-size: 12px;
+  font-weight: 800;
+  color: rgba(255,255,255,0.9);
+  text-shadow: 0 1px 3px rgba(0,0,0,0.9);
+  line-height: 1;
+  padding: 1px 0;
+}
+
+.vcs-cbtn {
+  background: none;
+  border: none;
+  color: rgba(255,255,255,0.6);
+  cursor: pointer;
+  font-size: 11px;
+  padding: 1px 4px;
+  line-height: 1;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.15s;
+}
+.vcs-cbtn:hover { color: #fff; }
+
+/* ── Activate / End Turn button on card ───────────────────────────────────── */
+
+.vcs-activate-btn {
+  display: none;
+  position: absolute;
+  right: 3px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(30,120,50,0.85);
+  border: 1px solid rgba(100,220,100,0.5);
+  border-radius: 4px;
+  color: #fff;
+  cursor: pointer;
+  font-size: 11px;
+  width: 20px;
+  height: 20px;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  transition: background 0.15s;
+}
+.vcs-activate-btn.vcs-activate-active {
+  background: rgba(160,30,30,0.85);
+  border-color: rgba(220,80,80,0.5);
+}
+.vcs-activate-btn:hover { filter: brightness(1.3); }
+.vcs-card-wrap:hover .vcs-activate-btn { display: flex; }
 
 /* ── Members strip ────────────────────────────────────────────────────────── */
 
 .vcs-members {
   display: flex;
-  align-items: flex-end;
-  gap: 4px;
+  align-items: flex-start;
+  gap: 2px;
   flex-shrink: 0;
-  padding: 6px 8px;
+  padding: 4px 4px;
+  overflow: visible;
 }
 .vcs-empty {
   padding: 0 12px;
@@ -360,11 +430,7 @@
   pointer-events: none;
 }
 
-/* Spacer pushes vcs-bottom to the bottom even when no name is shown */
-.vcs-overlay::before {
-  content: "";
-  flex: 1;
-}
+/* Spacer removed — name at top, bottom at bottom via space-between */
 
 /* ── Name — top of card ───────────────────────────────────────────────────── */
 
@@ -510,9 +576,10 @@
 .vcs-remove:hover { color: #ff6060 !important; }
 
 /* Push canvas down when strip is active */
-body.vcs-active #board { margin-top: 86px; }
-body.vcs-active #navigation { top: 90px; }
-body.vcs-active #controls { top: 90px; }
+:root { --vcs-strip-height: 86px; }
+body.vcs-active #board { margin-top: var(--vcs-strip-height); }
+body.vcs-active #navigation { top: calc(var(--vcs-strip-height) + 4px); }
+body.vcs-active #controls { top: calc(var(--vcs-strip-height) + 4px); }
 
 /* ═══════════════════════════════════════════════════════════════════════════
    CHAT CARDS
@@ -691,12 +758,41 @@ body.vcs-active #controls { top: 90px; }
 
 
 /* Light tracker app */
-.vlt-tracker { padding: 6px; font-family: var(--vcb-font); font-size: 13px; }
+.vlt-tracker { padding: 6px; font-family: var(--vcb-font); font-size: 13px; width: max-content; min-width: 220px; }
 .vlt-entry { display: flex; align-items: flex-start; gap: 8px; padding: 6px 4px; border-bottom: 1px solid #2a2a30; }
 .vlt-portrait { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; flex-shrink: 0; }
 .vlt-name { font-weight: 600; min-width: 80px; font-size: 13px; padding-top: 2px; }
 .vlt-lights { flex: 1; display: flex; flex-direction: column; gap: 4px; }
-.vlt-light-row { display: flex; align-items: center; gap: 6px; font-size: 12px; }
+.vlt-time-passes {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 4px 4px;
+}
+.vlt-tp-label {
+  color: var(--vcb-text-dim);
+  font-size: 12px;
+  margin-right: 2px;
+  white-space: nowrap;
+}
+.vlt-tp-btn {
+  width: 26px;
+  padding: 2px 0;
+  text-align: center;
+  font-size: 14px;
+  font-weight: bold;
+  flex-shrink: 0;
+}
+.vlt-mins-input {
+  width: 44px;
+  text-align: center;
+}
+.vlt-divider {
+  height: 1px;
+  background: var(--vcb-border);
+  margin: 4px 0;
+}
+
 .vlt-time-bar { flex: 1; height: 7px; background: #2a2a30; border-radius: 4px; overflow: hidden; }
 .vlt-time-fill { height: 100%; background: #e08800; border-radius: 4px; transition: width 0.3s; }
 .vlt-time-fill.low { background: #c03030; }
@@ -705,3 +801,228 @@ body.vcs-active #controls { top: 90px; }
 .vlt-douse { background: none; border: none; color: var(--vcb-text-dim); cursor: pointer; font-size: 12px; padding: 0 3px; }
 .vlt-douse:hover { color: #c04040; }
 .vlt-no-light { font-size: 12px; color: var(--vcb-text-dim); font-style: italic; }
+
+/* ─── Action Menu: Card Wrap + Tab Strip + Floating Panel ──────────────────── */
+
+/* Wrap holds the card + the tab strip below it as a flex column */
+.vcs-card-wrap {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: stretch;
+  flex-shrink: 0;
+  position: relative;
+}
+
+/* Tab strip absolutely positioned below card — doesn't affect strip height */
+.vcs-action-tabs {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  z-index: 100;
+  background: #111116;
+  border: 1px solid #2e2e3a;
+  border-top: none;
+  border-radius: 0 0 4px 4px;
+}
+.vcs-card-wrap:hover .vcs-action-tabs {
+  display: flex;
+}
+
+.vcs-atab {
+  flex: 1;
+  padding: 3px 0;
+  background: transparent;
+  border: none;
+  color: #666;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  transition: color 0.1s, background 0.1s;
+}
+.vcs-atab:hover:not(:disabled) { color: #c8b560; background: #1a1a22; }
+.vcs-atab.vcs-atab-active { color: #c8b560; }
+.vcs-atab:disabled { opacity: 0.25; cursor: default; }
+.vcs-atab + .vcs-atab { border-left: 1px solid #2e2e3a; }
+
+/* Floating panel — appended to the strip root, absolutely positioned */
+.vcs-action-panel {
+  position: absolute;
+  width: 190px;
+  background: #16161e;
+  border: 1px solid #3a3a4e;
+  border-radius: 4px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.7);
+  z-index: 200;
+  font-size: 12px;
+}
+
+.vcs-panel-tabs {
+  display: flex;
+  border-bottom: 1px solid #2e2e3a;
+}
+.vcs-ptab {
+  flex: 1;
+  padding: 4px 0;
+  background: transparent;
+  border: none;
+  color: #666;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  transition: color 0.1s;
+}
+.vcs-ptab:hover:not(:disabled) { color: #ccc; }
+.vcs-ptab.vcs-ptab-active { color: #c8b560; border-bottom: 2px solid #c8b560; }
+.vcs-ptab:disabled { opacity: 0.25; cursor: default; }
+
+.vcs-panel-body {
+  max-height: 170px;
+  overflow-y: auto;
+  padding: 2px 0;
+}
+
+.vcs-panel-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  padding: 5px 10px;
+  color: #ccc;
+  cursor: pointer;
+  transition: background 0.1s, color 0.1s;
+}
+.vcs-panel-item:hover { background: #252530; color: #fff; }
+
+.vcs-panel-name {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.vcs-menu-dmg {
+  color: #c8b560;
+  font-size: 11px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.vcs-panel-empty {
+  padding: 6px 10px;
+  color: #444;
+  font-style: italic;
+  font-size: 11px;
+}
+
+/* ─── Crawler Spell Dialog ─────────────────────────────────────────────────── */
+
+.vagabond-crawler-spell-dialog .window-content {
+  padding: 8px;
+  font-size: 13px;
+  background: #1a1a22;
+  color: #ccc;
+}
+
+.csd-header {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #3a3a4a;
+  margin-bottom: 8px;
+}
+
+.csd-section {
+  margin-bottom: 8px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #3a3a4a;
+}
+
+.csd-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 4px 0;
+}
+
+.csd-row label {
+  flex: 0 0 100px;
+  font-weight: bold;
+  font-size: 12px;
+}
+
+.csd-controls {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex: 1;
+}
+
+.csd-val {
+  min-width: 60px;
+  text-align: center;
+  font-weight: bold;
+}
+
+.csd-badge {
+  background: #2a2a38;
+  border: 1px solid #3a3a4a;
+  border-radius: 10px;
+  padding: 1px 7px;
+  font-size: 11px;
+  margin-left: auto;
+  color: #aaa;
+}
+
+.csd-delivery-select {
+  flex: 1;
+  background: #2a2a38;
+  border: 1px solid #3a3a4a;
+  color: #ccc;
+  border-radius: 3px;
+  padding: 2px 4px;
+}
+
+.csd-mana { font-size: 12px; }
+.csd-focus-row { align-items: center; gap: 8px; }
+.csd-focus-toggle.csd-active { background: rgba(80,160,255,0.25); border-color: rgba(80,160,255,0.6); color: #80c0ff; }
+
+.csd-footer {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.csd-btn {
+  padding: 2px 8px;
+  border: 1px solid #3a3a4a;
+  border-radius: 3px;
+  background: #2a2a38;
+  color: #ccc;
+  cursor: pointer;
+  font-size: 12px;
+  line-height: 1.4;
+}
+.csd-btn:hover:not(:disabled) { background: #32323a; color: #fff; }
+.csd-btn:disabled, .csd-btn.csd-disabled { opacity: 0.4; cursor: default; }
+.csd-btn.csd-active { background: #2a4a26 !important; color: #fff !important; }
+
+.csd-cast-btn {
+  flex: 1;
+  padding: 5px;
+  font-weight: bold;
+  background: #3a3060;
+  color: #fff;
+  border-color: #5a50a0;
+}
+.csd-cast-btn:hover:not(:disabled) { background: #4a40a0; }
+
+.csd-highlight { color: #e07a00; }
+.csd-muted { color: #666; font-size: 11px; }
+.csd-error { color: #c04040; }

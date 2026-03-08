@@ -52,7 +52,6 @@ export const CrawlBar = {
     const state       = CrawlState;
     const tableUuid   = game.settings.get(MODULE_ID, "encounterTableUuid");
     const tableName   = tableUuid ? this._getTableName(tableUuid) : null;
-    const defaultMins = game.settings.get(MODULE_ID, "timePassesMinutes");
 
 
     if (!state.active) {
@@ -78,7 +77,7 @@ export const CrawlBar = {
     }
 
     const isHeroes   = state.isHeroesPhase;
-    const phaseLabel = isHeroes ? "Heroes Phase" : "GM Phase";
+    const phaseLabel = isHeroes ? "Heroes Turn" : "GM Turn";
     const phaseIcon  = isHeroes ? "fa-users" : "fa-crown";
     const nextLabel  = isHeroes ? "GM Turn" : "Heroes Turn";
 
@@ -91,15 +90,11 @@ export const CrawlBar = {
         <button class="vcb-btn vcb-next-btn" data-action="nextTurn">
           <i class="fas fa-chevron-right"></i> ${nextLabel}
         </button>
-        <span class="vcb-turn-info">Turn ${state.turnCount} · ${state.formatElapsed()}</span>
 
         <div class="vcb-divider"></div>
 
         <button class="vcb-btn" data-action="addSelectedTokens" title="Add selected tokens to tracker">
           <i class="fas fa-user-plus"></i> Add Tokens
-        </button>
-        <button class="vcb-btn" data-action="addGM" title="Add GM slot">
-          <i class="fas fa-crown"></i> Add GM
         </button>
 
         <div class="vcb-divider"></div>
@@ -119,12 +114,6 @@ export const CrawlBar = {
 
         <div class="vcb-divider"></div>
 
-        <button class="vcb-btn" data-action="timePasses">
-          <i class="fas fa-hourglass-half"></i> Time Passes
-        </button>
-        <input class="vcb-time-input" type="number" min="1" max="480"
-               value="${defaultMins}" data-key="timeMins" />
-        <span class="vcb-unit">min</span>
         <button class="vcb-btn" data-action="lightTracker">
           <i class="fas fa-fire"></i> Lights
         </button>
@@ -154,10 +143,6 @@ export const CrawlBar = {
         ev.stopPropagation();
         this._onAction(el.dataset.action);
       });
-    });
-    this._el.querySelector("[data-key='timeMins']")?.addEventListener("change", ev => {
-      const v = parseInt(ev.target.value);
-      if (v > 0) game.settings.set(MODULE_ID, "timePassesMinutes", v);
     });
   },
 
@@ -198,12 +183,6 @@ export const CrawlBar = {
         await this._addSelectedTokens();
         break;
 
-      case "addGM":
-        await CrawlState.addMember({ id: "gm", name: "Game Master", img: "icons/svg/cowled.svg", type: "gm" });
-        this.render();
-        (await import("./crawl-strip.mjs")).CrawlStrip.render();
-        break;
-
       case "encounterCheck":
         await EncounterTools.rollEncounterCheck();
         break;
@@ -216,23 +195,6 @@ export const CrawlBar = {
         await game.settings.set(MODULE_ID, "encounterTableUuid", "");
         this.render();
         break;
-
-      case "timePasses": {
-        const mins = parseInt(this._el?.querySelector("[data-key='timeMins']")?.value
-          ?? game.settings.get(MODULE_ID, "timePassesMinutes"));
-        if (mins > 0) {
-          await CrawlState.addTime(mins);
-          const { LightTracker } = await import("./light-tracker.mjs");
-          await LightTracker.advanceTime(mins * 60);
-          await ChatMessage.create({
-            content: `<div class="vagabond-crawler-chat"><i class="fas fa-hourglass-half"></i> <strong>Time Passes</strong> — ${mins} minutes. (Total: ${CrawlState.formatElapsed()})</div>`,
-            speaker: { alias: "Crawler" },
-            whisper: game.users.filter(u => u.isGM).map(u => u.id),
-          });
-          this.render();
-        }
-        break;
-      }
 
       case "lightTracker":
         (await import("./light-tracker.mjs")).LightTracker.openTracker();
@@ -374,6 +336,7 @@ Hooks.on("createCombatant", async (combatant) => {
     type,
     actorId: token.actor.id,
     tokenId: token.id,
+    source:  type === "npc" ? "combat" : undefined,
   });
   const { CrawlStrip } = await import("./crawl-strip.mjs");
   CrawlStrip.render();

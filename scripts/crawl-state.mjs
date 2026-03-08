@@ -68,6 +68,8 @@ export const CrawlState = {
 
   async restore() {
     this._state = game.settings.get(MODULE_ID, "crawlState");
+    // Clamp elapsedMins in case of corrupted saved state
+    if (this._state.elapsedMins < 0) this._state.elapsedMins = 0;
     this._applyBodyClass();
     if (this._state.active) {
       CrawlStrip.render();
@@ -88,7 +90,7 @@ export const CrawlState = {
     this._state = {
       active:      true,
       phase:       "heroes",
-      members:     [],
+      members:     [{ id: "gm", name: "Game Master", img: "icons/svg/cowled.svg", type: "gm" }],
       turnCount:   1,
       elapsedMins: 0,
       paused:      false,
@@ -161,7 +163,7 @@ export const CrawlState = {
 
   async addTime(minutes) {
     if (!this.active) return;
-    this._state.elapsedMins += minutes;
+    this._state.elapsedMins = Math.max(0, (this._state.elapsedMins ?? 0) + minutes);
     await this._save();
   },
 

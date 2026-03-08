@@ -1,5 +1,17 @@
 {{!-- Light Tracker --}}
 <div class="vlt-tracker">
+
+  {{!-- Time Passes --}}
+  <div class="vlt-time-passes">
+    <span class="vlt-tp-label"><i class="fas fa-hourglass-half"></i> Time</span>
+    <input class="vcb-time-input vlt-mins-input" type="number" min="1" max="480" value="{{defaultMins}}" />
+    <button class="vcb-btn vlt-tp-btn" data-action="timePlus" title="Add time">+</button>
+    <button class="vcb-btn vlt-tp-btn" data-action="timeMinus" title="Subtract time">−</button>
+    <span class="vcb-unit">min</span>
+  </div>
+
+  <div class="vlt-divider"></div>
+
   {{#each entries}}
   <div class="vlt-entry">
     <img class="vlt-portrait" src="{{img}}" alt="{{name}}" />
