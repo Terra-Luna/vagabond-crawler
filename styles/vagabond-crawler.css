@@ -678,11 +678,7 @@
 .vcs-member:hover .vcs-remove { color: rgba(255,255,255,0.6); }
 .vcs-remove:hover { color: #ff6060 !important; }
 
-/* Push canvas down when strip is active */
-:root { --vcs-strip-height: 86px; }
-body.vcs-active #board { margin-top: var(--vcs-strip-height); }
-body.vcs-active #navigation { top: calc(var(--vcs-strip-height) + 4px); }
-body.vcs-active #controls { top: calc(var(--vcs-strip-height) + 4px); }
+/* Strip overlays the canvas — no margin push needed */
 
 /* ═══════════════════════════════════════════════════════════════════════════
    CHAT CARDS
