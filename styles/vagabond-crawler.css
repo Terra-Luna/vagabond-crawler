@@ -301,10 +301,7 @@
   display: none;
   position: absolute;
   top: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: max-content;
-  max-width: 100%;
+  left: 0;
   z-index: 65;
   font-family: var(--vcb-font);
   pointer-events: none;
@@ -312,7 +309,8 @@
   box-sizing: border-box;
 }
 #vagabond-crawler-strip.vcs-visible {
-  display: block;
+  display: flex;
+  justify-content: center;
   pointer-events: auto;
 }
 
@@ -326,7 +324,7 @@
   overflow: visible;
   box-shadow: 0 2px 8px rgba(0,0,0,0.6);
   border-bottom: 2px solid var(--vcb-accent-dim);
-  border-radius: 0 0 var(--vcb-radius) 0;
+  border-radius: 0 0 var(--vcb-radius) var(--vcb-radius);
 }
 
 /* ── Hero / NPC groups ────────────────────────────────────────────────────── */
