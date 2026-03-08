@@ -2,7 +2,7 @@
 
 ![Foundry v13](https://img.shields.io/badge/foundry-v13-green?style=for-the-badge)
 ![System](https://img.shields.io/badge/system-vagabond-blue?style=for-the-badge)
-![Version](https://img.shields.io/badge/version-0.2.121-orange?style=for-the-badge)
+![Version](https://img.shields.io/badge/version-1.0.0-orange?style=for-the-badge)
 
 A comprehensive dungeon crawl management module for the **Vagabond RPG** system in Foundry VTT. Everything you need to run a crawl — turn tracking, movement enforcement, random encounters, light management, morale, and combat integration — all from a unified interface.
 
@@ -18,12 +18,12 @@ A persistent bottom bar that drives the entire crawl loop. Visible only to the G
 - **Next Turn** — Advances the phase and increments the turn counter
 - **Add Tokens** — Select tokens on the canvas and add them to the tracker with one click
 - **Time Passes** — Advances in-world time by a configurable number of minutes (default 10)
-- **Encounter Check** — Rolls a d6; on a 1, posts an encounter alert to chat (GM-only whisper optional)
-- **Encounter Roller** — Opens a full encounter builder with drag-and-drop NPC table creation, RollTable integration, distance and reaction rolls, and token placement
+- **Encounter Check** — Rolls a d6 against a configurable threshold (1-in-6 through 5-in-6); on a hit, posts an encounter alert and auto-rolls the active table. Right-click to change threshold
+- **Encounter Roller** — Opens a full encounter builder with drag-and-drop NPC table creation, RollTable integration (grouped by folder with exclusion), distance and reaction rolls, and token placement
 - **Light Tracker** — Opens the light management panel
-- **Start Combat** — Transitions the crawl into combat mode, pausing crawl movement
+- **Combat** — Adds heroes and NPCs to the Foundry Combat Tracker sidebar
+- **Begin Encounter / End Encounter** — Start and stop the combat encounter, synced with the Combat Tracker sidebar
 - **Rest / Breather** — Opens the rest dialog for full recovery or ration-based healing
-- **Resume Crawl** — Returns from combat back to crawl mode
 - **Drag-and-drop reordering** — Reorder tracker members by dragging
 
 ---
@@ -81,9 +81,11 @@ Enforces Vagabond's movement rules on tracked tokens.
 - Movement resets at the start of each crawl turn
 
 **Combat mode:**
-- Deducts movement as the token moves
-- Color-coded ruler: green (within speed), yellow (using double move), red (over limit)
-- Does not hard-block in combat — players can choose to exceed their speed
+- Displays base speed (e.g. 30/30ft) as the movement budget
+- **Rush action** — Players can move up to 2× base speed, forgoing their action
+- Color-coded ruler: green (within base speed), red (Rush territory)
+- Movement goes negative to show Rush usage (e.g. Rush: -10ft)
+- Hard-blocks movement beyond 2× base speed
 
 Movement remaining is displayed on each hero's card in the strip.
 
@@ -114,23 +116,37 @@ Automatically triggers morale checks at the correct moments during combat.
 
 ---
 
+### ⏱️ Crawl Clock
+A progress clock that tracks dungeon exploration tension.
+
+- Configurable sizes: Tiny (4), Small (6), Medium (8), Large (10), Huge (12)
+- Advances one segment per crawl turn
+- When the clock fills, it resets — a good prompt for encounters or events
+- Visual SVG clock on the canvas, hideable during combat
+- Right-click for rollback and configuration options
+- Persists across sessions
+
+---
+
 ### 🍖 Rest & Breather
 A combined dialog for managing recovery between encounters.
 
 - Shows all player characters with current HP, Luck, Mana, Fatigue, Might, and Ration count
 - **Breather** — Consume a ration to heal; calculates healing based on Might
-- **Rest** — Full recovery of HP, Luck, and Mana; reduces Fatigue; consumes rations
+- **Rest** — Full recovery of HP, Luck, and Mana; reduces Fatigue
+- Ration detection uses the Vagabond system's supply flag — any item marked as a supply counts
 - Warns when characters have no rations
 - Applies all updates in one click
 
 ---
 
 ### 🎲 Encounter Tools
-**Encounter Check** — A quick d6 roll. On a 1, posts an encounter alert to chat. Configurable as GM-only whisper or visible to all players.
+**Encounter Check** — A quick d6 roll against a configurable threshold (1-in-6 through 5-in-6). On a hit, auto-opens the encounter roller and rolls the active table. Right-click the button to change the threshold. Configurable as GM-only whisper or visible to all players.
 
 **Encounter Roller** — A full encounter building and rolling tool:
 - **Build Table tab** — Drag NPC actors onto numbered slots to build a custom encounter table, then save it as a Foundry RollTable
-- **Roll Tables tab** — Select any world RollTable and roll it for an encounter result
+- **Roll Tables tab** — Select any world RollTable (grouped by folder) and roll it for an encounter result
+- **Folder exclusion** — Hide irrelevant table folders from the dropdown
 - **Result panel** — Shows monster type and count, rolls distance (Close / Near / Far) and reaction (Violent through Friendly) automatically
 - Reroll distance or reaction independently
 - Post the result to chat or place tokens directly on the canvas
