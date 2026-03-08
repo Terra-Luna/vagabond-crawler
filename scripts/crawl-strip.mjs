@@ -5,6 +5,7 @@
 import { MODULE_ID }        from "./vagabond-crawler.mjs";
 import { CrawlState }       from "./crawl-state.mjs";
 import { buildTabStripHTML, bindNPCMenuEvents } from "./npc-action-menu.mjs";
+import { ICONS }            from "./icons.mjs";
 
 const STRIP_ID = "vagabond-crawler-strip";
 
@@ -164,8 +165,8 @@ export const CrawlStrip = {
 
       const pills = (data && m.type !== "npc" && m.type !== "gm") ? `
         <div class="vcs-pills">
-          <div class="vcs-pill ${luckClass}"><i class="fas fa-clover"></i>${data.luck}</div>
-          <div class="vcs-pill ${moveClass}"><i class="fas fa-person-walking"></i>${data.moveRemaining}/${data.activeSpeed}ft</div>
+          <div class="vcs-pill ${luckClass}">${ICONS.shamrock}${data.luck}</div>
+          <div class="vcs-pill ${moveClass}">${ICONS.walking}${data.moveRemaining}/${data.activeSpeed}ft</div>
         </div>` : "";
 
       // Action menu tab strip — only during combat, below the card
@@ -190,11 +191,11 @@ export const CrawlStrip = {
               ${pills}
             </div>
           </div>
-          ${isCurrent ? '<div class="vcs-turn-badge"><i class="fas fa-chevron-right"></i></div>' : ""}
-          ${isDefeated ? '<div class="vcs-defeated-icon"><i class="fas fa-skull"></i></div>' : ""}
-          ${m.type === "gm" ? '<i class="fas fa-crown vcs-gm-icon"></i>' : ""}
-          ${game.user.isGM ? `<button class="vcs-remove" data-id="${m.id}" title="Remove">×</button>` : ""}
-          ${inCombat && combatant && game.user.isGM ? `<button class="vcs-activate-btn ${isCurrent ? "vcs-activate-active" : ""}" data-combatant-id="${combatant.id}" data-action="${isCurrent ? "deactivate" : "activate"}" title="${isCurrent ? "End Turn" : "Activate Turn"}"><i class="fas ${isCurrent ? "fa-circle-xmark" : "fa-play"}"></i></button>` : ""}
+          ${isCurrent ? `<div class="vcs-turn-badge">${ICONS.turnArrow}</div>` : ""}
+          ${isDefeated ? `<div class="vcs-defeated-icon">${ICONS.skull}</div>` : ""}
+          ${m.type === "gm" ? ICONS.gmCrown : ""}
+          ${game.user.isGM ? `<button class="vcs-remove" data-id="${m.id}" title="Remove ${m.name}" aria-label="Remove ${m.name}">×</button>` : ""}
+          ${inCombat && combatant && game.user.isGM ? `<button class="vcs-activate-btn ${isCurrent ? "vcs-activate-active" : ""}" data-combatant-id="${combatant.id}" data-action="${isCurrent ? "deactivate" : "activate"}" title="${isCurrent ? "End Turn" : "Activate Turn"}" aria-label="${isCurrent ? `End ${m.name}'s turn` : `Activate ${m.name}'s turn`}">${isCurrent ? ICONS.deactivate : ICONS.activate}</button>` : ""}
         </div>`;
 
       // Wrap card + tab strip together so hover works across both
@@ -211,11 +212,11 @@ export const CrawlStrip = {
     // Left badge: combat controls when in combat, crawl round otherwise
     const leftBadge = inCombat ? `
       <div class="vcs-combat-controls">
-        <button class="vcs-cbtn" data-combat="prevRound" title="Previous Round"><i class="fas fa-angle-up"></i></button>
-        <button class="vcs-cbtn" data-combat="prevTurn"  title="Previous Turn"><i class="fas fa-angle-up"></i></button>
+        <button class="vcs-cbtn" data-combat="prevRound" title="Previous Round">${ICONS.prevRound}</button>
+        <button class="vcs-cbtn" data-combat="prevTurn"  title="Previous Turn">${ICONS.prevRound}</button>
         <div class="vcs-round-num">R${game.combat?.round ?? 1}</div>
-        <button class="vcs-cbtn" data-combat="nextTurn"  title="Next Turn"><i class="fas fa-angle-down"></i></button>
-        <button class="vcs-cbtn" data-combat="nextRound" title="Next Round"><i class="fas fa-angle-down"></i></button>
+        <button class="vcs-cbtn" data-combat="nextTurn"  title="Next Turn">${ICONS.nextRound}</button>
+        <button class="vcs-cbtn" data-combat="nextRound" title="Next Round">${ICONS.nextRound}</button>
       </div>` : `<div class="vcs-turn-num">${state.turnCount}</div>`;
 
     // Swap sides when all heroes have acted
@@ -275,7 +276,7 @@ export const CrawlStrip = {
 
   _extractData(actor, inCombat = false) {
     const s           = actor.system;
-    const combatSpeed = s.speed?.base  ?? 0;
+    const combatSpeed = s.speed?.base ?? 0;  // base move (Rush extends beyond)
     const crawlSpeed  = s.speed?.crawl ?? 0;
     const activeSpeed = inCombat ? combatSpeed : crawlSpeed;
     const rawRemaining  = actor.getFlag(MODULE_ID, "moveRemaining") ?? activeSpeed;

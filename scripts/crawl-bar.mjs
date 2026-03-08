@@ -11,6 +11,9 @@ import { EncounterTools }  from "./encounter-tools.mjs";
 import { RestBreather }    from "./rest-breather.mjs";
 import { MovementTracker } from "./movement-tracker.mjs";
 import { confirmDialog }   from "./dialog-helpers.mjs";
+import { CrawlClock }      from "./crawl-clock.mjs";
+import { LightTracker }    from "./light-tracker.mjs";
+import { ICONS }           from "./icons.mjs";
 
 const BAR_ID = "vagabond-crawler-bar";
 
@@ -58,7 +61,7 @@ export const CrawlBar = {
       this._el.innerHTML = `
         <div class="vcb-inner vcb-inactive">
           <button class="vcb-btn vcb-start-btn" data-action="startCrawl">
-            <i class="fas fa-dungeon"></i> Start Crawl
+            ${ICONS.startCrawl} Start Crawl
           </button>
         </div>`;
       this._bindEvents();
@@ -66,11 +69,15 @@ export const CrawlBar = {
     }
 
     if (state.paused) {
+      const combatStarted = game.combat?.started ?? false;
       this._el.innerHTML = `
         <div class="vcb-inner">
-          <span class="vcb-phase-badge vcb-phase-combat"><i class="fas fa-swords"></i> Combat Active</span>
-          <button class="vcb-btn vcb-resume-btn" data-action="resumeCrawl"><i class="fas fa-play"></i> Resume Crawl</button>
-          <button class="vcb-btn vcb-danger-btn" data-action="endCrawl"><i class="fas fa-times"></i> End Crawl</button>
+          <span class="vcb-phase-badge vcb-phase-combat">${ICONS.combat} Combat Active</span>
+          ${combatStarted
+            ? `<button class="vcb-btn vcb-danger-btn" data-action="endEncounter">${ICONS.close} End Encounter</button>`
+            : `<button class="vcb-btn vcb-combat-btn" data-action="beginEncounter">${ICONS.combat} Begin Encounter</button>`
+          }
+          <button class="vcb-btn vcb-danger-btn" data-action="endCrawl">${ICONS.close} End Crawl</button>
         </div>`;
       this._bindEvents();
       return;
@@ -78,56 +85,66 @@ export const CrawlBar = {
 
     const isHeroes   = state.isHeroesPhase;
     const phaseLabel = isHeroes ? "Heroes Turn" : "GM Turn";
-    const phaseIcon  = isHeroes ? "fa-users" : "fa-crown";
+    const phaseIcon  = isHeroes ? ICONS.heroes : ICONS.gm;
     const nextLabel  = isHeroes ? "GM Turn" : "Heroes Turn";
 
     this._el.innerHTML = `
       <div class="vcb-inner vcb-active">
 
         <span class="vcb-phase-badge ${isHeroes ? "vcb-phase-heroes" : "vcb-phase-gm"}">
-          <i class="fas ${phaseIcon}"></i> ${phaseLabel}
+          ${phaseIcon} ${phaseLabel}
         </span>
         <button class="vcb-btn vcb-next-btn" data-action="nextTurn">
-          <i class="fas fa-chevron-right"></i> ${nextLabel}
+          ${ICONS.nextTurn} ${nextLabel}
         </button>
 
         <div class="vcb-divider"></div>
 
         <button class="vcb-btn" data-action="addSelectedTokens" title="Add selected tokens to tracker">
-          <i class="fas fa-user-plus"></i> Add Tokens
+          ${ICONS.addTokens} Add Tokens
         </button>
+
+        ${CrawlClock.available ? `
+        <div class="vcb-divider"></div>
+        <div class="vcb-clock-widget" data-action="advanceClock"
+             title="Crawl Clock: ${CrawlClock.filled}/${CrawlClock.segments}&#10;Left-click: advance 1 scene&#10;Right-click: options">
+          ${CrawlClock.svgPath ? `<img class="vcb-clock-svg" src="${CrawlClock.svgPath}" alt="Crawl Clock" />` : ICONS.clock}
+          <span class="vcb-clock-label">${CrawlClock.filled}/${CrawlClock.segments}</span>
+        </div>
+        ` : ""}
 
         <div class="vcb-divider"></div>
 
-        <button class="vcb-btn" data-action="encounterCheck" title="Roll d6 for encounter">
-          <i class="fas fa-dice-d6"></i> Enc. Check
+        <button class="vcb-btn" data-action="encounterCheck"
+                title="Roll d6 for encounter (${game.settings.get(MODULE_ID, "encounterThreshold")}-in-6)&#10;Right-click: change threshold">
+          ${ICONS.encCheck} Enc. Check
         </button>
         <button class="vcb-btn" data-action="openTableBuilder" title="Open encounter roller / build table">
-          <i class="fas fa-dragon"></i> Encounter!
+          ${ICONS.encounter} Encounter!
         </button>
         <div class="vcb-table-drop ${tableName ? "has-table" : ""}"
              title="${tableName ? "Active: " + tableName : "Drop a RollTable here"}">
-          <i class="fas fa-scroll"></i>
+          ${ICONS.tableScroll}
           <span>${tableName ?? "Drop Table"}</span>
-          ${tableName ? `<button class="vcb-clear-table" data-action="clearTable">×</button>` : ""}
+          ${tableName ? `<button class="vcb-clear-table" data-action="clearTable" aria-label="Clear encounter table">×</button>` : ""}
         </div>
 
         <div class="vcb-divider"></div>
 
         <button class="vcb-btn" data-action="lightTracker">
-          <i class="fas fa-fire"></i> Lights
+          ${ICONS.lights} Lights
         </button>
 
         <div class="vcb-divider"></div>
 
         <button class="vcb-btn vcb-combat-btn" data-action="startCombat">
-          <i class="fas fa-swords"></i> Combat
+          ${ICONS.combat} Combat
         </button>
         <button class="vcb-btn" data-action="restBreather">
-          <i class="fas fa-bed"></i> Rest
+          ${ICONS.rest} Rest
         </button>
         <button class="vcb-btn vcb-danger-btn" data-action="endCrawl">
-          <i class="fas fa-times"></i> End
+          ${ICONS.close} End
         </button>
 
       </div>`;
@@ -144,6 +161,26 @@ export const CrawlBar = {
         this._onAction(el.dataset.action);
       });
     });
+
+    // Right-click context menu on clock widget
+    const clockWidget = this._el.querySelector(".vcb-clock-widget");
+    if (clockWidget) {
+      clockWidget.addEventListener("contextmenu", ev => {
+        ev.preventDefault();
+        ev.stopPropagation();
+        this._showClockMenu(ev);
+      });
+    }
+
+    // Right-click threshold popover on encounter check button
+    const encCheckBtn = this._el.querySelector('[data-action="encounterCheck"]');
+    if (encCheckBtn) {
+      encCheckBtn.addEventListener("contextmenu", ev => {
+        ev.preventDefault();
+        ev.stopPropagation();
+        this._showThresholdPopover(encCheckBtn);
+      });
+    }
   },
 
   async _onAction(action) {
@@ -151,19 +188,30 @@ export const CrawlBar = {
 
       case "startCrawl":
         await CrawlState.start();
+        await CrawlClock.ensure();
         this.render();
         (await import("./crawl-strip.mjs")).CrawlStrip.render();
         break;
 
-      case "resumeCrawl":
-        await CrawlState.resume();
+      case "beginEncounter":
+        // Start the Foundry combat (rolls initiative, begins turn tracking)
+        if (game.combat && !game.combat.started) {
+          await game.combat.startCombat();
+        }
         this.render();
-        (await import("./crawl-strip.mjs")).CrawlStrip.render();
+        break;
+
+      case "endEncounter":
+        // End the Foundry combat — the deleteCombat hook handles crawl resume
+        if (game.combat) {
+          await game.combat.endCombat();
+        }
         break;
 
       case "endCrawl": {
         const ok = await confirmDialog({ title: "End Crawl", content: "End crawl mode?" });
         if (ok) {
+          await CrawlClock.cleanup();
           await CrawlState.end();
           this.render();
           (await import("./crawl-strip.mjs")).CrawlStrip.render();
@@ -173,7 +221,14 @@ export const CrawlBar = {
 
       case "nextTurn": {
         const result = await CrawlState.nextTurn();
-        if (result?.newTurn) await MovementTracker.resetAll();
+        if (result?.newTurn) {
+          await MovementTracker.resetAll();
+          // A new crawl turn = 1 Scene: advance clock, burn lights, track time
+          if (CrawlClock.available) await CrawlClock.advance("scene");
+          const mins = game.settings.get(MODULE_ID, "timePassesMinutes");
+          await LightTracker.advanceTime(mins * 60);
+          await CrawlState.addTime(mins);
+        }
         this.render();
         (await import("./crawl-strip.mjs")).CrawlStrip.render();
         break;
@@ -182,6 +237,13 @@ export const CrawlBar = {
       case "addSelectedTokens":
         await this._addSelectedTokens();
         break;
+
+      case "advanceClock": {
+        const clockResult = await CrawlClock.advance("scene");
+        if (clockResult?.wasReset) ui.notifications.info("Crawl clock filled and reset!");
+        this.render();
+        break;
+      }
 
       case "encounterCheck":
         await EncounterTools.rollEncounterCheck();
@@ -197,7 +259,7 @@ export const CrawlBar = {
         break;
 
       case "lightTracker":
-        (await import("./light-tracker.mjs")).LightTracker.openTracker();
+        LightTracker.openTracker();
         break;
 
       case "startCombat":
@@ -209,6 +271,121 @@ export const CrawlBar = {
         break;
     }
   },
+
+  // ── Clock context menu ────────────────────────────────────────────────────
+
+  _showClockMenu(ev) {
+    this._dismissClockMenu();
+
+    const menu = document.createElement("div");
+    menu.className = "vcb-clock-menu";
+
+    menu.innerHTML = `
+      <div class="vcb-clock-menu-item" data-clock="rollBack">
+        ${ICONS.rollBack} Roll Back
+      </div>
+      <div class="vcb-clock-menu-item" data-clock="configure">
+        ${ICONS.configure} Configure
+      </div>`;
+
+    // Position near the click
+    menu.style.left = `${ev.clientX}px`;
+    menu.style.top  = `${ev.clientY}px`;
+    document.body.appendChild(menu);
+
+    // Adjust if it overflows the viewport
+    const rect = menu.getBoundingClientRect();
+    if (rect.bottom > window.innerHeight) menu.style.top = `${ev.clientY - rect.height}px`;
+    if (rect.right > window.innerWidth)   menu.style.left = `${ev.clientX - rect.width}px`;
+
+    menu.querySelectorAll("[data-clock]").forEach(item => {
+      item.addEventListener("click", async (e) => {
+        e.stopPropagation();
+        this._dismissClockMenu();
+        const action = item.dataset.clock;
+        if (action === "rollBack") {
+          await CrawlClock.rollBack();
+          this.render();
+        } else if (action === "configure") {
+          await CrawlClock.openConfig();
+        }
+      });
+    });
+
+    // Click-away dismiss
+    this._clockMenuDismiss = (e) => {
+      if (!menu.contains(e.target)) this._dismissClockMenu();
+    };
+    setTimeout(() => document.addEventListener("pointerdown", this._clockMenuDismiss), 0);
+    this._clockMenu = menu;
+  },
+
+  _dismissClockMenu() {
+    if (this._clockMenu) {
+      this._clockMenu.remove();
+      this._clockMenu = null;
+    }
+    if (this._clockMenuDismiss) {
+      document.removeEventListener("pointerdown", this._clockMenuDismiss);
+      this._clockMenuDismiss = null;
+    }
+  },
+
+  // ── Encounter threshold popover ──────────────────────────────────────────
+
+  _showThresholdPopover(anchor) {
+    this._dismissThresholdPopover();
+
+    const current = game.settings.get(MODULE_ID, "encounterThreshold");
+    const pop = document.createElement("div");
+    pop.className = "vcb-threshold-popover";
+
+    let html = `<div class="vcb-threshold-title">Encounter Threshold</div>
+      <div class="vcb-threshold-options">`;
+    for (let i = 1; i <= 5; i++) {
+      html += `<button class="vcb-threshold-opt ${i === current ? "active" : ""}" data-val="${i}">${i}-in-6</button>`;
+    }
+    html += `</div>`;
+    pop.innerHTML = html;
+
+    // Position above the anchor (bar sits at screen bottom)
+    const rect = anchor.getBoundingClientRect();
+    pop.style.left   = `${rect.left}px`;
+    pop.style.bottom = `${window.innerHeight - rect.top + 4}px`;
+    document.body.appendChild(pop);
+
+    // Adjust if overflow
+    const popRect = pop.getBoundingClientRect();
+    if (popRect.right > window.innerWidth) pop.style.left = `${window.innerWidth - popRect.width - 8}px`;
+
+    pop.querySelectorAll(".vcb-threshold-opt").forEach(btn => {
+      btn.addEventListener("click", async () => {
+        await game.settings.set(MODULE_ID, "encounterThreshold", parseInt(btn.dataset.val));
+        this._dismissThresholdPopover();
+        this.render();
+        ui.notifications.info(`Encounter threshold: ${btn.dataset.val}-in-6`);
+      });
+    });
+
+    this._thresholdDismiss = (e) => {
+      if (!pop.contains(e.target)) this._dismissThresholdPopover();
+    };
+    setTimeout(() => document.addEventListener("pointerdown", this._thresholdDismiss), 0);
+    this._thresholdPop = pop;
+  },
+
+  _dismissThresholdPopover() {
+    if (this._thresholdPop) {
+      this._thresholdPop.remove();
+      this._thresholdPop = null;
+    }
+    if (this._thresholdDismiss) {
+      document.removeEventListener("pointerdown", this._thresholdDismiss);
+      this._thresholdDismiss = null;
+    }
+  },
+
+  // ── Token management ─────────────────────────────────────────────────────
 
   async _addSelectedTokens() {
     const selected = canvas.tokens?.controlled ?? [];
@@ -225,6 +402,11 @@ export const CrawlBar = {
         actorId: token.actor.id,
         tokenId: token.id,
       });
+      // Reset movement to full crawl/combat speed so tokens start with correct budget
+      if (type === "player") {
+        await MovementTracker.resetActor(token.actor);
+        MovementTracker.snapshotPosition(token.id);
+      }
       added++;
     }
     if (added) {
@@ -235,6 +417,7 @@ export const CrawlBar = {
   },
 
   async _startCombat() {
+    if (CrawlClock.available) await CrawlClock.hide();
     await CrawlState.pause();
     this.render();
 
@@ -321,6 +504,16 @@ export const CrawlBar = {
   },
 };
 
+// Re-render bar when combat starts (Begin Encounter from sidebar) so button swaps
+Hooks.on("combatStart", () => {
+  if (game.user.isGM && CrawlState.paused) CrawlBar.render();
+});
+
+// Re-render bar on combat turn/round changes (keeps bar in sync with sidebar)
+Hooks.on("updateCombat", (combat, changes) => {
+  if (game.user.isGM && CrawlState.paused && changes.round !== undefined) CrawlBar.render();
+});
+
 // Auto-add any token dropped onto the combat tracker into the crawl strip
 Hooks.on("createCombatant", async (combatant) => {
   if (!game.user.isGM || !CrawlState.active) return;
@@ -368,6 +561,7 @@ Hooks.on("deleteCombat", async () => {
   });
   if (resume) {
     await CrawlState.resume();
+    if (CrawlClock.available) await CrawlClock.show();
     const { MovementTracker } = await import("./movement-tracker.mjs");
     await MovementTracker.resetAll(); // resets to crawl speed since CrawlState.paused is now false
     CrawlBar.render();

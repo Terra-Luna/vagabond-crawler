@@ -92,10 +92,7 @@ function _injectContextEntry(card, item) {
         const secs  = item.getFlag(MODULE_ID, "remainingSecs") ?? 0;
         const li = document.createElement("li");
         li.className = "vcl-ctx-item";
-        li.style.cssText = "padding:6px 12px;cursor:pointer;display:flex;align-items:center;gap:8px;font-weight:bold;border-bottom:1px solid #555;list-style:none;";
-        li.innerHTML = `<i class="fas fa-${isLit ? "wind" : "fire"}" style="width:14px"></i> ${isLit ? `Extinguish (${LightTracker._formatTime(secs)} left)` : "Light"}`;
-        li.addEventListener("mouseenter", () => li.style.background = "rgba(240,192,64,0.15)");
-        li.addEventListener("mouseleave", () => li.style.background = "");
+        li.innerHTML = `<i class="fas fa-${isLit ? "wind" : "fire"}"></i> ${isLit ? `Extinguish (${LightTracker._formatTime(secs)} left)` : "Light"}`;
         li.addEventListener("click", async ev => {
           ev.stopPropagation();
           menu.remove();
@@ -217,10 +214,10 @@ async function _pickupLight(lightActor, token) {
   if (game.user.isGM) {
     const playerActors = game.actors.filter(a => a.hasPlayerOwner);
     const options = playerActors.map(a => `<option value="${a.id}">${a.name}</option>`).join("");
-    const actorId = await Dialog.prompt({
-      title:       "Pick Up Light Source",
+    const actorId = await foundry.applications.api.DialogV2.prompt({
+      window:      { title: "Pick Up Light Source" },
       content:     `<p>Assign to which character?</p><select name="actor" style="width:100%">${options}</select>`,
-      callback:    html => (html.find ? html.find("select").val() : html.querySelector("select").value),
+      ok:          { callback: (event, button) => button.form.elements.actor?.value },
       rejectClose: false,
     });
     if (!actorId) return;
@@ -385,10 +382,12 @@ export const LightTracker = {
     for (const actor of _getActiveActors()) {
       if (actor.getFlag(MODULE_ID, VLT_LIGHT_ACTOR_FLAG)) {
         if (!actor.getFlag(MODULE_ID, "lit")) continue;
+        const key     = actor.getFlag(MODULE_ID, "sourceKey") ?? "torch";
+        const maxSecs = LIGHT_SOURCES[key]?.longevitySecs ?? 3600;
         const prev = actor.getFlag(MODULE_ID, "remainingSecs") ?? 0;
-        const next = Math.max(0, prev - secs);
+        const next = Math.max(0, Math.min(maxSecs, prev - secs));
         await actor.setFlag(MODULE_ID, "remainingSecs", next);
-        if (next <= 0) {
+        if (secs > 0 && next <= 0) {
           const itemName = actor.getFlag(MODULE_ID, "itemName") ?? "light source";
           await ChatMessage.create({
             content: `<div style="display:flex;align-items:center;gap:8px"><span style="font-size:18px">🕯️</span><span>A dropped <strong>${itemName}</strong> has burned out!</span></div>`,
@@ -401,9 +400,11 @@ export const LightTracker = {
       }
       for (const item of actor.items) {
         if (!item.getFlag(MODULE_ID, "lit")) continue;
+        const srcKey  = item.getFlag(MODULE_ID, "sourceKey");
+        const maxSecs = LIGHT_SOURCES[srcKey]?.longevitySecs ?? 3600;
         const prev = item.getFlag(MODULE_ID, "remainingSecs") ?? 0;
-        const next = Math.max(0, prev - secs);
-        if (next <= 0) await this._burnOut(item, actor);
+        const next = Math.max(0, Math.min(maxSecs, prev - secs));
+        if (secs > 0 && next <= 0) await this._burnOut(item, actor);
         else await item.setFlag(MODULE_ID, "remainingSecs", next);
       }
     }
@@ -551,9 +552,11 @@ class LightTrackerApp extends HbsMixin(AppV2) {
       const adjusted = mins * multiplier;
       const { CrawlState } = await import("./crawl-state.mjs");
       await CrawlState.addTime(adjusted);
-      if (multiplier > 0) await LightTracker.advanceTime(adjusted * 60);
-      const label = multiplier > 0 ? "Time Passes" : "Time Rewound";
-      const icon  = multiplier > 0 ? "fa-hourglass-half" : "fa-hourglass-start";
+      // Positive adjusted = add time to torches (rewind burn), negative = burn torches down
+      // advanceTime(secs) subtracts secs from remaining, so negate: adding mins means negative secs
+      await LightTracker.advanceTime(-adjusted * 60);
+      const label = multiplier > 0 ? "Time Added" : "Time Passes";
+      const icon  = multiplier > 0 ? "fa-hourglass-start" : "fa-hourglass-half";
       await ChatMessage.create({
         content: `<div class="vagabond-crawler-chat"><i class="fas ${icon}"></i> <strong>${label}</strong> — ${Math.abs(adjusted)} minutes. (Total: ${CrawlState.formatElapsed()})</div>`,
         speaker: { alias: "Crawler" },
