@@ -2,7 +2,7 @@
 
 ![Foundry v13](https://img.shields.io/badge/foundry-v13-green?style=for-the-badge)
 ![System](https://img.shields.io/badge/system-vagabond-blue?style=for-the-badge)
-![Version](https://img.shields.io/badge/version-1.0.0-orange?style=for-the-badge)
+![Version](https://img.shields.io/badge/version-1.1.0-orange?style=for-the-badge)
 
 A comprehensive dungeon crawl management module for the **Vagabond RPG** system in Foundry VTT. Everything you need to run a crawl — turn tracking, movement enforcement, random encounters, light management, morale, and combat integration — all from a unified interface.
 
@@ -164,6 +164,8 @@ A combined dialog for managing recovery between encounters.
 | NPC Action Menu | Show weapon/spell/action hover menus on cards during combat | On |
 | Real-Time Light Burn | Burn light sources in real time (1 real sec = 1 game sec) | Off |
 | Movement Enforcement | Block or warn when tokens exceed their movement allowance | On |
+| Alchemist Cookbook | Enable the Alchemist crafting system, consumable effects, and class features | On |
+| NPC Abilities | Automate NPC special abilities (Pack Tactics, Evasion, etc.) | On |
 
 ---
 
@@ -175,6 +177,37 @@ A combined dialog for managing recovery between encounters.
 ### Optional
 - **vagabond-extras** — Some features complement the extras module
 - **lib-wrapper** — Recommended for compatibility with other movement-modifying modules
+
+---
+
+### Alchemist Cookbook
+A full crafting system for the Alchemist class. Right-click Alchemy Tools in inventory to open.
+
+- **Cookbook Window** — Browse all 84 alchemical items or just your known formulae; craft with one click
+- **Formula Management** — Learn formulae up to your level's value cap; craft known formulae for 5s flat
+- **Material Tracking** — Auto-converts Materials to consumable stacks, deducts costs across multiple stacks
+- **Weapon Conversion** — Offensive items (acids, explosives, poisons) auto-convert to throwable weapons with proper damage, range, and skill
+- **Alchemical Attack Effects** — On-hit effects (Burning, Sickened, Restrained, Blinded, etc.) via countdown dice, linked status AEs, target filtering, and splash damage
+- **Oil Coating System** — Oils coat weapons with bonus damage, light, silvered properties, and burning effects on hit targets
+- **Self-Use Consumables** — Potions (Healing, Mana, Speed), Antitoxin auto-apply effects when used
+- **Crawl Strip Integration** — Craft tab appears in the combat HUD for quick formula crafting mid-fight
+
+#### Alchemist Class Features (Automated)
+
+| Feature | Level | Effect |
+|---------|-------|--------|
+| **Eureka** | 2 | Gain a Studied die when you Crit on a Craft check |
+| **Potency** | 4 | Alchemical damage and healing dice can explode |
+| **Big Bang** | 8 | +d6 bonus to alchemical damage/healing; explode on two highest values |
+
+#### NPC Abilities (Automated)
+
+| Ability | Effect |
+|---------|--------|
+| **Pack Tactics** | Favor on attacks when ally is adjacent to target |
+| **Evasion** | Reflex saves: no damage on pass, half on fail |
+| **Elusive** | Cannot be Flanked |
+| **Magic Resistance** | Favor on saves vs. spells |
 
 ---
 

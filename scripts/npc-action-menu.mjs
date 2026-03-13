@@ -13,6 +13,8 @@
  */
 
 import { MODULE_ID } from "./vagabond-crawler.mjs";
+import { getAlchemistData, getCraftCost, formatCost, craftItem } from "./alchemy-helpers.mjs";
+import { setCastCheckFlag } from "./npc-abilities.mjs";
 
 // ─── Spell State ──────────────────────────────────────────────────────────────
 
@@ -316,7 +318,20 @@ export class CrawlerSpellDialog extends foundry.applications.api.ApplicationV2 {
       } else {
         const { VagabondRollBuilder } = await import("/systems/vagabond/module/helpers/roll-builder.mjs");
         const rollData = actor.getRollDataWithItemEffects(spell);
-        roll = await VagabondRollBuilder.buildAndEvaluateD20WithRollData(rollData, "none");
+
+        // Read actor's favor/hinder state (e.g. from Vulnerable/flanking)
+        const favorHinder = VagabondRollBuilder.calculateEffectiveFavorHinder(
+          actor.system.favorHinder || "none", false, false
+        );
+
+        // Set cast-check flag so Magic Ward penalty is injected
+        setCastCheckFlag(true);
+        try {
+          roll = await VagabondRollBuilder.buildAndEvaluateD20WithRollData(rollData, favorHinder);
+        } finally {
+          setCastCheckFlag(false);
+        }
+
         isSuccess  = roll.total >= difficulty;
         const critNum = VagabondRollBuilder.calculateCritThreshold(rollData, "spell");
         const d20 = roll.terms.find(t => t.constructor.name === "Die" && t.faces === 20);
@@ -430,7 +445,25 @@ function _buildMenuData(actor, isNPC) {
     const spells = (actor.items?.filter(i => i.type === "spell") ?? []).map(item => ({
       label: item.name, dmg: _spellDmgLabel(item), type: "spell", itemId: item.id,
     }));
-    return { tabA: "Weapons", tabB: "Spells", itemsA: weapons, itemsB: spells };
+
+    // Alchemist craft tab — known formulae for quick 5s crafting
+    let craftItems = [];
+    if (game.settings.get(MODULE_ID, "alchemistCookbook")) {
+      const alcData = getAlchemistData(actor);
+      if (alcData?.tools && alcData.formulae.length > 0) {
+        craftItems = alcData.formulae.map(name => ({
+          label: name, dmg: `<span class="vcs-menu-dmg">5s</span>`,
+          type: "craft", craftName: name,
+        }));
+      }
+    }
+
+    const result = { tabA: "Weapons", tabB: "Spells", itemsA: weapons, itemsB: spells };
+    if (craftItems.length > 0) {
+      result.tabC = "Craft";
+      result.itemsC = craftItems;
+    }
+    return result;
   }
 }
 
@@ -442,14 +475,17 @@ function _buildMenuData(actor, isNPC) {
  */
 export function buildTabStripHTML(actor, isNPC) {
   if (!actor) return "";
-  const { tabA, tabB, itemsA, itemsB } = _buildMenuData(actor, isNPC);
+  const menu = _buildMenuData(actor, isNPC);
+  const { tabA, tabB, itemsA, itemsB } = menu;
   const hasA = itemsA.length > 0;
   const hasB = itemsB.length > 0;
-  if (!hasA && !hasB) return "";
+  const hasC = (menu.itemsC ?? []).length > 0;
+  if (!hasA && !hasB && !hasC) return "";
   return `
     <div class="vcs-action-tabs" data-actor-id="${actor.id}">
-      <button class="vcs-atab ${hasA ? "vcs-atab-active" : ""}" data-tab="a" ${!hasA ? "disabled" : ""}>${tabA}</button>
-      <button class="vcs-atab ${!hasA && hasB ? "vcs-atab-active" : ""}" data-tab="b" ${!hasB ? "disabled" : ""}>${tabB}</button>
+      ${hasA ? `<button class="vcs-atab vcs-atab-active" data-tab="a">${tabA}</button>` : ""}
+      ${hasB ? `<button class="vcs-atab ${!hasA ? "vcs-atab-active" : ""}" data-tab="b">${tabB}</button>` : ""}
+      ${hasC ? `<button class="vcs-atab ${!hasA && !hasB ? "vcs-atab-active" : ""}" data-tab="c">${menu.tabC}</button>` : ""}
     </div>`;
 }
 
@@ -483,13 +519,18 @@ function _showPanel(stripEl, cardWrap, actor, isNPC, activeTab) {
 
   _removePanel();
 
-  const { tabA, tabB, itemsA, itemsB } = _buildMenuData(actor, isNPC);
-  const startTab = activeTab ?? (itemsA.length ? "a" : "b");
+  const menu = _buildMenuData(actor, isNPC);
+  const { tabA, tabB, itemsA, itemsB } = menu;
+  const itemsC = menu.itemsC ?? [];
+  const hasC = itemsC.length > 0;
+  const startTab = activeTab ?? (itemsA.length ? "a" : itemsB.length ? "b" : "c");
 
   const renderItems = (items) => items.length
     ? items.map(it => {
         const dataAttrs = it.itemId
           ? `data-item-id="${it.itemId}"`
+          : it.craftName
+          ? `data-craft-name="${it.craftName}"`
           : `data-index="${it.index}"`;
         return `<div class="vcs-panel-item" data-type="${it.type}" ${dataAttrs}>
           <span class="vcs-panel-name">${it.label}</span>${it.dmg}
@@ -503,11 +544,13 @@ function _showPanel(stripEl, cardWrap, actor, isNPC, activeTab) {
   panel.dataset.tokenId = cardWrap.querySelector(".vcs-member")?.dataset.tokenId ?? "";
   panel.innerHTML = `
     <div class="vcs-panel-tabs">
-      <button class="vcs-ptab ${startTab === "a" ? "vcs-ptab-active" : ""}" data-tab="a" ${!itemsA.length ? "disabled" : ""}>${tabA}</button>
-      <button class="vcs-ptab ${startTab === "b" ? "vcs-ptab-active" : ""}" data-tab="b" ${!itemsB.length ? "disabled" : ""}>${tabB}</button>
+      ${itemsA.length ? `<button class="vcs-ptab ${startTab === "a" ? "vcs-ptab-active" : ""}" data-tab="a">${tabA}</button>` : ""}
+      ${itemsB.length ? `<button class="vcs-ptab ${startTab === "b" ? "vcs-ptab-active" : ""}" data-tab="b">${tabB}</button>` : ""}
+      ${hasC ? `<button class="vcs-ptab ${startTab === "c" ? "vcs-ptab-active" : ""}" data-tab="c">${menu.tabC}</button>` : ""}
     </div>
-    <div class="vcs-panel-body" data-panel="a" style="${startTab !== "a" ? "display:none" : ""}">${renderItems(itemsA)}</div>
-    <div class="vcs-panel-body" data-panel="b" style="${startTab !== "b" ? "display:none" : ""}">${renderItems(itemsB)}</div>`;
+    ${itemsA.length ? `<div class="vcs-panel-body" data-panel="a" style="${startTab !== "a" ? "display:none" : ""}">${renderItems(itemsA)}</div>` : ""}
+    ${itemsB.length ? `<div class="vcs-panel-body" data-panel="b" style="${startTab !== "b" ? "display:none" : ""}">${renderItems(itemsB)}</div>` : ""}
+    ${hasC ? `<div class="vcs-panel-body" data-panel="c" style="${startTab !== "c" ? "display:none" : ""}">${renderItems(itemsC)}</div>` : ""}`;
 
   // Position: align with cardWrap, below the tab strip
   stripEl.appendChild(panel);
@@ -529,7 +572,7 @@ function _showPanel(stripEl, cardWrap, actor, isNPC, activeTab) {
       const token   = tokenId ? canvas.tokens?.get(tokenId) : null;
       const resolvedActor = token?.actor ?? game.actors.get(actor.id);
       if (!resolvedActor?.isOwner) { ui.notifications.warn("You don't control this character."); return; }
-      await _fireAction(resolvedActor, item.dataset.type, item.dataset.index, item.dataset.itemId);
+      await _fireAction(resolvedActor, item.dataset.type, item.dataset.index, item.dataset.itemId ?? item.dataset.craftName);
       _removePanel();
     });
   });
@@ -554,6 +597,19 @@ function _positionPanel(panel, cardWrap, stripEl) {
   panel.style.top  = `${top}px`;
 }
 
+// ─── Helpers ─────────────────────────────────────────────────────────────────
+
+/** Resolve a target descriptor to its token actor (handles unlinked tokens). */
+function _resolveTokenActor(target) {
+  if (!target) return null;
+  if (target.tokenId && target.sceneId) {
+    const scene = game.scenes.get(target.sceneId);
+    const tokenDoc = scene?.tokens?.get(target.tokenId);
+    if (tokenDoc?.actor) return tokenDoc.actor;
+  }
+  return target.actorId ? game.actors.get(target.actorId) : null;
+}
+
 // ─── Action Firing ────────────────────────────────────────────────────────────
 
 async function _fireAction(actor, type, indexStr, itemId) {
@@ -576,7 +632,8 @@ async function _fireAction(actor, type, indexStr, itemId) {
     } else if (type === "weapon") {
       const item = actor.items.get(itemId); if (!item) return;
       const { VagabondChatCard } = globalThis.vagabond.utils;
-      const attackResult = await item.rollAttack(actor, "none");
+      const favorHinder = actor.system?.favorHinder || "none";
+      const attackResult = await item.rollAttack(actor, favorHinder);
       if (!attackResult) return;
       // FX
       try {
@@ -591,11 +648,21 @@ async function _fireAction(actor, type, indexStr, itemId) {
         damageRoll = await item.rollDamage(actor, attackResult.isCritical, attackResult.weaponSkill?.stat ?? null);
       }
       await VagabondChatCard.weaponAttack(actor, item, attackResult, damageRoll, targets);
+
+      // NOTE: All alchemical post-attack effects (countdown dice, statuses,
+      // splash damage, oil bonus) are handled by registerAlchemicalAttackHook()
+      // and registerOilBonusDamageHook() in alchemy-helpers.mjs.
+      // They fire via createChatMessage hook for BOTH crawl strip and character sheet attacks.
+
       await item.handleConsumption?.();
 
     } else if (type === "spell") {
       const item = actor.items.get(itemId); if (!item) return;
       CrawlerSpellDialog.show(actor, item);
+
+    } else if (type === "craft") {
+      const craftName = itemId; // craftName passed via itemId parameter path
+      await craftItem(actor, craftName, true);
     }
   } catch (err) {
     console.error(`Vagabond Crawler | Action fire error (${type}):`, err);

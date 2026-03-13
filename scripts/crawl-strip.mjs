@@ -169,6 +169,23 @@ export const CrawlStrip = {
           <div class="vcs-pill ${moveClass}">${ICONS.walking}${data.moveRemaining}/${data.activeSpeed}ft</div>
         </div>` : "";
 
+      // Active effects row — show icons for all non-disabled effects
+      let effectsRow = "";
+      if (actor) {
+        const activeEffects = actor.effects.filter(e => !e.disabled);
+        if (activeEffects.length) {
+          const icons = activeEffects.map(e => {
+            const icon = e.icon || e.img || "icons/svg/aura.svg";
+            const label = e.name || "Effect";
+            const durationInfo = e.duration?.rounds
+              ? ` (${e.duration.rounds}R)`
+              : "";
+            return `<img class="vcs-effect-icon" src="${icon}" title="${label}${durationInfo}" alt="${label}" width="18" height="18" />`;
+          }).join("");
+          effectsRow = `<div class="vcs-effects-row">${icons}</div>`;
+        }
+      }
+
       // Action menu tab strip — only during combat, below the card
       const isNPC = m.type === "npc" || m.type === "gm";
       const showMenu = inCombat
@@ -183,6 +200,7 @@ export const CrawlStrip = {
           <img class="vcs-portrait" src="${m.img}" alt="${m.name}" />
           <div class="vcs-overlay">
             ${displayName ? `<div class="vcs-name">${displayName}</div>` : ""}
+            ${effectsRow}
             <div class="vcs-bottom">
               <div class="vcs-hp-bar-wrap">
                 <div class="vcs-hp-bar ${hpClass}" style="width:${hpPct}%"></div>
@@ -423,4 +441,7 @@ Hooks.on("updateToken", async (tokenDoc, changes) => {
 Hooks.on("updateItem", () => { if (CrawlState.active) CrawlStrip.queueRender(); });
 Hooks.on("updateCombatant", () => { if (CrawlState.active) CrawlStrip.queueRender(); });
 Hooks.on("updateCombat", () => { if (CrawlState.active) CrawlStrip.queueRender(); });
+Hooks.on("createActiveEffect", () => { if (CrawlState.active) CrawlStrip.queueRender(); });
+Hooks.on("deleteActiveEffect", () => { if (CrawlState.active) CrawlStrip.queueRender(); });
+Hooks.on("updateActiveEffect", () => { if (CrawlState.active) CrawlStrip.queueRender(); });
 
