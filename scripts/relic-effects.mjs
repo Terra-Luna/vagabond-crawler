@@ -34,8 +34,8 @@ function _getEquippedRelicFlags(actor) {
       const relicPower = effect.flags?.[MODULE_ID]?.relicPower;
       if (!relicPower) continue;
 
-      // Also check the original power flags stored in the AE
-      const powerFlags = effect.flags || {};
+      // Read power-specific flags from the module namespace
+      const powerFlags = effect.flags?.[MODULE_ID] || {};
       results.push({ power: relicPower, flags: powerFlags, item, effect });
     }
   }

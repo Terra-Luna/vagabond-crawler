@@ -387,19 +387,22 @@ class RelicForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
 
       // Note: addProperties are handled below by directly updating the item's properties array
 
-      if (changes.length > 0) {
-        effectDocs.push({
-          name: `Relic: ${power.name}${input ? ` (${input})` : ""}`,
-          icon: item.img || "icons/svg/item-bag.svg",
-          changes,
-          disabled: false,
-          transfer: true,
-          flags: {
-            [MODULE_ID]: { relicPower: power.id || power.name, managed: true },
-            ...(power.flags || {}),
-          },
-        });
+      // Build flags — merge power.flags into module namespace, replace {input}
+      const moduleFlags = { relicPower: power.id || power.name, managed: true };
+      if (power.flags) {
+        for (const [k, v] of Object.entries(power.flags)) {
+          moduleFlags[k] = typeof v === "string" ? v.replace("{input}", input) : v;
+        }
       }
+
+      effectDocs.push({
+        name: `Relic: ${power.name}${input ? ` (${input})` : ""}`,
+        icon: item.img || "icons/svg/item-bag.svg",
+        changes,
+        disabled: false,
+        transfer: true,
+        flags: { [MODULE_ID]: moduleFlags },
+      });
     }
 
     const relicName = this._computeName();
