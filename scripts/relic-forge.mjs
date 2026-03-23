@@ -381,9 +381,9 @@ class RelicForgeApp extends ApplicationV2 {
     if (!this._item || this._selectedPowers.size === 0) return "";
 
     const item = this._itemData;
-    const baseCost = item.system?.cost ?? 0;
-    const metal = item.system?.metal || "none";
-    const metalMult = METAL_MULTIPLIERS[metal] || 1;
+    const costObj = item.system?.cost ?? { gold: 0, silver: 0, copper: 0 };
+    const baseGold = costObj.gold ?? 0;
+    const baseSilver = costObj.silver ?? 0;
     let powerCost = 0;
     const nameParts = { prefix: [], base: item.name, suffix: [] };
 
@@ -399,15 +399,16 @@ class RelicForgeApp extends ApplicationV2 {
       else if (power.nameFormat.position === "suffix") nameParts.suffix.push(formatted);
     }
 
-    const totalCost = (baseCost * metalMult) + powerCost;
+    const totalGold = baseGold + powerCost;
     const relicName = [...nameParts.prefix, nameParts.base, ...nameParts.suffix].join(" ");
+    const baseDisplay = baseSilver > 0 ? `${baseGold}g ${baseSilver}s` : `${baseGold}g`;
 
     return `
       <div class="forge-summary" style="border:1px solid #7b5ea7; border-radius:6px; padding:10px; background:rgba(123,94,167,0.05);">
         <div style="display:flex; justify-content:space-between; align-items:center;">
           <div>
             <strong style="font-size:1.1em; color:#7b5ea7;">${relicName}</strong><br>
-            <span style="color:#888;">Base: ${baseCost}g × ${metalMult} + Powers: ${powerCost}g = <strong>${totalCost}g</strong></span>
+            <span style="color:#888;">Base: ${baseDisplay} + Powers: ${powerCost}g = <strong>${totalGold}g${baseSilver > 0 ? ` ${baseSilver}s` : ""}</strong></span>
           </div>
           <button class="forge-btn" style="background:#7b5ea7; color:white; border:none; padding:8px 16px; border-radius:4px; cursor:pointer; font-size:1em;">
             <i class="fas fa-hammer"></i> Forge Relic
@@ -501,14 +502,8 @@ class RelicForgeApp extends ApplicationV2 {
     const nameParts = { prefix: [], base: this._itemData.name, suffix: [] };
     let powerCost = 0;
 
-    // Upgrade metal to magical if common/none
-    const currentMetal = item.system?.metal || "none";
-    if (currentMetal === "none" || currentMetal === "common") {
-      updates["system.metal"] = "magical";
-    }
-
-    // Set equipment type to relic
-    updates["system.equipmentType"] = "relic";
+    // Note: system schema restricts metal choices and equipmentType,
+    // so we track "forged relic" status via flags instead of changing those fields.
 
     // Build effects and name from selected powers
     const userInputs = {};
