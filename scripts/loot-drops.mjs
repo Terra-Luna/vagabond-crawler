@@ -8,6 +8,7 @@
 
 import { MODULE_ID } from "./vagabond-crawler.mjs";
 import { generateLoot } from "./loot-tables.mjs";
+import { LootManager } from "./loot-manager.mjs";
 
 const LOOT_BAG_ICON = "icons/containers/chest/chest-worn-oak-tan.webp";
 
@@ -88,12 +89,12 @@ export const LootDrops = {
       const npc = combatant.actor;
       const token = combatant.token;
 
-      const npcChance = npc.getFlag(MODULE_ID, "lootDropChance");
-      const chance = (npcChance !== undefined && npcChance >= 0) ? npcChance : globalChance;
+      const lootConfig = LootManager.getLootConfig(npc);
+      const chance = (lootConfig.chance >= 0) ? lootConfig.chance : globalChance;
       const roll = Math.random() * 100;
       if (roll > chance) continue;
 
-      const customTable = npc.getFlag(MODULE_ID, "lootTable") || null;
+      const customTable = lootConfig.table || null;
 
       // Roll loot independently for each PC
       const perPlayerLoot = {};

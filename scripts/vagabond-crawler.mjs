@@ -102,6 +102,7 @@ Hooks.once("init", () => {
   ItemDrops.registerSettings();
   LootDrops.registerSettings();
   RelicForge.registerSettings();
+  LootManager.registerSettings();
 
   // Real-time light burn
   game.settings.register(MODULE_ID, "realtimeTracking", {

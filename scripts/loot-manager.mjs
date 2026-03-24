@@ -19,11 +19,50 @@ const NPC_SOURCES = [
 let _app = null;
 
 export const LootManager = {
+  registerSettings() {
+    // Stores loot config for compendium NPCs: { "compendiumEntryId": { table: "RollTable.xxx", chance: 75 } }
+    game.settings.register(MODULE_ID, "compendiumLootConfig", {
+      scope: "world", config: false, type: Object, default: {},
+    });
+  },
+
   init() { console.log(`${MODULE_ID} | Loot Manager initialized.`); },
+
   open() {
     if (!game.user.isGM) { ui.notifications.warn("Only the GM can manage loot tables."); return; }
     if (!_app) _app = new LootManagerApp();
     _app.render(true);
+  },
+
+  /**
+   * Get loot config for an NPC — checks actor flags first, then compendium setting.
+   * Used by loot-drops.mjs at combat end.
+   */
+  getLootConfig(actor) {
+    // World actor flags take priority
+    const flagTable = actor.getFlag(MODULE_ID, "lootTable");
+    const flagChance = actor.getFlag(MODULE_ID, "lootDropChance");
+    if (flagTable !== undefined || flagChance !== undefined) {
+      return { table: flagTable || null, chance: flagChance ?? -1 };
+    }
+
+    // Check compendium config by source ID (the compendium entry this actor was imported from)
+    const sourceId = actor.flags?.core?.sourceId;
+    if (sourceId) {
+      const config = game.settings.get(MODULE_ID, "compendiumLootConfig");
+      const entry = config[sourceId];
+      if (entry) return { table: entry.table || null, chance: entry.chance ?? -1 };
+    }
+
+    // Check by actor name match in compendium config (fallback for unlinked tokens)
+    const config = game.settings.get(MODULE_ID, "compendiumLootConfig");
+    for (const [key, entry] of Object.entries(config)) {
+      if (entry.name === actor.name) {
+        return { table: entry.table || null, chance: entry.chance ?? -1 };
+      }
+    }
+
+    return { table: null, chance: -1 };
   },
 };
 
@@ -104,16 +143,34 @@ class LootManagerApp extends HandlebarsApplicationMixin(ApplicationV2) {
       return String(av || "").localeCompare(String(bv || "")) * dir;
     });
 
-    // Enrich with current loot assignments — mark selected option in table list
+    // Enrich with current loot assignments
+    const compConfig = game.settings.get(MODULE_ID, "compendiumLootConfig");
     npcs = npcs.map(n => {
       const actor = game.actors.get(n.id);
       const isWorldActor = !!actor;
-      const currentTable = actor?.getFlag(MODULE_ID, "lootTable") || "";
+
+      let currentTable = "";
+      let dropChance = -1;
+
+      if (isWorldActor) {
+        currentTable = actor.getFlag(MODULE_ID, "lootTable") || "";
+        dropChance = actor.getFlag(MODULE_ID, "lootDropChance") ?? -1;
+      } else if (n.isCompendium) {
+        // Compendium NPC — check setting by compendium UUID
+        const compUuid = `Compendium.${n.packId}.Actor.${n.id}`;
+        const entry = compConfig[compUuid];
+        if (entry) {
+          currentTable = entry.table || "";
+          dropChance = entry.chance ?? -1;
+        }
+      }
+
       return {
         ...n,
         isWorldActor,
         currentTable,
-        dropChance: actor?.getFlag(MODULE_ID, "lootDropChance") ?? -1,
+        dropChance,
+        compUuid: n.isCompendium ? `Compendium.${n.packId}.Actor.${n.id}` : null,
         tableOptions: flatTables.map(t => ({
           uuid: t.uuid, name: t.name,
           selected: t.uuid === currentTable,
@@ -317,56 +374,97 @@ class LootManagerApp extends HandlebarsApplicationMixin(ApplicationV2) {
       });
     }
 
-    // Apply to selected
+    // Apply to selected — handles both world and compendium NPCs
     $(".loot-apply-btn")?.addEventListener("click", async () => {
       const tableUuid = $(".loot-assign-table")?.value || "";
       const checked = [...el.querySelectorAll(".npc-select:checked")];
       if (!checked.length) { ui.notifications.warn("Select NPCs first."); return; }
 
+      const config = foundry.utils.deepClone(game.settings.get(MODULE_ID, "compendiumLootConfig"));
+      let configChanged = false;
+
       for (const cb of checked) {
-        const actor = game.actors.get(cb.dataset.actorId);
-        if (!actor) continue;
-        if (tableUuid) await actor.setFlag(MODULE_ID, "lootTable", tableUuid);
-        else await actor.unsetFlag(MODULE_ID, "lootTable");
+        const actorId = cb.dataset.actorId;
+        const compUuid = cb.dataset.compUuid;
+        const actor = game.actors.get(actorId);
+
+        if (actor) {
+          if (tableUuid) await actor.setFlag(MODULE_ID, "lootTable", tableUuid);
+          else await actor.unsetFlag(MODULE_ID, "lootTable");
+        } else if (compUuid) {
+          if (!config[compUuid]) config[compUuid] = {};
+          const row = cb.closest(".loot-npc-row");
+          config[compUuid].table = tableUuid || "";
+          config[compUuid].name = row?.querySelector(".loot-npc-name")?.textContent?.trim();
+          configChanged = true;
+        }
       }
+
+      if (configChanged) await game.settings.set(MODULE_ID, "compendiumLootConfig", config);
       ui.notifications.info(`Assigned table to ${checked.length} NPC(s).`);
       this.render();
     });
 
-    // Per-NPC table select
+    // Per-NPC table select — works for both world and compendium NPCs
     on(".npc-table-select", "change", async ev => {
       const actorId = ev.currentTarget.dataset.actorId;
+      const compUuid = ev.currentTarget.dataset.compUuid;
       const tableUuid = ev.currentTarget.value;
+
       const actor = game.actors.get(actorId);
-      if (!actor) {
-        console.warn(`${MODULE_ID} | No actor found for ID ${actorId}`);
-        return;
+      if (actor) {
+        // World actor — use flags
+        if (tableUuid) await actor.setFlag(MODULE_ID, "lootTable", tableUuid);
+        else await actor.unsetFlag(MODULE_ID, "lootTable");
+      } else if (compUuid) {
+        // Compendium NPC — use setting
+        const config = foundry.utils.deepClone(game.settings.get(MODULE_ID, "compendiumLootConfig"));
+        if (tableUuid) {
+          if (!config[compUuid]) config[compUuid] = {};
+          config[compUuid].table = tableUuid;
+          config[compUuid].name = ev.currentTarget.closest(".loot-npc-row")?.querySelector(".loot-npc-name")?.textContent?.trim();
+        } else {
+          if (config[compUuid]) delete config[compUuid].table;
+        }
+        await game.settings.set(MODULE_ID, "compendiumLootConfig", config);
       }
-      if (tableUuid) await actor.setFlag(MODULE_ID, "lootTable", tableUuid);
-      else await actor.unsetFlag(MODULE_ID, "lootTable");
-      console.log(`${MODULE_ID} | Set loot table for ${actor.name}: ${tableUuid || "(none)"}`);
     });
 
-    // Per-NPC drop chance
+    // Per-NPC drop chance — works for both world and compendium NPCs
     on(".npc-chance-input", "change", async ev => {
       const actorId = ev.currentTarget.dataset.actorId;
+      const compUuid = ev.currentTarget.dataset.compUuid;
       const chance = parseInt(ev.currentTarget.value);
+
       const actor = game.actors.get(actorId);
-      if (!actor) return;
-      if (chance >= 0) await actor.setFlag(MODULE_ID, "lootDropChance", chance);
-      else await actor.unsetFlag(MODULE_ID, "lootDropChance");
+      if (actor) {
+        if (chance >= 0) await actor.setFlag(MODULE_ID, "lootDropChance", chance);
+        else await actor.unsetFlag(MODULE_ID, "lootDropChance");
+      } else if (compUuid) {
+        const config = foundry.utils.deepClone(game.settings.get(MODULE_ID, "compendiumLootConfig"));
+        if (!config[compUuid]) config[compUuid] = {};
+        config[compUuid].chance = chance;
+        await game.settings.set(MODULE_ID, "compendiumLootConfig", config);
+      }
     });
 
-    // Double-click NPC row (on name or image) to open actor sheet
+    // Double-click NPC name or image to open actor sheet (world or compendium)
     el.querySelectorAll(".loot-npc-row").forEach(row => {
       const nameCell = row.querySelector(".loot-npc-name");
       const imgCell = row.querySelector(".loot-npc-img");
-      const handler = (ev) => {
+      const handler = async (ev) => {
         ev.preventDefault();
         ev.stopPropagation();
         const actorId = row.dataset.actorId;
+        const compUuid = row.dataset.compUuid;
+
         const actor = game.actors.get(actorId);
-        if (actor) actor.sheet.render(true);
+        if (actor) { actor.sheet.render(true); return; }
+
+        if (compUuid) {
+          const doc = await fromUuid(compUuid);
+          if (doc) doc.sheet.render(true);
+        }
       };
       if (nameCell) nameCell.addEventListener("dblclick", handler);
       if (imgCell) imgCell.addEventListener("dblclick", handler);
