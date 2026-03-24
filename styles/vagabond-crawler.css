@@ -1718,6 +1718,8 @@ body.theme-light .vcb-phase-badge {
   gap: 8px;
   flex: 1;
   min-height: 0;
+  max-height: 460px;
+  overflow: hidden;
 }
 
 .loot-filter-panel {
@@ -1730,6 +1732,7 @@ body.theme-light .vcb-phase-badge {
   background: rgba(0,0,0,0.15);
   border-radius: 4px;
   overflow-y: auto;
+  max-height: 100%;
 }
 .loot-filter-panel h3 {
   font-size: 0.9rem;
@@ -1775,6 +1778,7 @@ body.theme-light .vcb-phase-badge {
   flex: 1;
   min-width: 0;
   overflow-y: auto;
+  max-height: 100%;
 }
 
 .loot-npc-table {
