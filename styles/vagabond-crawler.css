@@ -1812,6 +1812,10 @@ body.theme-light .vcb-phase-badge {
   text-overflow: ellipsis;
   max-width: 200px;
 }
+.loot-sortable { cursor: pointer; user-select: none; }
+.loot-sortable:hover { color: #f4c542; }
+.loot-sortable i { font-size: 0.7em; margin-left: 2px; opacity: 0.5; }
+
 .loot-npc-table select,
 .loot-npc-table input[type="number"] {
   padding: 2px 4px;

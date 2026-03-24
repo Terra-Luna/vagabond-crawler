@@ -92,6 +92,7 @@
       </button>
 
       {{#if selectedTablePreview}}
+      <h3 style="margin-top:12px;">Preview</h3>
       <div class="loot-table-preview-mini">
         <div style="font-size:0.8em; color:#888; margin-bottom:2px;">{{selectedTablePreview.formula}}</div>
         {{#each selectedTablePreview.rows}}
@@ -110,19 +111,23 @@
       <table class="loot-npc-table">
         <thead>
           <tr>
-            <th style="width:30px;"><input type="checkbox" class="loot-select-all" title="Select all" /></th>
-            <th style="width:36px;"></th>
-            <th>Name</th>
-            <th style="width:140px;">Loot Table</th>
-            <th style="width:50px;">%</th>
+            <th style="width:28px;"><input type="checkbox" class="loot-select-all" title="Select all" /></th>
+            <th style="width:32px;"></th>
+            <th class="loot-sortable" data-sort="name">Name <i class="fas fa-sort"></i></th>
+            <th class="loot-sortable" data-sort="beingType" style="width:100px;">Type <i class="fas fa-sort"></i></th>
+            <th class="loot-sortable" data-sort="threatLevel" style="width:40px;">TL <i class="fas fa-sort"></i></th>
+            <th style="width:130px;">Loot Table</th>
+            <th style="width:45px;">%</th>
           </tr>
         </thead>
         <tbody>
           {{#each npcs}}
-          <tr class="loot-npc-row" data-actor-id="{{id}}">
+          <tr class="loot-npc-row" data-actor-id="{{id}}" data-name="{{nameLower}}" data-type="{{beingType}}" data-tl="{{threatLevel}}">
             <td><input type="checkbox" class="npc-select" data-actor-id="{{id}}" /></td>
             <td><img src="{{img}}" width="28" height="28" style="border-radius:3px;" /></td>
             <td class="loot-npc-name">{{name}}</td>
+            <td class="loot-npc-type" style="font-size:0.8em; color:#aaa;">{{beingType}}</td>
+            <td class="loot-npc-tl" style="text-align:center;">{{threatLevelDisplay}}</td>
             <td>
               <select class="npc-table-select" data-actor-id="{{id}}">
                 <option value="">—</option>
@@ -132,7 +137,7 @@
               </select>
             </td>
             <td>
-              <input type="number" class="npc-chance-input" data-actor-id="{{id}}" value="{{dropChance}}" min="-1" max="100" style="width:45px;" />
+              <input type="number" class="npc-chance-input" data-actor-id="{{id}}" value="{{dropChance}}" min="-1" max="100" style="width:42px;" />
             </td>
           </tr>
           {{/each}}

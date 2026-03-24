@@ -50,6 +50,8 @@ class LootManagerApp extends HandlebarsApplicationMixin(ApplicationV2) {
     this._sourceFilter = "scene";
     this._searchName = "";
     this._selectedAssignTableUuid = "";
+    this._sortColumn = "name";
+    this._sortAsc = true;
     this._npcCache = {};  // packId → actor[]
   }
 
@@ -77,6 +79,15 @@ class LootManagerApp extends HandlebarsApplicationMixin(ApplicationV2) {
 
     // NPCs based on source filter
     let npcs = await this._getNPCsForSource(this._sourceFilter);
+
+    // Sort
+    const col = this._sortColumn;
+    const dir = this._sortAsc ? 1 : -1;
+    npcs.sort((a, b) => {
+      const av = a[col], bv = b[col];
+      if (typeof av === "number" && typeof bv === "number") return (av - bv) * dir;
+      return String(av || "").localeCompare(String(bv || "")) * dir;
+    });
 
     // Enrich with current loot assignments
     npcs = npcs.map(n => {
@@ -115,38 +126,44 @@ class LootManagerApp extends HandlebarsApplicationMixin(ApplicationV2) {
   }
 
   async _getNPCsForSource(sourceId) {
+    const mapActor = (a) => ({
+      id: a.id, name: a.name, img: a.img,
+      nameLower: a.name.toLowerCase(),
+      beingType: a.system?.beingType || "—",
+      threatLevel: a.system?.threatLevel ?? 0,
+      threatLevelDisplay: a.system?.threatLevelFormatted ?? a.system?.threatLevel ?? "—",
+    });
+
     if (sourceId === "world") {
-      return game.actors
-        .filter(a => a.type === "npc")
-        .map(a => ({ id: a.id, name: a.name, img: a.img }))
-        .sort((a, b) => a.name.localeCompare(b.name));
+      return game.actors.filter(a => a.type === "npc").map(mapActor);
     }
 
     if (sourceId === "scene") {
       const seen = new Set();
-      return canvas.tokens?.placeables
+      return (canvas.tokens?.placeables || [])
         .filter(t => t.actor?.type === "npc")
         .map(t => {
           if (seen.has(t.actor.id)) return null;
           seen.add(t.actor.id);
-          return { id: t.actor.id, name: t.actor.name, img: t.actor.img };
+          return mapActor(t.actor);
         })
-        .filter(Boolean)
-        .sort((a, b) => a.name.localeCompare(b.name)) || [];
+        .filter(Boolean);
     }
 
-    // Compendium pack
+    // Compendium pack — need full documents for system data
     if (!this._npcCache[sourceId]) {
       const pack = game.packs.get(sourceId);
       if (!pack) return [];
-      const index = await pack.getIndex({ fields: ["img"] });
+      const index = await pack.getIndex({ fields: ["img", "system.beingType", "system.threatLevel", "system.threatLevelFormatted"] });
       this._npcCache[sourceId] = index.map(entry => ({
-        id: entry._id,
-        name: entry.name,
+        id: entry._id, name: entry.name,
         img: entry.img || "icons/svg/mystery-man.svg",
-        isCompendium: true,
-        packId: sourceId,
-      })).sort((a, b) => a.name.localeCompare(b.name));
+        nameLower: entry.name.toLowerCase(),
+        beingType: entry.system?.beingType || "—",
+        threatLevel: entry.system?.threatLevel ?? 0,
+        threatLevelDisplay: entry.system?.threatLevelFormatted ?? entry.system?.threatLevel ?? "—",
+        isCompendium: true, packId: sourceId,
+      }));
     }
     return this._npcCache[sourceId];
   }
@@ -212,6 +229,18 @@ class LootManagerApp extends HandlebarsApplicationMixin(ApplicationV2) {
         });
       });
     }
+
+    // Sortable column headers
+    on(".loot-sortable", "click", ev => {
+      const col = ev.currentTarget.dataset.sort;
+      if (this._sortColumn === col) {
+        this._sortAsc = !this._sortAsc;
+      } else {
+        this._sortColumn = col;
+        this._sortAsc = true;
+      }
+      this.render();
+    });
 
     // Select all checkbox
     $(".loot-select-all")?.addEventListener("change", ev => {
