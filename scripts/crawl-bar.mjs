@@ -110,39 +110,18 @@ export const CrawlBar = {
           ${ICONS.addTokens} Add Tokens
         </button>
 
-        ${CrawlClock.available ? `
-        <div class="vcb-divider"></div>
-        <div class="vcb-clock-widget" data-action="advanceClock"
-             title="Crawl Clock: ${CrawlClock.filled}/${CrawlClock.segments}&#10;Left-click: advance 1 scene&#10;Right-click: options">
-          ${CrawlClock.svgPath ? `<img class="vcb-clock-svg" src="${CrawlClock.svgPath}" alt="Crawl Clock" />` : ICONS.clock}
-          <span class="vcb-clock-label">${CrawlClock.filled}/${CrawlClock.segments}</span>
-        </div>
-        ` : ""}
-
         <div class="vcb-divider"></div>
 
-        <button class="vcb-btn" data-action="encounterCheck"
-                title="Roll d6 for encounter (${game.settings.get(MODULE_ID, "encounterThreshold")}-in-6)&#10;Right-click: change threshold">
-          ${ICONS.encCheck} Enc. Check
+        <button class="vcb-btn" data-action="openTableBuilder"
+                title="Left-click: Open encounter roller&#10;Right-click: Enc. check & threshold${tableName ? "&#10;Table: " + tableName : ""}">
+          ${ICONS.encounter} Encounter${tableName ? ` <span class="vcb-enc-table-indicator">●</span>` : ""}
         </button>
-        <button class="vcb-btn" data-action="openTableBuilder" title="Open encounter roller / build table">
-          ${ICONS.encounter} Encounter!
-        </button>
-        <div class="vcb-table-drop ${tableName ? "has-table" : ""}"
-             title="${tableName ? "Active: " + tableName : "Drop a RollTable here"}">
-          ${ICONS.tableScroll}
-          <span>${tableName ?? "Drop Table"}</span>
-          ${tableName ? `<button class="vcb-clear-table" data-action="clearTable" aria-label="Clear encounter table">×</button>` : ""}
-        </div>
 
         <div class="vcb-divider"></div>
 
         <button class="vcb-btn" data-action="lightTracker">
           ${ICONS.lights} Lights
         </button>
-
-        <div class="vcb-divider"></div>
-
         <button class="vcb-btn vcb-combat-btn" data-action="startCombat">
           ${ICONS.combat} Combat
         </button>
@@ -171,23 +150,13 @@ export const CrawlBar = {
       });
     });
 
-    // Right-click context menu on clock widget
-    const clockWidget = this._el.querySelector(".vcb-clock-widget");
-    if (clockWidget) {
-      clockWidget.addEventListener("contextmenu", ev => {
+    // Right-click context menu on Encounter button
+    const encBtn = this._el.querySelector('[data-action="openTableBuilder"]');
+    if (encBtn) {
+      encBtn.addEventListener("contextmenu", ev => {
         ev.preventDefault();
         ev.stopPropagation();
-        this._showClockMenu(ev);
-      });
-    }
-
-    // Right-click threshold popover on encounter check button
-    const encCheckBtn = this._el.querySelector('[data-action="encounterCheck"]');
-    if (encCheckBtn) {
-      encCheckBtn.addEventListener("contextmenu", ev => {
-        ev.preventDefault();
-        ev.stopPropagation();
-        this._showThresholdPopover(encCheckBtn);
+        this._showEncounterMenu(ev);
       });
     }
   },
@@ -269,17 +238,8 @@ export const CrawlBar = {
         break;
       }
 
-      case "encounterCheck":
-        await EncounterTools.rollEncounterCheck();
-        break;
-
       case "openTableBuilder":
         EncounterTools.openTableBuilder();
-        break;
-
-      case "clearTable":
-        await game.settings.set(MODULE_ID, "encounterTableUuid", "");
-        this.render();
         break;
 
       case "lightTracker":
@@ -300,116 +260,98 @@ export const CrawlBar = {
     }
   },
 
-  // ── Clock context menu ────────────────────────────────────────────────────
+  // ── Encounter context menu (right-click) ─────────────────────────────────
 
-  _showClockMenu(ev) {
-    this._dismissClockMenu();
-
-    const menu = document.createElement("div");
-    menu.className = "vcb-clock-menu";
-
-    menu.innerHTML = `
-      <div class="vcb-clock-menu-item" data-clock="rollBack">
-        ${ICONS.rollBack} Roll Back
-      </div>
-      <div class="vcb-clock-menu-item" data-clock="configure">
-        ${ICONS.configure} Configure
-      </div>`;
-
-    // Position near the click
-    menu.style.left = `${ev.clientX}px`;
-    menu.style.top  = `${ev.clientY}px`;
-    document.body.appendChild(menu);
-
-    // Adjust if it overflows the viewport
-    const rect = menu.getBoundingClientRect();
-    if (rect.bottom > window.innerHeight) menu.style.top = `${ev.clientY - rect.height}px`;
-    if (rect.right > window.innerWidth)   menu.style.left = `${ev.clientX - rect.width}px`;
-
-    menu.querySelectorAll("[data-clock]").forEach(item => {
-      item.addEventListener("click", async (e) => {
-        e.stopPropagation();
-        this._dismissClockMenu();
-        const action = item.dataset.clock;
-        if (action === "rollBack") {
-          await CrawlClock.rollBack();
-          this.render();
-        } else if (action === "configure") {
-          await CrawlClock.openConfig();
-        }
-      });
-    });
-
-    // Click-away dismiss
-    this._clockMenuDismiss = (e) => {
-      if (!menu.contains(e.target)) this._dismissClockMenu();
-    };
-    setTimeout(() => document.addEventListener("pointerdown", this._clockMenuDismiss), 0);
-    this._clockMenu = menu;
-  },
-
-  _dismissClockMenu() {
-    if (this._clockMenu) {
-      this._clockMenu.remove();
-      this._clockMenu = null;
-    }
-    if (this._clockMenuDismiss) {
-      document.removeEventListener("pointerdown", this._clockMenuDismiss);
-      this._clockMenuDismiss = null;
-    }
-  },
-
-  // ── Encounter threshold popover ──────────────────────────────────────────
-
-  _showThresholdPopover(anchor) {
-    this._dismissThresholdPopover();
+  _showEncounterMenu(ev) {
+    this._dismissEncounterMenu();
 
     const current = game.settings.get(MODULE_ID, "encounterThreshold");
-    const pop = document.createElement("div");
-    pop.className = "vcb-threshold-popover";
+    const tableUuid = game.settings.get(MODULE_ID, "encounterTableUuid");
+    const tableName = tableUuid ? this._getTableName(tableUuid) : null;
 
-    let html = `<div class="vcb-threshold-title">Encounter Threshold</div>
-      <div class="vcb-threshold-options">`;
+    const menu = document.createElement("div");
+    menu.className = "vcb-clock-menu"; // reuse existing menu styles
+
+    let thresholdBtns = "";
     for (let i = 1; i <= 5; i++) {
-      html += `<button class="vcb-threshold-opt ${i === current ? "active" : ""}" data-val="${i}">${i}-in-6</button>`;
+      thresholdBtns += `<button class="vcb-threshold-opt ${i === current ? "active" : ""}" data-val="${i}">${i}-in-6</button>`;
     }
-    html += `</div>`;
-    pop.innerHTML = html;
 
-    // Position above the anchor (bar sits at screen bottom)
-    const rect = anchor.getBoundingClientRect();
-    pop.style.left   = `${rect.left}px`;
-    pop.style.bottom = `${window.innerHeight - rect.top + 4}px`;
-    document.body.appendChild(pop);
+    menu.innerHTML = `
+      <div class="vcb-clock-menu-item" data-enc="check">
+        ${ICONS.encCheck} Encounter Check (${current}-in-6)
+      </div>
+      <div class="vcb-enc-menu-divider"></div>
+      <div class="vcb-enc-menu-section">
+        <div class="vcb-threshold-title" style="padding:4px 8px; color:#aaa; font-size:0.8em;">Threshold</div>
+        <div class="vcb-threshold-options" style="display:flex; gap:2px; padding:2px 8px;">${thresholdBtns}</div>
+      </div>
+      <div class="vcb-enc-menu-divider"></div>
+      <div class="vcb-clock-menu-item" data-enc="setTable">
+        ${ICONS.tableScroll} ${tableName ? `Table: ${tableName}` : "Set Encounter Table"}
+      </div>
+      ${tableName ? `<div class="vcb-clock-menu-item" data-enc="clearTable" style="color:#e74c3c;">
+        ${ICONS.close} Clear Table
+      </div>` : ""}
+    `;
 
-    // Adjust if overflow
-    const popRect = pop.getBoundingClientRect();
-    if (popRect.right > window.innerWidth) pop.style.left = `${window.innerWidth - popRect.width - 8}px`;
+    // Position above the click (bar is at bottom)
+    menu.style.left = `${ev.clientX}px`;
+    menu.style.bottom = `${window.innerHeight - ev.clientY + 4}px`;
+    document.body.appendChild(menu);
 
-    pop.querySelectorAll(".vcb-threshold-opt").forEach(btn => {
-      btn.addEventListener("click", async () => {
+    // Adjust overflow
+    const rect = menu.getBoundingClientRect();
+    if (rect.top < 0) { menu.style.bottom = "auto"; menu.style.top = `${ev.clientY + 4}px`; }
+    if (rect.right > window.innerWidth) menu.style.left = `${window.innerWidth - rect.width - 8}px`;
+
+    // Encounter check
+    menu.querySelector('[data-enc="check"]')?.addEventListener("click", async () => {
+      this._dismissEncounterMenu();
+      await EncounterTools.rollEncounterCheck();
+    });
+
+    // Threshold buttons
+    menu.querySelectorAll(".vcb-threshold-opt").forEach(btn => {
+      btn.addEventListener("click", async (e) => {
+        e.stopPropagation();
         await game.settings.set(MODULE_ID, "encounterThreshold", parseInt(btn.dataset.val));
-        this._dismissThresholdPopover();
+        this._dismissEncounterMenu();
         this.render();
         ui.notifications.info(`Encounter threshold: ${btn.dataset.val}-in-6`);
       });
     });
 
-    this._thresholdDismiss = (e) => {
-      if (!pop.contains(e.target)) this._dismissThresholdPopover();
+    // Set table (prompt to drag one onto the bar — for now just notify)
+    menu.querySelector('[data-enc="setTable"]')?.addEventListener("click", () => {
+      this._dismissEncounterMenu();
+      ui.notifications.info("Drag a RollTable onto the Encounter button to set it.");
+    });
+
+    // Clear table
+    menu.querySelector('[data-enc="clearTable"]')?.addEventListener("click", async () => {
+      this._dismissEncounterMenu();
+      await game.settings.set(MODULE_ID, "encounterTableUuid", "");
+      this.render();
+      ui.notifications.info("Encounter table cleared.");
+    });
+
+    // Click-away dismiss
+    this._encMenuDismiss = (e) => {
+      if (!menu.contains(e.target)) this._dismissEncounterMenu();
     };
-    setTimeout(() => document.addEventListener("pointerdown", this._thresholdDismiss), 0);
-    this._thresholdPop = pop;
+    setTimeout(() => document.addEventListener("pointerdown", this._encMenuDismiss), 0);
+    this._encMenu = menu;
   },
 
-  _dismissThresholdPopover() {
-    if (this._thresholdPop) {
-      this._thresholdPop.remove();
-      this._thresholdPop = null;
+  _dismissEncounterMenu() {
+    if (this._encMenu) {
+      this._encMenu.remove();
+      this._encMenu = null;
     }
-    if (this._thresholdDismiss) {
-      document.removeEventListener("pointerdown", this._thresholdDismiss);
-      this._thresholdDismiss = null;
+    if (this._encMenuDismiss) {
+      document.removeEventListener("pointerdown", this._encMenuDismiss);
+      this._encMenuDismiss = null;
     }
   },
 
