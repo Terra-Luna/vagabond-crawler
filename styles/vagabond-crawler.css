@@ -1806,6 +1806,11 @@ body.theme-light .vcb-phase-badge {
   padding: 3px 4px;
   vertical-align: middle;
 }
+.loot-npc-name, .loot-npc-img {
+  cursor: pointer;
+  user-select: none;
+}
+.loot-npc-name:hover { color: #f4c542; }
 .loot-npc-name {
   white-space: nowrap;
   overflow: hidden;

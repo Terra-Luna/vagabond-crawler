@@ -337,9 +337,13 @@ class LootManagerApp extends HandlebarsApplicationMixin(ApplicationV2) {
       const actorId = ev.currentTarget.dataset.actorId;
       const tableUuid = ev.currentTarget.value;
       const actor = game.actors.get(actorId);
-      if (!actor) return;
+      if (!actor) {
+        console.warn(`${MODULE_ID} | No actor found for ID ${actorId}`);
+        return;
+      }
       if (tableUuid) await actor.setFlag(MODULE_ID, "lootTable", tableUuid);
       else await actor.unsetFlag(MODULE_ID, "lootTable");
+      console.log(`${MODULE_ID} | Set loot table for ${actor.name}: ${tableUuid || "(none)"}`);
     });
 
     // Per-NPC drop chance
@@ -352,14 +356,19 @@ class LootManagerApp extends HandlebarsApplicationMixin(ApplicationV2) {
       else await actor.unsetFlag(MODULE_ID, "lootDropChance");
     });
 
-    // Double-click NPC name or image to open actor sheet
-    on(".loot-npc-name, .loot-npc-img", "dblclick", async ev => {
-      ev.preventDefault();
-      ev.stopPropagation();
-      const row = ev.currentTarget.closest(".loot-npc-row");
-      const actorId = row?.dataset.actorId;
-      const actor = game.actors.get(actorId);
-      if (actor) actor.sheet.render(true);
+    // Double-click NPC row (on name or image) to open actor sheet
+    el.querySelectorAll(".loot-npc-row").forEach(row => {
+      const nameCell = row.querySelector(".loot-npc-name");
+      const imgCell = row.querySelector(".loot-npc-img");
+      const handler = (ev) => {
+        ev.preventDefault();
+        ev.stopPropagation();
+        const actorId = row.dataset.actorId;
+        const actor = game.actors.get(actorId);
+        if (actor) actor.sheet.render(true);
+      };
+      if (nameCell) nameCell.addEventListener("dblclick", handler);
+      if (imgCell) imgCell.addEventListener("dblclick", handler);
     });
   }
 
