@@ -13,7 +13,7 @@
 import { MODULE_ID } from "./vagabond-crawler.mjs";
 import { confirmDialog } from "./dialog-helpers.mjs";
 import { ICONS } from "./icons.mjs";
-import { MUTATIONS, MUTATION_CATEGORIES, getMutation, getBoons, getBanes } from "./mutation-data.mjs";
+import { MUTATIONS, MUTATION_CATEGORIES, getMutation, getBoons, getBanes, getConflict } from "./mutation-data.mjs";
 import { getStatSummary, applyMutations, generateMutatedName, generatePrompt, createMutatedActor, calculateHP, calculateDPR, calculateTL } from "./monster-mutator.mjs";
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
@@ -482,10 +482,16 @@ class EncounterRollerApp extends HandlebarsApplicationMixin(ApplicationV2) {
       });
     }
 
-    // Mutation checkboxes
+    // Mutation checkboxes (with conflict detection)
     on(".mutate-check", "change", (ev) => {
       const id = ev.currentTarget.dataset.mutationId;
       if (ev.currentTarget.checked) {
+        const conflict = getConflict(id, this._mutateSelected);
+        if (conflict) {
+          ui.notifications.warn(`Cannot combine with "${conflict}" — contradictory mutations.`);
+          ev.currentTarget.checked = false;
+          return;
+        }
         this._mutateSelected.add(id);
       } else {
         this._mutateSelected.delete(id);

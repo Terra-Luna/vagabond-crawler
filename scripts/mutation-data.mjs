@@ -7,6 +7,9 @@
  *
  * TL Formula: TL = (Armor * 2 + HP / 10) / 4 + DPR / 6
  * Only HP, Armor, and DPR directly affect TL.
+ *
+ * Conflict groups prevent contradictory mutations (e.g. bloated + fragile).
+ * Mutations in the same `conflictGroup` are mutually exclusive.
  */
 
 /* -------------------------------------------- */
@@ -44,6 +47,7 @@ export const MUTATIONS = [
     category: "hp",
     type: "boon",
     tlDelta: 0.2,
+    conflictGroup: "bodyType",
     description: "+9 HP (swollen, engorged)",
     namePrefix: "Bloated",
     promptFragment: "bloated and swollen body, engorged",
@@ -56,6 +60,7 @@ export const MUTATIONS = [
     category: "hp",
     type: "boon",
     tlDelta: 0.5,
+    conflictGroup: "bodyType",
     description: "+18 HP (huge, overgrown)",
     namePrefix: "Massive",
     promptFragment: "enormous, towering, overgrown body",
@@ -68,6 +73,7 @@ export const MUTATIONS = [
     category: "hp",
     type: "bane",
     tlDelta: -0.2,
+    conflictGroup: "bodyType",
     description: "-9 HP (hollow, thin)",
     nameSuffix: "Runt",
     promptFragment: "thin and fragile looking, gaunt",
@@ -79,6 +85,7 @@ export const MUTATIONS = [
     category: "hp",
     type: "bane",
     tlDelta: -0.5,
+    conflictGroup: "bodyType",
     description: "-18 HP (desiccated, wasted)",
     namePrefix: "Withered",
     promptFragment: "desiccated and withered, skeletal frame",
@@ -237,6 +244,7 @@ export const MUTATIONS = [
     category: "speed",
     type: "boon",
     tlDelta: 0,
+    conflictGroup: "speedMod",
     description: "+10ft movement speed",
     namePrefix: "Swift",
     promptFragment: "lean and fast, built for speed",
@@ -248,6 +256,7 @@ export const MUTATIONS = [
     category: "speed",
     type: "bane",
     tlDelta: 0,
+    conflictGroup: "speedMod",
     description: "-10ft movement speed",
     promptFragment: "lumbering, heavy-footed",
     apply(d) { d.system.speed = Math.max(5, d.system.speed - 10); },
@@ -258,6 +267,7 @@ export const MUTATIONS = [
     category: "speed",
     type: "boon",
     tlDelta: 0,
+    conflictGroup: "speedMod",
     description: "Movement speed doubled",
     namePrefix: "Quicksilver",
     promptFragment: "blurred with speed, elongated limbs",
@@ -270,6 +280,7 @@ export const MUTATIONS = [
     category: "speed",
     type: "bane",
     tlDelta: 0,
+    conflictGroup: "speedMod",
     description: "Movement speed halved",
     promptFragment: "sluggish, dragging itself forward",
     apply(d) { d.system.speed = Math.max(5, Math.floor(d.system.speed / 2)); },
@@ -357,6 +368,7 @@ export const MUTATIONS = [
     category: "size",
     type: "boon",
     tlDelta: 0.7,
+    conflictGroup: "sizeMod",
     description: "Grow one size category (+9 HP, +1 Armor)",
     namePrefix: "Greater",
     promptFragment: "enormous, towering over others, massive frame",
@@ -375,6 +387,7 @@ export const MUTATIONS = [
     category: "size",
     type: "bane",
     tlDelta: -0.2,
+    conflictGroup: "sizeMod",
     description: "Shrink one size category (-9 HP)",
     namePrefix: "Lesser",
     promptFragment: "small and compact, diminutive",
@@ -751,4 +764,22 @@ export function getBoons() {
 
 export function getBanes() {
   return MUTATIONS.filter(m => m.type === "bane");
+}
+
+/**
+ * Check if adding a mutation would conflict with already-selected mutations.
+ * @param {string} mutationId — the mutation to check
+ * @param {Set<string>} selectedIds — currently selected mutation IDs
+ * @returns {string|null} — conflicting mutation name, or null if no conflict
+ */
+export function getConflict(mutationId, selectedIds) {
+  const mutation = getMutation(mutationId);
+  if (!mutation?.conflictGroup) return null;
+
+  for (const id of selectedIds) {
+    if (id === mutationId) continue;
+    const other = getMutation(id);
+    if (other?.conflictGroup === mutation.conflictGroup) return other.name;
+  }
+  return null;
 }

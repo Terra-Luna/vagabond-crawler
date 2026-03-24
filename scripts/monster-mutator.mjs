@@ -161,10 +161,32 @@ export function generateMutatedName(baseName, prefixes, suffixes) {
  * Generate an AI art prompt for a mutated monster.
  * Based on the too-many-tokens-dnd prompt pattern.
  */
+/**
+ * Pose/lighting options (replacing environments for clean token art).
+ */
+const POSES = [
+  "aggressive attacking stance",
+  "menacing battle pose",
+  "standing alert, ready to strike",
+  "prowling forward, low stance",
+  "rearing up, dramatic pose",
+];
+
+const LIGHTING = [
+  "harsh dramatic lighting from above",
+  "rim lighting, dark atmosphere",
+  "dramatic side lighting",
+  "moody underlighting",
+];
+
+/**
+ * Technical boilerplate for clean VTT token output.
+ */
+const TECH_BOILERPLATE = "The image must have a solid black background. The artwork must extend completely to the edges with no white outlines or borders. The final image must be entirely clean of any text, logos, or watermarks.";
+
 export function generatePrompt(baseName, systemData, selectedMutations) {
   const size = systemData.size || "medium";
   const beingType = systemData.beingType || "creature";
-  const zone = systemData.zone || "frontline";
 
   // Base description
   const baseDesc = `${size} ${baseName} ${beingType}`.toLowerCase();
@@ -179,13 +201,9 @@ export function generatePrompt(baseName, systemData, selectedMutations) {
   }
   const mutationDesc = fragments.join(", ");
 
-  // Environment based on zone/theme
-  const envMap = {
-    frontline: "in a dark dungeon corridor",
-    midline: "lurking behind rocks in a cavern",
-    backline: "in the shadows of ancient ruins",
-  };
-  const environment = envMap[zone] || "in a dungeon";
+  // Pick a pose and lighting (deterministic from mutation count for consistency)
+  const poseIdx = selectedMutations.length % POSES.length;
+  const lightIdx = (selectedMutations.length + 1) % LIGHTING.length;
 
   // Build final prompt
   const parts = [
@@ -193,11 +211,12 @@ export function generatePrompt(baseName, systemData, selectedMutations) {
     baseDesc,
     mutationDesc,
     "full body in view",
-    environment,
+    POSES[poseIdx],
+    LIGHTING[lightIdx],
     "style of dungeons and dragons monster",
   ].filter(Boolean);
 
-  return parts.join(", ");
+  return parts.join(", ") + ". " + TECH_BOILERPLATE;
 }
 
 /* -------------------------------------------- */
