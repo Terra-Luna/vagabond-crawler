@@ -65,10 +65,10 @@ class LootManagerApp extends HandlebarsApplicationMixin(ApplicationV2) {
       img: s?.img || null, weight: s?.weight ?? 1,
     }));
 
-    // Loot tables (flagged RollTables)
+    // All world RollTables (any table can be used as loot)
     const lootTables = game.tables
-      .filter(t => t.getFlag(MODULE_ID, LOOT_TABLE_FLAG))
-      .map(t => ({ id: t.id, uuid: t.uuid, name: t.name, formula: t.formula }));
+      .map(t => ({ id: t.id, uuid: t.uuid, name: t.name, formula: t.formula }))
+      .sort((a, b) => a.name.localeCompare(b.name));
 
     // Sources
     const sources = NPC_SOURCES.map(s => ({
@@ -94,7 +94,7 @@ class LootManagerApp extends HandlebarsApplicationMixin(ApplicationV2) {
       };
     });
 
-    // Preview table
+    // Preview table — default to first table
     if (!this._selectedPreviewTableId && lootTables.length > 0) {
       this._selectedPreviewTableId = lootTables[0].id;
     }
@@ -300,7 +300,7 @@ class LootManagerApp extends HandlebarsApplicationMixin(ApplicationV2) {
       name,
       formula: `1d${totalWeight}`,
       results,
-      flags: { [MODULE_ID]: { [LOOT_TABLE_FLAG]: true } },
+      flags: { [MODULE_ID]: { isLootTable: true } },
     });
 
     ui.notifications.info(`Loot table "${name}" created.`);
