@@ -137,14 +137,15 @@
             <th class="loot-sortable" data-sort="beingType" style="width:90px;">Type <i class="fas fa-sort"></i></th>
             <th class="loot-sortable" data-sort="threatLevel" style="width:40px;">TL <i class="fas fa-sort"></i></th>
             <th style="width:130px;">Loot Table</th>
+            <th style="width:42px;">%</th>
           </tr>
         </thead>
         <tbody>
           {{#each npcs}}
           <tr class="loot-npc-row" data-actor-id="{{id}}">
             <td><input type="checkbox" class="npc-select" data-actor-id="{{id}}" /></td>
-            <td><img src="{{img}}" width="28" height="28" style="border-radius:3px;" /></td>
-            <td class="loot-npc-name">{{name}}</td>
+            <td class="loot-npc-img" style="cursor:pointer;" title="Double-click to inspect"><img src="{{img}}" width="28" height="28" style="border-radius:3px;" /></td>
+            <td class="loot-npc-name" style="cursor:pointer;" title="Double-click to inspect">{{name}}</td>
             <td class="loot-npc-type" style="font-size:0.8em; color:#aaa;">{{beingType}}</td>
             <td class="loot-npc-tl" style="text-align:center;">{{threatLevelDisplay}}</td>
             <td>
@@ -154,6 +155,9 @@
                 <option value="{{uuid}}" {{#if selected}}selected{{/if}}>{{name}}</option>
                 {{/each}}
               </select>
+            </td>
+            <td>
+              <input type="number" class="npc-chance-input" data-actor-id="{{id}}" value="{{dropChance}}" min="-1" max="100" style="width:42px;" title="Drop chance % (-1 = global)" />
             </td>
           </tr>
           {{/each}}

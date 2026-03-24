@@ -306,11 +306,15 @@ class LootManagerApp extends HandlebarsApplicationMixin(ApplicationV2) {
       el.querySelectorAll(".npc-select").forEach(cb => { cb.checked = checked; });
     });
 
-    // Assign table dropdown — also updates preview
-    $(".loot-assign-table")?.addEventListener("change", ev => {
-      this._selectedAssignTableUuid = ev.currentTarget.value;
-      this.render();
-    });
+    // Assign table dropdown — updates preview, preserve selection
+    const assignSelect = $(".loot-assign-table");
+    if (assignSelect) {
+      if (this._selectedAssignTableUuid) assignSelect.value = this._selectedAssignTableUuid;
+      assignSelect.addEventListener("change", ev => {
+        this._selectedAssignTableUuid = ev.currentTarget.value;
+        this.render();
+      });
+    }
 
     // Apply to selected
     $(".loot-apply-btn")?.addEventListener("click", async () => {
@@ -338,13 +342,24 @@ class LootManagerApp extends HandlebarsApplicationMixin(ApplicationV2) {
       else await actor.unsetFlag(MODULE_ID, "lootTable");
     });
 
-    // Double-click NPC row to open actor sheet
-    on(".loot-npc-row", "dblclick", async ev => {
+    // Per-NPC drop chance
+    on(".npc-chance-input", "change", async ev => {
       const actorId = ev.currentTarget.dataset.actorId;
+      const chance = parseInt(ev.currentTarget.value);
       const actor = game.actors.get(actorId);
-      if (actor) {
-        actor.sheet.render(true);
-      }
+      if (!actor) return;
+      if (chance >= 0) await actor.setFlag(MODULE_ID, "lootDropChance", chance);
+      else await actor.unsetFlag(MODULE_ID, "lootDropChance");
+    });
+
+    // Double-click NPC name or image to open actor sheet
+    on(".loot-npc-name, .loot-npc-img", "dblclick", async ev => {
+      ev.preventDefault();
+      ev.stopPropagation();
+      const row = ev.currentTarget.closest(".loot-npc-row");
+      const actorId = row?.dataset.actorId;
+      const actor = game.actors.get(actorId);
+      if (actor) actor.sheet.render(true);
     });
   }
 
