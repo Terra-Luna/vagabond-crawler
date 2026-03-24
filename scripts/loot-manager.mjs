@@ -78,12 +78,6 @@ class LootManagerApp extends HandlebarsApplicationMixin(ApplicationV2) {
     // NPCs based on source filter
     let npcs = await this._getNPCsForSource(this._sourceFilter);
 
-    // Apply search filter
-    if (this._searchName) {
-      const search = this._searchName.toLowerCase();
-      npcs = npcs.filter(n => n.name.toLowerCase().includes(search));
-    }
-
     // Enrich with current loot assignments
     npcs = npcs.map(n => {
       const actor = game.actors.get(n.id);
@@ -208,9 +202,15 @@ class LootManagerApp extends HandlebarsApplicationMixin(ApplicationV2) {
 
     const searchInput = $(".loot-search-input");
     if (searchInput) {
+      // Filter NPC rows in-place without re-rendering (preserves focus)
+      searchInput.value = this._searchName;
       searchInput.addEventListener("input", () => {
         this._searchName = searchInput.value;
-        this.render();
+        const search = this._searchName.toLowerCase();
+        el.querySelectorAll(".loot-npc-row").forEach(row => {
+          const name = row.querySelector(".loot-npc-name")?.textContent?.toLowerCase() || "";
+          row.style.display = search && !name.includes(search) ? "none" : "";
+        });
       });
     }
 
