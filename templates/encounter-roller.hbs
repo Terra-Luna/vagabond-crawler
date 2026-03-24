@@ -227,7 +227,7 @@
         <h4 class="mutate-col-header boon-header"><i class="fas fa-arrow-up"></i> Boons</h4>
         <div class="mutate-list">
           {{#each mutateBoons}}
-          <label class="mutate-item {{#if checked}}active{{/if}}">
+          <label class="mutate-item {{#if checked}}active{{/if}}" title="{{description}}">
             <input type="checkbox" class="mutate-check" data-mutation-id="{{id}}" {{#if checked}}checked{{/if}}>
             <span class="mutate-name">{{name}}</span>
             <span class="mutate-tl-tag {{#if isOnFormula}}on-formula{{else}}off-formula{{/if}}">{{tlDisplay}}</span>
@@ -239,7 +239,7 @@
         <h4 class="mutate-col-header bane-header"><i class="fas fa-arrow-down"></i> Banes</h4>
         <div class="mutate-list">
           {{#each mutateBanes}}
-          <label class="mutate-item {{#if checked}}active{{/if}}">
+          <label class="mutate-item {{#if checked}}active{{/if}}" title="{{description}}">
             <input type="checkbox" class="mutate-check" data-mutation-id="{{id}}" {{#if checked}}checked{{/if}}>
             <span class="mutate-name">{{name}}</span>
             <span class="mutate-tl-tag {{#if isOnFormula}}on-formula{{else}}off-formula{{/if}}">{{tlDisplay}}</span>

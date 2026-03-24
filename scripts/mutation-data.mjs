@@ -743,6 +743,294 @@ export const MUTATIONS = [
       d.system.abilities.push({ name: "Tunneler", description: "Can move through earth and loose stone at half speed, leaving a tunnel behind." });
     },
   },
+
+  // ── Additional Abilities (from Vagabond Bestiary) ──
+
+  {
+    id: "ability-immutable",
+    name: "Immutable",
+    category: "abilities",
+    type: "boon",
+    tlDelta: 0,
+    description: "Immune to polymorph, shapechange, and transformation effects (21 monsters have this)",
+    promptFragment: "rigid crystalline body, unchanging form",
+    apply(d) {
+      if (!d.system.abilities) d.system.abilities = [];
+      d.system.abilities.push({ name: "Immutable", description: "Immune to polymorph, shapechange, and transformation effects." });
+    },
+  },
+  {
+    id: "ability-amphibious",
+    name: "Amphibious",
+    category: "abilities",
+    type: "boon",
+    tlDelta: 0,
+    description: "Can breathe both air and water (20 monsters have this)",
+    namePrefix: "Amphibious",
+    promptFragment: "with gills and moist amphibian skin, webbed extremities",
+    apply(d) {
+      if (!d.system.abilities) d.system.abilities = [];
+      d.system.abilities.push({ name: "Amphibious", description: "Can breathe both air and water." });
+    },
+  },
+  {
+    id: "ability-nightwalker",
+    name: "Nightwalker",
+    category: "abilities",
+    type: "boon",
+    tlDelta: 0,
+    description: "Only active at night or in darkness. Destroyed by sunlight (9 monsters have this)",
+    namePrefix: "Night",
+    promptFragment: "wreathed in shadow, eyes glowing in darkness, nocturnal predator",
+    suggestedBane: "weakness-fire",
+    apply(d) {
+      if (!d.system.abilities) d.system.abilities = [];
+      d.system.abilities.push({ name: "Nightwalker", description: "Only active at night or in darkness. Destroyed or incapacitated by sunlight." });
+    },
+  },
+  {
+    id: "ability-amorphous",
+    name: "Amorphous",
+    category: "abilities",
+    type: "boon",
+    tlDelta: 0,
+    description: "Can squeeze through gaps as small as 1 inch (9 monsters have this)",
+    namePrefix: "Amorphous",
+    promptFragment: "gelatinous shifting body, no fixed shape",
+    suggestedBane: "armor-minus-1",
+    apply(d) {
+      if (!d.system.abilities) d.system.abilities = [];
+      d.system.abilities.push({ name: "Amorphous", description: "Can squeeze through gaps as small as 1 inch wide." });
+    },
+  },
+  {
+    id: "ability-regenerate-2",
+    name: "Regenerate II",
+    category: "abilities",
+    type: "boon",
+    tlDelta: 0,
+    description: "Heals 2d8 HP at start of each turn. Fire/acid stops regeneration (3 monsters have this)",
+    namePrefix: "Regenerating",
+    promptFragment: "wounds closing rapidly, pulsing regenerative flesh, thick scarring",
+    suggestedBane: "weakness-fire",
+    apply(d) {
+      if (!d.system.abilities) d.system.abilities = [];
+      d.system.abilities.push({ name: "Regenerate II", description: "At the start of its turn, heals 2d8 HP. Does not regenerate fire or acid damage." });
+    },
+  },
+  {
+    id: "ability-terror-2",
+    name: "Terror II",
+    category: "abilities",
+    type: "boon",
+    tlDelta: 0,
+    description: "Enemies must save vs Frightened (Cd6) on sight. Stronger than Terror I (3 monsters have this)",
+    namePrefix: "Horrifying",
+    promptFragment: "grotesque nightmarish form, writhing and twisted",
+    suggestedBane: "morale-minus-3",
+    apply(d) {
+      if (!d.system.abilities) d.system.abilities = [];
+      d.system.abilities.push({ name: "Terror II", description: "Creatures that see this monster must make a Will save or become Frightened (Cd6)." });
+    },
+  },
+  {
+    id: "ability-magic-ward-2",
+    name: "Magic Ward II",
+    category: "abilities",
+    type: "boon",
+    tlDelta: 0,
+    description: "Takes half damage from non-magical sources (11 monsters have this)",
+    namePrefix: "Arcane",
+    promptFragment: "glowing with arcane sigils, magical energy radiating from body",
+    suggestedBane: "weakness-silver",
+    apply(d) {
+      if (!d.system.abilities) d.system.abilities = [];
+      d.system.abilities.push({ name: "Magic Ward II", description: "Takes half damage from non-magical attacks and effects." });
+    },
+  },
+  {
+    id: "ability-bloodthirst",
+    name: "Bloodthirst",
+    category: "abilities",
+    type: "boon",
+    tlDelta: 0,
+    description: "Goes Berserk. Targets at half HP or less are Vulnerable (3 monsters have this)",
+    namePrefix: "Bloodthirsty",
+    promptFragment: "blood-soaked maw, feral and savage, red-eyed rage",
+    apply(d) {
+      if (!d.system.abilities) d.system.abilities = [];
+      d.system.abilities.push({ name: "Bloodthirst", description: "Berserk. Beings at half HP or less are Vulnerable to this creature's attacks." });
+    },
+  },
+  {
+    id: "ability-doom-magnet",
+    name: "Doom Magnet",
+    category: "abilities",
+    type: "boon",
+    tlDelta: 0,
+    description: "Nearby enemies can't gain Favor (3 monsters have this)",
+    namePrefix: "Doom",
+    promptFragment: "surrounded by oppressive dark aura, reality warping around it",
+    suggestedBane: "armor-minus-1",
+    apply(d) {
+      if (!d.system.abilities) d.system.abilities = [];
+      d.system.abilities.push({ name: "Doom Magnet", description: "Enemies within Near range cannot gain Favor on any checks." });
+    },
+  },
+  {
+    id: "ability-stench",
+    name: "Stench",
+    category: "abilities",
+    type: "boon",
+    tlDelta: 0,
+    description: "Nearby non-allied creatures become Sickened (3 monsters have this)",
+    namePrefix: "Fetid",
+    promptFragment: "rotting putrid flesh, clouds of noxious gas, flies swarming",
+    apply(d) {
+      if (!d.system.abilities) d.system.abilities = [];
+      d.system.abilities.push({ name: "Stench", description: "Non-allied creatures within Near range are Sickened." });
+    },
+  },
+  {
+    id: "ability-ambusher",
+    name: "Ambusher",
+    category: "abilities",
+    type: "boon",
+    tlDelta: 0,
+    description: "Deals an extra damage die against targets that haven't acted yet in combat",
+    namePrefix: "Ambush",
+    promptFragment: "camouflaged, lurking, ready to strike from hiding",
+    apply(d) {
+      if (!d.system.abilities) d.system.abilities = [];
+      d.system.abilities.push({ name: "Ambusher", description: "Deals an extra damage die against Beings that haven't acted yet in Combat." });
+    },
+  },
+  {
+    id: "ability-charger",
+    name: "Charger",
+    category: "abilities",
+    type: "boon",
+    tlDelta: 0,
+    description: "Deals extra damage die when moving 20ft+ before attacking",
+    namePrefix: "Charging",
+    promptFragment: "lowered head, charging stance, powerful legs built for impact",
+    apply(d) {
+      if (!d.system.abilities) d.system.abilities = [];
+      d.system.abilities.push({ name: "Charger", description: "Deals an extra damage die when moving 20ft or more in a straight line before attacking." });
+    },
+  },
+  {
+    id: "ability-soft-underbelly",
+    name: "Soft Underbelly",
+    category: "abilities",
+    type: "bane",
+    tlDelta: 0,
+    description: "Armor drops to 0 while Prone (5 monsters have this weakness)",
+    promptFragment: "exposed vulnerable belly, soft unarmored underside",
+    apply(d) {
+      if (!d.system.abilities) d.system.abilities = [];
+      d.system.abilities.push({ name: "Soft Underbelly", description: "Armor is 0 while this creature is Prone." });
+    },
+  },
+  {
+    id: "ability-antimagic-vuln",
+    name: "Antimagic Vulnerability",
+    category: "abilities",
+    type: "bane",
+    tlDelta: 0,
+    description: "Dazed (Cd4) when hit by Dispel or antimagic effects (3 monsters have this)",
+    promptFragment: "crackling with unstable magical energy, flickering in and out",
+    apply(d) {
+      if (!d.system.abilities) d.system.abilities = [];
+      d.system.abilities.push({ name: "Antimagic Vulnerability", description: "Becomes Dazed (Cd4) when affected by Dispel or antimagic effects." });
+    },
+  },
+
+  // ── Action Boons (common Vagabond attack types) ──
+
+  {
+    id: "action-breath-cold",
+    name: "Cold Breath (Cd4)",
+    category: "dpr",
+    type: "boon",
+    tlDelta: 0,
+    description: "Add cold breath attack (HDxd4, cone, Cd4 recharge). Deals cold damage",
+    namePrefix: "Frost-Breathing",
+    promptFragment: "exhaling freezing mist, ice crystals forming around mouth",
+    suggestedBane: "weakness-fire",
+    apply(d) {
+      const hd = d.system.hd || 1;
+      d.system.actions.push({
+        name: "Cold Breath", note: "Cone, Close", recharge: "Cd4", rechargeCountdownId: null,
+        flatDamage: "", rollDamage: `${hd}d4`, damageType: "cold",
+        attackType: "castClose", extraInfo: "All creatures in cone",
+        weaponId: "", weaponPrevName: "", weaponPrevFlatDamage: "",
+        weaponPrevRollDamage: "", causedStatuses: [], critCausedStatuses: [],
+      });
+    },
+  },
+  {
+    id: "action-poison-bite",
+    name: "Venomous Bite",
+    category: "dpr",
+    type: "boon",
+    tlDelta: 0.6,
+    description: "Add a melee bite (1d6 poison) that Sickens on hit (Cd4)",
+    namePrefix: "Venomous",
+    promptFragment: "dripping fangs, venom sacs visible in jaw, toxic saliva",
+    suggestedBane: "weakness-cold",
+    apply(d) {
+      d.system.actions.push({
+        name: "Venomous Bite", note: "", recharge: "", rechargeCountdownId: null,
+        flatDamage: "", rollDamage: "1d6", damageType: "poison",
+        attackType: "melee", extraInfo: "Target is Sickened (Cd4)",
+        weaponId: "", weaponPrevName: "", weaponPrevFlatDamage: "",
+        weaponPrevRollDamage: "",
+        causedStatuses: [{ statusId: "sickened", requiresDamage: true, saveType: "endure", duration: "Cd4" }],
+        critCausedStatuses: [],
+      });
+    },
+  },
+  {
+    id: "action-grapple",
+    name: "Grappling Tentacle",
+    category: "dpr",
+    type: "boon",
+    tlDelta: 0.4,
+    description: "Add a melee tentacle attack (1d4) that Restrains on hit",
+    namePrefix: "Tentacled",
+    promptFragment: "writhing tentacles extending from body, reaching and grasping",
+    apply(d) {
+      d.system.actions.push({
+        name: "Tentacle", note: "Grapple", recharge: "", rechargeCountdownId: null,
+        flatDamage: "", rollDamage: "1d4", damageType: "physical",
+        attackType: "melee", extraInfo: "Target is Restrained",
+        weaponId: "", weaponPrevName: "", weaponPrevFlatDamage: "",
+        weaponPrevRollDamage: "",
+        causedStatuses: [{ statusId: "restrained", requiresDamage: true, saveType: "reflex", duration: "" }],
+        critCausedStatuses: [],
+      });
+    },
+  },
+  {
+    id: "action-ranged-cast",
+    name: "Ranged Spell Attack",
+    category: "dpr",
+    type: "boon",
+    tlDelta: 0.6,
+    description: "Add a ranged cast attack (1d6, Far range). Turns creature into a caster",
+    namePrefix: "Spell-Touched",
+    promptFragment: "crackling with arcane energy, glowing magical sigils on skin",
+    apply(d) {
+      d.system.actions.push({
+        name: "Arcane Bolt", note: "Far", recharge: "", rechargeCountdownId: null,
+        flatDamage: "", rollDamage: "1d6", damageType: "fire",
+        attackType: "castRanged", extraInfo: "",
+        weaponId: "", weaponPrevName: "", weaponPrevFlatDamage: "",
+        weaponPrevRollDamage: "", causedStatuses: [], critCausedStatuses: [],
+      });
+    },
+  },
 ];
 
 /* -------------------------------------------- */
