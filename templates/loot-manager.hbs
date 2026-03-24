@@ -5,7 +5,7 @@
       <i class="fas fa-hammer"></i> Build Table
     </button>
     <button type="button" class="tab-btn {{#unless isBuildMode}}active{{/unless}}" data-mode="tables">
-      <i class="fas fa-table"></i> Loot Tables
+      <i class="fas fa-skull-crossbones"></i> NPC Loot
     </button>
   </div>
 
@@ -51,78 +51,107 @@
   </div>
   {{/if}}
 
-  {{!-- LOOT TABLES TAB --}}
+  {{!-- NPC LOOT TAB --}}
   {{#unless isBuildMode}}
-  <div class="encounter-existing-section">
+  <div class="loot-npc-panel">
 
-    {{!-- All World Roll Tables --}}
-    {{#if hasWorldTables}}
-    <div class="world-tables-group">
-      <h4><i class="fas fa-table"></i> All Roll Tables</h4>
-      <p class="table-hint">Select a table and mark it as a loot table, or assign it to NPCs.</p>
-      <div class="table-select-row">
-        <select class="world-table-select">
-          {{#each worldTableGroups}}
-            {{#if label}}
-            <optgroup label="{{label}}">
-              {{#each tables}}
-              <option value="{{id}}" {{#if selected}}selected{{/if}}>{{name}}{{#if isLoot}} ★{{/if}}</option>
-              {{/each}}
-            </optgroup>
-            {{else}}
-              {{#each tables}}
-              <option value="{{id}}" {{#if selected}}selected{{/if}}>{{name}}{{#if isLoot}} ★{{/if}}</option>
-              {{/each}}
-            {{/if}}
+    {{!-- Left: Filters --}}
+    <div class="loot-filter-panel">
+      <h3>Filters</h3>
+      <div class="loot-filter-row">
+        <label>Source</label>
+        <select class="loot-source-filter">
+          {{#each sources}}
+          <option value="{{id}}" {{#if selected}}selected{{/if}}>{{label}}</option>
           {{/each}}
         </select>
-        <button type="button" class="toggle-loot-flag" title="Toggle loot table flag"><i class="fas fa-star"></i> Loot</button>
       </div>
-    </div>
+      <div class="loot-filter-row">
+        <label>Search</label>
+        <input type="text" class="loot-search-input" value="{{searchName}}" placeholder="Filter by name..." />
+      </div>
 
-    {{!-- Preview --}}
-    {{#if selectedTablePreview}}
-    <div class="table-preview">
-      <div class="table-preview-header">
-        <span class="preview-formula">{{selectedTablePreview.formula}}</span>
+      <h3 style="margin-top:12px;">Loot Table</h3>
+      <div class="loot-filter-row">
+        <select class="loot-assign-table">
+          <option value="">— No Table —</option>
+          {{#each lootTables}}
+          <option value="{{uuid}}">{{name}}</option>
+          {{/each}}
+        </select>
       </div>
-      <div class="table-preview-rows">
+      <div class="loot-filter-row">
+        <label>Drop Chance</label>
+        <div style="display:flex; align-items:center; gap:4px;">
+          <input type="number" class="loot-assign-chance" value="-1" min="-1" max="100" style="width:60px;" />
+          <span style="color:#888; font-size:0.85em;">% (-1 = global)</span>
+        </div>
+      </div>
+      <button type="button" class="loot-apply-btn" style="margin-top:8px; width:100%;">
+        <i class="fas fa-check"></i> Apply to Selected
+      </button>
+
+      {{#if hasLootTables}}
+      <h3 style="margin-top:12px;">Preview</h3>
+      <div class="loot-filter-row">
+        <select class="loot-preview-table">
+          {{#each lootTables}}
+          <option value="{{id}}">{{name}}</option>
+          {{/each}}
+        </select>
+      </div>
+      {{#if selectedTablePreview}}
+      <div class="loot-table-preview-mini">
+        <div style="font-size:0.8em; color:#888; margin-bottom:2px;">{{selectedTablePreview.formula}}</div>
         {{#each selectedTablePreview.rows}}
-        <div class="preview-row">
-          <span class="preview-range">{{range}}</span>
-          {{#if img}}<img src="{{img}}" width="20" height="20" style="border-radius:2px; margin-right:4px;">{{/if}}
-          <span class="preview-name">{{name}}</span>
+        <div style="display:flex; gap:4px; font-size:0.85em; padding:1px 0;">
+          <span style="color:#888; width:30px;">{{range}}</span>
+          {{#if img}}<img src="{{img}}" width="16" height="16" style="border-radius:2px;">{{/if}}
+          <span style="flex:1;">{{name}}</span>
         </div>
         {{/each}}
       </div>
+      {{/if}}
+      {{/if}}
     </div>
-    {{/if}}
-    {{else}}
-    <p class="no-tables-msg"><em>No roll tables found. Build one in the Build Table tab or create one in Foundry's sidebar.</em></p>
-    {{/if}}
 
-    {{!-- NPC Assignment Section --}}
-    {{#if hasLootTables}}
-    <div class="world-tables-group" style="margin-top:8px;">
-      <h4><i class="fas fa-skull-crossbones"></i> NPC Loot Assignment</h4>
-      <p class="table-hint">Assign loot tables to NPCs. Only NPCs on the current scene are shown.</p>
-      <div class="loot-npc-list">
-        {{#each npcs}}
-        <div class="loot-npc-row" style="display:flex; align-items:center; gap:6px; padding:3px 4px; border-bottom:1px solid rgba(255,255,255,0.05);">
-          <img src="{{img}}" width="28" height="28" style="border-radius:3px;">
-          <span style="flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">{{name}}</span>
-          <select class="npc-table-select" data-actor-id="{{id}}" style="max-width:160px;">
-            <option value="">— None —</option>
-            {{#each ../lootTables}}
-            <option value="{{uuid}}" {{#if (eq uuid ../currentTable)}}selected{{/if}}>{{name}}</option>
-            {{/each}}
-          </select>
-          <input type="number" class="npc-chance-input" data-actor-id="{{id}}" value="{{dropChance}}" min="-1" max="100" style="width:50px;" title="Drop chance % (-1 = global)" />
-        </div>
-        {{/each}}
-      </div>
+    {{!-- Right: NPC List --}}
+    <div class="loot-list-panel">
+      <table class="loot-npc-table">
+        <thead>
+          <tr>
+            <th style="width:30px;"><input type="checkbox" class="loot-select-all" title="Select all" /></th>
+            <th style="width:36px;"></th>
+            <th>Name</th>
+            <th style="width:140px;">Loot Table</th>
+            <th style="width:50px;">%</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#each npcs}}
+          <tr class="loot-npc-row" data-actor-id="{{id}}">
+            <td><input type="checkbox" class="npc-select" data-actor-id="{{id}}" /></td>
+            <td><img src="{{img}}" width="28" height="28" style="border-radius:3px;" /></td>
+            <td class="loot-npc-name">{{name}}</td>
+            <td>
+              <select class="npc-table-select" data-actor-id="{{id}}">
+                <option value="">—</option>
+                {{#each ../lootTables}}
+                <option value="{{uuid}}" {{#if (eq uuid ../currentTable)}}selected{{/if}}>{{name}}</option>
+                {{/each}}
+              </select>
+            </td>
+            <td>
+              <input type="number" class="npc-chance-input" data-actor-id="{{id}}" value="{{dropChance}}" min="-1" max="100" style="width:45px;" />
+            </td>
+          </tr>
+          {{/each}}
+        </tbody>
+      </table>
+      {{#unless npcs.length}}
+      <p style="text-align:center; color:#888; padding:20px;">No NPCs found for this source.</p>
+      {{/unless}}
     </div>
-    {{/if}}
 
   </div>
   {{/unless}}

@@ -1,8 +1,8 @@
 /**
  * Vagabond Crawler — Loot Manager
  *
- * Build loot tables, flag existing RollTables as loot tables,
- * and assign them to NPCs. Mirrors the encounter roller pattern.
+ * Build loot tables and assign them to NPCs with an actor-browser-style
+ * filterable NPC list (source dropdown + search + table assignment).
  */
 
 import { MODULE_ID } from "./vagabond-crawler.mjs";
@@ -11,18 +11,19 @@ const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
 const LOOT_TABLE_FLAG = "isLootTable";
 
+const NPC_SOURCES = [
+  { id: "world",             label: "World NPCs" },
+  { id: "scene",             label: "Scene NPCs" },
+  { id: "vagabond.bestiary", label: "Bestiary" },
+  { id: "vagabond.humanlike", label: "Humanlike" },
+];
+
 let _app = null;
 
 export const LootManager = {
-  init() {
-    console.log(`${MODULE_ID} | Loot Manager initialized.`);
-  },
-
+  init() { console.log(`${MODULE_ID} | Loot Manager initialized.`); },
   open() {
-    if (!game.user.isGM) {
-      ui.notifications.warn("Only the GM can manage loot tables.");
-      return;
-    }
+    if (!game.user.isGM) { ui.notifications.warn("Only the GM can manage loot tables."); return; }
     if (!_app) _app = new LootManagerApp();
     _app.render(true);
   },
@@ -34,7 +35,7 @@ class LootManagerApp extends HandlebarsApplicationMixin(ApplicationV2) {
   static DEFAULT_OPTIONS = {
     id: "vagabond-crawler-loot-manager",
     window: { title: "Loot Manager", resizable: true },
-    position: { width: 700, height: "auto" },
+    position: { width: 860, height: 550 },
   };
 
   static PARTS = {
@@ -46,12 +47,15 @@ class LootManagerApp extends HandlebarsApplicationMixin(ApplicationV2) {
     this._mode = "build";
     this._tableName = "";
     this._slots = Array.from({ length: 10 }, () => null);
-    this._selectedTableId = null;
+    this._sourceFilter = "scene";
+    this._searchName = "";
+    this._selectedPreviewTableId = null;
+    this._npcCache = {};  // packId → actor[]
   }
 
   async _prepareContext() { return this.getData(); }
 
-  getData() {
+  async getData() {
     const isBuildMode = this._mode === "build";
 
     // Build slots
@@ -61,35 +65,42 @@ class LootManagerApp extends HandlebarsApplicationMixin(ApplicationV2) {
       img: s?.img || null, weight: s?.weight ?? 1,
     }));
 
-    // Loot tables (flagged)
+    // Loot tables (flagged RollTables)
     const lootTables = game.tables
       .filter(t => t.getFlag(MODULE_ID, LOOT_TABLE_FLAG))
       .map(t => ({ id: t.id, uuid: t.uuid, name: t.name, formula: t.formula }));
 
-    // All world tables grouped by folder (same as encounter roller)
-    const excluded = JSON.parse(game.settings.get(MODULE_ID, "excludedTableFolders") || "[]");
-    const worldTableGroups = this._getWorldTableGroups(excluded);
-    const hasWorldTables = worldTableGroups.some(g => g.tables.length > 0);
+    // Sources
+    const sources = NPC_SOURCES.map(s => ({
+      ...s, selected: s.id === this._sourceFilter,
+    }));
 
-    // Auto-select first table if none selected
-    if (!this._selectedTableId && hasWorldTables) {
-      for (const g of worldTableGroups) {
-        if (g.tables.length > 0) { this._selectedTableId = g.tables[0].id; break; }
-      }
+    // NPCs based on source filter
+    let npcs = await this._getNPCsForSource(this._sourceFilter);
+
+    // Apply search filter
+    if (this._searchName) {
+      const search = this._searchName.toLowerCase();
+      npcs = npcs.filter(n => n.name.toLowerCase().includes(search));
     }
 
-    // Mark selected + loot flag
-    for (const g of worldTableGroups) {
-      for (const t of g.tables) {
-        t.selected = t.id === this._selectedTableId;
-        t.isLoot = !!game.tables.get(t.id)?.getFlag(MODULE_ID, LOOT_TABLE_FLAG);
-      }
-    }
+    // Enrich with current loot assignments
+    npcs = npcs.map(n => {
+      const actor = game.actors.get(n.id);
+      return {
+        ...n,
+        currentTable: actor?.getFlag(MODULE_ID, "lootTable") || "",
+        dropChance: actor?.getFlag(MODULE_ID, "lootDropChance") ?? -1,
+      };
+    });
 
-    // Preview
+    // Preview table
+    if (!this._selectedPreviewTableId && lootTables.length > 0) {
+      this._selectedPreviewTableId = lootTables[0].id;
+    }
     let selectedTablePreview = null;
-    if (!isBuildMode && this._selectedTableId) {
-      const table = game.tables.get(this._selectedTableId);
+    if (this._selectedPreviewTableId) {
+      const table = game.tables.get(this._selectedPreviewTableId);
       if (table) {
         selectedTablePreview = {
           name: table.name, formula: table.formula,
@@ -102,53 +113,49 @@ class LootManagerApp extends HandlebarsApplicationMixin(ApplicationV2) {
       }
     }
 
-    // Scene NPCs for assignment
-    const sceneActorIds = new Set(
-      canvas.tokens?.placeables
-        .filter(t => t.actor?.type === "npc")
-        .map(t => t.actor.id) || []
-    );
-    const npcs = game.actors
-      .filter(a => a.type === "npc" && sceneActorIds.has(a.id))
-      .map(a => ({
-        id: a.id, name: a.name, img: a.img,
-        currentTable: a.getFlag(MODULE_ID, "lootTable") || "",
-        dropChance: a.getFlag(MODULE_ID, "lootDropChance") ?? -1,
-      }))
-      .sort((a, b) => a.name.localeCompare(b.name));
-
     return {
-      isBuildMode,
-      tableName: this._tableName,
-      slots,
-      lootTables,
-      hasLootTables: lootTables.length > 0,
-      worldTableGroups,
-      hasWorldTables,
-      selectedTablePreview,
-      npcs,
+      isBuildMode, tableName: this._tableName, slots,
+      lootTables, hasLootTables: lootTables.length > 0,
+      sources, searchName: this._searchName,
+      npcs, selectedTablePreview,
     };
   }
 
-  _getWorldTableGroups(excludedFolderIds) {
-    const folders = game.folders.filter(f => f.type === "RollTable" && !excludedFolderIds.includes(f.id));
-    const groups = [];
-
-    // Ungrouped tables
-    const ungrouped = game.tables.filter(t => !t.folder);
-    if (ungrouped.length > 0) {
-      groups.push({ label: null, tables: ungrouped.map(t => ({ id: t.id, name: t.name })) });
+  async _getNPCsForSource(sourceId) {
+    if (sourceId === "world") {
+      return game.actors
+        .filter(a => a.type === "npc")
+        .map(a => ({ id: a.id, name: a.name, img: a.img }))
+        .sort((a, b) => a.name.localeCompare(b.name));
     }
 
-    // Folder groups
-    for (const folder of folders.sort((a, b) => a.name.localeCompare(b.name))) {
-      const tables = game.tables.filter(t => t.folder?.id === folder.id);
-      if (tables.length > 0) {
-        groups.push({ label: folder.name, tables: tables.map(t => ({ id: t.id, name: t.name })) });
-      }
+    if (sourceId === "scene") {
+      const seen = new Set();
+      return canvas.tokens?.placeables
+        .filter(t => t.actor?.type === "npc")
+        .map(t => {
+          if (seen.has(t.actor.id)) return null;
+          seen.add(t.actor.id);
+          return { id: t.actor.id, name: t.actor.name, img: t.actor.img };
+        })
+        .filter(Boolean)
+        .sort((a, b) => a.name.localeCompare(b.name)) || [];
     }
 
-    return groups;
+    // Compendium pack
+    if (!this._npcCache[sourceId]) {
+      const pack = game.packs.get(sourceId);
+      if (!pack) return [];
+      const index = await pack.getIndex({ fields: ["img"] });
+      this._npcCache[sourceId] = index.map(entry => ({
+        id: entry._id,
+        name: entry.name,
+        img: entry.img || "icons/svg/mystery-man.svg",
+        isCompendium: true,
+        packId: sourceId,
+      })).sort((a, b) => a.name.localeCompare(b.name));
+    }
+    return this._npcCache[sourceId];
   }
 
   /* ---- Events ---- */
@@ -160,16 +167,12 @@ class LootManagerApp extends HandlebarsApplicationMixin(ApplicationV2) {
     const on = (sel, evt, fn) => [...el.querySelectorAll(sel)].forEach(n => n.addEventListener(evt, fn));
 
     // Tabs
-    on(".tab-btn", "click", ev => {
-      this._mode = ev.currentTarget.dataset.mode;
-      this.render();
-    });
+    on(".tab-btn", "click", ev => { this._mode = ev.currentTarget.dataset.mode; this.render(); });
 
-    // Table name
+    // Build tab
     const nameInput = $(".table-name-input");
     if (nameInput) nameInput.addEventListener("input", () => { this._tableName = nameInput.value; });
 
-    // Slot drag-drop
     on(".encounter-slot", "dragover", ev => ev.preventDefault());
     on(".encounter-slot", "drop", async ev => {
       ev.preventDefault();
@@ -184,68 +187,87 @@ class LootManagerApp extends HandlebarsApplicationMixin(ApplicationV2) {
       } catch (e) { console.error(`${MODULE_ID} | Drop error:`, e); }
     });
 
-    // Weight inputs
     on(".appearing-input", "change", ev => {
       const idx = parseInt(ev.currentTarget.dataset.index);
       if (this._slots[idx]) this._slots[idx].weight = parseInt(ev.currentTarget.value) || 1;
     });
 
-    // Clear slot
     on(".clear-slot", "click", ev => {
       ev.stopPropagation();
       this._slots[parseInt(ev.currentTarget.dataset.index)] = null;
       this.render();
     });
 
-    // Save
     $(".save-table")?.addEventListener("click", () => this._saveAsLootTable());
 
-    // Table select
-    $(".world-table-select")?.addEventListener("change", ev => {
-      this._selectedTableId = ev.currentTarget.value;
+    // NPC Loot tab — filters
+    $(".loot-source-filter")?.addEventListener("change", ev => {
+      this._sourceFilter = ev.currentTarget.value;
       this.render();
     });
 
-    // Toggle loot flag
-    $(".toggle-loot-flag")?.addEventListener("click", async () => {
-      if (!this._selectedTableId) return;
-      const table = game.tables.get(this._selectedTableId);
-      if (!table) return;
-      const isLoot = table.getFlag(MODULE_ID, LOOT_TABLE_FLAG);
-      if (isLoot) {
-        await table.unsetFlag(MODULE_ID, LOOT_TABLE_FLAG);
-        ui.notifications.info(`"${table.name}" is no longer a loot table.`);
-      } else {
-        await table.setFlag(MODULE_ID, LOOT_TABLE_FLAG, true);
-        ui.notifications.info(`"${table.name}" marked as loot table.`);
+    const searchInput = $(".loot-search-input");
+    if (searchInput) {
+      searchInput.addEventListener("input", () => {
+        this._searchName = searchInput.value;
+        this.render();
+      });
+    }
+
+    // Select all checkbox
+    $(".loot-select-all")?.addEventListener("change", ev => {
+      const checked = ev.currentTarget.checked;
+      el.querySelectorAll(".npc-select").forEach(cb => { cb.checked = checked; });
+    });
+
+    // Apply to selected
+    $(".loot-apply-btn")?.addEventListener("click", async () => {
+      const tableUuid = $(".loot-assign-table")?.value || "";
+      const chance = parseInt($(".loot-assign-chance")?.value ?? -1);
+      const checked = [...el.querySelectorAll(".npc-select:checked")];
+      if (!checked.length) { ui.notifications.warn("Select NPCs first."); return; }
+
+      for (const cb of checked) {
+        const actor = game.actors.get(cb.dataset.actorId);
+        if (!actor) continue;
+        if (tableUuid) {
+          await actor.setFlag(MODULE_ID, "lootTable", tableUuid);
+        } else {
+          await actor.unsetFlag(MODULE_ID, "lootTable");
+        }
+        if (chance >= 0) {
+          await actor.setFlag(MODULE_ID, "lootDropChance", chance);
+        } else {
+          await actor.unsetFlag(MODULE_ID, "lootDropChance");
+        }
       }
+      ui.notifications.info(`Updated loot config for ${checked.length} NPC(s).`);
       this.render();
     });
 
-    // NPC table assignment
+    // Per-NPC table assignment (inline)
     on(".npc-table-select", "change", async ev => {
       const actorId = ev.currentTarget.dataset.actorId;
       const tableUuid = ev.currentTarget.value;
       const actor = game.actors.get(actorId);
       if (!actor) return;
-      if (tableUuid) {
-        await actor.setFlag(MODULE_ID, "lootTable", tableUuid);
-      } else {
-        await actor.unsetFlag(MODULE_ID, "lootTable");
-      }
+      if (tableUuid) await actor.setFlag(MODULE_ID, "lootTable", tableUuid);
+      else await actor.unsetFlag(MODULE_ID, "lootTable");
     });
 
-    // NPC drop chance
     on(".npc-chance-input", "change", async ev => {
       const actorId = ev.currentTarget.dataset.actorId;
       const chance = parseInt(ev.currentTarget.value);
       const actor = game.actors.get(actorId);
       if (!actor) return;
-      if (chance < 0) {
-        await actor.unsetFlag(MODULE_ID, "lootDropChance");
-      } else {
-        await actor.setFlag(MODULE_ID, "lootDropChance", chance);
-      }
+      if (chance >= 0) await actor.setFlag(MODULE_ID, "lootDropChance", chance);
+      else await actor.unsetFlag(MODULE_ID, "lootDropChance");
+    });
+
+    // Preview table select
+    $(".loot-preview-table")?.addEventListener("change", ev => {
+      this._selectedPreviewTableId = ev.currentTarget.value;
+      this.render();
     });
   }
 
@@ -284,8 +306,8 @@ class LootManagerApp extends HandlebarsApplicationMixin(ApplicationV2) {
     ui.notifications.info(`Loot table "${name}" created.`);
     this._tableName = "";
     this._slots = Array.from({ length: 10 }, () => null);
+    this._selectedPreviewTableId = table.id;
     this._mode = "tables";
-    this._selectedTableId = table.id;
     this.render();
   }
 }

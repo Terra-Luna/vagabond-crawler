@@ -1710,3 +1710,111 @@ body.theme-light .vcb-phase-badge {
 }
 .empty-state i { font-size: 1.5rem; margin-bottom: 6px; display: block; }
 .empty-state p { margin: 0; font-size: 0.9rem; }
+
+/* ── Loot Manager ─────────────────────────────────────────────────────── */
+
+.loot-npc-panel {
+  display: flex;
+  gap: 8px;
+  flex: 1;
+  min-height: 0;
+}
+
+.loot-filter-panel {
+  width: 200px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 6px;
+  background: rgba(0,0,0,0.15);
+  border-radius: 4px;
+  overflow-y: auto;
+}
+.loot-filter-panel h3 {
+  font-size: 0.9rem;
+  margin: 2px 0;
+  padding: 4px 6px;
+  background: rgba(0,0,0,0.2);
+  border-radius: 3px;
+  color: #ccc;
+}
+.loot-filter-row { display: flex; flex-direction: column; gap: 2px; }
+.loot-filter-row label { font-size: 0.8rem; color: #aaa; }
+.loot-filter-row select,
+.loot-filter-row input[type="text"],
+.loot-filter-row input[type="number"] {
+  padding: 4px 6px;
+  font-size: 0.85rem;
+  background: rgba(0,0,0,0.3);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 3px;
+  color: #ddd;
+}
+
+.loot-apply-btn {
+  padding: 6px;
+  font-size: 0.85rem;
+  background: rgba(76,175,80,0.2);
+  border: 1px solid rgba(76,175,80,0.4);
+  color: #4caf50;
+  border-radius: 3px;
+  cursor: pointer;
+}
+.loot-apply-btn:hover { background: rgba(76,175,80,0.35); }
+
+.loot-table-preview-mini {
+  max-height: 120px;
+  overflow-y: auto;
+  padding: 4px;
+  background: rgba(0,0,0,0.2);
+  border-radius: 3px;
+}
+
+.loot-list-panel {
+  flex: 1;
+  min-width: 0;
+  overflow-y: auto;
+}
+
+.loot-npc-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+}
+.loot-npc-table thead th {
+  position: sticky;
+  top: 0;
+  background: rgba(0,0,0,0.4);
+  padding: 4px 6px;
+  text-align: left;
+  color: #aaa;
+  font-weight: normal;
+  font-size: 0.8rem;
+}
+.loot-npc-table tbody tr {
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+.loot-npc-table tbody tr:hover {
+  background: rgba(255,255,255,0.05);
+}
+.loot-npc-table td {
+  padding: 3px 4px;
+  vertical-align: middle;
+}
+.loot-npc-name {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 200px;
+}
+.loot-npc-table select,
+.loot-npc-table input[type="number"] {
+  padding: 2px 4px;
+  font-size: 0.8rem;
+  background: rgba(0,0,0,0.3);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 2px;
+  color: #ddd;
+  width: 100%;
+}
