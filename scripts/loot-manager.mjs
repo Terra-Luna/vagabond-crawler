@@ -107,12 +107,13 @@ class LootManagerApp extends HandlebarsApplicationMixin(ApplicationV2) {
     // Enrich with current loot assignments — mark selected option in table list
     npcs = npcs.map(n => {
       const actor = game.actors.get(n.id);
+      const isWorldActor = !!actor;
       const currentTable = actor?.getFlag(MODULE_ID, "lootTable") || "";
       return {
         ...n,
+        isWorldActor,
         currentTable,
         dropChance: actor?.getFlag(MODULE_ID, "lootDropChance") ?? -1,
-        // Pre-build table options with selected state
         tableOptions: flatTables.map(t => ({
           uuid: t.uuid, name: t.name,
           selected: t.uuid === currentTable,
