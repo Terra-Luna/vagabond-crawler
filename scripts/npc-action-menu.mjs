@@ -477,6 +477,23 @@ function _buildMenuData(actor, isNPC) {
       }
     }
 
+    // Virtuoso — bard gets Valor/Resolve/Inspiration buff options
+    // Uses vagabond-character-enhancer API (gracefully degrades if not installed)
+    const virtData = game.vagabondCharacterEnhancer?.getVirtuosoData?.(actor);
+    if (virtData?.hasBard) {
+      const virtItems = virtData.buffs.map(b => ({
+        label: b.label, dmg: `<span class="vcs-menu-dmg">${b.desc}</span>`,
+        type: "virtuoso", virtuosoBuff: b.key,
+      }));
+      if (!result.tabC) {
+        result.tabC = "Virtuoso";
+        result.itemsC = virtItems;
+      } else {
+        // Craft tab exists — append Virtuoso items to it
+        result.itemsC = [...result.itemsC, ...virtItems];
+      }
+    }
+
     return result;
   }
 }
@@ -545,6 +562,8 @@ function _showPanel(stripEl, cardWrap, actor, isNPC, activeTab) {
           ? `data-item-id="${it.itemId}"`
           : it.craftName
           ? `data-craft-name="${it.craftName}"`
+          : it.virtuosoBuff
+          ? `data-virtuoso-buff="${it.virtuosoBuff}"`
           : `data-index="${it.index}"`;
         return `<div class="vcs-panel-item" data-type="${it.type}" ${dataAttrs}>
           <span class="vcs-panel-name">${it.label}</span>${it.dmg}
@@ -586,7 +605,7 @@ function _showPanel(stripEl, cardWrap, actor, isNPC, activeTab) {
       const token   = tokenId ? canvas.tokens?.get(tokenId) : null;
       const resolvedActor = token?.actor ?? game.actors.get(actor.id);
       if (!resolvedActor?.isOwner) { ui.notifications.warn("You don't control this character."); return; }
-      await _fireAction(resolvedActor, item.dataset.type, item.dataset.index, item.dataset.itemId ?? item.dataset.craftName);
+      await _fireAction(resolvedActor, item.dataset.type, item.dataset.index, item.dataset.itemId ?? item.dataset.craftName ?? item.dataset.virtuosoBuff);
       _removePanel();
     });
   });
@@ -680,6 +699,14 @@ async function _fireAction(actor, type, indexStr, itemId) {
       const polyData = actor.getFlag("vagabond-character-enhancer", "polymorphData");
       if (polyData && index !== null) {
         await PolymorphSheet._rollBeastAction(actor, index, polyData);
+      }
+
+    } else if (type === "virtuoso") {
+      // Virtuoso buff — delegate to character enhancer's bard API
+      const buffKey = itemId; // virtuosoBuff passed via itemId parameter path
+      const virtData = game.vagabondCharacterEnhancer?.getVirtuosoData?.(actor);
+      if (virtData?.useVirtuoso) {
+        await virtData.useVirtuoso(buffKey);
       }
 
     } else if (type === "craft") {
