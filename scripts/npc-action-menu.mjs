@@ -720,10 +720,37 @@ async function _fireAction(actor, type, indexStr, itemId) {
       }
 
     } else if (type === "stepup") {
-      // Step Up — dancer grants bonus action to selected ally
+      // Step Up — dancer grants bonus action to selected ally/allies
       const allyId = itemId; // stepUpAllyId passed via itemId parameter path
       const stepUpData = game.vagabondCharacterEnhancer?.getStepUpData?.(actor);
-      if (stepUpData?.useStepUp) {
+      if (!stepUpData?.useStepUp) return;
+
+      // Double Time: show mini dialog to pick up to 2 allies
+      if (stepUpData.hasDoubleTime && stepUpData.allies.length > 1) {
+        const allyCheckboxes = stepUpData.allies.map(a => {
+          const checked = a.id === allyId ? "checked" : "";
+          return `<label style="display:flex;align-items:center;gap:6px;padding:4px 0;cursor:pointer;">
+            <input type="checkbox" name="su-ally" value="${a.id}" ${checked} />
+            <span>${a.name}</span>
+          </label>`;
+        }).join("");
+
+        const confirmed = await Dialog.prompt({
+          title: "Step Up — Double Time",
+          content: `<p style="margin-bottom:8px;">Select up to 2 allies:</p>${allyCheckboxes}`,
+          label: "Step Up!",
+          callback: (html) => {
+            const checked = html.find ? html.find("input[name='su-ally']:checked") : html.querySelectorAll("input[name='su-ally']:checked");
+            const arr = html.find ? checked.toArray() : Array.from(checked);
+            return arr.map(el => el.value).slice(0, 2);
+          },
+          rejectClose: false
+        });
+        if (confirmed?.length > 0) {
+          await stepUpData.useStepUp(confirmed);
+        }
+      } else {
+        // Single target — fire immediately
         await stepUpData.useStepUp([allyId]);
       }
 
