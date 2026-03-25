@@ -477,6 +477,22 @@ function _buildMenuData(actor, isNPC) {
       }
     }
 
+    // Step Up — dancer gets ally selection for bonus action grant
+    // Uses vagabond-character-enhancer API (gracefully degrades if not installed)
+    const stepUpData = game.vagabondCharacterEnhancer?.getStepUpData?.(actor);
+    if (stepUpData?.hasDancer && stepUpData.allies.length > 0) {
+      const stepUpItems = stepUpData.allies.map(a => ({
+        label: a.name, dmg: `<span class="vcs-menu-dmg">Bonus Action</span>`,
+        type: "stepup", stepUpAllyId: a.id,
+      }));
+      if (!result.tabC) {
+        result.tabC = "Step Up";
+        result.itemsC = stepUpItems;
+      } else {
+        result.itemsC = [...result.itemsC, ...stepUpItems];
+      }
+    }
+
     // Virtuoso — bard gets Valor/Resolve/Inspiration buff options
     // Uses vagabond-character-enhancer API (gracefully degrades if not installed)
     const virtData = game.vagabondCharacterEnhancer?.getVirtuosoData?.(actor);
@@ -564,6 +580,8 @@ function _showPanel(stripEl, cardWrap, actor, isNPC, activeTab) {
           ? `data-craft-name="${it.craftName}"`
           : it.virtuosoBuff
           ? `data-virtuoso-buff="${it.virtuosoBuff}"`
+          : it.stepUpAllyId
+          ? `data-stepup-ally="${it.stepUpAllyId}"`
           : `data-index="${it.index}"`;
         return `<div class="vcs-panel-item" data-type="${it.type}" ${dataAttrs}>
           <span class="vcs-panel-name">${it.label}</span>${it.dmg}
@@ -605,7 +623,7 @@ function _showPanel(stripEl, cardWrap, actor, isNPC, activeTab) {
       const token   = tokenId ? canvas.tokens?.get(tokenId) : null;
       const resolvedActor = token?.actor ?? game.actors.get(actor.id);
       if (!resolvedActor?.isOwner) { ui.notifications.warn("You don't control this character."); return; }
-      await _fireAction(resolvedActor, item.dataset.type, item.dataset.index, item.dataset.itemId ?? item.dataset.craftName ?? item.dataset.virtuosoBuff);
+      await _fireAction(resolvedActor, item.dataset.type, item.dataset.index, item.dataset.itemId ?? item.dataset.craftName ?? item.dataset.virtuosoBuff ?? item.dataset.stepupAlly);
       _removePanel();
     });
   });
@@ -699,6 +717,14 @@ async function _fireAction(actor, type, indexStr, itemId) {
       const polyData = actor.getFlag("vagabond-character-enhancer", "polymorphData");
       if (polyData && index !== null) {
         await PolymorphSheet._rollBeastAction(actor, index, polyData);
+      }
+
+    } else if (type === "stepup") {
+      // Step Up — dancer grants bonus action to selected ally
+      const allyId = itemId; // stepUpAllyId passed via itemId parameter path
+      const stepUpData = game.vagabondCharacterEnhancer?.getStepUpData?.(actor);
+      if (stepUpData?.useStepUp) {
+        await stepUpData.useStepUp([allyId]);
       }
 
     } else if (type === "virtuoso") {
