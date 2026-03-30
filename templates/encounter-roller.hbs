@@ -280,11 +280,27 @@
   {{#if lastResult}}
   <div class="encounter-result-panel">
     <h4><img class="vcb-icon-dragon" src="modules/vagabond-crawler/icons/light-sabers.svg" alt="" /> Encounter Result</h4>
+
+    {{#if lastResult.isMultiGroup}}
+    <div class="result-row" style="flex-direction:column; align-items:stretch;">
+      <div style="display:flex; align-items:center; gap:6px; margin-bottom:4px;">
+        <span class="result-label">Monsters:</span>
+        <button type="button" class="reroll-count" title="Re-roll all counts"><i class="fas fa-dice"></i></button>
+      </div>
+      {{#each lastResult.groups}}
+      <div class="result-row" style="padding-left:12px;">
+        <span class="result-value">{{name}} × {{count}} <small>({{formula}})</small></span>
+      </div>
+      {{/each}}
+    </div>
+    {{else}}
     <div class="result-row">
       <span class="result-label">Monster:</span>
       <span class="result-value">{{lastResult.monsterName}} × {{lastResult.count}}</span>
       <button type="button" class="reroll-count" title="Re-roll count"><i class="fas fa-dice"></i></button>
     </div>
+    {{/if}}
+
     <div class="result-row">
       <span class="result-label">Distance:</span>
       <span class="result-value">{{lastResult.distance.label}} <small>({{lastResult.distance.roll}})</small></span>
@@ -297,8 +313,12 @@
     </div>
     <div class="result-actions">
       <button type="button" class="post-to-chat"><i class="fas fa-comment"></i> Post to Chat</button>
+      {{#if lastResult.isMultiGroup}}
+      <button type="button" class="place-tokens"><i class="fas fa-map-pin"></i> Place {{lastResult.count}} Token(s)</button>
+      {{else}}
       {{#if lastResult.monsterUuid}}
       <button type="button" class="place-tokens"><i class="fas fa-map-pin"></i> Place {{lastResult.count}} Token(s)</button>
+      {{/if}}
       {{/if}}
     </div>
   </div>

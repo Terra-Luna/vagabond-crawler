@@ -327,7 +327,11 @@ class EncounterRollerApp extends HandlebarsApplicationMixin(ApplicationV2) {
     });
     btn(".manage-folders",   () => this._openFolderExclusions());
     btn(".reroll-count",    async () => {
-      if (this._lastResult?.countFormula) {
+      if (this._lastResult?.isMultiGroup && this._lastResult.groups?.length) {
+        await EncounterRollerApp._evaluateGroupCounts(this._lastResult.groups);
+        this._lastResult.count = this._lastResult.groups.reduce((sum, g) => sum + g.count, 0);
+        this.render();
+      } else if (this._lastResult?.countFormula) {
         const r = await new Roll(this._lastResult.countFormula).evaluate();
         this._lastResult.count = Math.max(1, r.total);
         this.render();
@@ -576,26 +580,46 @@ class EncounterRollerApp extends HandlebarsApplicationMixin(ApplicationV2) {
     const result = draw.results[0];
     if (!result) return;
 
-    // Native format: documentUuid on result, appearing formula in description as [[/r XdY]]
+    // Native format: documentUuid on result, appearing formula in description as [[XdY]]
     const uuid = result.documentUuid ?? result.flags?.[MODULE_ID]?.uuid ?? null;
+    const descText = result.description ?? "";
 
-    // Extract appearing formula from description e.g. "<p>[[/r 2d6]]</p>"
-    const descText   = result.description ?? "";
-    const appearing  = result.flags?.[MODULE_ID]?.appearing
-      ?? (descText.match(/\[\[\/r\s+([^\]]+)\]\]/)?.[1]?.trim())
-      ?? "1";
+    // Check for multi-group result (no documentUuid, but @UUID refs in description)
+    const multiGroups = !uuid ? EncounterRollerApp._parseMultiGroupDescription(descText) : null;
 
-    let count = 1;
-    try { count = Math.max(1, (await new Roll(appearing).evaluate()).total); } catch {}
+    if (multiGroups) {
+      // Multi-group encounter
+      await EncounterRollerApp._evaluateGroupCounts(multiGroups);
+      const totalCount = multiGroups.reduce((sum, g) => sum + g.count, 0);
 
-    this._lastResult = {
-      monsterName:  result.name ?? result.text ?? "Unknown",
-      monsterUuid:  uuid,
-      count,
-      countFormula: appearing,
-      distance:     rollDistance(),
-      reaction:     rollReaction(),
-    };
+      this._lastResult = {
+        monsterName:   multiGroups.map(g => g.name).join(" + "),
+        monsterUuid:   null,
+        count:         totalCount,
+        countFormula:  null,
+        isMultiGroup:  true,
+        groups:        multiGroups,
+        distance:      rollDistance(),
+        reaction:      rollReaction(),
+      };
+    } else {
+      // Single-monster encounter (existing flow)
+      const appearing = result.flags?.[MODULE_ID]?.appearing
+        ?? (descText.match(/\[\[(?:\/r\s+)?([^\]]+)\]\]/)?.[1]?.trim())
+        ?? "1";
+
+      let count = 1;
+      try { count = Math.max(1, (await new Roll(appearing).evaluate()).total); } catch {}
+
+      this._lastResult = {
+        monsterName:  result.name ?? result.text ?? "Unknown",
+        monsterUuid:  uuid,
+        count,
+        countFormula: appearing,
+        distance:     rollDistance(),
+        reaction:     rollReaction(),
+      };
+    }
     this.render();
   }
 
@@ -644,7 +668,7 @@ class EncounterRollerApp extends HandlebarsApplicationMixin(ApplicationV2) {
         name:         s?.name ?? "(Empty)",
         img,
         documentUuid: s?.uuid ?? null,
-        description:  s ? `<p>[[/r ${appearing}]]</p>` : "",
+        description:  s ? `<p>[[${appearing}]]</p>` : "",
         drawn:        false,
         flags:        {},
       });
@@ -683,11 +707,21 @@ class EncounterRollerApp extends HandlebarsApplicationMixin(ApplicationV2) {
   async _postToChat() {
     const r = this._lastResult;
     if (!r) return;
+
+    let monsterLines;
+    if (r.isMultiGroup && r.groups?.length) {
+      monsterLines = `<p><strong>Monsters:</strong></p><ul style="margin:2px 0 6px 16px; padding:0; list-style:disc;">`
+        + r.groups.map(g => `<li>${g.name} × ${g.count}</li>`).join("")
+        + `</ul>`;
+    } else {
+      monsterLines = `<p><strong>Monster:</strong> ${r.monsterName} × ${r.count}</p>`;
+    }
+
     await ChatMessage.create({
       content: `<div class="vagabond-crawler-chat encounter-result">
         <h3>${ICONS.encounterChat} Random Encounter</h3>
         <div class="encounter-details">
-          <p><strong>Monster:</strong> ${r.monsterName} × ${r.count}</p>
+          ${monsterLines}
           <p><strong>Distance:</strong> ${r.distance.label} <small>(${r.distance.roll})</small></p>
           <p><strong>Reaction:</strong> ${r.reaction.label} <small>(${r.reaction.roll})</small></p>
         </div>
@@ -698,12 +732,54 @@ class EncounterRollerApp extends HandlebarsApplicationMixin(ApplicationV2) {
 
   async _placeTokens() {
     const r = this._lastResult;
+
+    // Multi-group placement
+    if (r?.isMultiGroup && r.groups?.length) {
+      const scene = canvas.scene;
+      if (!scene) { ui.notifications.warn("No active scene."); return; }
+
+      const gs = scene.grid.size;
+      const cx = Math.round(canvas.stage.pivot.x / gs) * gs;
+      const cy = Math.round(canvas.stage.pivot.y / gs) * gs;
+      const docs = [];
+      let tokenIdx = 0;
+
+      for (const group of r.groups) {
+        if (!group.uuid) continue;
+        const actor = await fromUuid(group.uuid);
+        if (!actor) { ui.notifications.warn(`Could not find actor: ${group.name}`); continue; }
+
+        let worldActor = actor;
+        if (actor.pack) {
+          worldActor = game.actors.find(a => a.flags?.core?.sourceId === group.uuid)
+            ?? game.actors.find(a => a.name === actor.name && a.type === "npc")
+            ?? await Actor.create(actor.toObject());
+        }
+
+        const tokenDoc = await worldActor.getTokenDocument();
+        for (let i = 0; i < group.count; i++) {
+          const td = tokenDoc.toObject();
+          td.x = cx + (tokenIdx % 5) * Math.round(gs * 1.5);
+          td.y = cy + Math.floor(tokenIdx / 5) * Math.round(gs * 1.5);
+          td.actorId = worldActor.id;
+          delete td._id;
+          docs.push(td);
+          tokenIdx++;
+        }
+      }
+
+      if (docs.length === 0) { ui.notifications.warn("No valid actors to place."); return; }
+      await scene.createEmbeddedDocuments("Token", docs);
+      ui.notifications.info(`Placed ${docs.length} tokens (${r.groups.map(g => `${g.count} × ${g.name}`).join(", ")}).`);
+      return;
+    }
+
+    // Single-monster placement (existing flow)
     if (!r?.monsterUuid) { ui.notifications.warn("No actor UUID — cannot place tokens."); return; }
 
     const actor = await fromUuid(r.monsterUuid);
     if (!actor) { ui.notifications.error("Could not find actor."); return; }
 
-    // If from a compendium, import to world first (or find existing world copy)
     let worldActor = actor;
     if (actor.pack) {
       worldActor = game.actors.find(a => a.flags?.core?.sourceId === r.monsterUuid)
@@ -733,6 +809,36 @@ class EncounterRollerApp extends HandlebarsApplicationMixin(ApplicationV2) {
   }
 
   // ── Helpers ──────────────────────────────────────────────────────────────────
+
+  /**
+   * Parse a description containing multiple @UUID references into monster groups.
+   * Format: [[formula]]@UUID[Actor.id]{Name}  (formula is optional, defaults to "1")
+   * @param {string} descText - The raw description HTML
+   * @returns {Array<{uuid: string, name: string, formula: string}>|null} Parsed groups or null
+   */
+  static _parseMultiGroupDescription(descText) {
+    if (!descText?.includes("@UUID")) return null;
+    const re = /(?:\[\[(?:\/r\s+)?([^\]]+)\]\])?\s*@UUID\[([^\]]+)\]\{([^}]+)\}/g;
+    const groups = [];
+    let m;
+    while ((m = re.exec(descText)) !== null) {
+      groups.push({ uuid: m[2], name: m[3], formula: m[1]?.trim() || "1" });
+    }
+    return groups.length > 0 ? groups : null;
+  }
+
+  /**
+   * Evaluate appearing formulas for each group and attach count.
+   * @param {Array<{uuid: string, name: string, formula: string}>} groups
+   * @returns {Promise<Array<{uuid: string, name: string, formula: string, count: number}>>}
+   */
+  static async _evaluateGroupCounts(groups) {
+    for (const g of groups) {
+      try { g.count = Math.max(1, (await new Roll(g.formula).evaluate()).total); }
+      catch { g.count = 1; }
+    }
+    return groups;
+  }
 
   _getRegisteredTableName() {
     const uuid = game.settings.get(MODULE_ID, "encounterTableUuid");
@@ -817,7 +923,7 @@ class EncounterRollerApp extends HandlebarsApplicationMixin(ApplicationV2) {
       .slice()
       .sort((a, b) => a.range[0] - b.range[0])
       .map(r => {
-        const appearing = r.description?.match(/\[\[\/r\s+([^\]]+)\]\]/)?.[1]?.trim()
+        const appearing = r.description?.match(/\[\[(?:\/r\s+)?([^\]]+)\]\]/)?.[1]?.trim()
           ?? r.flags?.[MODULE_ID]?.appearing
           ?? "1";
         return {

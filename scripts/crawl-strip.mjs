@@ -399,14 +399,16 @@ export const CrawlStrip = {
 Hooks.on("updateActor", async (actor) => {
   if (!CrawlState.active) return;
   CrawlStrip.updateMember(actor.id);
-  // Auto-defeat linked actors at 0 HP
+  // Auto-defeat at 0 HP — use token ID for unlinked, actor ID for linked
   if (game.user.isGM && game.combat) {
     const hp = actor.system?.health?.value ?? null;
     if (hp !== null && hp <= 0) {
-      const combatant = game.combat.combatants.find(c => c.actorId === actor.id && !c.defeated);
+      const tokenId = actor.token?.id;
+      const combatant = tokenId
+        ? game.combat.combatants.find(c => c.tokenId === tokenId && !c.defeated)
+        : game.combat.combatants.find(c => c.actorId === actor.id && !c.defeated);
       if (combatant) {
         await combatant.update({ defeated: true });
-        // Apply dead overlay — must use the token document's actor for unlinked tokens
         const tokenObj = canvas.tokens?.get(combatant.tokenId);
         if (tokenObj?.actor) {
           await tokenObj.actor.toggleStatusEffect("dead", { active: true, overlay: true });
