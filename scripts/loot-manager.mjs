@@ -206,7 +206,9 @@ class LootManagerApp extends HandlebarsApplicationMixin(ApplicationV2) {
   }
 
   _getTableGroups() {
-    const excluded = JSON.parse(game.settings.get(MODULE_ID, "excludedTableFolders") || "[]");
+    let excluded;
+    try { excluded = JSON.parse(game.settings.get(MODULE_ID, "excludedLootTableFolders") || "[]"); }
+    catch { excluded = []; }
     const groups = [];
 
     // Ungrouped
@@ -224,6 +226,44 @@ class LootManagerApp extends HandlebarsApplicationMixin(ApplicationV2) {
       }
     }
     return groups;
+  }
+
+  async _openLootFolderExclusions() {
+    const tableFolders = game.folders.filter(f => f.type === "RollTable");
+    if (!tableFolders.length) { ui.notifications.info("No table folders found."); return; }
+
+    let excludedIds;
+    try { excludedIds = new Set(JSON.parse(game.settings.get(MODULE_ID, "excludedLootTableFolders"))); }
+    catch { excludedIds = new Set(); }
+
+    const checkboxes = tableFolders
+      .sort((a, b) => a.name.localeCompare(b.name))
+      .map(f => `<label style="display:flex;align-items:center;gap:6px;padding:3px 0;">
+        <input type="checkbox" name="folder-${f.id}" value="${f.id}" ${excludedIds.has(f.id) ? "checked" : ""} />
+        <span>${f.name} <span style="color:#888;">(${game.tables.filter(t => t.folder?.id === f.id).length} tables)</span></span>
+      </label>`).join("");
+
+    const result = await foundry.applications.api.DialogV2.prompt({
+      window: { title: "Filter Loot Table Folders" },
+      content: `<div style="font-family:var(--vcb-font);font-size:13px;padding:4px;">
+        <p style="color:#7a7060;margin-bottom:8px;">Check folders to <strong>hide</strong> from the loot table dropdown:</p>
+        ${checkboxes}
+      </div>`,
+      ok: {
+        label: "Save",
+        icon: "fas fa-save",
+        callback: (event, button) => {
+          const checked = [...button.form.querySelectorAll('input[type="checkbox"]:checked')];
+          return checked.map(cb => cb.value);
+        },
+      },
+      rejectClose: false,
+    });
+
+    if (result) {
+      await game.settings.set(MODULE_ID, "excludedLootTableFolders", JSON.stringify(result));
+      this.render();
+    }
   }
 
   async _getNPCsForSource(sourceId) {
@@ -279,6 +319,10 @@ class LootManagerApp extends HandlebarsApplicationMixin(ApplicationV2) {
 
     // Tabs
     on(".tab-btn", "click", ev => { this._mode = ev.currentTarget.dataset.mode; this.render(); });
+
+    // Filter loot table folders
+    const filterBtn = $(".loot-filter-folders-btn");
+    if (filterBtn) filterBtn.addEventListener("click", () => this._openLootFolderExclusions());
 
     // ── Build tab ──
     const nameInput = $(".table-name-input");

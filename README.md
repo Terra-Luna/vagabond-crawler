@@ -230,3 +230,16 @@ Or search for **Vagabond Crawler** in the Foundry module browser.
 ---
 
 *This module is an independent community project for the Vagabond RPG system and is not affiliated with Land of the Blind, LLC.*
+
+---
+
+## Changelog
+
+### 1.2.0
+- **Loot Generator** — New ApplicationV2 window (Forge & Loot menu > Loot Generator) for rolling on the Vagabond core loot tables (Levels 1-10). Features full roll-chain tracing, compendium item creation, and chat cards with "Give to Player" buttons.
+  - Level 1 rolls on the p.186 table; Levels 2-10 use the category chain (Treasure, Armor, Weapons, Alchemy) with correct per-level dice formulas
+  - Alchemy, weapons, and armor results auto-match compendium items for drag-and-drop ready output
+  - Chat card claiming: GM posts loot to chat, picks a player to give it to, item is created on their sheet
+- **Loot Data** — All loot tables from the Vagabond core book embedded as module data: Treasure (24 entries + sub-tables), Armor Power (24 entries), Weapon Power (40 entries), Alchemy (95 items), plus 13 shared sub-tables (Trade Goods, Art, Jewelry, Clothing, Relic Items, Armor/Weapon Materials, Resistances, Utilities, Senses, Movement, Creature types)
+- **Independent table folder filters** — Loot Manager and Encounter Roller now have separate folder exclusion settings, so hiding folders from encounters no longer hides them from loot assignment
+- **Loot Manager UI** — Added filter button on the "Assign Table" section header for quick folder exclusion management

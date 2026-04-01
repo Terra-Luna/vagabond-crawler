@@ -1,0 +1,67 @@
+<form class="vcl-gen">
+  <div class="vcl-gen-controls">
+    <div class="vcl-gen-control-group">
+      <label>Hero Level</label>
+      <select class="vcl-gen-level">
+        {{#each levels}}
+        <option value="{{value}}" {{#if selected}}selected{{/if}}>{{label}}</option>
+        {{/each}}
+      </select>
+    </div>
+    <button type="button" class="vcl-gen-roll">
+      <i class="fas fa-dice-d20"></i> Roll Loot
+    </button>
+  </div>
+
+  {{#if hasHistory}}
+  <div class="vcl-gen-results">
+    {{#each history}}
+    <div class="vcl-gen-result" style="border-left-color: {{color}}" data-hist-index="{{origIndex}}">
+      <div class="vcl-gen-result-header" style="color: {{color}}">
+        <i class="fas {{icon}}"></i> Level {{level}} {{category}}
+      </div>
+      <div class="vcl-gen-trace">
+        {{#each trace}}
+        <div class="vcl-gen-trace-step">
+          <span class="vcl-gen-arrow">&rarr;</span>
+          <span class="vcl-gen-trace-label">{{label}}</span>
+          <span class="vcl-gen-trace-dice">({{formula}}={{total}})</span>
+        </div>
+        {{/each}}
+      </div>
+      <div class="vcl-gen-item">{{{item}}}</div>
+
+      <div class="vcl-gen-actions">
+        <button type="button" class="vcl-gen-post-chat" data-index="{{origIndex}}">
+          <i class="fas fa-comment"></i> Post to Chat
+        </button>
+
+        {{#if hasItem}}
+        <div class="vcl-gen-give-row">
+          <select class="vcl-gen-player-select">
+            {{#each ../players}}
+            <option value="{{id}}">{{name}}</option>
+            {{/each}}
+          </select>
+          <button type="button" class="vcl-gen-give-app" data-hist-index="{{origIndex}}">
+            <i class="fas fa-gift"></i> Give
+          </button>
+        </div>
+        {{/if}}
+      </div>
+    </div>
+    {{/each}}
+  </div>
+
+  <div class="vcl-gen-footer">
+    <button type="button" class="vcl-gen-clear">
+      <i class="fas fa-trash"></i> Clear History
+    </button>
+  </div>
+  {{else}}
+  <div class="vcl-gen-empty">
+    <p>Select a level and click <strong>Roll Loot</strong> to generate.</p>
+    <p style="font-size: 11px; color: #666;">d6: 1=Treasure, 2=Armor, 3-4=Weapons, 5-6=Alchemy</p>
+  </div>
+  {{/if}}
+</form>

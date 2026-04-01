@@ -20,6 +20,7 @@ import { RelicForge }       from "./relic-forge.mjs";
 import { RelicEffects }     from "./relic-effects.mjs";
 import { LootManager }      from "./loot-manager.mjs";
 import { LootTracker }      from "./loot-tracker.mjs";
+import { LootGenerator }    from "./loot-generator.mjs";
 
 export const MODULE_ID = "vagabond-crawler";
 
@@ -62,8 +63,13 @@ Hooks.once("init", () => {
     scope: "world", config: false, type: Number, default: 1
   });
 
-  // Excluded RollTable folders (JSON array of folder IDs)
+  // Excluded RollTable folders (JSON array of folder IDs) — Encounter Roller
   game.settings.register(MODULE_ID, "excludedTableFolders", {
+    scope: "world", config: false, type: String, default: "[]"
+  });
+
+  // Excluded RollTable folders — Loot Manager (separate from encounter exclusions)
+  game.settings.register(MODULE_ID, "excludedLootTableFolders", {
     scope: "world", config: false, type: String, default: "[]"
   });
 
@@ -142,6 +148,7 @@ Hooks.once("ready", async () => {
     relicEffects: RelicEffects,
     lootManager: LootManager,
     lootTracker: LootTracker,
+    lootGenerator: LootGenerator,
     debugCombat: () => {
       const combat = game.combat;
       if (!combat) return "No active combat";
@@ -196,6 +203,7 @@ Hooks.once("ready", async () => {
   RelicEffects.init();
   LootManager.init();
   LootTracker.init();
+  LootGenerator.init();
 
   // Start light tracker + real-time engine if enabled
   LightTracker.init();
