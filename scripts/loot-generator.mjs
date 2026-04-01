@@ -5,6 +5,7 @@ import {
   ARMOR_BASE, ARMOR_POWER, ARMOR_MATERIAL, ARMOR_RESISTANCE, ARMOR_UTILITY,
   WEAPONS_LIST, WEAPON_POWER, WEAPON_MATERIAL, WEAPON_RESISTANCE, WEAPON_UTILITY,
   ALCHEMY, SENSES, MOVEMENT, CREATURE_GENERAL, CREATURE_SPECIFIC,
+  LEVEL1_TABLE,
 } from "./loot-data.mjs";
 
 /* ── Compendium item cache ─────────────────────────────── */
@@ -171,24 +172,24 @@ class LootGeneratorApp extends HandlebarsApplicationMixin(ApplicationV2) {
   /* ── Level 1 — roll on world "Vagabond Loot (p.186)" table ── */
 
   async _rollLevel1() {
-    const table = game.tables.find(t => t.name.includes("Vagabond Loot") || t.name.includes("p.186"));
-    if (!table) {
-      ui.notifications.warn("Level 1 table 'Vagabond Loot (p.186)' not found in world. Import or create it first.");
-      return;
+    // Weighted random from embedded p.186 data — no world table dependency
+    const totalWeight = LEVEL1_TABLE.reduce((s, e) => s + e[0], 0);
+    let roll = Math.floor(Math.random() * totalWeight);
+    let rollDisplay = roll + 1;  // 1-indexed for display
+    let pick = LEVEL1_TABLE[0];
+    for (const entry of LEVEL1_TABLE) {
+      roll -= entry[0];
+      if (roll < 0) { pick = entry; break; }
     }
+    const [weight, itemName, uuid] = pick;
 
-    const draw = await table.draw({ displayChat: false, resetTable: false });
-    const result = draw.results[0];
-    if (!result) return;
+    const trace = [{ label: "Vagabond Loot (p.186)", formula: `1d${totalWeight}`, total: rollDisplay }];
 
-    const trace = [{ label: "Vagabond Loot (p.186)", formula: table.formula, total: draw.roll.total }];
-    const itemName = result.text || result.name || "Unknown";
-
-    // Try to get item data if it's a document result
+    // Try to get item data from compendium UUID
     let itemData = null;
-    if (result.type === "document" && result.documentUuid) {
+    if (uuid) {
       try {
-        const doc = await fromUuid(result.documentUuid);
+        const doc = await fromUuid(uuid);
         if (doc) itemData = [doc.toObject()];
       } catch { /* non-fatal */ }
     }
@@ -533,4 +534,146 @@ class LootGeneratorApp extends HandlebarsApplicationMixin(ApplicationV2) {
 
     await ChatMessage.create(msgData);
   }
+}
+
+/* ── Headless loot generation for Loot Drops integration ───── */
+
+/**
+ * Generate loot for a given level without UI.
+ * Called by loot-tables.mjs when a "loot-level:N" table is assigned.
+ * @param {number} level — 1-10
+ * @returns {Promise<{currency: Object, items: Object[]}>}
+ */
+export async function generateLevelLoot(level) {
+  const currency = { gold: 0, silver: 0, copper: 0 };
+  const items = [];
+
+  const _roll = async (formula) => {
+    const r = new Roll(formula);
+    await r.evaluate();
+    return r.total;
+  };
+
+  const _lookupRange = (table, n) => {
+    for (const [lo, hi, text] of table) { if (n >= lo && n <= hi) return text; }
+    return null;
+  };
+
+  if (level === 1) {
+    // ── Level 1: weighted random from p.186 table ──
+    const totalWeight = LEVEL1_TABLE.reduce((s, e) => s + e[0], 0);
+    let roll = Math.floor(Math.random() * totalWeight);
+    let pick = LEVEL1_TABLE[0];
+    for (const entry of LEVEL1_TABLE) {
+      roll -= entry[0];
+      if (roll < 0) { pick = entry; break; }
+    }
+    const [, name, uuid] = pick;
+
+    // Parse currency from name
+    const coinMatch = name.match(/^Coins\s+\((.+?)\)\s+(gold|silver|copper)$/i);
+    if (coinMatch) {
+      const coinRoll = await _roll(coinMatch[1]);
+      currency[coinMatch[2].toLowerCase()] += coinRoll;
+      return { currency, items };
+    }
+
+    // Compendium item
+    if (uuid) {
+      try {
+        const doc = await fromUuid(uuid);
+        if (doc) items.push(doc.toObject());
+      } catch { /* non-fatal */ }
+    }
+    return { currency, items };
+  }
+
+  // ── Levels 2-10: category chain ──
+  const formulas = LEVEL_FORMULAS[level];
+  if (!formulas) return { currency, items };
+
+  const catN = await _roll("1d6");
+
+  if (catN === 1) {
+    // Treasure
+    const n = await _roll(formulas.treasure);
+    const entry = TREASURE[n];
+    if (entry) {
+      // Coins
+      const coinMatch = entry.match(/^Coins:\s+(.+)$/);
+      if (coinMatch) {
+        const formula = coinMatch[1].replace(/\u00d7/g, "*").replace(/gold/i, "").trim();
+        try { currency.gold += (await _roll(formula)); } catch { /* complex formula */ }
+      }
+      // Trade Goods — resolve to text only (no item)
+      // Art/Jewelry/Relic — text-based, no currency
+      // Try compendium match for non-coin results
+      else if (!entry.startsWith("Coins")) {
+        // Try to find a matching compendium item by name keywords
+        const baseName = entry.replace(/\s*\(.+?\)/g, "").replace(/,.*$/, "").trim();
+        const doc = await _findCompendiumItem("vagabond.gear", baseName)
+          || await _findCompendiumItem("vagabond.weapons", baseName);
+        if (doc) items.push(doc.toObject());
+      }
+    }
+  } else if (catN === 2) {
+    // Armor — get base + power
+    const baseN = await _roll("1d20");
+    const base = _lookupRange(ARMOR_BASE, baseN) ?? "Light Armor";
+    let armorPack = "Light Armor";
+    if (base.includes("Medium")) armorPack = "Medium Armor";
+    if (base.includes("Heavy")) armorPack = "Heavy Armor";
+    const doc = await _findCompendiumItem("vagabond.armor", armorPack);
+    if (doc) {
+      const itemData = doc.toObject();
+      // Apply material if power roll is high enough
+      const powN = await _roll(formulas.armor);
+      if (powN >= 8) {
+        const matN = await _roll("1d12");
+        const mat = ARMOR_MATERIAL[matN];
+        if (mat && mat !== "Mundane") {
+          itemData.system.metal = mat.toLowerCase();
+          itemData.name = `${mat} ${itemData.name}`;
+        }
+      }
+      const power = ARMOR_POWER[powN];
+      if (power?.includes("+")) itemData.name += ` ${power}`;
+      items.push(itemData);
+    }
+  } else if (catN <= 4) {
+    // Weapons
+    const baseN = await _roll("1d48");
+    const baseName = WEAPONS_LIST[baseN - 1];
+    if (baseName) {
+      const doc = await _findCompendiumItem("vagabond.weapons", baseName);
+      if (doc) {
+        const itemData = doc.toObject();
+        const powN = await _roll(formulas.weapon);
+        if (powN >= 10) {
+          const matN = await _roll("1d8");
+          const mat = WEAPON_MATERIAL[matN];
+          if (mat && mat !== "Mundane") {
+            itemData.system.metal = mat.toLowerCase();
+            itemData.name = `${mat} ${itemData.name}`;
+          }
+        }
+        const power = WEAPON_POWER[powN];
+        if (power?.includes("+")) itemData.name += ` ${power.replace("Weapon/Trinket ", "").replace("Weapon ", "")}`;
+        else if (power?.startsWith("Strike")) itemData.name += ` (${power})`;
+        items.push(itemData);
+      }
+    }
+  } else {
+    // Alchemy (roll twice)
+    for (let i = 0; i < 2; i++) {
+      const n = await _roll(formulas.alchemy);
+      const name = ALCHEMY[n];
+      if (name) {
+        const doc = await _findCompendiumItem("vagabond.alchemical-items", name);
+        if (doc) items.push(doc.toObject());
+      }
+    }
+  }
+
+  return { currency, items };
 }

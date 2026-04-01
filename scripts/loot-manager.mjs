@@ -211,6 +211,13 @@ class LootManagerApp extends HandlebarsApplicationMixin(ApplicationV2) {
     catch { excluded = []; }
     const groups = [];
 
+    // ── Built-in Level Loot (always available) ──
+    const levelTables = [];
+    for (let i = 1; i <= 10; i++) {
+      levelTables.push({ id: `loot-level:${i}`, uuid: `loot-level:${i}`, name: `Level ${i} Loot${i === 1 ? " (p.186)" : ""}${i === 10 ? "+" : ""}` });
+    }
+    groups.push({ label: "Loot Generator", tables: levelTables });
+
     // Ungrouped
     const ungrouped = game.tables.filter(t => !t.folder);
     if (ungrouped.length > 0) {

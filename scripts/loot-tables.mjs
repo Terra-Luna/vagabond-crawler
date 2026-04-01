@@ -47,7 +47,22 @@ export async function generateLoot(npc, customTableUuid = null) {
   const currency = { gold: 0, silver: 0, copper: 0 };
   const items = [];
 
-  if (customTableUuid) {
+  if (customTableUuid?.startsWith("loot-level:")) {
+    // Built-in Level Loot — delegate to Loot Generator engine
+    const level = parseInt(customTableUuid.split(":")[1]);
+    if (level >= 1 && level <= 10) {
+      const { generateLevelLoot } = await import("./loot-generator.mjs");
+      const result = await generateLevelLoot(level);
+      if (result) {
+        if (result.currency) {
+          currency.gold += result.currency.gold ?? 0;
+          currency.silver += result.currency.silver ?? 0;
+          currency.copper += result.currency.copper ?? 0;
+        }
+        if (result.items?.length) items.push(...result.items);
+      }
+    }
+  } else if (customTableUuid) {
     // Loot comes entirely from the assigned table
     const table = await fromUuid(customTableUuid);
     if (table) {
