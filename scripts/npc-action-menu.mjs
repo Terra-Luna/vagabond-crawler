@@ -293,6 +293,19 @@ export class CrawlerSpellDialog extends foundry.applications.api.ApplicationV2 {
     if (costs.totalCost > (actor.system?.mana?.current   ?? 0))  { ui.notifications.error(`Not enough mana! Need ${costs.totalCost}.`); return; }
     if (costs.totalCost > (actor.system?.mana?.castingMax ?? 0)) { ui.notifications.error(`Exceeds casting max of ${actor.system?.mana?.castingMax}!`); return; }
 
+    // Imbue delivery: bypass d20/damage, delegate to VCE ImbueManager
+    const imbueHandler = game.vagabondCharacterEnhancer?.imbue?.handleImbueCast;
+    if (s.deliveryType === "imbue" && imbueHandler) {
+      const handled = await game.vagabondCharacterEnhancer.imbue.handleImbueCast(actor, spell, s, costs);
+      if (handled) {
+        s.damageDice = 1; s.deliveryIncrease = 0; s.useFx = spell.system?.damageType === "-";
+        s.previewActive = false; s.focusAfterCast = false;
+        _saveSpellState(actor, spell, s);
+        this.close();
+        return;
+      }
+    }
+
     const manaSkillKey = actor.system?.classData?.manaSkill;
     if (!manaSkillKey)                          { ui.notifications.error("No mana skill configured!"); return; }
     if (!actor.system?.classData?.isSpellcaster){ ui.notifications.warn("Your class cannot cast spells!"); return; }
@@ -346,7 +359,7 @@ export class CrawlerSpellDialog extends foundry.applications.api.ApplicationV2 {
           if (!current.includes(spell.id) && current.length < focusMax) {
             const next = [...current, spell.id];
             await actor.update({ "system.focus.spellIds": next });
-            if (next.length === 1) {
+            if (next.length === 1 && !actor.statuses?.has("focusing")) {
               await actor.toggleStatusEffect("focusing", { active: true });
             }
           }
