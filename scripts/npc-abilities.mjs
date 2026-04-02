@@ -206,7 +206,68 @@ async function _wrapSystemClasses() {
   };
   console.log(`${MODULE_ID} | ✓ Wrapped RollBuilder.buildAndEvaluateD20WithRollData`);
 
-  // ── 4. Wrap VagabondChatCard.npcAction for Pack Instincts ────────────────
+  // ── 4. Patch VagabondItemSequencer to support cone animations ─────────────
+  //    The system's item-sequencer only handles 'ranged' and 'melee'.
+  //    This adds 'cone' support using the same logic as spell-sequencer.
+  let VagabondItemSequencer;
+  try {
+    ({ VagabondItemSequencer } = await import(
+      "../../../systems/vagabond/module/helpers/item-sequencer.mjs"
+    ));
+  } catch (err) {
+    console.warn(`${MODULE_ID} | Could not import VagabondItemSequencer — cone patch skipped`, err);
+  }
+  if (VagabondItemSequencer?.play) {
+    const origPlay = VagabondItemSequencer.play.bind(VagabondItemSequencer);
+    VagabondItemSequencer.play = function (item, casterToken, targetTokens, isHit) {
+      const animType = this._resolveAnimType(item);
+      if (animType !== 'cone' || !isHit) return origPlay(item, casterToken, targetTokens, isHit);
+
+      // Cone-specific handling
+      if (!this.isEnabledForWorld() || !this.isAvailable() || !this.isEnabledForUser()) return;
+      if (!casterToken) return;
+      const fx = item.system?.itemFx;
+      if (!fx?.enabled) return;
+
+      const file     = this._resolveFile(fx.hitFile);
+      const scale    = fx.hitScale ?? 1.0;
+      const duration = fx.hitDuration ?? 800;
+      const sound    = fx.hitSound;
+      const volume   = fx.soundVolume ?? 0.6;
+
+      if (sound) {
+        try { foundry.audio.AudioHelper.play({ src: sound, volume, autoplay: true, loop: false }); }
+        catch (err) { console.warn(`${MODULE_ID} | ItemSequencer cone sound error:`, err); }
+      }
+      if (!file || (Array.isArray(file) && !file.length)) return;
+
+      // Direction: toward target centroid
+      const cCenter = { x: casterToken.x + (casterToken.w ?? 0) / 2, y: casterToken.y + (casterToken.h ?? 0) / 2 };
+      let direction = 0;
+      if (targetTokens.length) {
+        const cx = targetTokens.reduce((s, t) => s + t.x + (t.w ?? 0) / 2, 0) / targetTokens.length;
+        const cy = targetTokens.reduce((s, t) => s + t.y + (t.h ?? 0) / 2, 0) / targetTokens.length;
+        direction = Math.toDegrees(Math.atan2(cy - cCenter.y, cx - cCenter.x));
+      }
+
+      try {
+        new Sequence()
+          .effect()
+            .file(file)
+            .atLocation(casterToken)
+            .rotate(-direction)
+            .scale(scale)
+            .anchor({ x: 0, y: 0.5 })
+            .duration(duration)
+          .play();
+      } catch (err) {
+        console.warn(`${MODULE_ID} | ItemSequencer cone animation error:`, err);
+      }
+    };
+    console.log(`${MODULE_ID} | ✓ Patched VagabondItemSequencer with cone support`);
+  }
+
+  // ── 5. Wrap VagabondChatCard.npcAction for Pack Instincts ────────────────
   //    Works from both actor sheet clicks AND crawl strip action menu.
   let VagabondChatCard;
   try {
