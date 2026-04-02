@@ -13,7 +13,7 @@
  */
 
 import { MODULE_ID } from "./vagabond-crawler.mjs";
-import { setCastCheckFlag } from "./npc-abilities.mjs";
+import { setCastCheckFlag, applyPackInstincts } from "./npc-abilities.mjs";
 
 // ─── Spell State ──────────────────────────────────────────────────────────────
 
@@ -687,6 +687,7 @@ async function _fireAction(actor, type, indexStr, itemId) {
   try {
     if (type === "action") {
       const action = actor.system?.actions?.[index]; if (!action) return;
+      // Pack Instincts is applied inside the npcAction wrapper (npc-abilities.mjs)
       await VagabondChatCard.npcAction(actor, action, index, targets);
 
     } else if (type === "ability") {
@@ -695,6 +696,7 @@ async function _fireAction(actor, type, indexStr, itemId) {
 
     } else if (type === "weapon") {
       const item = actor.items.get(itemId); if (!item) return;
+      await applyPackInstincts(actor);
       const { VagabondChatCard } = globalThis.vagabond.utils;
       const favorHinder = actor.system?.favorHinder || "none";
       const attackResult = await item.rollAttack(actor, favorHinder);

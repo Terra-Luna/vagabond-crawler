@@ -47,6 +47,30 @@ function _getHardCap(actor) {
   return s?.crawl ?? 0;                                  // crawl: no Rush
 }
 
+/** Highest "Modify Movement Cost" multiplier along a segment (checks dest + midpoint). */
+function _getTerrainDifficulty(scene, fromX, fromY, toX, toY, elevation = 0) {
+  if (!scene?.regions?.size) return 1;
+
+  const points = [
+    { x: toX, y: toY, elevation },
+    { x: (fromX + toX) / 2, y: (fromY + toY) / 2, elevation },
+  ];
+
+  let maxDifficulty = 1;
+  for (const region of scene.regions) {
+    for (const behavior of region.behaviors) {
+      if (behavior.type !== "modifyMovementCost" || behavior.disabled) continue;
+      const diff = behavior.system?.difficulties?.walk;
+      if (!diff || diff <= 1) continue;
+      // Check if any test point falls inside this region
+      for (const pt of points) {
+        if (region.testPoint(pt)) { maxDifficulty = Math.max(maxDifficulty, diff); break; }
+      }
+    }
+  }
+  return maxDifficulty;
+}
+
 // ── VCS TokenRuler subclass ─────────────────────────────────────────────────
 
 class VCSTokenRuler extends foundry.canvas.placeables.tokens.TokenRuler {
@@ -158,6 +182,11 @@ export const MovementTracker = {
       hint: "Block tokens from moving beyond their crawl speed during the Heroes phase.",
       scope: "world", config: true, type: Boolean, default: true,
     });
+    game.settings.register(MODULE_ID, "enforceCombatMovement", {
+      name: "Enforce Combat Movement",
+      hint: "Block tokens from moving beyond their base speed (+ Rush) during combat.",
+      scope: "world", config: true, type: Boolean, default: true,
+    });
   },
 
   init() {
@@ -181,13 +210,16 @@ export const MovementTracker = {
           const gridDist = scene?.grid?.distance ?? 5;
           const dx = ((changes.x ?? doc.x) - doc.x) / gridSize;
           const dy = ((changes.y ?? doc.y) - doc.y) / gridSize;
-          const distanceFt = Math.round((Math.max(Math.abs(dx), Math.abs(dy)) * gridDist) / 5) * 5;
+          const toX = changes.x ?? doc.x;
+          const toY = changes.y ?? doc.y;
+          const difficulty = _getTerrainDifficulty(scene, doc.x, doc.y, toX, toY, doc.elevation ?? 0);
+          const distanceFt = Math.round((Math.max(Math.abs(dx), Math.abs(dy)) * gridDist * difficulty) / 5) * 5;
           this._pendingDeduct ??= {};
           this._pendingDeduct[doc.id] = distanceFt;
         }
       }
       // Block move if it exceeds remaining movement
-      return this._onPreUpdate(doc, changes, userId);
+      return this._onPreUpdate(doc, changes, userId, this._pendingDeduct?.[doc.id]);
     });
 
     Hooks.on("updateToken", (doc, changes, opts) => {
@@ -281,7 +313,7 @@ export const MovementTracker = {
 
   // ── preUpdateToken ────────────────────────────────────────────────────────
 
-  _onPreUpdate(doc, changes, userId) {
+  _onPreUpdate(doc, changes, userId, precomputedFt) {
     if (!CrawlState.active) return;
     if (changes.x === undefined && changes.y === undefined) return;
 
@@ -291,20 +323,25 @@ export const MovementTracker = {
     const member = CrawlState.members.find(m => m.actorId === actor.id);
     if (!member) return;
 
-    const scene    = doc.parent;
-    const gridSize = scene?.grid?.size     ?? 100;
-    const gridDist = scene?.grid?.distance ?? 5;
-
     const inCombat      = CrawlState.paused;
     const moveRemaining = actor.getFlag(MODULE_ID, "moveRemaining") ?? _getBaseSpeed(actor);
 
-    // Crawl: enforce if setting enabled.  Combat: always enforce.
-    const enforce = inCombat || game.settings.get(MODULE_ID, "enforceCrawlMovement");
+    // Crawl: enforce if setting enabled.  Combat: enforce if setting enabled.
+    const enforce = inCombat
+      ? game.settings.get(MODULE_ID, "enforceCombatMovement")
+      : game.settings.get(MODULE_ID, "enforceCrawlMovement");
     if (!enforce) return;
 
-    const dx = ((changes.x ?? doc.x) - doc.x) / gridSize;
-    const dy = ((changes.y ?? doc.y) - doc.y) / gridSize;
-    const segFt = Math.round((Math.max(Math.abs(dx), Math.abs(dy)) * gridDist) / 5) * 5;
+    let segFt = precomputedFt;
+    if (segFt == null) {
+      const scene    = doc.parent;
+      const gridSize = scene?.grid?.size     ?? 100;
+      const gridDist = scene?.grid?.distance ?? 5;
+      const dx = ((changes.x ?? doc.x) - doc.x) / gridSize;
+      const dy = ((changes.y ?? doc.y) - doc.y) / gridSize;
+      const difficulty = _getTerrainDifficulty(scene, doc.x, doc.y, changes.x ?? doc.x, changes.y ?? doc.y, doc.elevation ?? 0);
+      segFt = Math.round((Math.max(Math.abs(dx), Math.abs(dy)) * gridDist * difficulty) / 5) * 5;
+    }
 
     // Combat: allow up to 2× base (Rush).  moveRemaining starts at base speed
     // and can go negative (down to -base), so the hard limit is:
