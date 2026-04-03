@@ -2238,3 +2238,69 @@ body.theme-light .vcb-phase-badge {
   border-radius: 3px;
   pointer-events: none;
 }
+
+/* ── Scroll Forge ─────────────────────────────────────────────────────────── */
+
+.vcscr-forge {
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  color: var(--vcb-text, #BDC1C6);
+}
+.vcscr-title {
+  margin: 0; font-size: 16px; text-align: center;
+  color: var(--vcb-accent, #fff);
+}
+.vcscr-subtitle {
+  margin: 0; text-align: center; font-size: 12px;
+  color: var(--vcb-text-muted, #666);
+}
+.vcscr-field { display: flex; flex-direction: column; gap: 4px; }
+.vcscr-field label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--vcb-text-dim, #aaa); }
+.vcscr-field select {
+  background: var(--vcb-input-bg, #111418); color: var(--vcb-text, #BDC1C6);
+  border: 1px solid var(--vcb-border, #3a3d44); border-radius: 4px;
+  padding: 5px 8px; font-size: 13px;
+}
+.vcscr-field select option { background: #1b1e24; color: #BDC1C6; }
+.vcscr-row { flex-direction: row; align-items: center; justify-content: space-between; }
+.vcscr-stepper {
+  display: flex; align-items: center; gap: 8px;
+}
+.vcscr-stepper button {
+  width: 26px; height: 26px; border-radius: 4px; border: 1px solid var(--vcb-border, #3a3d44);
+  background: var(--vcb-btn-1, #252830); color: var(--vcb-text, #BDC1C6);
+  cursor: pointer; font-size: 14px; line-height: 1;
+}
+.vcscr-stepper button:hover { background: var(--vcb-btn-hover-1, #2e3138); }
+.vcscr-stepper span { min-width: 40px; text-align: center; font-weight: 600; }
+.vcscr-toggle {
+  padding: 4px 12px; border-radius: 4px; border: 1px solid var(--vcb-border, #3a3d44);
+  background: var(--vcb-btn-1, #252830); color: var(--vcb-text-muted, #666);
+  cursor: pointer; font-size: 12px; font-weight: 600;
+}
+.vcscr-toggle.active { background: #2a4a2a; color: #8f8; border-color: #4a6a4a; }
+.vcscr-preview {
+  display: flex; align-items: center; gap: 10px;
+  background: var(--vcb-bg-alt, #1f2226); border-radius: 6px; padding: 8px 12px;
+}
+.vcscr-spell-img { width: 40px; height: 40px; border-radius: 4px; border: 1px solid var(--vcb-border, #3a3d44); }
+.vcscr-spell-info { display: flex; flex-direction: column; gap: 2px; }
+.vcscr-tag {
+  display: inline-block; padding: 1px 6px; border-radius: 3px; font-size: 10px;
+  background: rgba(255,255,255,0.08); color: var(--vcb-text-dim, #aaa);
+  text-transform: capitalize; width: fit-content;
+}
+.vcscr-cost {
+  display: flex; justify-content: space-between;
+  background: var(--vcb-bg-alt, #1f2226); border-radius: 4px; padding: 8px 12px;
+  font-size: 13px;
+}
+.vcscr-create-btn {
+  width: 100%; padding: 8px; border-radius: 6px; border: none;
+  background: linear-gradient(135deg, var(--vcb-btn-1, #252830), var(--vcb-btn-2, #1b1e24));
+  color: var(--vcb-accent, #fff); font-size: 14px; font-weight: 600;
+  cursor: pointer; transition: background 0.15s;
+}
+.vcscr-create-btn:hover { background: linear-gradient(135deg, var(--vcb-btn-hover-1, #2e3138), var(--vcb-btn-hover-2, #232730)); }

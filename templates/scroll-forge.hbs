@@ -1,0 +1,77 @@
+<div class="vcscr-forge">
+  <h2 class="vcscr-title"><i class="fas fa-scroll"></i> Scroll Forge</h2>
+  <p class="vcscr-subtitle">Target: <strong>{{targetActorName}}</strong></p>
+
+  {{!-- Spell picker --}}
+  <div class="vcscr-field">
+    <label>Spell</label>
+    <select class="vcscr-spell-select">
+      <option value="">— Choose a Spell —</option>
+      {{#each spells}}
+      <option value="{{this.uuid}}" {{#if (eq this.uuid ../state.spellUuid)}}selected{{/if}}>{{this.name}}</option>
+      {{/each}}
+    </select>
+  </div>
+
+  {{#if spell}}
+  {{!-- Spell preview --}}
+  <div class="vcscr-preview">
+    <img src="{{spellImg}}" class="vcscr-spell-img" />
+    <div class="vcscr-spell-info">
+      <strong>{{spellName}}</strong>
+      {{#if hasDamage}}<span class="vcscr-tag">{{spell.system.damageType}}</span>{{/if}}
+    </div>
+  </div>
+
+  {{!-- Delivery --}}
+  <div class="vcscr-field">
+    <label>Delivery</label>
+    <select class="vcscr-delivery-select">
+      {{#each deliveryOptions}}
+      <option value="{{this.value}}" {{#if this.selected}}selected{{/if}}>{{this.label}}</option>
+      {{/each}}
+    </select>
+  </div>
+
+  {{!-- Delivery increase --}}
+  <div class="vcscr-field vcscr-row">
+    <label>Delivery Increase</label>
+    <div class="vcscr-stepper">
+      <button type="button" data-action="inc-down">−</button>
+      <span>{{state.deliveryIncrease}}</span>
+      <button type="button" data-action="inc-up">+</button>
+    </div>
+  </div>
+
+  {{!-- Damage dice --}}
+  {{#if hasDamage}}
+  <div class="vcscr-field vcscr-row">
+    <label>Damage Dice</label>
+    <div class="vcscr-stepper">
+      <button type="button" data-action="dice-down">−</button>
+      <span>{{state.damageDice}}d6</span>
+      <button type="button" data-action="dice-up">+</button>
+    </div>
+  </div>
+
+  {{!-- Use FX --}}
+  <div class="vcscr-field vcscr-row">
+    <label>Include Effects (Fx)</label>
+    <button type="button" data-action="toggle-fx" class="vcscr-toggle {{#if state.useFx}}active{{/if}}">
+      {{#if state.useFx}}ON{{else}}OFF{{/if}}
+    </button>
+  </div>
+  {{/if}}
+
+  {{!-- Cost summary --}}
+  <div class="vcscr-cost">
+    <span><i class="fas fa-hat-wizard"></i> Mana equivalent: <strong>{{manaCost}}</strong></span>
+    <span><i class="fas fa-coins"></i> Scroll value: <strong>{{goldValue}}g</strong></span>
+  </div>
+
+  {{!-- Create button --}}
+  <button type="button" class="vcscr-create-btn" data-action="create-scroll">
+    <i class="fas fa-scroll"></i> Create Scroll of {{spellName}}
+  </button>
+  {{/if}}
+</div>

@@ -18,6 +18,7 @@ import { RelicForge }      from "./relic-forge.mjs";
 import { LootTracker }     from "./loot-tracker.mjs";
 import { LootManager }     from "./loot-manager.mjs";
 import { LootGenerator }   from "./loot-generator.mjs";
+import { ScrollForge }     from "./scroll-forge.mjs";
 
 const BAR_ID = "vagabond-crawler-bar";
 
@@ -382,6 +383,9 @@ export const CrawlBar = {
       <div class="vcb-clock-menu-item" data-fl="forge">
         <i class="fas fa-hammer"></i> Open Relic Forge
       </div>
+      <div class="vcb-clock-menu-item" data-fl="scrollForge">
+        <i class="fas fa-scroll"></i> Open Scroll Forge
+      </div>
       <div class="vcb-clock-menu-item" data-fl="lootManager">
         <i class="fas fa-treasure-chest"></i> Open Loot Manager
       </div>
@@ -422,6 +426,12 @@ export const CrawlBar = {
     menu.querySelector('[data-fl="forge"]')?.addEventListener("click", () => {
       this._dismissForgeLootMenu();
       RelicForge.open();
+    });
+
+    // Open Scroll Forge
+    menu.querySelector('[data-fl="scrollForge"]')?.addEventListener("click", () => {
+      this._dismissForgeLootMenu();
+      ScrollForge.open();
     });
 
     // Open Loot Manager

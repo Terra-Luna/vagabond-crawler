@@ -22,6 +22,7 @@ import { LootManager }      from "./loot-manager.mjs";
 import { LootTracker }      from "./loot-tracker.mjs";
 import { LootGenerator }    from "./loot-generator.mjs";
 import { CountdownRoller }  from "./countdown-roller.mjs";
+import { ScrollForge }      from "./scroll-forge.mjs";
 
 export const MODULE_ID = "vagabond-crawler";
 
@@ -152,6 +153,7 @@ Hooks.once("ready", async () => {
     lootTracker: LootTracker,
     lootGenerator: LootGenerator,
     countdownRoller: CountdownRoller,
+    scrollForge: ScrollForge,
     debugCombat: () => {
       const combat = game.combat;
       if (!combat) return "No active combat";
@@ -263,14 +265,31 @@ Hooks.once("ready", async () => {
       card.appendChild(badge);
     }
 
-    // 2. Fix .slot-value "X / Y" — system ignores quantity when counting occupied slots
+    // 2. Fix .slot-value "X / Y"
+    //    - Stacked items (qty > 1, slots > 0): system only counts 1× slots, add the rest
+    //    - Zero-slot items: pool by gearCategory, every 10 units in a group = 1 slot
+    //      e.g. 3× Scroll of Fade + 3× Scroll of Life + 4× Scroll of Ward = 10 "Scrolls" = 1 slot
     let extraSlots = 0;
+    const INV_TYPES = new Set(["equipment", "weapon"]);
+    const zeroSlotGroups = new Map();  // gearCategory|name → total qty
     for (const item of actor.items) {
-      const qty = item.system?.quantity ?? 1;
-      if (qty <= 1) continue;
-      const baseSlots = item.system?.slots || item.system?.baseSlots || 0;
-      if (baseSlots > 0) extraSlots += baseSlots * (qty - 1);
+      if (!item.system || !INV_TYPES.has(item.type)) continue;
+      const baseSlots = item.system.slots || item.system.baseSlots || 0;
+      const qty = item.system.quantity ?? 1;
+      if (baseSlots === 0 && qty > 0) {
+        // Skip items flagged as truly weightless
+        if (item.getFlag(MODULE_ID, "trueZeroSlot")) continue;
+        // Group by gearCategory; fall back to item name if no category
+        const group = item.system.gearCategory || item.name;
+        zeroSlotGroups.set(group, (zeroSlotGroups.get(group) || 0) + qty);
+      } else if (qty > 1) {
+        extraSlots += baseSlots * (qty - 1);
+      }
     }
+    for (const total of zeroSlotGroups.values()) {
+      extraSlots += Math.ceil(total / 10);
+    }
+
     if (!extraSlots) return;
     const slotValue = el.querySelector(".slot-value");
     if (!slotValue) return;
@@ -282,6 +301,72 @@ Hooks.once("ready", async () => {
   Hooks.on("renderVagabondCharacterSheet", _patchInventory);
   Hooks.on("renderVagabondNPCSheet", _patchInventory);
   Hooks.on("renderActorSheet", _patchInventory);  // fallback
+
+  // Scroll context menu: "Use Scroll" entry on spell scroll items
+  const _attachScrollCtx = (sheet) => {
+    const el = sheet.element;
+    if (!el) return;
+    const actor = sheet.actor;
+    if (!actor) return;
+    for (const card of el.querySelectorAll(".inventory-card")) {
+      if (card.dataset.vcscrBound) continue;
+      const item = actor.items.get(card.dataset.itemId);
+      if (!item || !ScrollForge.isScroll(item)) continue;
+      card.dataset.vcscrBound = "1";
+      card.addEventListener("contextmenu", () => {
+        let attempts = 0;
+        const poll = setInterval(() => {
+          const menu = document.querySelector(".inventory-context-menu");
+          if (menu) {
+            clearInterval(poll);
+            if (menu.querySelector(".vcscr-ctx-item")) return;
+            const li = document.createElement("li");
+            li.className = "vcscr-ctx-item";
+            li.innerHTML = `<i class="fas fa-scroll"></i> Use Scroll`;
+            li.addEventListener("click", async ev => {
+              ev.stopPropagation();
+              menu.remove();
+              await ScrollForge.useScroll(item);
+            });
+            menu.insertBefore(li, menu.firstChild);
+          } else if (++attempts >= 10) {
+            clearInterval(poll);
+          }
+        }, 10);
+      });
+    }
+  };
+  Hooks.on("renderVagabondCharacterSheet", _attachScrollCtx);
+  Hooks.on("renderVagabondNPCSheet", _attachScrollCtx);
+  Hooks.on("renderActorSheet", _attachScrollCtx);
+
+  // "True Zero Slot" checkbox on item sheets — items flagged skip the 10-per-slot rule
+  const _injectTrueZeroSlot = (sheet) => {
+    const item = sheet.item ?? sheet.document;
+    if (!item?.system || item.type !== "equipment") return;
+    const baseSlots = item.system.slots || item.system.baseSlots || 0;
+    if (baseSlots !== 0) return;  // only show on zero-slot items
+    const el = sheet.element;
+    if (!el || el.querySelector(".vcb-true-zero-slot")) return;
+
+    // Find the baseSlots input to inject near it
+    const slotsInput = el.querySelector("input[name='system.baseSlots']");
+    if (!slotsInput) return;
+    const container = slotsInput.closest(".stat-pair, .resource-group, .form-group") ?? slotsInput.parentElement;
+
+    const wrapper = document.createElement("label");
+    wrapper.className = "vcb-true-zero-slot";
+    wrapper.style.cssText = "display:flex; align-items:center; gap:4px; font-size:11px; margin-top:4px; cursor:pointer;";
+    const cb = document.createElement("input");
+    cb.type = "checkbox";
+    cb.checked = !!item.getFlag(MODULE_ID, "trueZeroSlot");
+    cb.addEventListener("change", () => item.setFlag(MODULE_ID, "trueZeroSlot", cb.checked));
+    wrapper.appendChild(cb);
+    wrapper.appendChild(document.createTextNode("Weightless (no slot cost)"));
+    container.after(wrapper);
+  };
+  Hooks.on("renderVagabondItemSheet", _injectTrueZeroSlot);
+  Hooks.on("renderItemSheet", _injectTrueZeroSlot);
 
   console.log(`${MODULE_ID} | Ready.`);
 });
