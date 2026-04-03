@@ -21,6 +21,7 @@ import { RelicEffects }     from "./relic-effects.mjs";
 import { LootManager }      from "./loot-manager.mjs";
 import { LootTracker }      from "./loot-tracker.mjs";
 import { LootGenerator }    from "./loot-generator.mjs";
+import { CountdownRoller }  from "./countdown-roller.mjs";
 
 export const MODULE_ID = "vagabond-crawler";
 
@@ -111,6 +112,7 @@ Hooks.once("init", () => {
   RelicForge.registerSettings();
   LootManager.registerSettings();
   LootTracker.registerSettings();
+  CountdownRoller.registerSettings();
 
   // Real-time light burn
   game.settings.register(MODULE_ID, "realtimeTracking", {
@@ -149,6 +151,7 @@ Hooks.once("ready", async () => {
     lootManager: LootManager,
     lootTracker: LootTracker,
     lootGenerator: LootGenerator,
+    countdownRoller: CountdownRoller,
     debugCombat: () => {
       const combat = game.combat;
       if (!combat) return "No active combat";
@@ -204,6 +207,9 @@ Hooks.once("ready", async () => {
   LootManager.init();
   LootTracker.init();
   LootGenerator.init();
+
+  // Countdown dice auto-roller
+  CountdownRoller.init();
 
   // Start light tracker + real-time engine if enabled
   LightTracker.init();

@@ -523,6 +523,37 @@ function _buildMenuData(actor, isNPC) {
       }
     }
 
+    // Summon actions — summoner gets creature attack actions
+    // Uses vagabond-character-enhancer API (gracefully degrades if not installed)
+    const summonData = game.vagabondCharacterEnhancer?.getSummonData?.(actor);
+    if (summonData?.hasConjure && summonData.actions?.length > 0) {
+      const summonItems = summonData.actions.map(a => {
+        const dmg = a.rollDamage || a.flatDamage || "";
+        const dType = a.damageType && a.damageType !== "-" ? ` ${a.damageType}` : "";
+        return {
+          label: `${a.name}`,
+          dmg: dmg ? `<span class="vcs-menu-dmg">${dmg}${dType}</span>` : "",
+          type: "summonaction",
+          index: a.index
+        };
+      });
+      // Add banish option
+      summonItems.push({
+        label: "Banish",
+        dmg: `<span class="vcs-menu-dmg" style="color:#c44;">Dismiss</span>`,
+        type: "summonbanish"
+      });
+
+      const tabLabel = summonData.summonName || "Summon";
+      if (!result.tabC) {
+        result.tabC = tabLabel;
+        result.itemsC = summonItems;
+      } else if (!result.tabD) {
+        result.tabD = tabLabel;
+        result.itemsD = summonItems;
+      }
+    }
+
     return result;
   }
 }
@@ -540,12 +571,14 @@ export function buildTabStripHTML(actor, isNPC) {
   const hasA = itemsA.length > 0;
   const hasB = itemsB.length > 0;
   const hasC = (menu.itemsC ?? []).length > 0;
-  if (!hasA && !hasB && !hasC) return "";
+  const hasD = (menu.itemsD ?? []).length > 0;
+  if (!hasA && !hasB && !hasC && !hasD) return "";
   return `
     <div class="vcs-action-tabs" data-actor-id="${actor.id}">
       ${hasA ? `<button class="vcs-atab vcs-atab-active" data-tab="a">${tabA}</button>` : ""}
       ${hasB ? `<button class="vcs-atab ${!hasA ? "vcs-atab-active" : ""}" data-tab="b">${tabB}</button>` : ""}
       ${hasC ? `<button class="vcs-atab ${!hasA && !hasB ? "vcs-atab-active" : ""}" data-tab="c">${menu.tabC}</button>` : ""}
+      ${hasD ? `<button class="vcs-atab" data-tab="d">${menu.tabD}</button>` : ""}
     </div>`;
 }
 
@@ -582,8 +615,10 @@ function _showPanel(stripEl, cardWrap, actor, isNPC, activeTab) {
   const menu = _buildMenuData(actor, isNPC);
   const { tabA, tabB, itemsA, itemsB } = menu;
   const itemsC = menu.itemsC ?? [];
+  const itemsD = menu.itemsD ?? [];
   const hasC = itemsC.length > 0;
-  const startTab = activeTab ?? (itemsA.length ? "a" : itemsB.length ? "b" : "c");
+  const hasD = itemsD.length > 0;
+  const startTab = activeTab ?? (itemsA.length ? "a" : itemsB.length ? "b" : hasC ? "c" : "d");
 
   const renderItems = (items) => items.length
     ? items.map(it => {
@@ -595,7 +630,7 @@ function _showPanel(stripEl, cardWrap, actor, isNPC, activeTab) {
           ? `data-virtuoso-buff="${it.virtuosoBuff}"`
           : it.stepUpAllyId
           ? `data-stepup-ally="${it.stepUpAllyId}"`
-          : `data-index="${it.index}"`;
+          : `data-index="${it.index ?? ""}"`;
         return `<div class="vcs-panel-item" data-type="${it.type}" ${dataAttrs}>
           <span class="vcs-panel-name">${it.label}</span>${it.dmg}
         </div>`;
@@ -611,10 +646,12 @@ function _showPanel(stripEl, cardWrap, actor, isNPC, activeTab) {
       ${itemsA.length ? `<button class="vcs-ptab ${startTab === "a" ? "vcs-ptab-active" : ""}" data-tab="a">${tabA}</button>` : ""}
       ${itemsB.length ? `<button class="vcs-ptab ${startTab === "b" ? "vcs-ptab-active" : ""}" data-tab="b">${tabB}</button>` : ""}
       ${hasC ? `<button class="vcs-ptab ${startTab === "c" ? "vcs-ptab-active" : ""}" data-tab="c">${menu.tabC}</button>` : ""}
+      ${hasD ? `<button class="vcs-ptab ${startTab === "d" ? "vcs-ptab-active" : ""}" data-tab="d">${menu.tabD}</button>` : ""}
     </div>
     ${itemsA.length ? `<div class="vcs-panel-body" data-panel="a" style="${startTab !== "a" ? "display:none" : ""}">${renderItems(itemsA)}</div>` : ""}
     ${itemsB.length ? `<div class="vcs-panel-body" data-panel="b" style="${startTab !== "b" ? "display:none" : ""}">${renderItems(itemsB)}</div>` : ""}
-    ${hasC ? `<div class="vcs-panel-body" data-panel="c" style="${startTab !== "c" ? "display:none" : ""}">${renderItems(itemsC)}</div>` : ""}`;
+    ${hasC ? `<div class="vcs-panel-body" data-panel="c" style="${startTab !== "c" ? "display:none" : ""}">${renderItems(itemsC)}</div>` : ""}
+    ${hasD ? `<div class="vcs-panel-body" data-panel="d" style="${startTab !== "d" ? "display:none" : ""}">${renderItems(itemsD)}</div>` : ""}`;
 
   // Position: align with cardWrap, below the tab strip
   stripEl.appendChild(panel);
@@ -780,6 +817,20 @@ async function _fireAction(actor, type, indexStr, itemId) {
     } else if (type === "craft") {
       const craftName = itemId; // craftName passed via itemId parameter path
       await game.vagabondCharacterEnhancer?.alchemy?.craftItem?.(actor, craftName, true);
+
+    } else if (type === "summonaction") {
+      // Summon action — roll using summoner's Mysticism check
+      const summonData = game.vagabondCharacterEnhancer?.getSummonData?.(actor);
+      if (summonData?.useAction && index !== null) {
+        await summonData.useAction(index);
+      }
+
+    } else if (type === "summonbanish") {
+      // Banish summon
+      const summonData = game.vagabondCharacterEnhancer?.getSummonData?.(actor);
+      if (summonData?.useBanish) {
+        await summonData.useBanish();
+      }
     }
   } catch (err) {
     console.error(`Vagabond Crawler | Action fire error (${type}):`, err);
