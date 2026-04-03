@@ -25,7 +25,8 @@ const LIGHT_SOURCES = {
     match:         name => /^lantern,?\s*hooded$/i.test(name.trim()),
     longevitySecs: 3600,
     consumable:    false,
-    bright: 15, dim: 30,
+    fuel:          name => /^oil/i.test(name.trim()),
+    bright: 15, dim: 30, angle: 90,
     color: "#ffbb44", colorIntensity: 0.3,
     animation: { type: "torch", speed: 2, intensity: 3 },
   },
@@ -33,7 +34,8 @@ const LIGHT_SOURCES = {
     match:         name => /^lantern,?\s*bullseye$/i.test(name.trim()),
     longevitySecs: 3600,
     consumable:    false,
-    bright: 15, dim: 30,
+    fuel:          name => /^oil/i.test(name.trim()),
+    bright: 30, dim: 60, angle: 360,
     color: "#ffdd88", colorIntensity: 0.25,
     animation: { type: "torch", speed: 2, intensity: 2 },
   },
@@ -60,13 +62,30 @@ function _getLightDef(itemName) {
 
 function _isLightSource(item) { return !!_getLightDef(item.name); }
 
+/** Find a fuel item on the actor matching the light def's fuel predicate.
+ *  Prefers "Oil, flask" (plain lamp oil) over "Oil, Basic" (alchemical). */
+function _findFuel(actor, def) {
+  if (!def?.fuel || !actor) return null;
+  const candidates = actor.items.filter(i => def.fuel(i.name) && (i.system?.quantity ?? 0) > 0);
+  if (!candidates.length) return null;
+  // Prefer flask oil (cheaper) over alchemical oil
+  return candidates.find(i => /flask/i.test(i.name)) ?? candidates[0];
+}
+
+/** Consume one unit of fuel. Deletes the item if quantity reaches 0. */
+async function _consumeFuel(fuelItem) {
+  const qty = fuelItem.system.quantity ?? 1;
+  if (qty <= 1) await fuelItem.delete();
+  else await fuelItem.update({ "system.quantity": qty - 1 });
+}
+
 function _lightConfig(def) {
   return {
     bright: def.bright, dim: def.dim,
     color: def.color, alpha: def.colorIntensity,
     animation: def.animation,
     luminosity: 0.5, attenuation: 0.5,
-    angle: 360, shadows: 0,
+    angle: def.angle ?? 360, shadows: 0,
     darkness: { min: 0, max: 1 },
   };
 }
@@ -422,11 +441,42 @@ export const LightTracker = {
     const match = _getLightDef(item.name);
     if (!match) return;
     const { key, def } = match;
+    const actor = item.parent;
+
+    // Fuel check: lanterns require oil — only consume if no burn time remaining
+    if (def.fuel && actor) {
+      const remaining = item.getFlag(MODULE_ID, "remainingSecs") ?? 0;
+      if (remaining <= 0) {
+        const fuelItem = _findFuel(actor, def);
+        if (!fuelItem) {
+          ui.notifications.warn(`${item.name} needs fuel (oil) to light.`);
+          return;
+        }
+        await _consumeFuel(fuelItem);
+        await item.setFlag(MODULE_ID, "remainingSecs", def.longevitySecs);
+        const fuelQty = (fuelItem.system?.quantity ?? 1) - 1;
+        const note = fuelQty > 0 ? `(${fuelQty} oil remaining)` : "(last oil used)";
+        ui.notifications.info(`${item.name}: oil consumed ${note}.`);
+      }
+    }
+
+    // Split from stack: if quantity > 1, create a separate item with qty 1
+    // and decrement the stack. Light the new item instead.
+    const qty = item.system?.quantity ?? 1;
+    if (qty > 1 && actor) {
+      await item.update({ "system.quantity": qty - 1 });
+      const newData = item.toObject();
+      newData.system.quantity = 1;
+      delete newData._id;
+      const created = await actor.createEmbeddedDocuments("Item", [newData], { skipStack: true });
+      item = created[0];
+      if (!item) return;
+    }
+
     const remaining = item.getFlag(MODULE_ID, "remainingSecs") ?? def.longevitySecs;
     await item.setFlag(MODULE_ID, "lit",          true);
     await item.setFlag(MODULE_ID, "remainingSecs", remaining);
     await item.setFlag(MODULE_ID, "sourceKey",     key);
-    const actor = item.parent;
     if (actor) {
       for (const token of actor.getActiveTokens()) {
         await token.document.update({ light: _lightConfig(def) });
@@ -467,6 +517,27 @@ export const LightTracker = {
         await item.setFlag(MODULE_ID, "remainingSecs", def.longevitySecs);
         await ChatMessage.create({
           content: `<div class="vagabond-crawler-chat light-out"><i class="fas fa-fire-flame-curved"></i> <strong>${actor.name}'s ${item.name} has burned out! (${qty - 1} remaining)</strong></div>`,
+          speaker: { alias: "Light Tracker" },
+        });
+      }
+    } else if (def?.fuel) {
+      // Fuel-based light (lantern): try to auto-consume another oil and relight
+      const fuelItem = _findFuel(actor, def);
+      if (fuelItem) {
+        await _consumeFuel(fuelItem);
+        await item.setFlag(MODULE_ID, "lit", true);
+        await item.setFlag(MODULE_ID, "remainingSecs", def.longevitySecs);
+        for (const token of actor.getActiveTokens()) {
+          await token.document.update({ light: _lightConfig(def) });
+        }
+        const remaining = (fuelItem.system?.quantity ?? 1) - 1;
+        await ChatMessage.create({
+          content: `<div class="vagabond-crawler-chat light-out"><i class="fas fa-fire-flame-curved"></i> <strong>${actor.name}'s ${item.name} oil burned out — refueled automatically.</strong> (${remaining} oil remaining)</div>`,
+          speaker: { alias: "Light Tracker" },
+        });
+      } else {
+        await ChatMessage.create({
+          content: `<div class="vagabond-crawler-chat light-out"><i class="fas fa-fire-flame-curved"></i> <strong>${actor.name}'s ${item.name} has gone out — no oil remaining!</strong></div>`,
           speaker: { alias: "Light Tracker" },
         });
       }

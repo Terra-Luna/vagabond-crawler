@@ -2222,3 +2222,19 @@ body.theme-light .vcb-phase-badge {
 .vcl-gen-give-app:hover {
   background: rgba(76, 175, 80, 0.15);
 }
+
+/* ── Inventory quantity badge ─────────────────────────────────────────────── */
+
+.vcb-qty-badge {
+  position: absolute;
+  bottom: 2px;
+  right: 2px;
+  background: rgba(0, 0, 0, 0.75);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1;
+  padding: 2px 4px;
+  border-radius: 3px;
+  pointer-events: none;
+}

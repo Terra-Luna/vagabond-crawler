@@ -217,6 +217,72 @@ Hooks.once("ready", async () => {
     LightTracker.startRealTime();
   }
 
+  // Auto-stack items: when adding an item that already exists, merge quantities
+  Hooks.on("preCreateItem", (item, data, options, userId) => {
+    if (userId !== game.userId) return;
+    if (options?.skipStack) return;       // bypass when splitting stacks
+    const actor = item.parent;
+    if (!actor || actor.documentName !== "Actor") return;
+    if (!item.system?.quantity) return;   // no quantity field (non-equipment)
+
+    // Find existing item with same name and type
+    const existing = actor.items.find(i =>
+      i.id !== item.id
+      && i.name === item.name
+      && i.type === item.type
+      && i.system?.quantity != null
+    );
+    if (!existing) return;
+
+    // Merge: add incoming quantity to existing, cancel creation
+    const addQty = item.system.quantity || 1;
+    const newQty = (existing.system.quantity || 1) + addQty;
+    existing.update({ "system.quantity": newQty });
+    ui.notifications.info(`${item.name} ×${addQty} → stacked (×${newQty} total).`);
+    return false;  // prevent the new item from being created
+  });
+
+  // Inventory quantity badges — inject "×N" on cards where quantity > 1
+  // ApplicationV2 sheets fire render{ClassName} hooks, not renderActorSheet.
+  // Inventory stacking: quantity badge on cards + correct .slot-value count
+  const _patchInventory = (sheet) => {
+    const el = sheet.element;
+    if (!el) return;
+    const actor = sheet.actor;
+    if (!actor) return;
+
+    // 1. Inject ×N badges on inventory cards
+    for (const card of el.querySelectorAll(".inventory-card")) {
+      const item = actor.items.get(card.dataset.itemId);
+      const qty = item?.system?.quantity;
+      if (!qty || qty <= 1) continue;
+      if (card.querySelector(".vcb-qty-badge")) continue;
+      const badge = document.createElement("div");
+      badge.className = "vcb-qty-badge";
+      badge.textContent = `×${qty}`;
+      card.appendChild(badge);
+    }
+
+    // 2. Fix .slot-value "X / Y" — system ignores quantity when counting occupied slots
+    let extraSlots = 0;
+    for (const item of actor.items) {
+      const qty = item.system?.quantity ?? 1;
+      if (qty <= 1) continue;
+      const baseSlots = item.system?.slots || item.system?.baseSlots || 0;
+      if (baseSlots > 0) extraSlots += baseSlots * (qty - 1);
+    }
+    if (!extraSlots) return;
+    const slotValue = el.querySelector(".slot-value");
+    if (!slotValue) return;
+    const match = slotValue.textContent.match(/(\d+)(\s*\/\s*\d+)/);
+    if (match) {
+      slotValue.textContent = `${parseInt(match[1]) + extraSlots}${match[2]}`;
+    }
+  };
+  Hooks.on("renderVagabondCharacterSheet", _patchInventory);
+  Hooks.on("renderVagabondNPCSheet", _patchInventory);
+  Hooks.on("renderActorSheet", _patchInventory);  // fallback
+
   console.log(`${MODULE_ID} | Ready.`);
 });
 
