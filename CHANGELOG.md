@@ -1,5 +1,17 @@
 # Changelog
 
+## v1.5.0
+
+### New Features
+- **Alchemical Torches** — Tindertwig (never burns out), Sentry (pale blue, suspends invisibility), Repel Beast (crimson), Frigidflame (ice blue). Each has distinct light color and animation.
+- **Alchemical Candles** — Calming (soft blue), Insectbane (green), Restful (warm amber). All function as 5ft bright / 10ft dim light sources with 1-hour burn time.
+- **Sunrod** — 15ft bright / 30ft dim with golden sunburst animation. Consumable, 1-hour duration.
+- **Candle, Basic** — "Candle" and "Candle, Basic" now both match the candle light source.
+
+### Bug Fixes
+- **Flanking Vulnerable saves** — Players now correctly get Favor on saves against Vulnerable (flanked) monsters. The save system reads the attacker from the world actor, but flanking applied the effect to the synthetic token actor. Fixed by mirroring the `outgoingSavesModifier` to the world actor for unlinked tokens.
+- **Flanking cleanup** — Combat-end cleanup now covers both world actors and synthetic token actors on the current scene.
+
 ## v1.4.0
 
 ### New Features

@@ -180,6 +180,22 @@ export const FlankingChecker = {
     if (!existing) {
       await actor.createEmbeddedDocuments("ActiveEffect", [this._makeEffectData()]);
     }
+    // Mirror outgoingSavesModifier to the world actor for unlinked tokens.
+    // The save system resolves the source via game.actors.get(actorId) which
+    // only sees the world actor, not the synthetic token actor.
+    if (actor.isToken) {
+      const worldActor = game.actors.get(actor.id);
+      if (worldActor && !worldActor.effects.find(e => e.origin === `module.${MODULE_ID}.flanking.saves`)) {
+        await worldActor.createEmbeddedDocuments("ActiveEffect", [{
+          name:     "Vulnerable — Saves (Flanked)",
+          img:      "icons/svg/downgrade.svg",
+          origin:   `module.${MODULE_ID}.flanking.saves`,
+          changes: [
+            { key: "system.outgoingSavesModifier", mode: CONST.ACTIVE_EFFECT_MODES.OVERRIDE, value: "favor" },
+          ],
+        }]);
+      }
+    }
   },
 
   async _removeFlanked(actor) {
@@ -192,16 +208,31 @@ export const FlankingChecker = {
         await effect.delete();
       }
     }
+    // Clean up the mirrored world-actor effect for unlinked tokens
+    if (actor.isToken) {
+      const worldActor = game.actors.get(actor.id);
+      const saveEffect = worldActor?.effects.find(e => e.origin === `module.${MODULE_ID}.flanking.saves`);
+      if (saveEffect) await saveEffect.delete();
+    }
   },
 
   // ── Cleanup ───────────────────────────────────────────────────────────────
 
   async _cleanupAll() {
     if (!game.user.isGM) return;
-    // Remove flanking Vulnerable from all actors that have the flag
+    // Remove flanking Vulnerable from all actors (world + synthetic)
     for (const actor of game.actors) {
       if (actor.getFlag(MODULE_ID, "flankedBy")) {
         await this._removeFlanked(actor);
+      }
+      // Also clean any mirrored save effects on world actors
+      const saveEffect = actor.effects.find(e => e.origin === `module.${MODULE_ID}.flanking.saves`);
+      if (saveEffect) await saveEffect.delete();
+    }
+    // Clean synthetic token actors on the current scene
+    for (const token of canvas.tokens?.placeables ?? []) {
+      if (token.actor?.isToken && token.actor.getFlag(MODULE_ID, "flankedBy")) {
+        await this._removeFlanked(token.actor);
       }
     }
   },

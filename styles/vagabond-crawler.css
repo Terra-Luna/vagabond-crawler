@@ -2223,6 +2223,112 @@ body.theme-light .vcb-phase-badge {
   background: rgba(76, 175, 80, 0.15);
 }
 
+/* ── Loot Generator: Roll for Token ────────────────────────────────────────── */
+
+.vcl-gen-token-section {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 0;
+  border-top: 1px solid var(--vcb-border, #333);
+}
+
+.vcl-gen-roll-token {
+  height: 32px;
+  padding: 0 14px;
+  border: 1px solid var(--vcb-accent, #c9aa58);
+  border-radius: 4px;
+  background: transparent;
+  color: var(--vcb-accent, #c9aa58);
+  font-weight: bold;
+  font-size: 12px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s, color 0.15s;
+}
+
+.vcl-gen-roll-token:hover {
+  background: var(--vcb-accent, #c9aa58);
+  color: #111;
+}
+
+.vcl-gen-token-hint {
+  font-size: 11px;
+  color: var(--vcb-text-secondary, #777);
+}
+
+/* ── Loot Generator: Whispered Claim Card ──────────────────────────────────── */
+
+.vcl-gen-claim-card {
+  border-left: 4px solid var(--vcb-accent, #c9aa58);
+  padding: 10px 14px;
+  background: var(--vcb-surface-1, #1a1a1a);
+  border-radius: 0 6px 6px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.vcl-gen-claim-header {
+  font-size: 11px;
+  color: var(--vcb-accent, #c9aa58);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  font-weight: bold;
+}
+
+.vcl-gen-claim-currency {
+  font-size: 13px;
+  display: flex;
+  gap: 10px;
+}
+
+.vcl-gen-claim-gold { color: #daa520; }
+.vcl-gen-claim-silver { color: #c0c0c0; }
+.vcl-gen-claim-copper { color: #cd7f32; }
+
+.vcl-gen-claim-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: bold;
+  color: var(--vcb-text-primary, #eee);
+}
+
+.vcl-gen-claim-item img {
+  border: 1px solid var(--vcb-border, #444);
+  border-radius: 3px;
+}
+
+.vcl-gen-claim-btn {
+  margin-top: 4px;
+  padding: 6px 14px;
+  border: 1px solid #4caf50;
+  border-radius: 4px;
+  background: transparent;
+  color: #4caf50;
+  font-size: 12px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.15s;
+  align-self: flex-start;
+}
+
+.vcl-gen-claim-btn:hover:not(:disabled) {
+  background: rgba(76, 175, 80, 0.15);
+}
+
+.vcl-gen-claim-btn:disabled {
+  cursor: default;
+  opacity: 0.7;
+}
+
+.vcl-gen-claim-btn--done {
+  border-color: var(--vcb-border, #444);
+  color: var(--vcb-text-secondary, #888);
+}
+
 /* ── Inventory quantity badge ─────────────────────────────────────────────── */
 
 .vcb-qty-badge {

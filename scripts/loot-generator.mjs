@@ -1,4 +1,5 @@
 const MODULE_ID = "vagabond-crawler";
+const LOOT_SOCKET = `module.${MODULE_ID}`;
 
 import {
   LEVEL_FORMULAS, TREASURE, TRADE_GOODS, ART, JEWELRY, CLOTHING, RELIC,
@@ -7,6 +8,7 @@ import {
   ALCHEMY, SENSES, MOVEMENT, CREATURE_GENERAL, CREATURE_SPECIFIC,
   LEVEL1_TABLE,
 } from "./loot-data.mjs";
+import { LootTracker } from "./loot-tracker.mjs";
 
 /* ── Compendium item cache ─────────────────────────────── */
 
@@ -34,6 +36,7 @@ let _app = null;
 
 export const LootGenerator = {
   init() {
+    // Give buttons on GM-only loot chat cards
     Hooks.on("renderChatMessageHTML", (message, html) => {
       if (!game.user.isGM) return;
       const lootFlag = message.flags?.["vagabond-crawler"]?.lootGeneratorCard;
@@ -70,6 +73,218 @@ export const LootGenerator = {
           ui.notifications.info(`Gave loot to ${actor.name}`);
         });
       }
+    });
+
+    // Claim buttons on whispered loot cards (any user)
+    Hooks.on("renderChatMessageHTML", (message, html) => {
+      const flags = message.flags?.[MODULE_ID];
+      if (!flags?.lootClaimCard) return;
+
+      const btn = html.querySelector(".vcl-gen-claim-btn");
+      if (!btn) return;
+
+      if (flags.claimed) {
+        btn.disabled = true;
+        btn.innerHTML = `<i class="fas fa-check"></i> Claimed by ${flags.claimedBy ?? "???"}`;
+        btn.classList.add("vcl-gen-claim-btn--done");
+        return;
+      }
+
+      btn.addEventListener("click", async (ev) => {
+        ev.preventDefault();
+        const actorId = flags.actorId;
+        const actor = game.actors.get(actorId);
+        if (!actor?.isOwner) {
+          ui.notifications.warn("You don't own this character.");
+          return;
+        }
+
+        btn.disabled = true;
+        btn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Claiming\u2026`;
+
+        const payload = {
+          action: "claimLoot",
+          messageId: message.id,
+          actorId,
+          userId: game.user.id,
+        };
+
+        if (game.user.isGM) {
+          await LootGenerator._handleClaim(payload);
+        } else {
+          game.socket.emit(LOOT_SOCKET, payload);
+        }
+      });
+    });
+
+    // Socket handler (GM only)
+    game.socket.on(LOOT_SOCKET, async (data) => {
+      if (!game.user.isGM) return;
+      if (data.action === "claimLoot") {
+        await LootGenerator._handleClaim(data);
+      }
+    });
+  },
+
+  /**
+   * Handle a loot claim from a player (runs on GM client).
+   */
+  async _handleClaim({ messageId, actorId, userId }) {
+    const message = game.messages.get(messageId);
+    if (!message) return;
+
+    const flags = message.flags?.[MODULE_ID];
+    if (!flags?.lootClaimCard || flags.claimed) return;
+
+    const actor = game.actors.get(actorId);
+    if (!actor) return;
+
+    const user = game.users.get(userId);
+    if (!user || !actor.testUserPermission(user, "OWNER")) {
+      console.warn(`${MODULE_ID} | Claim denied: user does not own actor`);
+      return;
+    }
+
+    // Mark claimed immediately to prevent race conditions
+    await message.update({
+      [`flags.${MODULE_ID}.claimed`]: true,
+      [`flags.${MODULE_ID}.claimedBy`]: user.name,
+    });
+
+    // Add items to actor
+    const itemData = flags.itemData;
+    if (itemData?.length) {
+      for (const data of itemData) {
+        await Item.create(data, { parent: actor });
+      }
+    }
+
+    // Add currency to actor
+    const currency = flags.currency;
+    if (currency) {
+      const cur = actor.system.currency ?? {};
+      const updates = {};
+      if (currency.gold) updates["system.currency.gold"] = (cur.gold ?? 0) + currency.gold;
+      if (currency.silver) updates["system.currency.silver"] = (cur.silver ?? 0) + currency.silver;
+      if (currency.copper) updates["system.currency.copper"] = (cur.copper ?? 0) + currency.copper;
+      if (Object.keys(updates).length) await actor.update(updates);
+    }
+
+    // Log via LootTracker
+    const itemNames = itemData?.map(d => d.name) ?? [];
+    const currParts = [];
+    if (currency?.gold) currParts.push(`${currency.gold} Gold`);
+    if (currency?.silver) currParts.push(`${currency.silver} Silver`);
+    if (currency?.copper) currParts.push(`${currency.copper} Copper`);
+
+    await LootTracker.logClaim(
+      actor.name,
+      `Loot Roll (Lv${flags.level})`,
+      currency ?? { gold: 0, silver: 0, copper: 0 },
+      (itemData ?? []).map(d => ({ name: d.name, img: d.img })),
+    );
+
+    // Update the chat card to show claimed state
+    const updatedContent = message.content
+      .replace(
+        /<button[^>]*class="vcl-gen-claim-btn"[^>]*>.*?<\/button>/s,
+        `<span class="vcl-gen-claim-btn vcl-gen-claim-btn--done"><i class="fas fa-check"></i> Claimed by ${user.name}</span>`
+      );
+    await message.update({ content: updatedContent });
+
+    ui.notifications.info(`${actor.name} claimed loot from Level ${flags.level} roll.`);
+  },
+
+  /**
+   * Roll loot for a selected token and whisper the result.
+   * @param {Token|null} [token] — token to roll for; defaults to first controlled token
+   * @param {number|null} [level] — override level; defaults to the Hero Level dropdown or actor level
+   */
+  async rollForToken(token, level) {
+    if (!game.user.isGM) {
+      ui.notifications.warn("Only the GM can roll loot.");
+      return;
+    }
+
+    if (!token) token = canvas.tokens.controlled[0];
+    if (!token) {
+      ui.notifications.warn("Select a token first.");
+      return;
+    }
+
+    const actor = token.actor;
+    if (!actor) {
+      ui.notifications.error("Token has no actor.");
+      return;
+    }
+
+    const rawLevel = level ?? _app?._level ?? actor.system?.attributes?.level?.value ?? 1;
+    const clampedLevel = Math.max(1, Math.min(10, rawLevel));
+
+    // Generate loot using the headless engine (defined below in this module)
+    const result = await generateLevelLoot(clampedLevel);
+    if (!result) {
+      ui.notifications.warn("Loot generation failed.");
+      return;
+    }
+
+    const { currency, items } = result;
+
+    // Build the chat card content
+    const itemLines = items.map(d =>
+      `<div class="vcl-gen-claim-item">
+        <img src="${d.img || "icons/svg/item-bag.svg"}" width="24" height="24" />
+        <span>${d.name}</span>
+      </div>`
+    ).join("");
+
+    const currParts = [];
+    if (currency.gold) currParts.push(`<span class="vcl-gen-claim-gold">${currency.gold} Gold</span>`);
+    if (currency.silver) currParts.push(`<span class="vcl-gen-claim-silver">${currency.silver} Silver</span>`);
+    if (currency.copper) currParts.push(`<span class="vcl-gen-claim-copper">${currency.copper} Copper</span>`);
+    const currencyLine = currParts.length
+      ? `<div class="vcl-gen-claim-currency">${currParts.join(" ")}</div>`
+      : "";
+
+    const hasLoot = items.length > 0 || currParts.length > 0;
+    if (!hasLoot) {
+      ui.notifications.info(`Level ${clampedLevel} roll for ${actor.name}: nothing found.`);
+      return;
+    }
+
+    const cardContent = `
+      <div class="vcl-gen-claim-card">
+        <div class="vcl-gen-claim-header">
+          <i class="fas fa-dice-d20"></i> Level ${clampedLevel} Loot
+        </div>
+        ${currencyLine}
+        ${itemLines}
+        <button type="button" class="vcl-gen-claim-btn">
+          <i class="fas fa-hand-holding"></i> Claim Loot
+        </button>
+      </div>`;
+
+    // Determine whisper targets
+    const owningPlayer = game.users.find(
+      u => !u.isGM && u.active && actor.testUserPermission(u, "OWNER")
+    );
+    const whisperTargets = [game.user.id];
+    if (owningPlayer) whisperTargets.push(owningPlayer.id);
+
+    await ChatMessage.create({
+      content: cardContent,
+      whisper: whisperTargets,
+      speaker: ChatMessage.getSpeaker({ token: token.document ?? token }),
+      flags: {
+        [MODULE_ID]: {
+          lootClaimCard: true,
+          itemData: items,
+          currency,
+          actorId: actor.id,
+          level: clampedLevel,
+          claimed: false,
+        },
+      },
     });
   },
 
@@ -139,6 +354,10 @@ class LootGeneratorApp extends HandlebarsApplicationMixin(ApplicationV2) {
     // Roll button
     const rollBtn = $(".vcl-gen-roll");
     if (rollBtn) rollBtn.addEventListener("click", () => this._rollLoot());
+
+    // Roll for selected token button
+    const rollTokenBtn = $(".vcl-gen-roll-token");
+    if (rollTokenBtn) rollTokenBtn.addEventListener("click", () => LootGenerator.rollForToken(null, this._level));
 
     // Post to chat buttons
     on(".vcl-gen-post-chat", "click", ev => {
