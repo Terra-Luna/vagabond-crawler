@@ -382,6 +382,9 @@ Hooks.once("ready", () => {
     if (data.action === "syncLights") {
       await LightTracker.applySync(data.lights);
     }
+    if (data.action === "rollbackMove" && game.user.isGM) {
+      await MovementTracker.rollback(data.tokenId);
+    }
     // Item Drops and Loot Drops register their own socket handlers in init()
   });
 });

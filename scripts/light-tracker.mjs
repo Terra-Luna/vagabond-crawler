@@ -126,6 +126,31 @@ function _getLightDef(itemName) {
 
 function _isLightSource(item) { return !!_getLightDef(item.name); }
 
+/** Find the party token that contains this actor as a gathered member. */
+function _findPartyToken(actor) {
+  if (!actor) return null;
+  const actorUuid = actor.uuid;
+  for (const token of canvas.tokens?.placeables ?? []) {
+    if (token.actor?.type !== "party") continue;
+    const members = token.actor.system?.members ?? [];
+    if (members.includes(actorUuid)) return token;
+  }
+  return null;
+}
+
+/** Check if any other gathered member in the party token has a lit light source. */
+function _anyGatheredMemberLit(partyToken, excludeActor) {
+  const members = partyToken.actor?.system?.members ?? [];
+  for (const uuid of members) {
+    const actor = fromUuidSync(uuid);
+    if (!actor || actor.id === excludeActor?.id) continue;
+    for (const item of actor.items) {
+      if (item.getFlag(MODULE_ID, "lit")) return true;
+    }
+  }
+  return false;
+}
+
 /** Find a fuel item on the actor matching the light def's fuel predicate.
  *  Prefers "Oil, flask" (plain lamp oil) over "Oil, Basic" (alchemical). */
 function _findFuel(actor, def) {
@@ -405,6 +430,26 @@ export const LightTracker = {
       });
     }
 
+    // When a token is removed (gathered into party), transfer its light to the party token
+    Hooks.on("deleteToken", async (tokenDoc) => {
+      if (!game.user.isGM) return;
+      const actor = tokenDoc.actor ?? game.actors.get(tokenDoc.actorId);
+      if (!actor) return;
+      const hasLit = actor.items.some(i => i.getFlag(MODULE_ID, "lit"));
+      if (!hasLit) return;
+      // Short delay to let the party update its member list
+      setTimeout(async () => {
+        const partyToken = _findPartyToken(actor);
+        if (!partyToken) return;
+        // Find the best light config from the gathered member's lit sources
+        const litItem = actor.items.find(i => i.getFlag(MODULE_ID, "lit"));
+        if (!litItem) return;
+        const match = _getLightDef(litItem.name);
+        if (!match) return;
+        await partyToken.document.update({ light: _lightConfig(match.def) });
+      }, 500);
+    });
+
     let _ticking = false;
     Hooks.on("updateWorldTime", async (_worldTime, delta) => {
       if (!game.user.isGM) return;
@@ -543,8 +588,15 @@ export const LightTracker = {
     await item.setFlag(MODULE_ID, "remainingSecs", remaining);
     await item.setFlag(MODULE_ID, "sourceKey",     key);
     if (actor) {
-      for (const token of actor.getActiveTokens()) {
-        await token.document.update({ light: _lightConfig(def) });
+      const tokens = actor.getActiveTokens();
+      if (tokens.length) {
+        for (const token of tokens) {
+          await token.document.update({ light: _lightConfig(def) });
+        }
+      } else {
+        // No tokens on canvas — check if gathered into a party token
+        const partyToken = _findPartyToken(actor);
+        if (partyToken) await partyToken.document.update({ light: _lightConfig(def) });
       }
     }
     ui.notifications.info(`${item.name} lit. ${this._formatTime(remaining)} remaining.`);
@@ -554,8 +606,19 @@ export const LightTracker = {
     await item.setFlag(MODULE_ID, "lit", false);
     const actor = item.parent;
     if (actor) {
-      for (const token of actor.getActiveTokens()) {
-        await token.document.update({ light: DARK_LIGHT });
+      const tokens = actor.getActiveTokens();
+      if (tokens.length) {
+        for (const token of tokens) {
+          await token.document.update({ light: DARK_LIGHT });
+        }
+      } else {
+        // No tokens on canvas — remove light from party token if gathered
+        const partyToken = _findPartyToken(actor);
+        if (partyToken) {
+          // Only douse if no other gathered member has a lit light source
+          const stillLit = _anyGatheredMemberLit(partyToken, actor);
+          if (!stillLit) await partyToken.document.update({ light: DARK_LIGHT });
+        }
       }
     }
     ui.notifications.info(`${item.name} doused.`);
@@ -564,9 +627,27 @@ export const LightTracker = {
   async _burnOut(item, actor) {
     await item.setFlag(MODULE_ID, "lit",          false);
     await item.setFlag(MODULE_ID, "remainingSecs", 0);
-    for (const token of actor.getActiveTokens()) {
-      await token.document.update({ light: DARK_LIGHT });
-    }
+
+    // Helper: apply light config to actor's tokens or party token fallback
+    const _applyLight = async (lightCfg) => {
+      const tokens = actor.getActiveTokens();
+      if (tokens.length) {
+        for (const token of tokens) await token.document.update({ light: lightCfg });
+      } else {
+        const pt = _findPartyToken(actor);
+        if (pt) {
+          if (lightCfg === DARK_LIGHT) {
+            const stillLit = _anyGatheredMemberLit(pt, actor);
+            if (!stillLit) await pt.document.update({ light: DARK_LIGHT });
+          } else {
+            await pt.document.update({ light: lightCfg });
+          }
+        }
+      }
+    };
+
+    await _applyLight(DARK_LIGHT);
+
     const key = item.getFlag(MODULE_ID, "sourceKey");
     const def = key ? LIGHT_SOURCES[key] : null;
     if (def?.consumable) {
@@ -592,9 +673,7 @@ export const LightTracker = {
         await _consumeFuel(fuelItem);
         await item.setFlag(MODULE_ID, "lit", true);
         await item.setFlag(MODULE_ID, "remainingSecs", def.longevitySecs);
-        for (const token of actor.getActiveTokens()) {
-          await token.document.update({ light: _lightConfig(def) });
-        }
+        await _applyLight(_lightConfig(def));
         const remaining = (fuelItem.system?.quantity ?? 1) - 1;
         await ChatMessage.create({
           content: `<div class="vagabond-crawler-chat light-out"><i class="fas fa-fire-flame-curved"></i> <strong>${actor.name}'s ${item.name} oil burned out — refueled automatically.</strong> (${remaining} oil remaining)</div>`,

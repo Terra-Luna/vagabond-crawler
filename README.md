@@ -2,73 +2,68 @@
 
 ![Foundry v13](https://img.shields.io/badge/foundry-v13-green?style=for-the-badge)
 ![System](https://img.shields.io/badge/system-vagabond-blue?style=for-the-badge)
-![Version](https://img.shields.io/badge/version-1.1.0-orange?style=for-the-badge)
+![Version](https://img.shields.io/badge/version-1.6.0-orange?style=for-the-badge)
 
-A comprehensive dungeon crawl management module for the **Vagabond RPG** system in Foundry VTT. Everything you need to run a crawl — turn tracking, movement enforcement, random encounters, light management, morale, and combat integration — all from a unified interface.
+A comprehensive dungeon crawl management module for the **Vagabond RPG** system in Foundry VTT. Everything you need to run a crawl — turn tracking, movement enforcement, random encounters, light management, morale, combat integration, crafting, loot, and more — all from a unified interface.
 
 ---
 
 ## Features
 
 ### Crawl Bar (GM Only)
-A persistent bottom bar that drives the entire crawl loop. Visible only to the GM.
+A persistent bottom bar that drives the entire crawl loop.
 
 - **Start / End Crawl** — Activates the crawl state and populates the tracker
 - **Two-phase turn structure** — Heroes Turn → GM Turn → repeat
 - **Next Turn** — Advances the phase and increments the turn counter
-- **Add Tokens** — Select tokens on the canvas and add them to the tracker with one click
-- **Time Passes** — Advances in-world time by a configurable number of minutes (default 10)
-- **Encounter Check** — Rolls a d6 against a configurable threshold (1-in-6 through 5-in-6); on a hit, posts an encounter alert and auto-rolls the active table. Right-click to change threshold
-- **Encounter Roller** — Opens a full encounter builder with drag-and-drop NPC table creation, RollTable integration (grouped by folder with exclusion), distance and reaction rolls, and token placement
+- **Add Tokens** — Select tokens on the canvas and add them to the tracker
+- **Time Passes** — Advances in-world time by a configurable number of minutes
+- **Encounter Check** — Rolls a d6 against a configurable threshold; right-click to change
+- **Encounter Roller** — Full encounter builder with NPC tables, RollTable integration, mutator
 - **Light Tracker** — Opens the light management panel
-- **Combat** — Adds heroes and NPCs to the Foundry Combat Tracker sidebar
-- **Begin Encounter / End Encounter** — Start and stop the combat encounter, synced with the Combat Tracker sidebar
-- **Rest / Breather** — Opens the rest dialog for full recovery or ration-based healing
+- **Combat** — Adds heroes and NPCs to the Foundry Combat Tracker
+- **Rest / Breather** — Full recovery or ration-based healing dialog
+- **Forge & Loot** — Left-click opens a tool picker panel; right-click opens settings
 - **Drag-and-drop reordering** — Reorder tracker members by dragging
 
 ---
 
 ### Crawl Strip (All Players)
-A top-of-screen HUD bar showing all combatants at a glance. Visible to all players during an active crawl.
+A top-of-screen HUD bar showing all members at a glance.
 
 - **Portrait cards** for every hero and NPC with HP bar, status pills, and name
 - **Hero cards** show Luck, remaining movement, and HP
-- **Active/dim state** — Cards highlight when it's that faction's turn, fade when not
-- **Current turn indicator** — The active combatant gets a chevron badge
-- **Defeated indicator** — Skull overlay on defeated tokens (or auto-hide if enabled in settings)
-- **Click to select** — Single-click a card to select and pan to that token
+- **Disposition-based sorting** — Friendly tokens show on Heroes side, Hostile on NPC side (supports summoned NPCs on the party side)
+- **Active/dim state** — Cards highlight when it's that faction's turn
+- **Current turn indicator** — Active combatant gets a chevron badge
+- **Defeated indicator** — Skull overlay or auto-hide (configurable)
+- **Click to select** — Single-click to select and pan to token
 - **Double-click to open sheet** — Opens the actor's character sheet
-- **Groups swap sides** — When all heroes have acted, NPCs move to the left and heroes to the right
-- **Sorted by combat order** — During combat, cards match the order in the Combat Tracker
-- **Responsive sizing** — Cards scale to fit available screen space between the scene controls and sidebar
+- **Sorted by combat order** during combat
+- **Party token support** — Party-type actors show speed correctly on the strip
 
-#### Combat Mode (Strip)
-When combat is active the strip gains additional controls:
-
-- **Round indicator** — Shows current combat round (R1, R2, etc.) in the left badge
-- **Navigation arrows** — Previous Round / Previous Turn / Next Turn / Next Round buttons in the left badge
-- **Activate / End Turn button** — Hover over any card to reveal a green play button; click to activate that combatant's turn. Button turns red while their turn is active; click again to end it
+#### Combat Mode
+- **Round indicator** and navigation arrows
+- **Activate / End Turn** buttons on hover
+- **Countdown dice auto-roll** at the start of each round
 
 #### NPC Action Menu
-During combat, hovering a card reveals a tab strip with quick-access action menus:
-
+During combat, hovering a card reveals a tab strip:
 - **Weapons** — Roll attacks directly from the HUD
-- **Spells** — Opens the spell cast dialog (see below)
-- **Actions** — One-click NPC actions
+- **Spells** — Opens the spell cast dialog
+- **Actions** — One-click NPC actions (with Pack Instincts automation)
 - **Abilities** — NPC special abilities
 
 ---
 
 ### Spell Cast Dialog
-Launched from the NPC Action Menu spell tab. A compact popup for configuring and casting spells without opening the full character sheet.
+Compact popup for configuring and casting spells from the crawl strip.
 
-- Select delivery type (Touch, Remote, Cone, Line, Sphere, Aura, etc.)
-- Adjust damage dice count
-- Toggle include effect on/off
+- Select delivery type, adjust damage dice, toggle effects
 - Increase delivery range/area
-- Preview and place area templates directly on the canvas
+- Preview and place area templates on the canvas
 - Mana cost calculated live
-- **Focus Spell toggle** — Mark a spell to be focused after a successful cast, adding it to the caster's Focus track and applying the Focusing status effect
+- **Focus Spell toggle** — Focus after a successful cast
 
 ---
 
@@ -76,80 +71,166 @@ Launched from the NPC Action Menu spell tab. A compact popup for configuring and
 Enforces Vagabond's movement rules on tracked tokens.
 
 **Crawl mode:**
-- Hard-blocks movement beyond the token's crawl speed
-- Deducts movement as the token moves
-- Movement resets at the start of each crawl turn
+- Hard-blocks movement beyond crawl speed
+- Deducts movement as the token moves; resets each phase
+- **Terrain difficulty** — Queries Scene Region "Modify Movement Cost" behaviors
 
 **Combat mode:**
-- Displays base speed (e.g. 30/30ft) as the movement budget
-- **Rush action** — Players can move up to 2× base speed, forgoing their action
-- Color-coded ruler: green (within base speed), red (Rush territory)
-- Movement goes negative to show Rush usage (e.g. Rush: -10ft)
-- Hard-blocks movement beyond 2× base speed
+- Base speed budget with Rush action (2x speed)
+- Color-coded ruler: green (normal), red (Rush)
+- Hard-blocks at 2x base speed
+- Separate "Enforce Combat Movement" setting
 
-Movement remaining is displayed on each hero's card in the strip.
+**Rollback Movement:**
+- Available to both GM and players via Token HUD
+- Snaps token back to turn-start position and restores movement budget
+- Players relay via socket to GM for execution
 
 ---
 
 ### Light Tracker
-Tracks light source burn time for torches, lanterns, and candles carried by party members.
+Tracks burn time for all light sources carried by party members.
 
-- Automatically detects torches, hooded lanterns, bullseye lanterns, and candles in actor inventories
-- Burns time when **Time Passes** is clicked
-- **Real-time burn** option (configurable) — burns light in real time at 1 real second = 1 game second, pausing when Foundry is paused
-- Lights-out warning when a source is about to expire
-- Drop a light source on the canvas as a temporary illumination token
-- Pick up dropped lights via the Token HUD
-- Toggle lights on/off from the inventory right-click context menu
+| Light Source | Bright | Dim | Duration | Notes |
+|---|---|---|---|---|
+| Torch | 15ft | 30ft | 1hr | Consumable |
+| Torch, Tindertwig | 15ft | 30ft | Never | Reusable, never burns out |
+| Torch, Sentry | 15ft | 30ft | 1hr | Pale blue, suspends invisibility |
+| Torch, Repel Beast | 15ft | 30ft | 1hr | Crimson |
+| Torch, Frigidflame | 15ft | 30ft | 1hr | Ice blue, cold/moonlight |
+| Lantern, Hooded | 15ft | 30ft | 1hr/oil | 90-degree cone, consumes oil |
+| Lantern, Bullseye | 30ft | 60ft | 1hr/oil | Full 360-degree radius |
+| Candle / Candle, Basic | 5ft | 10ft | 1hr | Consumable |
+| Candle, Calming | 5ft | 10ft | 1hr | Soft blue |
+| Candle, Insectbane | 5ft | 10ft | 1hr | Green |
+| Candle, Restful | 5ft | 10ft | 1hr | Warm amber |
+| Sunrod | 15ft | 30ft | 1hr | Golden sunburst animation |
 
-Supported light sources: Torch, Lantern (Hooded), Lantern (Bullseye), Candle
+- Toggle lights on/off from inventory right-click context menu
+- **Lantern fuel system** — Consumes Oil (flask preferred over basic). Only consumed when burn time runs out. Auto-refuels from inventory.
+- **Real-time burn** option (1 real second = 1 game second)
+- **Drop lights** on the canvas as temporary illumination tokens
+- **Pick up** dropped lights via Token HUD
+- **Party token support** — Lights work when gathered into a party token; transfers light to the party token automatically
+- **Stack splitting** — Lighting a stacked torch splits off one item
+
+---
+
+### Flanking Checker
+Automatic flanking detection during combat.
+
+- If 2+ allied tokens are adjacent to a foe, the foe becomes Vulnerable
+- Bidirectional — heroes can flank NPCs and vice versa
+- Size restriction — foe must be no more than one size larger
+- Correctly mirrors `outgoingSavesModifier` to world actor for saves (Favor on saves vs. flanked monsters)
+- Auto-cleans on combat end
+
+---
+
+### NPC Abilities
+Passive automation hooks for monster abilities.
+
+| Ability | Effect |
+|---------|--------|
+| **Pack Instincts / Pack Tactics** | Saves against this NPC's attacks are Hindered when an ally is adjacent to the target |
+| **Magic Ward I/II/III** | Cast Check penalty die (d4/d6/d8) when targeting this NPC |
+
+---
+
+### Countdown Dice Auto-Roller
+Automatically rolls all countdown dice at the start of each combat round.
+
+- Applies tick damage (burning, poison, etc.)
+- Shrinks dice on a roll of 1; expires and removes status when d4 rolls 1
+- Cleans up all dice when combat ends
+- Toggleable via world setting
+
+---
+
+### Inventory System
+Quality-of-life improvements for the Vagabond inventory.
+
+- **Auto-stacking** — Dragging a duplicate item onto a character merges by incrementing quantity
+- **Quantity badges** — Cards show a x badge when quantity > 1
+- **Slot counting** — Correctly accounts for stacked item quantities in the slot display
+- **Zero-slot rule** — Zero-slot items (rations, scrolls, candles) pool by gear category: every 10 units = 1 slot. Different scroll spells pool under "Scrolls".
+- **Weightless flag** — "Weightless (no slot cost)" checkbox on zero-slot item sheets for truly zero-slot items (backpacks, trinkets, quest items)
+
+---
+
+### Spell Scroll Forge
+GM tool to create consumable Spell Scrolls.
+
+- Pick a spell from the compendium, configure delivery/dice/effects
+- Scrolls cast with no mana cost and no Cast Check, then vaporize
+- Value auto-calculated: 5g + 5g per mana equivalent
+- Right-click a scroll in inventory → "Use Scroll" to cast
+- Plays spell FX, rolls damage, posts chat card
+- Accessible via "Forge & Loot" panel on the crawl bar
+
+---
+
+### Forge & Loot Panel
+Left-click the "Forge & Loot" button on the crawl bar to open a tool picker:
+
+- **Relic Forge** — Enchant equipment with relic powers
+- **Scroll Forge** — Create consumable spell scrolls
+- **Loot Manager** — Assign loot tables to NPCs, configure drop chances
+- **Loot Log** — Session loot tracking with Discord export
+- **Loot Generator** — Roll on core loot tables (Levels 1-10) with compendium item creation
+
+Right-click for quick settings (loot drop toggle, drop chance slider, item drops toggle).
 
 ---
 
 ### Morale Checker
-Automatically triggers morale checks at the correct moments during combat.
+Automatically triggers morale checks during combat.
 
-- **First death** — Triggers when the first NPC is defeated
-- **Half the group defeated** — Triggers when 50% of NPCs are down
-- **Solo morale** — For single-enemy encounters, triggers when the enemy drops to half HP
-- Posts morale check prompts to chat at the right time without manual GM tracking
+- **First death** — When the first NPC is defeated
+- **Half the group** — When 50% of NPCs are down
+- **Solo morale** — Single-enemy encounters, triggers at half HP
 
 ---
 
 ### Crawl Clock
-A progress clock that tracks dungeon exploration tension.
+SVG progress clock tracking dungeon exploration tension.
 
 - Configurable sizes: Tiny (4), Small (6), Medium (8), Large (10), Huge (12)
-- Advances one segment per crawl turn
-- When the clock fills, it resets — a good prompt for encounters or events
-- Visual SVG clock on the canvas, hideable during combat
-- Right-click for rollback and configuration options
-- Persists across sessions
+- Advances per crawl turn; resets when filled
+- Hideable during combat; persists across sessions
 
 ---
 
 ### Rest & Breather
-A combined dialog for managing recovery between encounters.
+Combined recovery dialog.
 
-- Shows all player characters with current HP, Luck, Mana, Fatigue, Might, and Ration count
-- **Breather** — Consume a ration to heal; calculates healing based on Might
-- **Rest** — Full recovery of HP, Luck, and Mana; reduces Fatigue
-- Ration detection uses the Vagabond system's supply flag — any item marked as a supply counts
-- Warns when characters have no rations
-- Applies all updates in one click
+- Shows all PCs with HP, Luck, Mana, Fatigue, Might, Rations
+- **Breather** — Consume a ration to heal based on Might
+- **Rest** — Full recovery of HP, Luck, Mana; reduces Fatigue
+- Auto-detects rations via the supply flag
 
 ---
 
 ### Encounter Tools
-**Encounter Check** — A quick d6 roll against a configurable threshold (1-in-6 through 5-in-6). On a hit, auto-opens the encounter roller and rolls the active table. Right-click the button to change the threshold. Configurable as GM-only whisper or visible to all players.
+- **Encounter Check** — Quick d6 roll against configurable threshold
+- **Encounter Roller** — Build Table, Browse NPCs, Roll Tables, and Mutate tabs
+- **Monster Mutator** — 64 mutations with stat recalculation and custom names
+- **Loot Generator** — Full roll-chain tracing with compendium item creation and "Give to Player" chat buttons
 
-**Encounter Roller** — A full encounter building and rolling tool:
-- **Build Table tab** — Drag NPC actors onto numbered slots to build a custom encounter table, then save it as a Foundry RollTable
-- **Roll Tables tab** — Select any world RollTable (grouped by folder) and roll it for an encounter result
-- **Folder exclusion** — Hide irrelevant table folders from the dropdown
-- **Result panel** — Shows monster type and count, rolls distance (Close / Near / Far) and reaction (Violent through Friendly) automatically
-- Reroll distance or reaction independently
-- Post the result to chat or place tokens directly on the canvas
+---
+
+### Trap Builder
+Macro-based trap system using v13 Scene Regions.
+
+- Visual dialog to configure: save type, VFX, damage, status effects, countdown dice, tick damage, fatigue/mana/luck drain
+- Auto-creates a Scene Region with "Execute Macro" behavior on token enter
+- One-shot option disables the region behavior after first trigger
+- Works with Sequencer for visual effects
+
+---
+
+### Item Sequencer Cone Patch
+Temporary workaround for the system's item-sequencer not supporting cone animations (e.g. Breath Attack). Adds cone rendering using the same logic as the spell-sequencer.
 
 ---
 
@@ -157,15 +238,15 @@ A combined dialog for managing recovery between encounters.
 
 | Setting | Description | Default |
 |---------|-------------|---------|
-| Default Time Passes (minutes) | How many minutes advance per Time Passes click | 10 |
-| Encounter Roll: GM Only | Whisper encounter check results to GM only | On |
-| Hide NPC Names in Strip | Remove NPC names from cards in the top bar | Off |
-| Auto-Hide Defeated Tokens | Hide defeated tokens from the strip instead of showing a skull | Off |
-| NPC Action Menu | Show weapon/spell/action hover menus on cards during combat | On |
-| Real-Time Light Burn | Burn light sources in real time (1 real sec = 1 game sec) | Off |
-| Movement Enforcement | Block or warn when tokens exceed their movement allowance | On |
-| Alchemist Cookbook | Enable the Alchemist crafting system, consumable effects, and class features | On |
-| NPC Abilities | Automate NPC special abilities (Pack Tactics, Evasion, etc.) | On |
+| Default Time Passes (minutes) | Minutes per Time Passes click | 10 |
+| Encounter Roll: GM Only | Whisper encounter results to GM | On |
+| Hide NPC Names in Strip | Remove NPC names from strip cards | Off |
+| Auto-Hide Defeated Tokens | Hide defeated from strip | Off |
+| NPC Action Menu | Show action menus on combat cards | On |
+| Real-Time Light Burn | Burn lights in real time | Off |
+| Enforce Crawl Movement | Block tokens beyond crawl speed | On |
+| Enforce Combat Movement | Block tokens beyond combat speed | On |
+| Auto-Roll Countdown Dice | Roll countdown dice at round start | On |
 
 ---
 
@@ -175,39 +256,9 @@ A combined dialog for managing recovery between encounters.
 - **Vagabond** system v4.1.0+
 
 ### Optional
-- **vagabond-extras** — Some features complement the extras module
-- **lib-wrapper** — Recommended for compatibility with other movement-modifying modules
-
----
-
-### Alchemist Cookbook
-A full crafting system for the Alchemist class. Right-click Alchemy Tools in inventory to open.
-
-- **Cookbook Window** — Browse all 84 alchemical items or just your known formulae; craft with one click
-- **Formula Management** — Learn formulae up to your level's value cap; craft known formulae for 5s flat
-- **Material Tracking** — Auto-converts Materials to consumable stacks, deducts costs across multiple stacks
-- **Weapon Conversion** — Offensive items (acids, explosives, poisons) auto-convert to throwable weapons with proper damage, range, and skill
-- **Alchemical Attack Effects** — On-hit effects (Burning, Sickened, Restrained, Blinded, etc.) via countdown dice, linked status AEs, target filtering, and splash damage
-- **Oil Coating System** — Oils coat weapons with bonus damage, light, silvered properties, and burning effects on hit targets
-- **Self-Use Consumables** — Potions (Healing, Mana, Speed), Antitoxin auto-apply effects when used
-- **Crawl Strip Integration** — Craft tab appears in the combat HUD for quick formula crafting mid-fight
-
-#### Alchemist Class Features (Automated)
-
-| Feature | Level | Effect |
-|---------|-------|--------|
-| **Eureka** | 2 | Gain a Studied die when you Crit on a Craft check |
-| **Potency** | 4 | Alchemical damage and healing dice can explode |
-| **Big Bang** | 8 | +d6 bonus to alchemical damage/healing; explode on two highest values |
-
-#### NPC Abilities (Automated)
-
-| Ability | Effect |
-|---------|--------|
-| **Pack Tactics** | Favor on attacks when ally is adjacent to target |
-| **Evasion** | Reflex saves: no damage on pass, half on fail |
-| **Elusive** | Cannot be Flanked |
-| **Magic Resistance** | Favor on saves vs. spells |
+- **vagabond-extras** — Complements some features
+- **vagabond-character-enhancer** — Class feature automation
+- **Sequencer + JB2A** — Visual effects for spells, traps, and attacks
 
 ---
 
@@ -219,8 +270,6 @@ Paste the following manifest URL into Foundry's module installer:
 https://github.com/DimitroffVodka/vagabond-crawler/releases/latest/download/module.json
 ```
 
-Or search for **Vagabond Crawler** in the Foundry module browser.
-
 ---
 
 ## Authors
@@ -230,16 +279,3 @@ Or search for **Vagabond Crawler** in the Foundry module browser.
 ---
 
 *This module is an independent community project for the Vagabond RPG system and is not affiliated with Land of the Blind, LLC.*
-
----
-
-## Changelog
-
-### 1.2.0
-- **Loot Generator** — New ApplicationV2 window (Forge & Loot menu > Loot Generator) for rolling on the Vagabond core loot tables (Levels 1-10). Features full roll-chain tracing, compendium item creation, and chat cards with "Give to Player" buttons.
-  - Level 1 rolls on the p.186 table; Levels 2-10 use the category chain (Treasure, Armor, Weapons, Alchemy) with correct per-level dice formulas
-  - Alchemy, weapons, and armor results auto-match compendium items for drag-and-drop ready output
-  - Chat card claiming: GM posts loot to chat, picks a player to give it to, item is created on their sheet
-- **Loot Data** — All loot tables from the Vagabond core book embedded as module data: Treasure (24 entries + sub-tables), Armor Power (24 entries), Weapon Power (40 entries), Alchemy (95 items), plus 13 shared sub-tables (Trade Goods, Art, Jewelry, Clothing, Relic Items, Armor/Weapon Materials, Resistances, Utilities, Senses, Movement, Creature types)
-- **Independent table folder filters** — Loot Manager and Encounter Roller now have separate folder exclusion settings, so hiding folders from encounters no longer hides them from loot assignment
-- **Loot Manager UI** — Added filter button on the "Assign Table" section header for quick folder exclusion management

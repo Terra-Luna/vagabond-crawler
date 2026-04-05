@@ -179,6 +179,7 @@ export const CrawlBar = {
       case "startCrawl":
         await CrawlState.start();
         await CrawlClock.ensure();
+        await MovementTracker.resetAll();
         this.render();
         (await import("./crawl-strip.mjs")).CrawlStrip.render();
         break;
@@ -226,8 +227,9 @@ export const CrawlBar = {
 
       case "nextTurn": {
         const result = await CrawlState.nextTurn();
+        // Reset movement on every phase change (Heroes→GM and GM→Heroes)
+        await MovementTracker.resetAll();
         if (result?.newTurn) {
-          await MovementTracker.resetAll();
           // A new crawl turn = 1 Scene: advance clock, burn lights, track time
           if (CrawlClock.available) await CrawlClock.advance("scene");
           const mins = game.settings.get(MODULE_ID, "timePassesMinutes");
@@ -577,7 +579,7 @@ export const CrawlBar = {
     let added = 0;
     for (const token of selected) {
       if (!token.actor) continue;
-      const type = token.actor.type === "character" ? "player" : "npc";
+      const type = (token.document ?? token).disposition === CONST.TOKEN_DISPOSITIONS.FRIENDLY ? "player" : "npc";
       await CrawlState.addMember({
         id:      `token-${token.id}`,
         name:    token.name,
@@ -644,7 +646,7 @@ export const CrawlBar = {
       if (CrawlState.members.some(m => m.id === memberId)) continue;
       const token = c.token;
       if (!token?.actor) continue;
-      const type = token.actor.type === "character" ? "player" : "npc";
+      const type = (token.document ?? token).disposition === CONST.TOKEN_DISPOSITIONS.FRIENDLY ? "player" : "npc";
       await CrawlState.addMember({
         id:      memberId,
         name:    token.name,
@@ -719,7 +721,7 @@ Hooks.on("createCombatant", async (combatant) => {
   if (!token?.actor) return;
   const memberId = `token-${token.id}`;
   if (CrawlState.members.some(m => m.id === memberId)) return;
-  const type = token.actor.type === "character" ? "player" : "npc";
+  const type = (token.document ?? token).disposition === CONST.TOKEN_DISPOSITIONS.FRIENDLY ? "player" : "npc";
   await CrawlState.addMember({
     id:      memberId,
     name:    token.name,

@@ -31,9 +31,16 @@ import { ICONS }      from "./icons.mjs";
  * This is what moveRemaining resets to each turn and what the strip displays.
  */
 function _getBaseSpeed(actor) {
-  const s = actor?.system?.speed;
-  if (CrawlState.paused) return s?.base ?? 0;   // combat: base move
-  return s?.crawl ?? 0;                           // crawl: exploration
+  const sys = actor?.system;
+  if (!sys) return 0;
+  // Character: system.speed = { base, crawl, ... }
+  // Party/NPC: system.speed = number, system.crawl = number
+  const s = sys.speed;
+  if (typeof s === "object") {
+    return CrawlState.paused ? (s.base ?? 0) : (s.crawl ?? 0);
+  }
+  // Flat speed fields (party sheets)
+  return CrawlState.paused ? (s ?? 0) : (sys.crawl ?? 0);
 }
 
 /**
@@ -42,9 +49,13 @@ function _getBaseSpeed(actor) {
  * Crawl:  same as base speed (no Rush in crawl).
  */
 function _getHardCap(actor) {
-  const s = actor?.system?.speed;
-  if (CrawlState.paused) return ((s?.base ?? 0) * 2);  // combat: move + Rush
-  return s?.crawl ?? 0;                                  // crawl: no Rush
+  const sys = actor?.system;
+  if (!sys) return 0;
+  const s = sys.speed;
+  if (typeof s === "object") {
+    return CrawlState.paused ? ((s.base ?? 0) * 2) : (s.crawl ?? 0);
+  }
+  return CrawlState.paused ? ((s ?? 0) * 2) : (sys.crawl ?? 0);
 }
 
 /** Highest "Modify Movement Cost" multiplier along a segment (checks dest + midpoint). */
@@ -86,7 +97,7 @@ class VCSTokenRuler extends foundry.canvas.placeables.tokens.TokenRuler {
   get _isTracked() {
     if (!CrawlState.active) return false;
     const actor = this.token?.actor;
-    if (!actor || actor.type !== "character") return false;
+    if (!actor) return false;
     return !!CrawlState.members.find(m => m.actorId === actor.id);
   }
 
@@ -228,7 +239,7 @@ export const MovementTracker = {
         // Deduct movement after the move has successfully committed
         if (CrawlState.active) {
           const actor = doc.actor;
-          if (actor?.type === "character" && CrawlState.members.find(m => m.actorId === actor.id)) {
+          if (actor && CrawlState.members.find(m => m.actorId === actor.id)) {
             const distanceFt = this._pendingDeduct?.[doc.id] ?? 0;
             delete this._pendingDeduct?.[doc.id];
             if (distanceFt > 0) {
@@ -259,11 +270,11 @@ export const MovementTracker = {
     });
 
     Hooks.on("renderTokenHUD", (hud, html, data) => {
-      if (!game.user.isGM) return;
       if (!CrawlState.active) return;
       // Show rollback in crawl Heroes phase OR during combat
       if (!CrawlState.isHeroesPhase && !CrawlState.paused) return;
       const token = hud.object;
+      if (!token.isOwner) return;  // GM or the owning player
       const member = CrawlState.members.find(m => m.tokenId === token.id);
       if (!member || member.type !== "player") return;
 
@@ -318,7 +329,7 @@ export const MovementTracker = {
     if (changes.x === undefined && changes.y === undefined) return;
 
     const actor = doc.actor;
-    if (!actor || actor.type !== "character") return;
+    if (!actor) return;
 
     const member = CrawlState.members.find(m => m.actorId === actor.id);
     if (!member) return;
@@ -375,6 +386,11 @@ export const MovementTracker = {
   // ── Rollback ──────────────────────────────────────────────────────────────
 
   async rollback(tokenId) {
+    // Players relay to GM (turn-start positions are only tracked on the GM client)
+    if (!game.user.isGM) {
+      game.socket.emit(`module.${MODULE_ID}`, { action: "rollbackMove", tokenId });
+      return;
+    }
     const start = this._turnStartPos[tokenId];
     if (!start) { ui.notifications.warn("No turn-start position recorded for this token."); return; }
 
@@ -390,7 +406,7 @@ export const MovementTracker = {
     });
 
     // Refund full turn movement (base speed — Rush is a choice, not a given)
-    if (actor?.type === "character") {
+    if (actor) {
       const fullSpeed = Math.round(_getBaseSpeed(actor) / 5) * 5;
       await actor.setFlag(MODULE_ID, "moveRemaining", fullSpeed);
       CrawlStrip.updateMember(actor.id);
@@ -408,13 +424,15 @@ export const MovementTracker = {
   async resetAll() {
     for (const member of CrawlState.playerMembers) {
       if (!member.actorId) continue;
-      const actor = game.actors.get(member.actorId);
+      // Prefer token actor (handles unlinked/synthetic actors correctly)
+      const token = member.tokenId
+        ? (canvas.tokens?.get(member.tokenId) ?? canvas.tokens?.placeables?.find(t => t.actor?.id === member.actorId))
+        : null;
+      const actor = token?.actor ?? game.actors.get(member.actorId);
       if (actor) await this.resetActor(actor);
       // Snapshot turn-start position for each member's token
-      if (member.tokenId) {
-        const token = canvas.tokens?.get(member.tokenId)
-          ?? canvas.tokens?.placeables?.find(t => t.actor?.id === member.actorId);
-        if (token) this._turnStartPos[token.id] = { x: token.document.x, y: token.document.y };
+      if (token) {
+        this._turnStartPos[token.id] = { x: token.document.x, y: token.document.y };
       }
     }
     CrawlStrip.render();

@@ -187,7 +187,7 @@ export const CrawlStrip = {
       }
 
       // Action menu tab strip — only during combat, below the card
-      const isNPC = m.type === "npc" || m.type === "gm";
+      const isNPC = actor?.type === "npc" || m.type === "gm";
       const showMenu = inCombat
         && actor?.isOwner
         && game.settings.get(MODULE_ID, "npcActionMenu");
@@ -294,8 +294,9 @@ export const CrawlStrip = {
 
   _extractData(actor, inCombat = false) {
     const s           = actor.system;
-    const combatSpeed = s.speed?.base ?? 0;  // base move (Rush extends beyond)
-    const crawlSpeed  = s.speed?.crawl ?? 0;
+    // Character: system.speed = { base, crawl }. Party: system.speed = number, system.crawl = number.
+    const combatSpeed = typeof s.speed === "object" ? (s.speed?.base ?? 0) : (s.speed ?? 0);
+    const crawlSpeed  = typeof s.speed === "object" ? (s.speed?.crawl ?? 0) : (s.crawl ?? 0);
     const activeSpeed = inCombat ? combatSpeed : crawlSpeed;
     const rawRemaining  = actor.getFlag(MODULE_ID, "moveRemaining") ?? activeSpeed;
     const moveRemaining = Math.round(rawRemaining / 5) * 5;
