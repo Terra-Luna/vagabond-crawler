@@ -130,7 +130,7 @@ export const CrawlBar = {
           ${ICONS.rest} Rest
         </button>
         <button class="vcb-btn" data-action="lootForge"
-                title="Left-click: Open Relic Forge&#10;Right-click: Loot settings">
+                title="Left-click: Tools&#10;Right-click: Settings">
           <i class="fas fa-hammer"></i> Forge & Loot
         </button>
         <button class="vcb-btn vcb-danger-btn" data-action="endCrawl">
@@ -148,7 +148,7 @@ export const CrawlBar = {
       el.addEventListener("click", ev => {
         ev.preventDefault();
         ev.stopPropagation();
-        this._onAction(el.dataset.action);
+        this._onAction(el.dataset.action, ev);
       });
     });
 
@@ -173,7 +173,7 @@ export const CrawlBar = {
     }
   },
 
-  async _onAction(action) {
+  async _onAction(action, e) {
     switch (action) {
 
       case "startCrawl":
@@ -263,7 +263,7 @@ export const CrawlBar = {
         break;
 
       case "lootForge":
-        RelicForge.open();
+        this._showForgeToolbar(e);
         break;
 
       case "restBreather":
@@ -364,6 +364,77 @@ export const CrawlBar = {
     if (this._encMenuDismiss) {
       document.removeEventListener("pointerdown", this._encMenuDismiss);
       this._encMenuDismiss = null;
+    }
+  },
+
+  // ── Forge & Loot toolbar (left-click) ────────────────────────────────────
+
+  _showForgeToolbar(ev) {
+    this._dismissForgeToolbar();
+
+    const panel = document.createElement("div");
+    panel.className = "vcb-forge-panel";
+
+    panel.innerHTML = `
+      <div class="vcb-forge-panel-header">Forge & Loot</div>
+      <div class="vcb-forge-panel-tabs">
+        <button class="vcb-forge-tab" data-tool="forge">
+          <i class="fas fa-hammer"></i> Relic Forge
+        </button>
+        <button class="vcb-forge-tab" data-tool="scrollForge">
+          <i class="fas fa-scroll"></i> Scroll Forge
+        </button>
+        <button class="vcb-forge-tab" data-tool="lootManager">
+          <i class="fas fa-treasure-chest"></i> Loot Manager
+        </button>
+        <button class="vcb-forge-tab" data-tool="lootLog">
+          <i class="fas fa-clipboard-list"></i> Loot Log
+        </button>
+        <button class="vcb-forge-tab" data-tool="lootGenerator">
+          <i class="fas fa-dice-d20"></i> Loot Generator
+        </button>
+      </div>
+    `;
+
+    // Position above the button
+    const btn = ev.currentTarget ?? ev.target;
+    const rect = btn.getBoundingClientRect();
+    panel.style.left = `${rect.left}px`;
+    panel.style.bottom = `${window.innerHeight - rect.top + 4}px`;
+    document.body.appendChild(panel);
+
+    // Clamp to viewport
+    const panelRect = panel.getBoundingClientRect();
+    if (panelRect.right > window.innerWidth) panel.style.left = `${window.innerWidth - panelRect.width - 8}px`;
+
+    // Click handlers
+    const open = (tool, fn) => {
+      panel.querySelector(`[data-tool="${tool}"]`).addEventListener("click", () => {
+        this._dismissForgeToolbar(); fn();
+      });
+    };
+    open("forge",         () => RelicForge.open());
+    open("scrollForge",   () => ScrollForge.open());
+    open("lootManager",   () => LootManager.open());
+    open("lootLog",       () => LootTracker.open());
+    open("lootGenerator", () => LootGenerator.open());
+
+    // Click-away dismiss
+    this._forgeToolbarDismiss = (e) => {
+      if (!panel.contains(e.target) && e.target !== btn) this._dismissForgeToolbar();
+    };
+    setTimeout(() => document.addEventListener("pointerdown", this._forgeToolbarDismiss), 0);
+    this._forgeToolbar = panel;
+  },
+
+  _dismissForgeToolbar() {
+    if (this._forgeToolbar) {
+      this._forgeToolbar.remove();
+      this._forgeToolbar = null;
+    }
+    if (this._forgeToolbarDismiss) {
+      document.removeEventListener("pointerdown", this._forgeToolbarDismiss);
+      this._forgeToolbarDismiss = null;
     }
   },
 

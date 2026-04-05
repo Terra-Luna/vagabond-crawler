@@ -263,7 +263,7 @@ async function _dropLightOnCanvas(item, dropX, dropY) {
       light:       tokenLight,
       disposition: CONST.TOKEN_DISPOSITIONS.NEUTRAL,
     },
-    ownership: { default: CONST.DOCUMENT_OWNERSHIP_LEVELS.OBSERVER },
+    ownership: { default: CONST.DOCUMENT_OWNERSHIP_LEVELS.OWNER },
   });
 
   await canvas.scene.createEmbeddedDocuments("Token", [{
@@ -331,11 +331,12 @@ async function _doPickup(lightActor, token, targetActor) {
   const wasLit    = flags.lit           ?? false;
   const def       = LIGHT_SOURCES[sourceKey];
 
+  // skipStack: light sources with burn state must stay separate from unlit stacks
   const [newItem] = await targetActor.createEmbeddedDocuments("Item", [{
     name: itemName, type: "equipment", img: itemImg,
     system: { quantity: 1, equipmentType: "gear", isConsumable: true },
     flags: { [MODULE_ID]: { lit: wasLit, remainingSecs: remaining, sourceKey, tokenId: null } },
-  }]);
+  }], { skipStack: true });
 
   if (wasLit && def) {
     const targetToken = targetActor.token?.object ?? targetActor.getActiveTokens(true)[0];

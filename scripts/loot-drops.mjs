@@ -173,11 +173,8 @@ export const LootDrops = {
     const x = combatantToken?.x ?? 0;
     const y = combatantToken?.y ?? 0;
 
-    // Build ownership: all players get Observer so they can interact with the loot bag
-    const ownership = { default: CONST.DOCUMENT_OWNERSHIP_LEVELS.OBSERVER };
-    for (const user of game.users) {
-      if (user.isGM) ownership[user.id] = CONST.DOCUMENT_OWNERSHIP_LEVELS.OWNER;
-    }
+    // All players get Owner so they can interact with the Token HUD pickup button
+    const ownership = { default: CONST.DOCUMENT_OWNERSHIP_LEVELS.OWNER };
 
     const actor = await Actor.create({
       name: `Loot: ${npc.name}`,

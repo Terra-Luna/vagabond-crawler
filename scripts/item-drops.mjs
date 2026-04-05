@@ -140,11 +140,14 @@ export const ItemDrops = {
       }
     }
 
-    // Create a temporary NPC actor to represent the dropped item
+    // Create a temporary NPC actor to represent the dropped item.
+    // Owner permission for all players so anyone can interact with the
+    // Token HUD pickup button and pick up the item.
     const actor = await Actor.create({
       name: itemData.name,
       type: "npc",
       img: itemData.img || "icons/svg/item-bag.svg",
+      ownership: { default: 3 },
       prototypeToken: {
         name: itemData.name,
         texture: { src: itemData.img || "icons/svg/item-bag.svg" },
@@ -251,8 +254,8 @@ export const ItemDrops = {
     const recipient = game.actors.get(recipientId);
     if (!recipient) return;
 
-    // Create the item on the recipient
-    await Item.create(itemData, { parent: recipient });
+    // Create the item on the recipient (skipStack to preserve item state)
+    await Item.create(itemData, { parent: recipient, skipStack: true });
 
     // Remove the token from the scene
     const scene = game.scenes.get(sceneId) || canvas.scene;

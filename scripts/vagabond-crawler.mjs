@@ -226,6 +226,8 @@ Hooks.once("ready", async () => {
     const actor = item.parent;
     if (!actor || actor.documentName !== "Actor") return;
     if (!item.system?.quantity) return;   // no quantity field (non-equipment)
+    // Don't stack lit light sources — they need to stay separate
+    if (item.flags?.["vagabond-crawler"]?.lit) return;
 
     // Find existing item with same name and type
     const existing = actor.items.find(i =>

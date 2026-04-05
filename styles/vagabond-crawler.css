@@ -2410,3 +2410,56 @@ body.theme-light .vcb-phase-badge {
   cursor: pointer; transition: background 0.15s;
 }
 .vcscr-create-btn:hover { background: linear-gradient(135deg, var(--vcb-btn-hover-1, #2e3138), var(--vcb-btn-hover-2, #232730)); }
+
+/* ── Forge & Loot Panel ───────────────────────────────────────────────────── */
+
+.vcb-forge-panel {
+  position: fixed;
+  z-index: 1000;
+  background: var(--vcb-bg, #17191d);
+  border: 1px solid var(--vcb-border, #3a3d44);
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+}
+.vcb-forge-panel-header {
+  padding: 6px 12px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--vcb-text-muted, #666);
+  border-bottom: 1px solid var(--vcb-border, #3a3d44);
+}
+.vcb-forge-panel-tabs {
+  display: flex;
+  flex-direction: column;
+}
+.vcb-forge-tab {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  border: none;
+  background: transparent;
+  color: var(--vcb-text, #BDC1C6);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s, color 0.15s;
+  text-align: left;
+}
+.vcb-forge-tab:hover {
+  background: var(--vcb-btn-hover-1, #2e3138);
+  color: var(--vcb-accent, #fff);
+}
+.vcb-forge-tab + .vcb-forge-tab {
+  border-top: 1px solid rgba(255, 255, 255, 0.04);
+}
+.vcb-forge-tab i {
+  font-size: 13px;
+  width: 18px;
+  text-align: center;
+  color: var(--vcb-accent-dim, #94913c);
+}
