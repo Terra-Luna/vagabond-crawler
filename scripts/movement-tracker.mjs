@@ -59,8 +59,14 @@ function _getHardCap(actor) {
 }
 
 /** Highest "Modify Movement Cost" multiplier along a segment (checks dest + midpoint). */
-function _getTerrainDifficulty(scene, fromX, fromY, toX, toY, elevation = 0) {
+function _getTerrainDifficulty(scene, fromX, fromY, toX, toY, elevation = 0, tokenDoc = null) {
   if (!scene?.regions?.size) return 1;
+
+  // Treads Lightly: character ignores walk terrain difficulty
+  if (tokenDoc?.actor?.type === "character") {
+    const features = tokenDoc.actor.getFlag("vagabond-character-enhancer", "features");
+    if (features?.perk_treadsLightly) return 1;
+  }
 
   const points = [
     { x: toX, y: toY, elevation },
@@ -223,7 +229,7 @@ export const MovementTracker = {
           const dy = ((changes.y ?? doc.y) - doc.y) / gridSize;
           const toX = changes.x ?? doc.x;
           const toY = changes.y ?? doc.y;
-          const difficulty = _getTerrainDifficulty(scene, doc.x, doc.y, toX, toY, doc.elevation ?? 0);
+          const difficulty = _getTerrainDifficulty(scene, doc.x, doc.y, toX, toY, doc.elevation ?? 0, doc);
           const distanceFt = Math.round((Math.max(Math.abs(dx), Math.abs(dy)) * gridDist * difficulty) / 5) * 5;
           this._pendingDeduct ??= {};
           this._pendingDeduct[doc.id] = distanceFt;
@@ -350,7 +356,7 @@ export const MovementTracker = {
       const gridDist = scene?.grid?.distance ?? 5;
       const dx = ((changes.x ?? doc.x) - doc.x) / gridSize;
       const dy = ((changes.y ?? doc.y) - doc.y) / gridSize;
-      const difficulty = _getTerrainDifficulty(scene, doc.x, doc.y, changes.x ?? doc.x, changes.y ?? doc.y, doc.elevation ?? 0);
+      const difficulty = _getTerrainDifficulty(scene, doc.x, doc.y, changes.x ?? doc.x, changes.y ?? doc.y, doc.elevation ?? 0, doc);
       segFt = Math.round((Math.max(Math.abs(dx), Math.abs(dy)) * gridDist * difficulty) / 5) * 5;
     }
 
