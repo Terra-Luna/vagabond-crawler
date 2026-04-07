@@ -204,6 +204,11 @@ export const MovementTracker = {
       hint: "Block tokens from moving beyond their base speed (+ Rush) during combat.",
       scope: "world", config: true, type: Boolean, default: true,
     });
+    game.settings.register(MODULE_ID, "enforceNpcMovement", {
+      name: "Enforce NPC Movement",
+      hint: "Block NPC tokens from exceeding their movement budget in combat. When off, only player tokens are enforced.",
+      scope: "world", config: true, type: Boolean, default: false,
+    });
   },
 
   init() {
@@ -245,7 +250,8 @@ export const MovementTracker = {
         // Deduct movement after the move has successfully committed
         if (CrawlState.active) {
           const actor = doc.actor;
-          if (actor && CrawlState.members.find(m => m.actorId === actor.id)) {
+          const mem = actor && CrawlState.members.find(m => m.actorId === actor.id);
+          if (mem && !(mem.type === "npc" && CrawlState.paused && !game.settings.get(MODULE_ID, "enforceNpcMovement"))) {
             const distanceFt = this._pendingDeduct?.[doc.id] ?? 0;
             delete this._pendingDeduct?.[doc.id];
             if (distanceFt > 0) {
@@ -349,6 +355,9 @@ export const MovementTracker = {
       : game.settings.get(MODULE_ID, "enforceCrawlMovement");
     if (!enforce) return;
 
+    // NPC enforcement is a separate opt-in setting
+    if (member.type === "npc" && inCombat && !game.settings.get(MODULE_ID, "enforceNpcMovement")) return;
+
     let segFt = precomputedFt;
     if (segFt == null) {
       const scene    = doc.parent;
@@ -428,7 +437,7 @@ export const MovementTracker = {
   },
 
   async resetAll() {
-    for (const member of CrawlState.playerMembers) {
+    for (const member of CrawlState.members) {
       if (!member.actorId) continue;
       // Prefer token actor (handles unlinked/synthetic actors correctly)
       const token = member.tokenId
