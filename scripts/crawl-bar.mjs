@@ -22,6 +22,36 @@ import { ScrollForge }     from "./scroll-forge.mjs";
 
 const BAR_ID = "vagabond-crawler-bar";
 
+// ── Shared menu helpers ────────────────────────────────────────────────────────
+
+/** Position a popup above the click point, clamped to viewport. */
+function _positionMenu(el, ev) {
+  const anchor = ev.currentTarget ?? ev.target;
+  const anchorRect = anchor.getBoundingClientRect();
+  el.style.left = `${ev.clientX ?? anchorRect.left}px`;
+  el.style.bottom = `${window.innerHeight - (ev.clientY ?? anchorRect.top) + 4}px`;
+  document.body.appendChild(el);
+  const rect = el.getBoundingClientRect();
+  if (rect.top < 0) { el.style.bottom = "auto"; el.style.top = `${(ev.clientY ?? anchorRect.bottom) + 4}px`; }
+  if (rect.right > window.innerWidth) el.style.left = `${window.innerWidth - rect.width - 8}px`;
+}
+
+/** Attach a click-away dismiss handler. Returns { el, dismiss } cleanup keys stored on `self`. */
+function _attachDismiss(self, el, elKey, dismissKey, excludeTarget) {
+  const handler = (e) => {
+    if (!el.contains(e.target) && e.target !== excludeTarget) _dismiss(self, elKey, dismissKey);
+  };
+  setTimeout(() => document.addEventListener("pointerdown", handler), 0);
+  self[elKey] = el;
+  self[dismissKey] = handler;
+}
+
+/** Remove a popup and its click-away listener. */
+function _dismiss(self, elKey, dismissKey) {
+  if (self[elKey]) { self[elKey].remove(); self[elKey] = null; }
+  if (self[dismissKey]) { document.removeEventListener("pointerdown", self[dismissKey]); self[dismissKey] = null; }
+}
+
 export const CrawlBar = {
 
   _el: null,
@@ -309,15 +339,7 @@ export const CrawlBar = {
       </div>` : ""}
     `;
 
-    // Position above the click (bar is at bottom)
-    menu.style.left = `${ev.clientX}px`;
-    menu.style.bottom = `${window.innerHeight - ev.clientY + 4}px`;
-    document.body.appendChild(menu);
-
-    // Adjust overflow
-    const rect = menu.getBoundingClientRect();
-    if (rect.top < 0) { menu.style.bottom = "auto"; menu.style.top = `${ev.clientY + 4}px`; }
-    if (rect.right > window.innerWidth) menu.style.left = `${window.innerWidth - rect.width - 8}px`;
+    _positionMenu(menu, ev);
 
     // Encounter check
     menu.querySelector('[data-enc="check"]')?.addEventListener("click", async () => {
@@ -350,23 +372,11 @@ export const CrawlBar = {
       ui.notifications.info("Encounter table cleared.");
     });
 
-    // Click-away dismiss
-    this._encMenuDismiss = (e) => {
-      if (!menu.contains(e.target)) this._dismissEncounterMenu();
-    };
-    setTimeout(() => document.addEventListener("pointerdown", this._encMenuDismiss), 0);
-    this._encMenu = menu;
+    _attachDismiss(this, menu, "_encMenu", "_encMenuDismiss");
   },
 
   _dismissEncounterMenu() {
-    if (this._encMenu) {
-      this._encMenu.remove();
-      this._encMenu = null;
-    }
-    if (this._encMenuDismiss) {
-      document.removeEventListener("pointerdown", this._encMenuDismiss);
-      this._encMenuDismiss = null;
-    }
+    _dismiss(this, "_encMenu", "_encMenuDismiss");
   },
 
   // ── Forge & Loot toolbar (left-click) ────────────────────────────────────
@@ -398,16 +408,8 @@ export const CrawlBar = {
       </div>
     `;
 
-    // Position above the button
     const btn = ev.currentTarget ?? ev.target;
-    const rect = btn.getBoundingClientRect();
-    panel.style.left = `${rect.left}px`;
-    panel.style.bottom = `${window.innerHeight - rect.top + 4}px`;
-    document.body.appendChild(panel);
-
-    // Clamp to viewport
-    const panelRect = panel.getBoundingClientRect();
-    if (panelRect.right > window.innerWidth) panel.style.left = `${window.innerWidth - panelRect.width - 8}px`;
+    _positionMenu(panel, ev);
 
     // Click handlers
     const open = (tool, fn) => {
@@ -421,23 +423,11 @@ export const CrawlBar = {
     open("lootLog",       () => LootTracker.open());
     open("lootGenerator", () => LootGenerator.open());
 
-    // Click-away dismiss
-    this._forgeToolbarDismiss = (e) => {
-      if (!panel.contains(e.target) && e.target !== btn) this._dismissForgeToolbar();
-    };
-    setTimeout(() => document.addEventListener("pointerdown", this._forgeToolbarDismiss), 0);
-    this._forgeToolbar = panel;
+    _attachDismiss(this, panel, "_forgeToolbar", "_forgeToolbarDismiss", btn);
   },
 
   _dismissForgeToolbar() {
-    if (this._forgeToolbar) {
-      this._forgeToolbar.remove();
-      this._forgeToolbar = null;
-    }
-    if (this._forgeToolbarDismiss) {
-      document.removeEventListener("pointerdown", this._forgeToolbarDismiss);
-      this._forgeToolbarDismiss = null;
-    }
+    _dismiss(this, "_forgeToolbar", "_forgeToolbarDismiss");
   },
 
   // ── Forge & Loot context menu (right-click) ─────────────────────────────
@@ -487,13 +477,7 @@ export const CrawlBar = {
       </div>
     `;
 
-    menu.style.left = `${ev.clientX}px`;
-    menu.style.bottom = `${window.innerHeight - ev.clientY + 4}px`;
-    document.body.appendChild(menu);
-
-    const rect = menu.getBoundingClientRect();
-    if (rect.top < 0) { menu.style.bottom = "auto"; menu.style.top = `${ev.clientY + 4}px`; }
-    if (rect.right > window.innerWidth) menu.style.left = `${window.innerWidth - rect.width - 8}px`;
+    _positionMenu(menu, ev);
 
     // Open Relic Forge
     menu.querySelector('[data-fl="forge"]')?.addEventListener("click", () => {
@@ -552,23 +536,11 @@ export const CrawlBar = {
       ui.notifications.info(`Item Drops ${!itemDropsEnabled ? "enabled" : "disabled"}.`);
     });
 
-    // Click-away dismiss
-    this._forgeLootDismiss = (e) => {
-      if (!menu.contains(e.target)) this._dismissForgeLootMenu();
-    };
-    setTimeout(() => document.addEventListener("pointerdown", this._forgeLootDismiss), 0);
-    this._forgeLootMenu = menu;
+    _attachDismiss(this, menu, "_forgeLootMenu", "_forgeLootDismiss");
   },
 
   _dismissForgeLootMenu() {
-    if (this._forgeLootMenu) {
-      this._forgeLootMenu.remove();
-      this._forgeLootMenu = null;
-    }
-    if (this._forgeLootDismiss) {
-      document.removeEventListener("pointerdown", this._forgeLootDismiss);
-      this._forgeLootDismiss = null;
-    }
+    _dismiss(this, "_forgeLootMenu", "_forgeLootDismiss");
   },
 
   // ── Token management ─────────────────────────────────────────────────────

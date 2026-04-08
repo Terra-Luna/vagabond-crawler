@@ -476,6 +476,7 @@ export const LootDrops = {
     });
 
     const allParts = [...currencyParts, ...itemParts];
+    const sourceName = lootActor.getFlag(MODULE_ID, "sourceNpc") || "Unknown";
 
     await ChatMessage.create({
       speaker: ChatMessage.getSpeaker({ actor: recipient }),
@@ -502,7 +503,6 @@ export const LootDrops = {
     });
 
     // Log to loot tracker
-    const sourceName = lootActor.getFlag(MODULE_ID, "sourceNpc") || "Unknown";
     await LootTracker.logClaim(recipient.name, sourceName, myShare.currency, myShare.items);
 
     // Check if all shares are claimed and unclaimed pool is empty — auto-delete bag
@@ -520,7 +520,7 @@ export const LootDrops = {
       console.log(`${MODULE_ID} | Loot bag fully claimed and deleted.`);
     }
 
-    console.log(`${MODULE_ID} | ${recipient.name} claimed their loot: ${parts.join(", ")}`);
+    console.log(`${MODULE_ID} | ${recipient.name} claimed their loot: ${allParts.join(", ")}`);
   },
 
   /**

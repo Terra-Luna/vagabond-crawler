@@ -83,6 +83,7 @@ function _getTerrainDifficulty(scene, fromX, fromY, toX, toY, elevation = 0, tok
       for (const pt of points) {
         if (region.testPoint(pt)) { maxDifficulty = Math.max(maxDifficulty, diff); break; }
       }
+      if (maxDifficulty >= 3) return maxDifficulty;
     }
   }
   return maxDifficulty;
