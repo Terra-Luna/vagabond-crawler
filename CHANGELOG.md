@@ -1,5 +1,10 @@
 # Changelog
 
+## v1.6.4
+
+### Bug Fixes
+- **Release packaging** — Include `icons/` directory in module.zip (fixes missing shamrock.svg, dragon-head.svg, light-sabers.svg on fresh installs and updates).
+
 ## v1.6.3
 
 ### Bug Fixes
