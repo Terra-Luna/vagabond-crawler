@@ -1,5 +1,28 @@
 # Changelog
 
+## v1.6.3
+
+### Bug Fixes
+- **State sync isolation** — Deep clone socket state in `CrawlState.applySync` to prevent shared references across clients.
+- **Scroll Forge chat** — `ChatMessage.create` now properly awaited so failures are caught.
+- **Item drop permissions** — Use `CONST.DOCUMENT_OWNERSHIP_LEVELS.OWNER` instead of magic number.
+- **Movement tracker leak** — Clear pending deduction when a move is blocked, preventing stale entries.
+- **Loot pass mutation** — Deep clone items when moving to the unclaimed pool to prevent shared references.
+- **Relic Forge mutation** — Deep clone power objects to prevent mutation of source definitions.
+- **Light tracker interval** — Guard against rapid right-click creating leaked polling intervals.
+- **Encounter roll bias** — Fix `Math.ceil(Math.random() * 6)` returning 0 in distance/reaction rolls.
+- **Compendium encounter tables** — Use `fromUuid`/`fromUuidSync` so compendium RollTables work when set as the active encounter table (previously only world tables were found).
+- **Table overwrite safety** — Update existing encounter tables in-place instead of delete-then-create, preventing data loss if creation fails.
+- **Silent formula errors** — All encounter formula catch blocks now log warnings instead of swallowing errors silently.
+- **Deprecated API** — Use `ActiveEffect#img` instead of deprecated `#icon` in crawl strip (eliminates v12 deprecation warning).
+
+### Code Quality
+- **Listener leak prevention** — All 7 ApplicationV2 windows now use AbortController to clean up event listeners on re-render, preventing accumulation over long sessions.
+- **Shared distance utility** — Extracted duplicated `distanceFt()` from flanking-checker and npc-abilities into `combat-helpers.mjs`.
+- **Browse NPC optimization** — Eliminated redundant double-fetch of compendium NPCs in encounter roller browse tab.
+- **Null guards** — Added guards for crawl strip RAF callback and `game.user.targets` iteration in NPC abilities.
+- **Dead code removal** — Removed orphaned alchemy-cookbook.mjs, alchemy-helpers.mjs, and alchemy-cookbook.hbs (~2,300 lines) — functionality moved to vagabond-character-enhancer.
+
 ## v1.6.2
 
 ### Bug Fixes
