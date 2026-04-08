@@ -147,6 +147,26 @@ game.vagabondCrawler.movement._turnStartPos  // rollback position snapshots
 game.patrol                           // Patrol module instances (if installed)
 ```
 
+## Releasing a New Version
+
+1. Bump `"version"` in `module.json`
+2. Update `CHANGELOG.md` and the README version badge
+3. Commit and push
+4. Build `module.zip` containing **all files Foundry needs** (no `.git`, `.claude`, `docs`, `data`):
+   ```powershell
+   Compress-Archive -Path module.json, CHANGELOG.md, README.md, CLAUDE.md, scripts, styles, templates, languages -DestinationPath module.zip -Force
+   ```
+5. Create the GitHub release with **both** `module.json` and `module.zip` as assets:
+   ```bash
+   gh release create vX.Y.Z module.json module.zip --title "vX.Y.Z" --notes "..."
+   ```
+
+**Critical**: The `module.json` manifest URLs must be:
+- `"manifest"`: `https://github.com/DimitroffVodka/vagabond-crawler/releases/latest/download/module.json`
+- `"download"`: `https://github.com/DimitroffVodka/vagabond-crawler/releases/latest/download/module.zip`
+
+Both use the `latest` redirect so existing users always find the newest release. **Never** hardcode a version in these URLs. The `module.zip` asset **must** be uploaded to every release or the download will 404.
+
 ## Adding a New Feature
 
 1. Create `scripts/feature-name.mjs` — export singleton object with `init()` and any needed methods
