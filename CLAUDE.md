@@ -157,7 +157,7 @@ game.patrol                           // Patrol module instances (if installed)
    python -c "
    import zipfile, os
    with zipfile.ZipFile('module.zip', 'w', zipfile.ZIP_DEFLATED) as zf:
-       for folder in ['scripts', 'styles', 'templates', 'languages']:
+       for folder in ['scripts', 'styles', 'templates', 'languages', 'icons']:
            for root, dirs, files in os.walk(folder):
                for f in files:
                    fp = os.path.join(root, f)
