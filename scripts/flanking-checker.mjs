@@ -13,6 +13,7 @@
  */
 
 import { MODULE_ID } from "./vagabond-crawler.mjs";
+import { distanceFt } from "./combat-helpers.mjs";
 
 // ── Size hierarchy ──────────────────────────────────────────────────────────
 
@@ -24,35 +25,6 @@ function _getSizeValue(actor) {
   // NPCs:       actor.system.size
   const key = actor.system?.attributes?.size ?? actor.system?.size ?? "medium";
   return SIZE_ORDER[key] ?? 1;
-}
-
-// ── Distance helpers ────────────────────────────────────────────────────────
-
-/**
- * Edge-to-edge Chebyshev distance between two tokens in feet.
- * Supports multi-square tokens (Large 2×2, Huge 3×3, etc.).
- */
-function _distanceFt(tokenA, tokenB) {
-  const scene = canvas.scene;
-  if (!scene) return Infinity;
-  const gridSize = scene.grid?.size ?? 100;
-  const gridDist = scene.grid?.distance ?? 5;
-
-  const ax = tokenA.document.x / gridSize;
-  const ay = tokenA.document.y / gridSize;
-  const aw = tokenA.document.width;
-  const ah = tokenA.document.height;
-
-  const bx = tokenB.document.x / gridSize;
-  const by = tokenB.document.y / gridSize;
-  const bw = tokenB.document.width;
-  const bh = tokenB.document.height;
-
-  // Gap between bounding boxes in grid squares (0 = touching/overlapping)
-  const gapX = Math.max(0, Math.max(ax, bx) - Math.min(ax + aw, bx + bw));
-  const gapY = Math.max(0, Math.max(ay, by) - Math.min(ay + ah, by + bh));
-
-  return Math.max(gapX, gapY) * gridDist;
 }
 
 // ── Flanking Checker ────────────────────────────────────────────────────────
@@ -137,7 +109,7 @@ export const FlankingChecker = {
         // Must be opposed disposition
         if (other.document.disposition === targetDisp) continue;
         // Must be Close (adjacent — bounding boxes touching or overlapping)
-        if (_distanceFt(target, other) > 0) continue;
+        if (distanceFt(target, other) > 0) continue;
 
         closeEnemyCount++;
         const otherSize = _getSizeValue(other.actor);

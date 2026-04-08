@@ -227,14 +227,17 @@ class RelicForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
   _onRender(context, options) {
     super._onRender(context, options);
     const el = this.element;
+    this._renderAbort?.abort();
+    this._renderAbort = new AbortController();
+    const signal = this._renderAbort.signal;
     const $$ = (sel) => [...el.querySelectorAll(sel)];
-    const on = (sel, evt, fn) => $$(sel).forEach(n => n.addEventListener(evt, fn));
+    const on = (sel, evt, fn) => $$(sel).forEach(n => n.addEventListener(evt, fn, { signal }));
 
     // Drop zone
     const dropZone = el.querySelector(".drop-zone");
     if (dropZone) {
-      dropZone.addEventListener("dragover", ev => { ev.preventDefault(); dropZone.classList.add("drag-hover"); });
-      dropZone.addEventListener("dragleave", () => dropZone.classList.remove("drag-hover"));
+      dropZone.addEventListener("dragover", ev => { ev.preventDefault(); dropZone.classList.add("drag-hover"); }, { signal });
+      dropZone.addEventListener("dragleave", () => dropZone.classList.remove("drag-hover"), { signal });
       dropZone.addEventListener("drop", async (ev) => {
         ev.preventDefault();
         dropZone.classList.remove("drag-hover");
@@ -247,7 +250,7 @@ class RelicForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
         }
         this.loadItem(item);
         this.render();
-      });
+      }, { signal });
     }
 
     // Clear item
@@ -258,7 +261,7 @@ class RelicForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
       this._customPowers = [];
       this._categoryFilter = "all";
       this.render();
-    });
+    }, { signal });
 
     // Category tabs
     on(".category-tab", "click", ev => {
@@ -273,7 +276,7 @@ class RelicForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
         this._selectedPowers.delete(id);
       } else {
         const power = getRelicPower(id);
-        if (power) this._selectedPowers.set(id, { ...power });
+        if (power) this._selectedPowers.set(id, foundry.utils.deepClone(power));
       }
       this.render();
     });
@@ -348,10 +351,10 @@ class RelicForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
       if (keyInput) keyInput.value = "";
       if (valueInput) valueInput.value = "";
       this.render();
-    });
+    }, { signal });
 
     // Forge button
-    el.querySelector(".forge-btn")?.addEventListener("click", () => this._forgeRelic());
+    el.querySelector(".forge-btn")?.addEventListener("click", () => this._forgeRelic(), { signal });
   }
 
   loadItem(item) {

@@ -214,13 +214,16 @@ class LootTrackerApp extends HandlebarsApplicationMixin(ApplicationV2) {
   _onRender(context, options) {
     super._onRender(context, options);
     const el = this.element;
+    this._renderAbort?.abort();
+    this._renderAbort = new AbortController();
+    const signal = this._renderAbort.signal;
 
     // Copy for Discord
     el.querySelector(".lt-copy-btn")?.addEventListener("click", async () => {
       const text = LootTracker.formatForDiscord();
       await navigator.clipboard.writeText(text);
       ui.notifications.info("Loot log copied to clipboard!");
-    });
+    }, { signal });
 
     // Clear log
     el.querySelector(".lt-clear-btn")?.addEventListener("click", async () => {
@@ -231,6 +234,6 @@ class LootTrackerApp extends HandlebarsApplicationMixin(ApplicationV2) {
       if (ok) {
         await LootTracker.clearLog();
       }
-    });
+    }, { signal });
   }
 }

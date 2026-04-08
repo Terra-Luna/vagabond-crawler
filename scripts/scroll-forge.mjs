@@ -98,6 +98,9 @@ class ScrollForgeApp extends foundry.applications.api.HandlebarsApplicationMixin
 
   _onRender() {
     const el = this.element;
+    this._renderAbort?.abort();
+    this._renderAbort = new AbortController();
+    const signal = this._renderAbort.signal;
 
     el.querySelector(".vcscr-spell-select")?.addEventListener("change", ev => {
       this._state.spellUuid = ev.currentTarget.value;
@@ -106,40 +109,40 @@ class ScrollForgeApp extends foundry.applications.api.HandlebarsApplicationMixin
       this._state.deliveryIncrease = 0;
       this._state.useFx = false;
       this.render();
-    });
+    }, { signal });
 
     el.querySelector("[data-action='dice-up']")?.addEventListener("click", () => {
       this._state.damageDice++;
       this.render();
-    });
+    }, { signal });
     el.querySelector("[data-action='dice-down']")?.addEventListener("click", () => {
       if (this._state.damageDice > 0) this._state.damageDice--;
       this.render();
-    });
+    }, { signal });
 
     el.querySelector(".vcscr-delivery-select")?.addEventListener("change", ev => {
       this._state.deliveryType = ev.currentTarget.value;
       this._state.deliveryIncrease = 0;
       this.render();
-    });
+    }, { signal });
 
     el.querySelector("[data-action='inc-up']")?.addEventListener("click", () => {
       this._state.deliveryIncrease++;
       this.render();
-    });
+    }, { signal });
     el.querySelector("[data-action='inc-down']")?.addEventListener("click", () => {
       if (this._state.deliveryIncrease > 0) this._state.deliveryIncrease--;
       this.render();
-    });
+    }, { signal });
 
     el.querySelector("[data-action='toggle-fx']")?.addEventListener("click", () => {
       this._state.useFx = !this._state.useFx;
       this.render();
-    });
+    }, { signal });
 
     el.querySelector("[data-action='create-scroll']")?.addEventListener("click", () => {
       this._createScroll();
-    });
+    }, { signal });
   }
 
   // ── Create Scroll Item ──────────────────────────────────────────────────
@@ -210,7 +213,7 @@ class ScrollForgeApp extends foundry.applications.api.HandlebarsApplicationMixin
     }
 
     const target = this._targetActor?.name ?? "world items";
-    ChatMessage.create({
+    await ChatMessage.create({
       content: `<div class="vagabond-crawler-chat"><i class="fas fa-scroll"></i> <strong>Scroll of ${spell.name}</strong> created (${subtitle}). Value: ${goldValue}g. Added to ${target}.</div>`,
       speaker: { alias: "Scroll Forge" },
     });

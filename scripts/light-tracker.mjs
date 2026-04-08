@@ -190,11 +190,13 @@ function _getActiveActors() {
 
 function _injectContextEntry(card, item) {
   card.addEventListener("contextmenu", () => {
+    if (card._ctxPoll) clearInterval(card._ctxPoll);
     let attempts = 0;
-    const poll = setInterval(() => {
+    const poll = card._ctxPoll = setInterval(() => {
       const menu = document.querySelector(".inventory-context-menu");
       if (menu) {
         clearInterval(poll);
+        delete card._ctxPoll;
         if (menu.querySelector(".vcl-ctx-item")) return;
         const isLit = !!item.getFlag(MODULE_ID, "lit");
         const secs  = item.getFlag(MODULE_ID, "remainingSecs") ?? 0;
@@ -209,6 +211,7 @@ function _injectContextEntry(card, item) {
         menu.insertBefore(li, menu.firstChild);
       } else if (++attempts >= 10) {
         clearInterval(poll);
+        delete card._ctxPoll;
       }
     }, 10);
   });
@@ -753,13 +756,16 @@ class LightTrackerApp extends HbsMixin(AppV2) {
 
   _onRender(context, options) {
     super._onRender(context, options);
+    this._renderAbort?.abort();
+    this._renderAbort = new AbortController();
+    const signal = this._renderAbort.signal;
 
     // Time Passes
     const minsInput = this.element.querySelector(".vlt-mins-input");
     minsInput?.addEventListener("change", ev => {
       const v = parseInt(ev.target.value);
       if (v > 0) game.settings.set(MODULE_ID, "timePassesMinutes", v);
-    });
+    }, { signal });
 
     const _doTimePasses = async (multiplier) => {
       const mins = parseInt(minsInput?.value ?? game.settings.get(MODULE_ID, "timePassesMinutes"));
@@ -779,8 +785,8 @@ class LightTrackerApp extends HbsMixin(AppV2) {
       });
     };
 
-    this.element.querySelector("[data-action='timePlus']")?.addEventListener("click", () => _doTimePasses(1));
-    this.element.querySelector("[data-action='timeMinus']")?.addEventListener("click", () => _doTimePasses(-1));
+    this.element.querySelector("[data-action='timePlus']")?.addEventListener("click", () => _doTimePasses(1), { signal });
+    this.element.querySelector("[data-action='timeMinus']")?.addEventListener("click", () => _doTimePasses(-1), { signal });
 
     // Douse buttons
     this.element.querySelectorAll(".vlt-douse").forEach(btn => {
@@ -788,7 +794,7 @@ class LightTrackerApp extends HbsMixin(AppV2) {
         const { actorId, itemId } = ev.currentTarget.dataset;
         const item = game.actors.get(actorId)?.items.get(itemId);
         if (item) await LightTracker._douseLight(item);
-      });
+      }, { signal });
     });
   }
 }

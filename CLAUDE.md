@@ -31,7 +31,7 @@ import { FeatureName } from "./feature-name.mjs";
 // Hooks.once("ready") → game.vagabondCrawler.featureName = FeatureName; FeatureName.init();
 ```
 
-Exceptions: `EncounterRollerApp`, `AlchemyCookbookApp`, `RelicForgeApp`, `LootManagerApp`, `LootTrackerApp`, `ScrollForgeApp`, `LootGeneratorApp` — these are `ApplicationV2` window classes using `HandlebarsApplicationMixin`.
+Exceptions: `EncounterRollerApp`, `RelicForgeApp`, `LootManagerApp`, `LootTrackerApp`, `ScrollForgeApp`, `LootGeneratorApp` — these are `ApplicationV2` window classes using `HandlebarsApplicationMixin`.
 
 ### State & Sync
 
@@ -86,8 +86,6 @@ class MyApp extends HandlebarsApplicationMixin(ApplicationV2) {
 | `npc-action-menu.mjs` | Combat action dropdown + spell cast dialog with mana cost calc, CrawlerSpellDialog |
 | `countdown-roller.mjs` | Auto-rolls countdown dice at round start, applies tick damage, cleans up on combat end |
 | `scroll-forge.mjs` | Spell Scroll Forge ApplicationV2 — create consumable scrolls from compendium, use via context menu |
-| `alchemy-cookbook.mjs` | Alchemist crafting ApplicationV2 window |
-| `alchemy-helpers.mjs` | Craft logic, material conversion, effect application |
 | `relic-forge.mjs` | Relic crafting ApplicationV2 window |
 | `relic-effects.mjs` | Relic power application and active effects |
 | `relic-powers.mjs` | Relic power definitions |

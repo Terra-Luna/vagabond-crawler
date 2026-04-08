@@ -660,7 +660,7 @@ export const CrawlBar = {
   },
 
   _getTableName(uuid) {
-    try { return game.tables.get(uuid.split(".").pop())?.name ?? null; }
+    try { return fromUuidSync(uuid)?.name ?? null; }
     catch { return null; }
   },
 };

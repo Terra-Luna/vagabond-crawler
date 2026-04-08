@@ -19,7 +19,7 @@ import { getStatSummary, applyMutations, generateMutatedName, generatePrompt, cr
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
 function rollDistance() {
-  const v = Math.ceil(Math.random() * 6);
+  const v = Math.floor(Math.random() * 6) + 1;
   return {
     roll: v,
     label: v === 1 ? "Close (within 10ft)"
@@ -29,7 +29,7 @@ function rollDistance() {
 }
 
 function rollReaction() {
-  const v = Math.ceil(Math.random() * 6) + Math.ceil(Math.random() * 6);
+  const v = Math.floor(Math.random() * 6) + 1 + Math.floor(Math.random() * 6) + 1;
   const label =
     v <= 3  ? "Violent — attacks immediately"
   : v <= 6  ? "Hostile — likely to attack"
@@ -136,9 +136,13 @@ class EncounterRollerApp extends HandlebarsApplicationMixin(ApplicationV2) {
       ];
       ctx.browseSources = sources.map(s => ({ ...s, selected: s.id === this._browseSource }));
 
-      let npcs = await this._getBrowseNPCs(this._browseSource);
+      const allNpcs = await this._getBrowseNPCs(this._browseSource);
+
+      // Collect types before any filters are applied
+      ctx.browseBeingTypes = [...new Set(allNpcs.map(n => n.beingType).filter(t => t && t !== "—"))].sort();
 
       // Type filter
+      let npcs = allNpcs;
       if (this._browseType) npcs = npcs.filter(n => n.beingType === this._browseType);
 
       // TL range
@@ -146,10 +150,6 @@ class EncounterRollerApp extends HandlebarsApplicationMixin(ApplicationV2) {
       const tlMax = this._browseTlMax !== "" ? parseFloat(this._browseTlMax) : null;
       if (tlMin !== null) npcs = npcs.filter(n => n.threatLevel >= tlMin);
       if (tlMax !== null) npcs = npcs.filter(n => n.threatLevel <= tlMax);
-
-      // Collect types before search filter
-      const allNpcs = await this._getBrowseNPCs(this._browseSource);
-      ctx.browseBeingTypes = [...new Set(allNpcs.map(n => n.beingType).filter(t => t && t !== "—"))].sort();
 
       // Sort
       const col = this._browseSortCol;
@@ -263,10 +263,15 @@ class EncounterRollerApp extends HandlebarsApplicationMixin(ApplicationV2) {
     super._onRender(context, options);
     const el = this.element;
 
+    // Abort previous listeners to prevent accumulation on re-render
+    this._renderAbort?.abort();
+    this._renderAbort = new AbortController();
+    const signal = this._renderAbort.signal;
+
     // Helper — querySelector with optional warn
     const $  = (sel)      => el.querySelector(sel);
     const $$ = (sel)      => [...el.querySelectorAll(sel)];
-    const on = (sel, evt, fn) => $$( sel).forEach(n => n.addEventListener(evt, fn));
+    const on = (sel, evt, fn) => $$( sel).forEach(n => n.addEventListener(evt, fn, { signal }));
 
     // Tabs
     on(".tab-btn", "click", ev => {
@@ -281,13 +286,13 @@ class EncounterRollerApp extends HandlebarsApplicationMixin(ApplicationV2) {
       dieSelect.addEventListener("change", ev => {
         this._dieType = ev.currentTarget.value;
         this.render();
-      });
+      }, { signal });
     }
 
     // Table name — persist on input (not just change, so it survives re-render)
     const nameInput = $(".table-name-input");
     if (nameInput) {
-      nameInput.addEventListener("input", ev => { this._tableName = ev.currentTarget.value; });
+      nameInput.addEventListener("input", ev => { this._tableName = ev.currentTarget.value; }, { signal });
     }
 
     // Appearing inputs
@@ -309,11 +314,11 @@ class EncounterRollerApp extends HandlebarsApplicationMixin(ApplicationV2) {
       tableSelect.addEventListener("change", ev => {
         this._selectedTableId = ev.currentTarget.value;
         this.render();
-      });
+      }, { signal });
     }
 
     // Action buttons
-    const btn = (sel, fn) => { const b = $(sel); if (b) b.addEventListener("click", fn); };
+    const btn = (sel, fn) => { const b = $(sel); if (b) b.addEventListener("click", fn, { signal }); };
     btn(".save-table",       () => this._saveAsRollTable());
     btn(".roll-encounter",   () => this._rollFromBuiltTable());
     btn(".roll-world-table", () => {
@@ -348,7 +353,7 @@ class EncounterRollerApp extends HandlebarsApplicationMixin(ApplicationV2) {
 
     // Drag-drop onto slots
     $$(".encounter-slot").forEach(slotEl => {
-      slotEl.addEventListener("dragover", ev => ev.preventDefault());
+      slotEl.addEventListener("dragover", ev => ev.preventDefault(), { signal });
       slotEl.addEventListener("drop", async ev => {
         ev.preventDefault();
         const idx = parseInt(slotEl.dataset.index);
@@ -367,7 +372,7 @@ class EncounterRollerApp extends HandlebarsApplicationMixin(ApplicationV2) {
           };
           this.render();
         } catch (e) { console.error(`${MODULE_ID} | Drop error:`, e); }
-      });
+      }, { signal });
     });
 
     // ── Browse tab events ──
@@ -375,7 +380,7 @@ class EncounterRollerApp extends HandlebarsApplicationMixin(ApplicationV2) {
       this._browseSource = ev.currentTarget.value;
       this._browseType = "";
       this.render();
-    });
+    }, { signal });
 
     const browseSearch = $(".browse-search-input");
     if (browseSearch) {
@@ -387,22 +392,22 @@ class EncounterRollerApp extends HandlebarsApplicationMixin(ApplicationV2) {
           const name = row.querySelector(".loot-npc-name")?.textContent?.toLowerCase() || "";
           row.style.display = search && !name.includes(search) ? "none" : "";
         });
-      });
+      }, { signal });
     }
 
     $(".browse-type-filter")?.addEventListener("change", ev => {
       this._browseType = ev.currentTarget.value;
       this.render();
-    });
+    }, { signal });
 
     $(".browse-tl-min")?.addEventListener("change", ev => {
       this._browseTlMin = ev.currentTarget.value;
       this.render();
-    });
+    }, { signal });
     $(".browse-tl-max")?.addEventListener("change", ev => {
       this._browseTlMax = ev.currentTarget.value;
       this.render();
-    });
+    }, { signal });
 
     // Browse sort
     on(".loot-sortable", "click", ev => {
@@ -434,7 +439,7 @@ class EncounterRollerApp extends HandlebarsApplicationMixin(ApplicationV2) {
       row.addEventListener("dragstart", ev => {
         const uuid = row.dataset.uuid;
         ev.dataTransfer.setData("text/plain", JSON.stringify({ type: "Actor", uuid }));
-      });
+      }, { signal });
     });
 
     // Browse double-click to inspect
@@ -450,8 +455,8 @@ class EncounterRollerApp extends HandlebarsApplicationMixin(ApplicationV2) {
           if (doc) doc.sheet.render(true);
         }
       };
-      if (nameCell) nameCell.addEventListener("dblclick", handler);
-      if (imgCell) imgCell.addEventListener("dblclick", handler);
+      if (nameCell) nameCell.addEventListener("dblclick", handler, { signal });
+      if (imgCell) imgCell.addEventListener("dblclick", handler, { signal });
     });
 
     // ── Mutate tab ──
@@ -466,7 +471,7 @@ class EncounterRollerApp extends HandlebarsApplicationMixin(ApplicationV2) {
         this._mutateSelected.clear();
         this._mutateCustomName = "";
         this.render();
-      });
+      }, { signal });
     }
 
     // Monster selector
@@ -483,7 +488,7 @@ class EncounterRollerApp extends HandlebarsApplicationMixin(ApplicationV2) {
           this._mutateBaseData = null;
         }
         this.render();
-      });
+      }, { signal });
     }
 
     // Mutation checkboxes (with conflict detection)
@@ -508,7 +513,7 @@ class EncounterRollerApp extends HandlebarsApplicationMixin(ApplicationV2) {
     if (mutNameInput) {
       mutNameInput.addEventListener("change", () => {
         this._mutateCustomName = mutNameInput.value.trim();
-      });
+      }, { signal });
     }
 
     // Copy prompt
@@ -518,7 +523,7 @@ class EncounterRollerApp extends HandlebarsApplicationMixin(ApplicationV2) {
         await navigator.clipboard.writeText(textarea.value);
         ui.notifications.info("AI art prompt copied to clipboard!");
       }
-    });
+    }, { signal });
 
     // Create Monster
     el.querySelector(".mutate-create-btn")?.addEventListener("click", async () => {
@@ -534,14 +539,14 @@ class EncounterRollerApp extends HandlebarsApplicationMixin(ApplicationV2) {
         console.error(`${MODULE_ID} | Mutation failed:`, e);
         ui.notifications.error("Failed to create mutated monster.");
       }
-    });
+    }, { signal });
 
     // Reset
     el.querySelector(".mutate-reset-btn")?.addEventListener("click", () => {
       this._mutateSelected.clear();
       this._mutateCustomName = "";
       this.render();
-    });
+    }, { signal });
   }
 
   // ── Roll methods ────────────────────────────────────────────────────────────
@@ -557,7 +562,8 @@ class EncounterRollerApp extends HandlebarsApplicationMixin(ApplicationV2) {
       ?? this._slots[filled.reduce((p, c) => Math.abs(c - idx) < Math.abs(p - idx) ? c : p)];
 
     let count = 1;
-    try { count = Math.max(1, (await new Roll(chosen.appearing || "1").evaluate()).total); } catch {}
+    try { count = Math.max(1, (await new Roll(chosen.appearing || "1").evaluate()).total); }
+    catch (e) { console.warn(`${MODULE_ID} | Invalid appearing formula for ${chosen.name}:`, e); }
 
     this._lastResult = {
       monsterName:   chosen.name,
@@ -575,7 +581,11 @@ class EncounterRollerApp extends HandlebarsApplicationMixin(ApplicationV2) {
     if (!tableId) return;
     const table = game.tables.get(tableId);
     if (!table) return;
+    await this._rollTable(table);
+  }
 
+  async _rollTable(table) {
+    if (!table) return;
     const draw   = await table.draw({ displayChat: false, resetTable: false });
     const result = draw.results[0];
     if (!result) return;
@@ -609,7 +619,8 @@ class EncounterRollerApp extends HandlebarsApplicationMixin(ApplicationV2) {
         ?? "1";
 
       let count = 1;
-      try { count = Math.max(1, (await new Roll(appearing).evaluate()).total); } catch {}
+      try { count = Math.max(1, (await new Roll(appearing).evaluate()).total); }
+      catch (e) { console.warn(`${MODULE_ID} | Invalid appearing formula in table result:`, e); }
 
       this._lastResult = {
         monsterName:  result.name ?? result.text ?? "Unknown",
@@ -626,8 +637,9 @@ class EncounterRollerApp extends HandlebarsApplicationMixin(ApplicationV2) {
   async _rollFromRegisteredTable() {
     const uuid = game.settings.get(MODULE_ID, "encounterTableUuid");
     if (!uuid) { ui.notifications.warn("No active encounter table set."); return; }
-    const id = uuid.split(".").pop();
-    await this._rollFromWorldTable(id);
+    const table = await fromUuid(uuid);
+    if (!table) { ui.notifications.warn("Active encounter table not found."); return; }
+    await this._rollTable(table);
   }
 
   // ── Save table ───────────────────────────────────────────────────────────────
@@ -642,7 +654,6 @@ class EncounterRollerApp extends HandlebarsApplicationMixin(ApplicationV2) {
     if (existing) {
       const ok = await confirmDialog({ title: "Overwrite?", content: `Table "${name}" exists. Overwrite?` });
       if (!ok) return;
-      await existing.delete();
     }
 
     const dieSize = parseInt(this._dieType.replace("d", ""));
@@ -658,7 +669,7 @@ class EncounterRollerApp extends HandlebarsApplicationMixin(ApplicationV2) {
           const actor = await fromUuid(s.uuid);
           const src = actor?.img ?? "";
           if (/\.(png|jpg|jpeg|webp|gif|svg)$/i.test(src)) img = src;
-        } catch {}
+        } catch (e) { console.warn(`${MODULE_ID} | Failed to resolve actor UUID ${s.uuid}:`, e); }
       }
 
       results.push({
@@ -674,16 +685,28 @@ class EncounterRollerApp extends HandlebarsApplicationMixin(ApplicationV2) {
       });
     }
 
-    const table = await RollTable.create({
-      name,
-      formula:     `1${this._dieType}`,
-      results,
-      replacement: true,
-      displayRoll: true,
-      flags: { [MODULE_ID]: { isEncounterTable: true } },
-    });
+    let table;
+    if (existing) {
+      // Update in-place to avoid losing the table if creation fails
+      await existing.deleteEmbeddedDocuments("TableResult", existing.results.map(r => r.id));
+      await existing.update({
+        formula: `1${this._dieType}`,
+        flags: { [MODULE_ID]: { isEncounterTable: true } },
+      });
+      await existing.createEmbeddedDocuments("TableResult", results);
+      table = existing;
+    } else {
+      table = await RollTable.create({
+        name,
+        formula:     `1${this._dieType}`,
+        results,
+        replacement: true,
+        displayRoll: true,
+        flags: { [MODULE_ID]: { isEncounterTable: true } },
+      });
+    }
     if (!table) { ui.notifications.error("Failed to create table — check console for details."); return; }
-    ui.notifications.info(`Table "${name}" created.`);
+    ui.notifications.info(`Table "${name}" ${existing ? "updated" : "created"}.`);
 
     await game.settings.set(MODULE_ID, "encounterTableUuid", table.uuid);
     this.render();
@@ -835,7 +858,7 @@ class EncounterRollerApp extends HandlebarsApplicationMixin(ApplicationV2) {
   static async _evaluateGroupCounts(groups) {
     for (const g of groups) {
       try { g.count = Math.max(1, (await new Roll(g.formula).evaluate()).total); }
-      catch { g.count = 1; }
+      catch (e) { console.warn(`${MODULE_ID} | Invalid count formula "${g.formula}":`, e); g.count = 1; }
     }
     return groups;
   }
@@ -843,13 +866,13 @@ class EncounterRollerApp extends HandlebarsApplicationMixin(ApplicationV2) {
   _getRegisteredTableName() {
     const uuid = game.settings.get(MODULE_ID, "encounterTableUuid");
     if (!uuid) return null;
-    return game.tables.get(uuid.split(".").pop())?.name ?? null;
+    return fromUuidSync(uuid)?.name ?? null;
   }
 
   _getGroupedTables() {
     let excludedIds;
     try { excludedIds = new Set(JSON.parse(game.settings.get(MODULE_ID, "excludedTableFolders"))); }
-    catch { excludedIds = new Set(); }
+    catch (e) { console.warn(`${MODULE_ID} | Failed to parse excludedTableFolders:`, e); excludedIds = new Set(); }
 
     const groups = new Map();
     const unfolderedTables = [];
@@ -883,7 +906,7 @@ class EncounterRollerApp extends HandlebarsApplicationMixin(ApplicationV2) {
 
     let excludedIds;
     try { excludedIds = new Set(JSON.parse(game.settings.get(MODULE_ID, "excludedTableFolders"))); }
-    catch { excludedIds = new Set(); }
+    catch (e) { console.warn(`${MODULE_ID} | Failed to parse excludedTableFolders:`, e); excludedIds = new Set(); }
 
     const checkboxes = tableFolders
       .sort((a, b) => a.name.localeCompare(b.name))

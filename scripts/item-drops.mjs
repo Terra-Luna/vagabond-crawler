@@ -147,7 +147,7 @@ export const ItemDrops = {
       name: itemData.name,
       type: "npc",
       img: itemData.img || "icons/svg/item-bag.svg",
-      ownership: { default: 3 },
+      ownership: { default: CONST.DOCUMENT_OWNERSHIP_LEVELS.OWNER },
       prototypeToken: {
         name: itemData.name,
         texture: { src: itemData.img || "icons/svg/item-bag.svg" },

@@ -175,7 +175,7 @@ export const CrawlStrip = {
         const activeEffects = actor.effects.filter(e => !e.disabled);
         if (activeEffects.length) {
           const icons = activeEffects.map(e => {
-            const icon = e.icon || e.img || "icons/svg/aura.svg";
+            const icon = e.img || "icons/svg/aura.svg";
             const label = e.name || "Effect";
             const durationInfo = e.duration?.rounds
               ? ` (${e.duration.rounds}R)`
@@ -263,7 +263,8 @@ export const CrawlStrip = {
     this._bindEvents();
     this._sizeCards();
     requestAnimationFrame(() => {
-      const h = this._el?.getBoundingClientRect().height ?? 0;
+      if (!this._el) return;
+      const h = this._el.getBoundingClientRect().height ?? 0;
       if (h > 0) document.documentElement.style.setProperty("--vcs-strip-height", Math.ceil(h) + "px");
     });
   },

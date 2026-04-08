@@ -542,7 +542,7 @@ export const LootDrops = {
     allLoot._unclaimed.currency.gold += share.currency.gold;
     allLoot._unclaimed.currency.silver += share.currency.silver;
     allLoot._unclaimed.currency.copper += share.currency.copper;
-    allLoot._unclaimed.items.push(...share.items);
+    allLoot._unclaimed.items.push(...share.items.map(i => foundry.utils.deepClone(i)));
 
     // Mark original share as claimed (passed)
     allLoot[recipientId].claimed = true;

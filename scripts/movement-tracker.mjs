@@ -378,6 +378,7 @@ export const MovementTracker = {
     const limit     = inCombat ? moveRemaining + baseSpeed : moveRemaining;
 
     if (segFt > limit) {
+      delete this._pendingDeduct?.[doc.id];
       if (userId === game.userId) {
         const msg = inCombat && moveRemaining <= 0
           ? `${actor.name}: Rush exhausted — no movement remaining.`

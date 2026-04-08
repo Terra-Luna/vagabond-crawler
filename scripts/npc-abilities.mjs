@@ -14,6 +14,7 @@
  */
 
 const MODULE_ID = "vagabond-crawler";
+import { distanceFt } from "./combat-helpers.mjs";
 
 /* ──────────────────────────────────────────────────────────────────────────────
  * PASSIVE ABILITIES TABLE
@@ -85,6 +86,7 @@ function getActiveWardFromTargets() {
  * weapon attacks, but the system never does this for spell casts.
  */
 function applyTargetModifiers(favorHinder) {
+  if (!game.user?.targets?.size) return favorHinder;
   for (const token of game.user.targets) {
     const mod = token.actor?.system?.incomingAttacksModifier;
     if (!mod || mod === "none") continue;
@@ -298,28 +300,6 @@ async function _wrapSystemClasses() {
 
 const PACK_INSTINCTS_ORIGIN = `module.${MODULE_ID}.packInstincts`;
 
-/** Edge-to-edge Chebyshev distance in feet (supports multi-square tokens). */
-function _distanceFt(tokenA, tokenB) {
-  const scene = canvas.scene;
-  if (!scene) return Infinity;
-  const gridSize = scene.grid?.size ?? 100;
-  const gridDist = scene.grid?.distance ?? 5;
-
-  const ax = tokenA.document.x / gridSize;
-  const ay = tokenA.document.y / gridSize;
-  const aw = tokenA.document.width;
-  const ah = tokenA.document.height;
-
-  const bx = tokenB.document.x / gridSize;
-  const by = tokenB.document.y / gridSize;
-  const bw = tokenB.document.width;
-  const bh = tokenB.document.height;
-
-  const gapX = Math.max(0, Math.max(ax, bx) - Math.min(ax + aw, bx + bw));
-  const gapY = Math.max(0, Math.max(ay, by) - Math.min(ay + ah, by + bh));
-  return Math.max(gapX, gapY) * gridDist;
-}
-
 /**
  * Apply Vulnerable (Pack Instincts) to each targeted token if the attacker
  * has Pack Instincts and an ally is within 5 ft of the target.
@@ -354,7 +334,7 @@ export async function applyPackInstincts(attacker) {
     if (!targetActor) continue;
 
     // Check if any ally is Close (adjacent) to this target
-    const hasAdjacentAlly = allies.some(ally => _distanceFt(ally, targetToken) <= 0);
+    const hasAdjacentAlly = allies.some(ally => distanceFt(ally, targetToken) <= 0);
     if (!hasAdjacentAlly) continue;
 
     applied = true;

@@ -341,23 +341,26 @@ class LootGeneratorApp extends HandlebarsApplicationMixin(ApplicationV2) {
   _onRender(context, options) {
     super._onRender(context, options);
     const el = this.element;
+    this._renderAbort?.abort();
+    this._renderAbort = new AbortController();
+    const signal = this._renderAbort.signal;
     const $ = (sel) => el.querySelector(sel);
-    const on = (sel, evt, fn) => el.querySelectorAll(sel).forEach(n => n.addEventListener(evt, fn));
+    const on = (sel, evt, fn) => el.querySelectorAll(sel).forEach(n => n.addEventListener(evt, fn, { signal }));
 
     // Level select
     const levelSel = $(".vcl-gen-level");
     if (levelSel) {
       levelSel.value = this._level;
-      levelSel.addEventListener("change", ev => { this._level = parseInt(ev.currentTarget.value); });
+      levelSel.addEventListener("change", ev => { this._level = parseInt(ev.currentTarget.value); }, { signal });
     }
 
     // Roll button
     const rollBtn = $(".vcl-gen-roll");
-    if (rollBtn) rollBtn.addEventListener("click", () => this._rollLoot());
+    if (rollBtn) rollBtn.addEventListener("click", () => this._rollLoot(), { signal });
 
     // Roll for selected token button
     const rollTokenBtn = $(".vcl-gen-roll-token");
-    if (rollTokenBtn) rollTokenBtn.addEventListener("click", () => LootGenerator.rollForToken(null, this._level));
+    if (rollTokenBtn) rollTokenBtn.addEventListener("click", () => LootGenerator.rollForToken(null, this._level), { signal });
 
     // Post to chat buttons
     on(".vcl-gen-post-chat", "click", ev => {
@@ -385,7 +388,7 @@ class LootGeneratorApp extends HandlebarsApplicationMixin(ApplicationV2) {
 
     // Clear history
     const clearBtn = $(".vcl-gen-clear");
-    if (clearBtn) clearBtn.addEventListener("click", () => { this._history = []; this.render(); });
+    if (clearBtn) clearBtn.addEventListener("click", () => { this._history = []; this.render(); }, { signal });
   }
 
   /* ── Level 1 — roll on world "Vagabond Loot (p.186)" table ── */

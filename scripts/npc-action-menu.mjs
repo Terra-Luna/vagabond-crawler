@@ -752,10 +752,7 @@ async function _fireAction(actor, type, indexStr, itemId) {
       }
       await VagabondChatCard.weaponAttack(actor, item, attackResult, damageRoll, targets);
 
-      // NOTE: All alchemical post-attack effects (countdown dice, statuses,
-      // splash damage, oil bonus) are handled by registerAlchemicalAttackHook()
-      // and registerOilBonusDamageHook() in alchemy-helpers.mjs.
-      // They fire via createChatMessage hook for BOTH crawl strip and character sheet attacks.
+      // NOTE: Alchemical post-attack effects are handled by vagabond-character-enhancer.
 
       await item.handleConsumption?.();
 

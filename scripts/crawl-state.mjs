@@ -86,7 +86,7 @@ export const CrawlState = {
   },
 
   async applySync(state) {
-    this._state = state;
+    this._state = foundry.utils.deepClone(state);
     this._applyBodyClass();
     CrawlStrip.render();
     CrawlBar.render();

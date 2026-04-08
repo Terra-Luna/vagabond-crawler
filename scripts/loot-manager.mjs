@@ -321,19 +321,22 @@ class LootManagerApp extends HandlebarsApplicationMixin(ApplicationV2) {
   _onRender(context, options) {
     super._onRender(context, options);
     const el = this.element;
+    this._renderAbort?.abort();
+    this._renderAbort = new AbortController();
+    const signal = this._renderAbort.signal;
     const $ = (sel) => el.querySelector(sel);
-    const on = (sel, evt, fn) => [...el.querySelectorAll(sel)].forEach(n => n.addEventListener(evt, fn));
+    const on = (sel, evt, fn) => [...el.querySelectorAll(sel)].forEach(n => n.addEventListener(evt, fn, { signal }));
 
     // Tabs
     on(".tab-btn", "click", ev => { this._mode = ev.currentTarget.dataset.mode; this.render(); });
 
     // Filter loot table folders
     const filterBtn = $(".loot-filter-folders-btn");
-    if (filterBtn) filterBtn.addEventListener("click", () => this._openLootFolderExclusions());
+    if (filterBtn) filterBtn.addEventListener("click", () => this._openLootFolderExclusions(), { signal });
 
     // ── Build tab ──
     const nameInput = $(".table-name-input");
-    if (nameInput) nameInput.addEventListener("input", () => { this._tableName = nameInput.value; });
+    if (nameInput) nameInput.addEventListener("input", () => { this._tableName = nameInput.value; }, { signal });
 
     on(".encounter-slot", "dragover", ev => ev.preventDefault());
     on(".encounter-slot", "drop", async ev => {
@@ -360,7 +363,7 @@ class LootManagerApp extends HandlebarsApplicationMixin(ApplicationV2) {
       this.render();
     });
 
-    $(".save-table")?.addEventListener("click", () => this._saveAsLootTable());
+    $(".save-table")?.addEventListener("click", () => this._saveAsLootTable(), { signal });
 
     // ── NPC Loot tab ──
 
@@ -369,7 +372,7 @@ class LootManagerApp extends HandlebarsApplicationMixin(ApplicationV2) {
       this._sourceFilter = ev.currentTarget.value;
       this._typeFilter = ""; // reset type filter on source change
       this.render();
-    });
+    }, { signal });
 
     // Search — filter in DOM
     const searchInput = $(".loot-search-input");
@@ -382,24 +385,24 @@ class LootManagerApp extends HandlebarsApplicationMixin(ApplicationV2) {
           const name = row.querySelector(".loot-npc-name")?.textContent?.toLowerCase() || "";
           row.style.display = search && !name.includes(search) ? "none" : "";
         });
-      });
+      }, { signal });
     }
 
     // Type filter
     $(".loot-type-filter")?.addEventListener("change", ev => {
       this._typeFilter = ev.currentTarget.value;
       this.render();
-    });
+    }, { signal });
 
     // TL range
     $(".loot-tl-min")?.addEventListener("change", ev => {
       this._tlMin = ev.currentTarget.value;
       this.render();
-    });
+    }, { signal });
     $(".loot-tl-max")?.addEventListener("change", ev => {
       this._tlMax = ev.currentTarget.value;
       this.render();
-    });
+    }, { signal });
 
     // Sortable columns
     on(".loot-sortable", "click", ev => {
@@ -413,7 +416,7 @@ class LootManagerApp extends HandlebarsApplicationMixin(ApplicationV2) {
     $(".loot-select-all")?.addEventListener("change", ev => {
       const checked = ev.currentTarget.checked;
       el.querySelectorAll(".npc-select").forEach(cb => { cb.checked = checked; });
-    });
+    }, { signal });
 
     // Assign table dropdown — updates preview, preserve selection
     const assignSelect = $(".loot-assign-table");
@@ -422,7 +425,7 @@ class LootManagerApp extends HandlebarsApplicationMixin(ApplicationV2) {
       assignSelect.addEventListener("change", ev => {
         this._selectedAssignTableUuid = ev.currentTarget.value;
         this.render();
-      });
+      }, { signal });
     }
 
     // Apply to selected — handles both world and compendium NPCs
@@ -454,7 +457,7 @@ class LootManagerApp extends HandlebarsApplicationMixin(ApplicationV2) {
       if (configChanged) await game.settings.set(MODULE_ID, "compendiumLootConfig", config);
       ui.notifications.info(`Assigned table to ${checked.length} NPC(s).`);
       this.render();
-    });
+    }, { signal });
 
     // Per-NPC table select — works for both world and compendium NPCs
     on(".npc-table-select", "change", async ev => {
@@ -517,8 +520,8 @@ class LootManagerApp extends HandlebarsApplicationMixin(ApplicationV2) {
           if (doc) doc.sheet.render(true);
         }
       };
-      if (nameCell) nameCell.addEventListener("dblclick", handler);
-      if (imgCell) imgCell.addEventListener("dblclick", handler);
+      if (nameCell) nameCell.addEventListener("dblclick", handler, { signal });
+      if (imgCell) imgCell.addEventListener("dblclick", handler, { signal });
     });
   }
 
