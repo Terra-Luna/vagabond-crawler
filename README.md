@@ -2,7 +2,7 @@
 
 ![Foundry v13](https://img.shields.io/badge/foundry-v13-green?style=for-the-badge)
 ![System](https://img.shields.io/badge/system-vagabond-blue?style=for-the-badge)
-![Version](https://img.shields.io/badge/version-1.6.0-orange?style=for-the-badge)
+![Version](https://img.shields.io/badge/version-1.6.2-orange?style=for-the-badge)
 
 A comprehensive dungeon crawl management module for the **Vagabond RPG** system in Foundry VTT. Everything you need to run a crawl — turn tracking, movement enforcement, random encounters, light management, morale, combat integration, crafting, loot, and more — all from a unified interface.
 
@@ -246,6 +246,7 @@ Temporary workaround for the system's item-sequencer not supporting cone animati
 | Real-Time Light Burn | Burn lights in real time | Off |
 | Enforce Crawl Movement | Block tokens beyond crawl speed | On |
 | Enforce Combat Movement | Block tokens beyond combat speed | On |
+| Enforce NPC Movement | Apply movement budget to hostile NPCs | Off |
 | Auto-Roll Countdown Dice | Roll countdown dice at round start | On |
 
 ---
