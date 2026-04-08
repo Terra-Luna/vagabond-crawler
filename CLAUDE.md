@@ -152,9 +152,19 @@ game.patrol                           // Patrol module instances (if installed)
 1. Bump `"version"` in `module.json`
 2. Update `CHANGELOG.md` and the README version badge
 3. Commit and push
-4. Build `module.zip` containing **all files Foundry needs** (no `.git`, `.claude`, `docs`, `data`):
-   ```powershell
-   Compress-Archive -Path module.json, CHANGELOG.md, README.md, CLAUDE.md, scripts, styles, templates, languages -DestinationPath module.zip -Force
+4. Build `module.zip` with all files inside a `vagabond-crawler/` wrapper folder (Foundry requires this structure). No `.git`, `.claude`, `docs`, or `data` dirs:
+   ```python
+   python -c "
+   import zipfile, os
+   with zipfile.ZipFile('module.zip', 'w', zipfile.ZIP_DEFLATED) as zf:
+       for folder in ['scripts', 'styles', 'templates', 'languages']:
+           for root, dirs, files in os.walk(folder):
+               for f in files:
+                   fp = os.path.join(root, f)
+                   zf.write(fp, 'vagabond-crawler/' + fp.replace(os.sep, '/'))
+       for f in ['module.json', 'CHANGELOG.md', 'README.md', 'CLAUDE.md']:
+           if os.path.exists(f): zf.write(f, 'vagabond-crawler/' + f)
+   "
    ```
 5. Create the GitHub release with **both** `module.json` and `module.zip` as assets:
    ```bash
