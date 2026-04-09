@@ -345,9 +345,9 @@ Hooks.once("ready", async () => {
   // "True Zero Slot" checkbox on item sheets — items flagged skip the 10-per-slot rule
   const _injectTrueZeroSlot = (sheet) => {
     const item = sheet.item ?? sheet.document;
-    if (!item?.system || item.type !== "equipment") return;
+    if (!item?.system) return;
     const baseSlots = item.system.slots || item.system.baseSlots || 0;
-    if (baseSlots !== 0) return;  // only show on zero-slot items
+    if (baseSlots !== 0) return;  // only show on zero-slot items (or items without a slots field)
     const el = sheet.element;
     if (!el || el.querySelector(".vcb-true-zero-slot")) return;
 

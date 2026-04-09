@@ -1,5 +1,16 @@
 # Changelog
 
+## v1.7.0
+
+### Bug Fixes
+- **Favor/Hinder 1-for-1 cancellation** — Multiple sources of Favor and Hinder now properly cancel 1-for-1 per the Vagabond rules. Previously, the system used sequential state-machine logic that collapsed same-direction sources (e.g. Prone + Vulnerable both granting Favor on incoming attacks counted as only 1 Favor instead of 2). Now each Active Effect is counted as a separate source, so a Flanked attacker (1 Hinder) attacking a Prone + Flanked target (2 Favor) correctly resolves to Favored.
+- **Save rolls count AE sources** — Saves against unlinked token attacks now read the token actor's Active Effects instead of the world actor, which was missing combat-specific statuses like Prone and Vulnerable (Flanked).
+
+### System Changes (vagabond system)
+- Added `resolveMultipleFavorHinder()`, `countFavorHinderFromEffects()`, and `getFavorHinderSources()` to `VagabondRollBuilder` for counting-based Favor/Hinder resolution.
+- Weapon attacks, spell casts, saves, stat checks, and initiative rolls all use the new counting logic.
+- Save rolls now prefer the token actor over the world actor when resolving the attacker's outgoing modifiers.
+
 ## v1.6.4
 
 ### Bug Fixes

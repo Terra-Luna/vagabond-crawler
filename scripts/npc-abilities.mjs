@@ -87,21 +87,39 @@ function getActiveWardFromTargets() {
  */
 function applyTargetModifiers(favorHinder) {
   if (!game.user?.targets?.size) return favorHinder;
+
+  // Collect all sources: the incoming favorHinder plus each target's AE-based
+  // incomingAttacksModifier sources (counted individually so Prone + Vulnerable
+  // each contribute a separate favor for proper 1-for-1 cancellation).
+  let fav = 0, hind = 0;
+  if (favorHinder === "favor") fav++;
+  else if (favorHinder === "hinder") hind++;
+
   for (const token of game.user.targets) {
-    const mod = token.actor?.system?.incomingAttacksModifier;
-    if (!mod || mod === "none") continue;
+    const actor = token.actor;
+    if (!actor) continue;
 
-    console.log(`${MODULE_ID} | Target "${token.name}" incomingAttacksModifier = "${mod}"`);
-
-    if (mod === "favor") {
-      if (favorHinder === "hinder") favorHinder = "none";
-      else if (favorHinder === "none") favorHinder = "favor";
-    } else if (mod === "hinder") {
-      if (favorHinder === "favor") favorHinder = "none";
-      else if (favorHinder === "none") favorHinder = "hinder";
+    // Count each Active Effect that sets incomingAttacksModifier as a separate source
+    let aeTouched = false;
+    for (const effect of actor.effects) {
+      if (effect.disabled || effect.isSuppressed) continue;
+      for (const change of effect.changes) {
+        if (change.key !== "system.incomingAttacksModifier") continue;
+        aeTouched = true;
+        if (change.value === "favor") fav++;
+        else if (change.value === "hinder") hind++;
+      }
+    }
+    // If no AEs touch the key, fall back to the stored field value
+    if (!aeTouched) {
+      const mod = actor.system?.incomingAttacksModifier;
+      if (mod === "favor") fav++;
+      else if (mod === "hinder") hind++;
     }
   }
-  return favorHinder;
+
+  const net = fav - hind;
+  return net > 0 ? "favor" : net < 0 ? "hinder" : "none";
 }
 
 /* ──────────────────────────────────────────────────────────────────────────────

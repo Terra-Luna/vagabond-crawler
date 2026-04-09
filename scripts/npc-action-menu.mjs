@@ -735,8 +735,7 @@ async function _fireAction(actor, type, indexStr, itemId) {
       const item = actor.items.get(itemId); if (!item) return;
       await applyPackInstincts(actor);
       const { VagabondChatCard } = globalThis.vagabond.utils;
-      const favorHinder = actor.system?.favorHinder || "none";
-      const attackResult = await item.rollAttack(actor, favorHinder);
+      const attackResult = await item.rollAttack(actor);
       if (!attackResult) return;
       // FX
       try {
