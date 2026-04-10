@@ -257,7 +257,6 @@ Temporary workaround for the system's item-sequencer not supporting cone animati
 - **Vagabond** system v4.1.0+
 
 ### Optional
-- **vagabond-extras** — Complements some features
 - **vagabond-character-enhancer** — Class feature automation
 - **Sequencer + JB2A** — Visual effects for spells, traps, and attacks
 
