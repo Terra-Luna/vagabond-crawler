@@ -1,5 +1,10 @@
 # Changelog
 
+## v1.8.2
+
+### Bug Fixes
+- **Familiar & Summon action cast checks** — When a player clicks an action on a summoned creature or familiar in the CrawlStrip dropdown, the roll now routes through VCE's Arcana/Mysticism cast check (matching the character sheet behavior). Previously the action fired directly without the required check. Requires vagabond-character-enhancer v0.2.8+. Falls back to the plain NPC action handler when VCE is not installed or the summon/familiar cannot be matched to a caster.
+
 ## v1.8.1
 
 ### Bug Fixes

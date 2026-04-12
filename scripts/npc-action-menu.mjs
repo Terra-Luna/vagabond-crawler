@@ -732,6 +732,25 @@ function _resolveTokenActor(target) {
   return target.actorId ? game.actors.get(target.actorId) : null;
 }
 
+// ─── VCE Summon/Familiar Detection ───────────────────────────────────────────
+
+/**
+ * Given a friendly NPC actor, find the PC who summoned it (if any).
+ * Returns `{ kind: "summon" | "familiar", owner }` or `null`.
+ */
+function _findSummonOwner(actor) {
+  if (!actor?.id) return null;
+  const VCE = "vagabond-character-enhancer";
+  for (const pc of game.actors) {
+    if (pc.type !== "character") continue;
+    const conjure = pc.getFlag(VCE, "activeConjure");
+    if (conjure?.summonActorId === actor.id) return { kind: "summon", owner: pc };
+    const familiar = pc.getFlag(VCE, "activeFamiliar");
+    if (familiar?.summonActorId === actor.id) return { kind: "familiar", owner: pc };
+  }
+  return null;
+}
+
 // ─── Action Firing ────────────────────────────────────────────────────────────
 
 async function _fireAction(actor, type, indexStr, itemId) {
@@ -745,6 +764,24 @@ async function _fireAction(actor, type, indexStr, itemId) {
   try {
     if (type === "action") {
       const action = actor.system?.actions?.[index]; if (!action) return;
+
+      // Familiars/summons: route through VCE cast check (arcana/mysticism).
+      // Falls back to direct npcAction() if VCE isn't loaded or lookup fails.
+      const summonInfo = _findSummonOwner(actor);
+      if (summonInfo?.kind === "summon") {
+        const summonData = game.vagabondCharacterEnhancer?.getSummonData?.(summonInfo.owner);
+        if (summonData?.useAction) { await summonData.useAction(index); return; }
+      } else if (summonInfo?.kind === "familiar") {
+        try {
+          const mod = await import("/modules/vagabond-character-enhancer/scripts/perk-features/familiar.mjs");
+          const familiar = summonInfo.owner.getFlag("vagabond-character-enhancer", "activeFamiliar");
+          if (mod?.FamiliarFeatures?.rollFamiliarAction && familiar) {
+            await mod.FamiliarFeatures.rollFamiliarAction(summonInfo.owner, familiar, index);
+            return;
+          }
+        } catch (e) { console.warn("Vagabond Crawler | Familiar cast check unavailable, falling back:", e); }
+      }
+
       // Pack Instincts is applied inside the npcAction wrapper (npc-abilities.mjs)
       await VagabondChatCard.npcAction(actor, action, index, targets);
 
