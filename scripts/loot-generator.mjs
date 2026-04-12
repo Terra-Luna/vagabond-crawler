@@ -370,12 +370,16 @@ async function _resolveRawPower(rawPower) {
   if (rawPower.startsWith("Movement")) {
     const m = rawPower.match(/\((.+?)\)/); const d = m ? m[1] : "1d6";
     const v = await _roll(d);
-    const name = MOVEMENT[v] || `Movement ${v}`;
+    const clamped = Math.min(v, 13);  // MOVEMENT table max is 13
+    const name = MOVEMENT[clamped] || MOVEMENT[13];
     return { display: `of ${name}`, powerText: name };
   }
   if (rawPower.startsWith("Resistance")) {
     const d = rawPower.includes("d8") ? "1d8" : rawPower.includes("d4") ? "1d4" : "1d3";
-    const v = await _roll(d);
+    let v = await _roll(d);
+    // "reroll 4s" or "reroll 1-3s" instructions from the table
+    if (rawPower.includes("reroll 4") && v === 4) v = await _roll("1d3");
+    if (rawPower.includes("reroll 1-3") && v <= 3) v = 4 + await _roll("1d5"); // push into armor resistance 4-8
     const name = (v <= 3 ? WEAPON_RESISTANCE : ARMOR_RESISTANCE)?.[v] || `Resistance ${v}`;
     return { display: `of ${name}`, powerText: name };
   }
