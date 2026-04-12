@@ -78,7 +78,18 @@ export const MerchantShop = {
       scope: "world", config: false, type: Array, default: [],
     });
     game.settings.register(MODULE_ID, "gambleOptions", {
-      scope: "world", config: false, type: Array, default: [],
+      scope: "world", config: false, type: Array, default: [
+        { id: "gl1",  name: "Level 1 Loot",  source: "loot-level:1",  cost: { gold: 1,  silver: 0, copper: 0 } },
+        { id: "gl2",  name: "Level 2 Loot",  source: "loot-level:2",  cost: { gold: 2,  silver: 0, copper: 0 } },
+        { id: "gl3",  name: "Level 3 Loot",  source: "loot-level:3",  cost: { gold: 3,  silver: 0, copper: 0 } },
+        { id: "gl4",  name: "Level 4 Loot",  source: "loot-level:4",  cost: { gold: 4,  silver: 0, copper: 0 } },
+        { id: "gl5",  name: "Level 5 Loot",  source: "loot-level:5",  cost: { gold: 5,  silver: 0, copper: 0 } },
+        { id: "gl6",  name: "Level 6 Loot",  source: "loot-level:6",  cost: { gold: 6,  silver: 0, copper: 0 } },
+        { id: "gl7",  name: "Level 7 Loot",  source: "loot-level:7",  cost: { gold: 8,  silver: 0, copper: 0 } },
+        { id: "gl8",  name: "Level 8 Loot",  source: "loot-level:8",  cost: { gold: 12, silver: 0, copper: 0 } },
+        { id: "gl9",  name: "Level 9 Loot",  source: "loot-level:9",  cost: { gold: 15, silver: 0, copper: 0 } },
+        { id: "gl10", name: "Level 10 Loot", source: "loot-level:10", cost: { gold: 50, silver: 0, copper: 0 } },
+      ],
     });
     game.settings.register(MODULE_ID, "shopName", {
       name: "Merchant Shop Name",

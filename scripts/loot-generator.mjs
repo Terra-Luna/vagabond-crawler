@@ -9,6 +9,92 @@ import {
   LEVEL1_TABLE,
 } from "./loot-data.mjs";
 import { LootTracker } from "./loot-tracker.mjs";
+import { RELIC_POWERS } from "./relic-powers.mjs";
+
+/* ── Relic Power → Active Effect mapping ─────────────────── */
+
+/** Build a lookup from power text → RELIC_POWERS entry. */
+const _relicPowerMap = {};
+function _initRelicPowerMap() {
+  if (Object.keys(_relicPowerMap).length) return;
+  for (const p of RELIC_POWERS) {
+    // Map by id, name, and common aliases (all lowercase)
+    _relicPowerMap[p.id] = p;
+    _relicPowerMap[p.name.toLowerCase()] = p;
+  }
+  // Additional mappings for loot generator power text → relic power id
+  const aliases = {
+    "+1": "bonus-weapon-1", "+2": "bonus-weapon-2", "+3": "bonus-weapon-3",
+    "weapon +1": "bonus-weapon-1", "weapon +2": "bonus-weapon-2", "weapon +3": "bonus-weapon-3",
+    "weapon/trinket +1": "bonus-weapon-1", "weapon/trinket +2": "bonus-weapon-2", "weapon/trinket +3": "bonus-weapon-3",
+    "armor +1": "bonus-armor-1", "armor +2": "bonus-armor-2", "armor +3": "bonus-armor-3",
+    "protection +1": "bonus-protection-1", "protection +2": "bonus-protection-2", "protection +3": "bonus-protection-3",
+    "trinket +1": "bonus-trinket-1", "trinket +2": "bonus-trinket-2", "trinket +3": "bonus-trinket-3",
+    "strike 1": "strike-1", "strike 2": "strike-2", "strike 3": "strike-3",
+    "swiftness 1": "movement-swiftness-1", "swiftness 2": "movement-swiftness-2", "swiftness 3": "movement-swiftness-3",
+    "climbing": "movement-climbing", "clinging": "movement-clinging", "displacement": "movement-displacement",
+    "flying": "movement-flying", "levitation": "movement-levitation", "blinking": "movement-blinking",
+    "waterwalk": "movement-waterwalk", "webwalk": "movement-webwalk",
+    "jumping 1": "movement-jumping-1", "jumping 2": "movement-jumping-2", "jumping 3": "movement-jumping-3",
+    "nightvision": "senses-nightvision", "echolocation": "senses-echolocation",
+    "tremors": "senses-tremors", "detection": "senses-detection",
+    "sense life": "senses-life", "sense valuables": "senses-valuables",
+    "telepathy": "senses-telepathy", "true-seeing": "senses-truesight",
+    "bravery": "resistance-bravery", "clarity": "resistance-clarity", "repulsing": "resistance-repulsing",
+    "acid resist": "resistance-typed", "cold resist": "resistance-typed",
+    "fire resist": "resistance-typed", "poison resist": "resistance-typed", "shock resist": "resistance-typed",
+    "after-image 1": "utility-after-image-1", "after-image 2": "utility-after-image-2",
+    "ambassador": "utility-ambassador", "aqua lung": "utility-aqua-lung",
+    "burning 1": "utility-burning-1", "burning 2": "utility-burning-2", "burning 3": "utility-burning-3",
+    "darkness 1": "utility-darkness-1", "darkness 2": "utility-darkness-2", "darkness 3": "utility-darkness-3",
+    "moonlight 1": "utility-moonlit-1", "moonlight 2": "utility-moonlit-2", "moonlight 3": "utility-moonlit-3",
+    "moonlit 1": "utility-moonlit-1", "moonlit 2": "utility-moonlit-2", "moonlit 3": "utility-moonlit-3",
+    "radiant 1": "utility-radiant-1", "radiant 2": "utility-radiant-2", "radiant 3": "utility-radiant-3",
+    "infinite": "utility-infinite", "loyalty": "utility-loyalty", "warning": "utility-warning",
+    "lifesteal 1": "utility-lifesteal-1", "lifesteal 2": "utility-lifesteal-2", "lifesteal 3": "utility-lifesteal-3",
+    "manasteal 1": "utility-manasteal-1", "manasteal 2": "utility-manasteal-2", "manasteal 3": "utility-manasteal-3",
+    "invisibility 1": "utility-invisibility-1", "invisibility 2": "utility-invisibility-2",
+    "benediction": "fabled-benediction", "blasting": "fabled-blasting", "precision": "fabled-precision",
+    "soul-eater": "fabled-soul-eater", "soul eater": "fabled-soul-eater",
+    "vicious": "fabled-vicious", "vorpal": "fabled-vorpal",
+    "ace": "ace-keen",  // default ace — should be randomized based on weapon properties
+  };
+  for (const [k, v] of Object.entries(aliases)) {
+    _relicPowerMap[k] = RELIC_POWERS.find(p => p.id === v);
+  }
+}
+
+/** Look up the RELIC_POWERS entry for a given power text. */
+function _findRelicPower(powerText) {
+  if (!powerText) return null;
+  _initRelicPowerMap();
+  const lower = powerText.toLowerCase().replace(/\s*\(niche\)/i, "").trim();
+  return _relicPowerMap[lower] ?? null;
+}
+
+/** Create Active Effect documents from a relic power, with optional input substitution. */
+function _buildRelicEffects(power, input = "") {
+  if (!power) return [];
+  const changes = (power.changes || []).map(e => ({
+    key: e.key.replace("{input}", input),
+    mode: e.mode,
+    value: String(e.value).replace("{input}", input),
+  }));
+  const moduleFlags = { relicPower: power.id || power.name, managed: true };
+  if (power.flags) {
+    for (const [k, v] of Object.entries(power.flags)) {
+      moduleFlags[k] = typeof v === "string" ? v.replace("{input}", input) : v;
+    }
+  }
+  return [{
+    name: `Relic: ${power.name}${input ? ` (${input})` : ""}`,
+    icon: "icons/svg/item-bag.svg",
+    changes,
+    disabled: false,
+    transfer: true,
+    flags: { [MODULE_ID]: moduleFlags },
+  }];
+}
 
 /* ── Loot Item Builders ────────────────────────────────── */
 
@@ -469,6 +555,18 @@ async function _resolveRawPower(rawPower, powerTable = "weapon", depth = 0) {
   }
 
   return { display: rawPower, powerText: rawPower };
+}
+
+/** After resolving a power, build the AE effects for it. */
+function _buildEffectsForPower(powerText, input = "") {
+  const power = _findRelicPower(powerText);
+  if (!power) return [];
+  // For typed resistance, extract the element from the power text
+  if (power.id === "resistance-typed" && !input) {
+    const match = powerText.match(/(acid|cold|fire|poison|shock)/i);
+    input = match ? match[1] : "";
+  }
+  return _buildRelicEffects(power, input);
 }
 
 /* ── Compendium item cache ─────────────────────────────── */
@@ -1152,6 +1250,10 @@ class LootGeneratorApp extends HandlebarsApplicationMixin(ApplicationV2) {
     // Add relic power value to baseCost
     _addPowerValue(itemData, powerText, material);
 
+    // Apply relic Active Effects
+    const effects = _buildEffectsForPower(powerText);
+    if (effects.length) itemData.effects = [...(itemData.effects || []), ...effects];
+
     // Store loot gen metadata
     itemData.flags = itemData.flags || {};
     itemData.flags["vagabond-crawler"] = {
@@ -1203,6 +1305,10 @@ class LootGeneratorApp extends HandlebarsApplicationMixin(ApplicationV2) {
 
     // Add relic power value to baseCost
     _addPowerValue(itemData, powerText, material);
+
+    // Apply relic Active Effects
+    const effects = _buildEffectsForPower(powerText);
+    if (effects.length) itemData.effects = [...(itemData.effects || []), ...effects];
 
     itemData.flags = itemData.flags || {};
     itemData.flags["vagabond-crawler"] = {
@@ -1698,6 +1804,8 @@ export async function generateLevelLoot(level) {
       const { display, powerText } = await _resolveRawPower(rawPower, "armor");
       itemData.name = display ? `${accName} ${display}` : accName;
       _addPowerValue(itemData, powerText, null);
+      const accEffects = _buildEffectsForPower(powerText);
+      if (accEffects.length) itemData.effects = accEffects;
       items.push(itemData);
     } else {
       // Actual armor
@@ -1720,6 +1828,9 @@ export async function generateLevelLoot(level) {
         const { display, powerText } = await _resolveRawPower(rawPower, "armor");
         if (display) itemData.name += ` ${display}`;
         _addPowerValue(itemData, powerText, itemData.system?.metal ?? null);
+        // Apply relic Active Effects
+        const effects = _buildEffectsForPower(powerText);
+        if (effects.length) itemData.effects = effects;
         items.push(itemData);
       }
     }
@@ -1756,6 +1867,9 @@ export async function generateLevelLoot(level) {
       const { display, powerText } = await _resolveRawPower(rawPower);
       if (display) itemData.name += ` ${display}`;
       _addPowerValue(itemData, powerText, itemData.system?.metal ?? null);
+      // Apply relic Active Effects
+      const effects = _buildEffectsForPower(powerText);
+      if (effects.length) itemData.effects = effects;
       items.push(itemData);
     }
   } else {
