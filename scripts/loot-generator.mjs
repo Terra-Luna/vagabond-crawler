@@ -1180,11 +1180,9 @@ class LootGeneratorApp extends HandlebarsApplicationMixin(ApplicationV2) {
       return [_lootItem(result.item, ICONS.scroll, 0, 0, "An enchantment scroll.")];
     }
     if (base.includes("Accessory")) {
-      // Accessory — search gear compendium, or create a generic trinket
-      const doc = await _findCompendiumItem("vagabond.gear", "Trinket")
-        || await _findCompendiumItem("vagabond.gear", "Ring");
-      const itemData = doc ? doc.toObject() : _lootItem(result.item, ICONS.ring, 0, 0, "A magical accessory.");
-      itemData.name = result.item;
+      // Accessory: the item name from resolver already has the power text
+      // Create as a jewelry/clothing loot item with power value
+      const itemData = _lootItem(result.item, ICONS.ring, 0, 0, "A magical accessory.");
       _addPowerValue(itemData, powerText, material);
       return [itemData];
     }
@@ -1675,12 +1673,30 @@ export async function generateLevelLoot(level) {
         items.push(scrollItem);
       }
     } else if (base.includes("Accessory")) {
-      const doc = await _findCompendiumItem("vagabond.gear", "Trinket");
-      const itemData = doc ? doc.toObject() : _lootItem("Accessory", ICONS.ring, 50, 0, "A magical accessory.");
+      // Accessory: d4 → 1-2 = Jewelry, 3-4 = Clothing
+      const accRoll = await _roll("1d4");
+      let accName, accImg;
+      if (accRoll <= 2) {
+        const jN = await _roll("1d12");
+        const jEntry = JEWELRY[jN];
+        if (jEntry === "\u2192Clothing" || !jEntry) {
+          const cN = await _roll("1d20");
+          accName = CLOTHING[cN] || "Clothing";
+          accImg = ICONS.cloak;
+        } else {
+          accName = jEntry;
+          accImg = ICONS.ring;
+        }
+      } else {
+        const cN = await _roll("1d20");
+        accName = CLOTHING[cN] || "Clothing";
+        accImg = ICONS.cloak;
+      }
+      const itemData = _lootItem(accName, accImg, 0, 0, "A magical accessory.");
       const powN = await _roll(formulas.armor);
       const rawPower = ARMOR_POWER[powN];
       const { display, powerText } = await _resolveRawPower(rawPower, "armor");
-      itemData.name = display ? `Accessory ${display}` : "Accessory";
+      itemData.name = display ? `${accName} ${display}` : accName;
       _addPowerValue(itemData, powerText, null);
       items.push(itemData);
     } else {
