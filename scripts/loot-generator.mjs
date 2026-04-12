@@ -135,11 +135,12 @@ const POWER_VALUES = {
   "Bane Niche": 500, "Bane, Niche": 500, "Bane, Specific": 2000, "Bane, General": 5000,
   "Bane Specific": 2000, "Bane General": 5000, "Bane of Last Fought": 500,
   // Protection (relic)
-  "Protection Niche": 500, "Protection, Niche": 500,
+  "Protection Niche": 500, "Protection, Niche": 500, "Protection vs Last Fought": 500,
   "Protection Specific": 2000, "Protection, Specific": 2000,
   "Protection General": 5000, "Protection, General": 5000,
   // Resistance
   "Bravery": 150, "Clarity": 150, "Repulsing": 150, "Resistance": 2500,
+  "Acid Resist": 2500, "Cold Resist": 2500, "Fire Resist": 2500, "Poison Resist": 2500, "Shock Resist": 2500,
   // Movement
   "Swiftness 1": 250, "Swiftness 2": 1000, "Swiftness 3": 5000,
   "Climbing": 500, "Clinging": 2500, "Jumping 1": 500, "Jumping 2": 2500, "Jumping 3": 12500,
@@ -182,6 +183,20 @@ function _powerGoldValue(powerText) {
   // Strip common prefixes: "of Climbing" → "climbing", "(Strike 1)" → "strike 1", "(Ace)" → "ace"
   const stripped = lower.replace(/^\(|\)$/g, "").replace(/^of\s+/i, "").replace(/^bane of\s+/i, "bane ").trim();
   if (map[stripped] !== undefined) return map[stripped];
+  // "Protection vs [creature]" or "Protection, Niche" → look up by tier
+  if (lower.startsWith("protection")) {
+    if (lower.includes("niche") || lower.includes("last fought") || lower.includes("unknown foe")) return 500;
+    const creature = lower.replace("protection vs ", "");
+    if (!creature.includes(",")) return 5000;  // General (whole type)
+    return 2000;  // Specific (subtype with comma)
+  }
+  // "Bane of [creature]" or "Bane, Niche" → same tier logic
+  if (lower.startsWith("bane")) {
+    if (lower.includes("niche") || lower.includes("last fought")) return 500;
+    const creature = lower.replace(/^bane (of )?/, "");
+    if (!creature.includes(",")) return 5000;  // General
+    return 2000;  // Specific
+  }
   // Try each known power as a substring
   for (const [key, val] of Object.entries(map)) {
     if (lower.includes(key)) return val;
@@ -298,6 +313,115 @@ async function _createSpellScroll(manaCost) {
     },
     flags: { [MODULE_ID]: { spellScroll: scrollData } },
   };
+}
+
+/** Get a random hostile NPC name from the most recent combat, or a random world NPC. */
+function _lastFoughtName() {
+  // Try active combat first, then most recent
+  const combats = game.combats?.contents ?? [];
+  const combat = combats.find(c => c.active) ?? combats[combats.length - 1];
+  if (combat) {
+    const hostiles = combat.combatants.filter(c =>
+      c.token?.disposition === CONST.TOKEN_DISPOSITIONS.HOSTILE
+    );
+    if (hostiles.length) {
+      const pick = hostiles[Math.floor(Math.random() * hostiles.length)];
+      if (pick.name) return pick.name;
+    }
+  }
+
+  // Fallback: pick a random NPC from the world
+  const npcs = game.actors.filter(a => a.type === "npc");
+  if (npcs.length) {
+    return npcs[Math.floor(Math.random() * npcs.length)].name;
+  }
+
+  return "Unknown Foe";
+}
+
+/** Resolve a raw power table entry into a concrete power name by rolling sub-tables.
+ *  E.g. "Movement (d6)" → "Climbing", "Utility (d4)" → "After-Image 1" */
+async function _resolveRawPower(rawPower) {
+  if (!rawPower) return { display: "", powerText: "" };
+
+  const _roll = async (f) => { const r = new Roll(f); await r.evaluate(); return r.total; };
+
+  // Already resolved (from app path) or simple entries
+  if (rawPower.startsWith("Weapon +") || rawPower.startsWith("Weapon/Trinket +")) {
+    const display = rawPower.replace("Weapon/Trinket ", "").replace("Weapon ", "");
+    return { display, powerText: rawPower };
+  }
+  if (rawPower.includes("Armor +") || rawPower.includes("Protection +")) {
+    return { display: rawPower, powerText: rawPower };
+  }
+  if (rawPower.startsWith("Strike")) return { display: `(${rawPower})`, powerText: rawPower };
+  if (rawPower.startsWith("Ace")) return { display: "(Ace)", powerText: "Ace" };
+  if (rawPower.startsWith("Fabled")) return { display: `(${rawPower})`, powerText: rawPower };
+
+  // Niche — resolve to last fought
+  if (rawPower.includes("Niche")) {
+    const name = _lastFoughtName();
+    const isBane = rawPower.includes("Bane");
+    const prefix = isBane ? "Bane of" : "Protection vs";
+    return { display: `${prefix} ${name}`, powerText: `${prefix} ${name} (Niche)` };
+  }
+
+  // Sub-table rolls
+  if (rawPower.startsWith("Movement")) {
+    const m = rawPower.match(/\((.+?)\)/); const d = m ? m[1] : "1d6";
+    const v = await _roll(d);
+    const name = MOVEMENT[v] || `Movement ${v}`;
+    return { display: `of ${name}`, powerText: name };
+  }
+  if (rawPower.startsWith("Resistance")) {
+    const d = rawPower.includes("d8") ? "1d8" : rawPower.includes("d4") ? "1d4" : "1d3";
+    const v = await _roll(d);
+    const name = (v <= 3 ? WEAPON_RESISTANCE : ARMOR_RESISTANCE)?.[v] || `Resistance ${v}`;
+    return { display: `of ${name}`, powerText: name };
+  }
+  if (rawPower.startsWith("Senses")) {
+    const m = rawPower.match(/\((.+?)\)/); const d = m ? m[1] : "1d4";
+    const v = await _roll(d);
+    const name = SENSES[v] || `Senses ${v}`;
+    return { display: `of ${name}`, powerText: name };
+  }
+  if (rawPower.startsWith("Utility")) {
+    const m = rawPower.match(/\((.+?)\)/); const d = m ? m[1] : "1d8";
+    const v = await _roll(d);
+    // Check weapon or armor utility based on dice range
+    const name = WEAPON_UTILITY?.[v] || ARMOR_UTILITY?.[v] || `Utility ${v}`;
+    return { display: `of ${name}`, powerText: name };
+  }
+  if (rawPower.startsWith("Bane, General")) {
+    const v = await _roll("1d8");
+    const name = CREATURE_GENERAL[v] || "Unknown";
+    return { display: `Bane of ${name}`, powerText: `Bane of ${name}` };
+  }
+  if (rawPower.startsWith("Bane, Specific")) {
+    const v = await _roll("1d40");
+    const name = CREATURE_SPECIFIC[v] || "Unknown";
+    return { display: `Bane of ${name}`, powerText: `Bane of ${name}` };
+  }
+  if (rawPower.startsWith("Protection, General")) {
+    const v = await _roll("1d8");
+    const name = CREATURE_GENERAL[v] || "Unknown";
+    return { display: `of Protection vs ${name}`, powerText: `Protection vs ${name}` };
+  }
+  if (rawPower.startsWith("Protection, Specific")) {
+    const v = await _roll("1d40");
+    const name = CREATURE_SPECIFIC[v] || "Unknown";
+    return { display: `of Protection vs ${name}`, powerText: `Protection vs ${name}` };
+  }
+  if (rawPower.startsWith("Material")) {
+    // Material table — handled separately via metal
+    return { display: "", powerText: rawPower };
+  }
+  if (rawPower.startsWith("Reroll") || rawPower.startsWith("Add ")) {
+    // Meta-instructions — no display, no value
+    return { display: "", powerText: rawPower };
+  }
+
+  return { display: rawPower, powerText: rawPower };
 }
 
 /* ── Compendium item cache ─────────────────────────────── */
@@ -656,11 +780,21 @@ class LootGeneratorApp extends HandlebarsApplicationMixin(ApplicationV2) {
     return {
       levels,
       history: this._history.map((h, i) => {
-        const bc = h.itemData?.[0]?.system?.baseCost;
+        // Sum value across all items (alchemy gives 2)
+        let totalCopper = 0;
+        for (const d of (h.itemData ?? [])) {
+          const bc = d.system?.baseCost;
+          if (bc) totalCopper += (bc.gold ?? 0) * 10000 + (bc.silver ?? 0) * 100 + (bc.copper ?? 0);
+        }
+        const totalCost = totalCopper ? {
+          gold: Math.floor(totalCopper / 10000),
+          silver: Math.floor((totalCopper % 10000) / 100),
+          copper: totalCopper % 100,
+        } : null;
         const valParts = [];
-        if (bc?.gold)   valParts.push(`${bc.gold}g`);
-        if (bc?.silver) valParts.push(`${bc.silver}s`);
-        if (bc?.copper) valParts.push(`${bc.copper}c`);
+        if (totalCost?.gold)   valParts.push(`${totalCost.gold}g`);
+        if (totalCost?.silver) valParts.push(`${totalCost.silver}s`);
+        if (totalCost?.copper) valParts.push(`${totalCost.copper}c`);
         return {
           ...h,
           origIndex: i,
@@ -1156,7 +1290,14 @@ class LootGeneratorApp extends HandlebarsApplicationMixin(ApplicationV2) {
     const parts = [];
     if (material) parts.push(material);
     parts.push(base);
-    if (power) parts.push(power);
+    if (power) {
+      const displayPower = power.replace(/\s*\(Niche\)/i, "");
+      if (displayPower.startsWith("of ") || displayPower.startsWith("(") || displayPower.includes("+")) {
+        parts.push(displayPower);
+      } else {
+        parts.push(`of ${displayPower}`);
+      }
+    }
     const text = parts.join(" ");
 
     return { text, parts: { base, material: material || "Mundane", powerText: power || "" } };
@@ -1172,7 +1313,7 @@ class LootGeneratorApp extends HandlebarsApplicationMixin(ApplicationV2) {
     if (p.startsWith("Utility")) { const m = p.match(/\((.+?)\)/); const d = m ? m[1] : "1d8"; const v = await R(d, "Armor Utility"); return `of ${ARMOR_UTILITY[v]}`; }
     if (p.startsWith("Protection, General")) { const v = await R("1d8", "Creature General"); return `Protection vs ${CREATURE_GENERAL[v]}`; }
     if (p.startsWith("Protection, Specific")) { const v = await R("1d40", "Creature Specific"); return `Protection vs ${CREATURE_SPECIFIC[v]}`; }
-    if (p.startsWith("Protection, Niche")) return "Protection vs Last Fought";
+    if (p.startsWith("Protection, Niche")) { const name = _lastFoughtName(); return `Protection vs ${name} (Niche)`; }
     if (p.includes("+")) return p;  // "+1", "+2", "+3"
     if (p.startsWith("Fabled")) return `(${p})`;
     return p;
@@ -1196,7 +1337,15 @@ class LootGeneratorApp extends HandlebarsApplicationMixin(ApplicationV2) {
     const parts = [];
     if (material) parts.push(material);
     parts.push(base);
-    if (power) parts.push(power);
+    if (power) {
+      const displayPower = power.replace(/\s*\(Niche\)/i, "");
+      // Powers already prefixed with "of", "(", or "+" stay as-is
+      if (displayPower.startsWith("of ") || displayPower.startsWith("(") || displayPower.startsWith("+") || displayPower.startsWith("Bane")) {
+        parts.push(displayPower);
+      } else {
+        parts.push(`of ${displayPower}`);
+      }
+    }
     const text = parts.join(" ");
 
     return { text, parts: { base, material: material || "Mundane", powerText: power || "" } };
@@ -1212,7 +1361,7 @@ class LootGeneratorApp extends HandlebarsApplicationMixin(ApplicationV2) {
     if (p.startsWith("Utility")) { const m = p.match(/\((.+?)\)/); const d = m ? m[1] : "1d6"; const v = await R(d, "Weapon Utility"); return `of ${WEAPON_UTILITY[v]}`; }
     if (p.startsWith("Bane, General")) { const v = await R("1d8", "Creature General"); return `Bane of ${CREATURE_GENERAL[v]}`; }
     if (p.startsWith("Bane, Specific")) { const v = await R("1d40", "Creature Specific"); return `Bane of ${CREATURE_SPECIFIC[v]}`; }
-    if (p.startsWith("Bane, Niche")) return "Bane of Last Fought";
+    if (p.startsWith("Bane, Niche")) { const name = _lastFoughtName(); return `Bane of ${name} (Niche)`; }
     if (p.startsWith("Strike")) return `(${p})`;
     if (p.startsWith("Ace")) return "(Ace)";
     if (p.startsWith("Fabled")) return `(${p})`;
@@ -1236,12 +1385,21 @@ class LootGeneratorApp extends HandlebarsApplicationMixin(ApplicationV2) {
     // Item icon for the card
     const itemImg = entry.itemData?.[0]?.img || "icons/svg/item-bag.svg";
 
-    // Value display
-    const bc = entry.itemData?.[0]?.system?.baseCost;
+    // Value display — sum all items
+    let valCopper = 0;
+    for (const d of (entry.itemData ?? [])) {
+      const bc = d.system?.baseCost;
+      if (bc) valCopper += (bc.gold ?? 0) * 10000 + (bc.silver ?? 0) * 100 + (bc.copper ?? 0);
+    }
     const valParts = [];
-    if (bc?.gold)   valParts.push(`${bc.gold}g`);
-    if (bc?.silver) valParts.push(`${bc.silver}s`);
-    if (bc?.copper) valParts.push(`${bc.copper}c`);
+    if (valCopper) {
+      const vg = Math.floor(valCopper / 10000);
+      const vs = Math.floor((valCopper % 10000) / 100);
+      const vc = valCopper % 100;
+      if (vg) valParts.push(`${vg}g`);
+      if (vs) valParts.push(`${vs}s`);
+      if (vc) valParts.push(`${vc}c`);
+    }
     const valueStr = valParts.length ? `<div class="meta-tag"><span>${valParts.join(" ")}</span></div>` : "";
 
     const msgData = {
@@ -1495,9 +1653,10 @@ export async function generateLevelLoot(level) {
             itemData.name = `${mat} ${itemData.name}`;
           }
         }
-        const power = ARMOR_POWER[powN];
-        if (power?.includes("+")) itemData.name += ` ${power}`;
-        _addPowerValue(itemData, power, itemData.system?.metal ?? null);
+        const rawPower = ARMOR_POWER[powN];
+        const { display, powerText } = await _resolveRawPower(rawPower);
+        if (display) itemData.name += ` ${display}`;
+        _addPowerValue(itemData, powerText, itemData.system?.metal ?? null);
         items.push(itemData);
       }
     }
@@ -1507,14 +1666,20 @@ export async function generateLevelLoot(level) {
     const baseName = WEAPONS_LIST[baseN - 1];
     if (baseName) {
       // Try weapons, then gear (for trinkets, spell books, etc.)
-      const doc = await _findCompendiumItem("vagabond.weapons", baseName)
+      let doc = await _findCompendiumItem("vagabond.weapons", baseName)
         || await _findCompendiumItem("vagabond.gear", baseName);
+      // Trinkets: fall back to generic Trinket
+      if (!doc && baseName.includes("Trinket")) {
+        doc = await _findCompendiumItem("vagabond.gear", "Trinket");
+      }
       const itemData = doc ? doc.toObject() : {
         name: baseName,
-        img: "icons/svg/item-bag.svg",
+        img: ICONS.artifact,
         type: "equipment",
-        system: { description: `Weapon: ${baseName}`, equipmentType: "weapon", baseCost: { gold: 0, silver: 0, copper: 0 } },
+        system: { description: "", equipmentType: "gear", baseCost: { gold: 0, silver: 50, copper: 0 }, quantity: 1 },
       };
+      // Preserve the full trinket name
+      itemData.name = baseName;
       const powN = await _roll(formulas.weapon);
       if (doc && powN >= 10) {
         const matN = await _roll("1d8");
@@ -1524,10 +1689,10 @@ export async function generateLevelLoot(level) {
           itemData.name = `${mat} ${itemData.name}`;
         }
       }
-      const power = WEAPON_POWER[powN];
-      if (power?.includes("+")) itemData.name += ` ${power.replace("Weapon/Trinket ", "").replace("Weapon ", "")}`;
-      else if (power?.startsWith("Strike")) itemData.name += ` (${power})`;
-      _addPowerValue(itemData, power, itemData.system?.metal ?? null);
+      const rawPower = WEAPON_POWER[powN];
+      const { display, powerText } = await _resolveRawPower(rawPower);
+      if (display) itemData.name += ` ${display}`;
+      _addPowerValue(itemData, powerText, itemData.system?.metal ?? null);
       items.push(itemData);
     }
   } else {
