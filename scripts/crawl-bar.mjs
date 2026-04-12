@@ -19,6 +19,7 @@ import { LootTracker }     from "./loot-tracker.mjs";
 import { LootManager }     from "./loot-manager.mjs";
 import { LootGenerator }   from "./loot-generator.mjs";
 import { ScrollForge }     from "./scroll-forge.mjs";
+import { MerchantShop }    from "./merchant-shop.mjs";
 
 const BAR_ID = "vagabond-crawler-bar";
 
@@ -405,6 +406,9 @@ export const CrawlBar = {
         <button class="vcb-forge-tab" data-tool="lootGenerator">
           <i class="fas fa-dice-d20"></i> Loot Generator
         </button>
+        <button class="vcb-forge-tab" data-tool="merchantShop">
+          <i class="fas fa-shop"></i> Merchant Shop
+        </button>
       </div>
     `;
 
@@ -422,6 +426,7 @@ export const CrawlBar = {
     open("lootManager",   () => LootManager.open());
     open("lootLog",       () => LootTracker.open());
     open("lootGenerator", () => LootGenerator.open());
+    open("merchantShop",  () => MerchantShop.open());
 
     _attachDismiss(this, panel, "_forgeToolbar", "_forgeToolbarDismiss", btn);
   },
@@ -457,6 +462,9 @@ export const CrawlBar = {
       </div>
       <div class="vcb-clock-menu-item" data-fl="lootGenerator">
         <i class="fas fa-dice-d20"></i> Loot Generator
+      </div>
+      <div class="vcb-clock-menu-item" data-fl="merchantShop">
+        <i class="fas fa-shop"></i> Merchant Shop
       </div>
       <div class="vcb-enc-menu-divider"></div>
       <div class="vcb-clock-menu-item" data-fl="toggleLoot">
@@ -507,6 +515,12 @@ export const CrawlBar = {
     menu.querySelector('[data-fl="lootGenerator"]')?.addEventListener("click", () => {
       this._dismissForgeLootMenu();
       LootGenerator.open();
+    });
+
+    // Merchant Shop
+    menu.querySelector('[data-fl="merchantShop"]')?.addEventListener("click", () => {
+      this._dismissForgeLootMenu();
+      MerchantShop.open();
     });
 
     // Toggle loot drops

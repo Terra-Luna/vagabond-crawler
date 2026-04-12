@@ -36,7 +36,10 @@
         </div>
         {{/each}}
       </div>
-      <div class="vcl-gen-item">{{{item}}}</div>
+      <div class="vcl-gen-item">
+        {{{item}}}
+        {{#if valueDisplay}}<span class="vcl-gen-item-value">{{valueDisplay}}</span>{{/if}}
+      </div>
 
       <div class="vcl-gen-actions">
         <button type="button" class="vcl-gen-post-chat" data-index="{{origIndex}}">
@@ -68,7 +71,7 @@
   {{else}}
   <div class="vcl-gen-empty">
     <p>Select a level and click <strong>Roll Loot</strong> to generate.</p>
-    <p style="font-size: 11px; color: #666;">d6: 1=Treasure, 2=Armor, 3-4=Weapons, 5-6=Alchemy</p>
+    <p style="font-size: 14px; color: #666;">d6: 1=Treasure, 2=Armor, 3-4=Weapons, 5-6=Alchemy</p>
   </div>
   {{/if}}
 </form>

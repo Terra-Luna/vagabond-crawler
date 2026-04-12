@@ -23,6 +23,7 @@ import { LootTracker }      from "./loot-tracker.mjs";
 import { LootGenerator }    from "./loot-generator.mjs";
 import { CountdownRoller }  from "./countdown-roller.mjs";
 import { ScrollForge }      from "./scroll-forge.mjs";
+import { MerchantShop }     from "./merchant-shop.mjs";
 
 export const MODULE_ID = "vagabond-crawler";
 
@@ -114,6 +115,7 @@ Hooks.once("init", () => {
   LootManager.registerSettings();
   LootTracker.registerSettings();
   CountdownRoller.registerSettings();
+  MerchantShop.registerSettings();
 
   // Real-time light burn
   game.settings.register(MODULE_ID, "realtimeTracking", {
@@ -154,6 +156,7 @@ Hooks.once("ready", async () => {
     lootGenerator: LootGenerator,
     countdownRoller: CountdownRoller,
     scrollForge: ScrollForge,
+    merchantShop: MerchantShop,
     debugCombat: () => {
       const combat = game.combat;
       if (!combat) return "No active combat";
@@ -212,6 +215,9 @@ Hooks.once("ready", async () => {
 
   // Countdown dice auto-roller
   CountdownRoller.init();
+
+  // Merchant shop
+  MerchantShop.init();
 
   // Start light tracker + real-time engine if enabled
   LightTracker.init();

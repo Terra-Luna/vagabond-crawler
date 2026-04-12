@@ -1,0 +1,336 @@
+<div class="vcm-container">
+
+  {{!-- Header --}}
+  <div class="vcm-header">
+    <i class="fas fa-shop vcm-header-icon"></i>
+    <h2 class="vcm-title">{{shopName}}</h2>
+    {{#if hasActor}}
+      <span class="vcm-wallet"><i class="fas fa-coins"></i> {{actorName}}: {{walletDetail}}</span>
+    {{else}}
+      <span class="vcm-wallet vcm-no-actor"><i class="fas fa-user-slash"></i> No character</span>
+    {{/if}}
+  </div>
+
+  {{!-- Tabs --}}
+  <div class="vcm-tab-bar">
+    {{#each tabs}}
+    <button class="vcm-tab-btn {{#if active}}active{{/if}}" data-tab="{{id}}" type="button">
+      <i class="fas {{icon}}"></i> {{label}}
+    </button>
+    {{/each}}
+  </div>
+
+  {{!-- Tab content --}}
+  <div class="vcm-body">
+
+    {{!-- ═══ BUY TAB ═══ --}}
+    {{#if (eq tab "buy")}}
+    <div class="vcm-tab-content vcm-buy-tab">
+
+      {{!-- Filters --}}
+      <div class="vcm-filters">
+        <input type="text" class="vcm-search-input" placeholder="Search items…" value="{{searchFilter}}">
+        <select class="vcm-category-select">
+          <option value="all">All Categories</option>
+          {{#each categories}}
+          <option value="{{this}}" {{#if (eq this ../categoryFilter)}}selected{{/if}}>{{this}}</option>
+          {{/each}}
+        </select>
+      </div>
+
+      {{!-- Item list --}}
+      <div class="vcm-item-list">
+        {{#if inventory.length}}
+          {{#each inventory}}
+          <div class="vcm-item-row {{#if outOfStock}}vcm-out-of-stock{{/if}} {{#unless canAfford}}vcm-cant-afford{{/unless}}" data-shop-item-id="{{id}}">
+            <img class="vcm-item-icon" src="{{img}}" alt="{{name}}" width="32" height="32">
+            <div class="vcm-item-info">
+              <span class="vcm-item-name">{{name}}</span>
+              <span class="vcm-item-cat">{{category}}</span>
+            </div>
+            <span class="vcm-item-price">{{priceDisplay}}</span>
+            <span class="vcm-item-stock" title="{{#if outOfStock}}Out of stock{{else}}{{#if (eq stockDisplay "∞")}}Unlimited{{else}}{{stockDisplay}} remaining{{/if}}{{/if}}">
+              {{stockDisplay}}
+            </span>
+            <div class="vcm-item-actions">
+              <input type="number" class="vcm-qty-input" value="1" min="1" max="99">
+              <button class="vcm-buy-btn" type="button" {{#unless canAfford}}disabled{{/unless}}>
+                <i class="fas fa-cart-plus"></i> Buy
+              </button>
+            </div>
+          </div>
+          {{/each}}
+        {{else}}
+          <div class="vcm-empty">
+            <i class="fas fa-shop-slash"></i>
+            <p>No items available.</p>
+          </div>
+        {{/if}}
+      </div>
+    </div>
+    {{/if}}
+
+    {{!-- ═══ CATALOG TAB ═══ --}}
+    {{#if (eq tab "catalog")}}
+    <div class="vcm-tab-content vcm-catalog-tab">
+
+      {{!-- Filters --}}
+      <div class="vcm-catalog-filters">
+        <select class="vcm-catalog-pack">
+          <option value="all" {{#if (eq catalogPack "all")}}selected{{/if}}>All Packs</option>
+          {{#each catalogPacks}}
+          <option value="{{id}}" {{#if selected}}selected{{/if}}>{{label}}</option>
+          {{/each}}
+        </select>
+
+        {{#if showFolderFilter}}
+        <select class="vcm-catalog-folder">
+          <option value="all" {{#if (eq catalogFolder "all")}}selected{{/if}}>All Folders</option>
+          {{#each catalogFolders}}
+          <option value="{{id}}" {{#if selected}}selected{{/if}}>{{name}}</option>
+          {{/each}}
+        </select>
+        {{/if}}
+
+        <input type="text" class="vcm-catalog-search" placeholder="Search items…" value="{{catalogSearch}}">
+
+        <select class="vcm-catalog-sort">
+          <option value="name" {{#if (eq catalogSort "name")}}selected{{/if}}>Name</option>
+          <option value="value-asc" {{#if (eq catalogSort "value-asc")}}selected{{/if}}>Value ↑</option>
+          <option value="value-desc" {{#if (eq catalogSort "value-desc")}}selected{{/if}}>Value ↓</option>
+        </select>
+      </div>
+
+      {{!-- Item list --}}
+      <div class="vcm-item-list">
+        {{#if catalogItems.length}}
+          {{#each catalogItems}}
+          <div class="vcm-item-row {{#unless canAfford}}vcm-cant-afford{{/unless}}" data-item-uuid="{{uuid}}">
+            <img class="vcm-item-icon" src="{{img}}" alt="{{name}}" width="32" height="32">
+            <div class="vcm-item-info">
+              <span class="vcm-item-name">{{name}}</span>
+              <span class="vcm-item-cat">
+                <span class="vcm-catalog-tag">{{packLabel}}</span>
+                {{#if folderName}}<span class="vcm-catalog-tag vcm-folder-tag">{{folderName}}</span>{{/if}}
+              </span>
+            </div>
+            <span class="vcm-item-price">{{priceDisplay}}</span>
+            <div class="vcm-item-actions">
+              <input type="number" class="vcm-qty-input" value="1" min="1" max="99">
+              <button class="vcm-catalog-buy-btn" type="button" {{#unless canAfford}}disabled{{/unless}}>
+                <i class="fas fa-cart-plus"></i> Buy
+              </button>
+            </div>
+          </div>
+          {{/each}}
+        {{else}}
+          <div class="vcm-empty">
+            <i class="fas fa-book-open"></i>
+            <p>No items match your filters.</p>
+          </div>
+        {{/if}}
+      </div>
+    </div>
+    {{/if}}
+
+    {{!-- ═══ SELL TAB ═══ --}}
+    {{#if (eq tab "sell")}}
+    <div class="vcm-tab-content vcm-sell-tab">
+
+      <div class="vcm-sell-header">
+        <span>Your Equipment</span>
+        <span class="vcm-sell-ratio">Sell Ratio: <strong>{{sellRatio}}%</strong></span>
+      </div>
+
+      <div class="vcm-item-list">
+        {{#if sellItems.length}}
+          {{#each sellItems}}
+          <div class="vcm-item-row" data-item-id="{{id}}">
+            <img class="vcm-item-icon" src="{{img}}" alt="{{name}}" width="32" height="32">
+            <div class="vcm-item-info">
+              <span class="vcm-item-name">{{name}}{{#if (gt quantity 1)}} ×{{quantity}}{{/if}}</span>
+              <span class="vcm-item-cat">Value: {{baseCostDisplay}}</span>
+            </div>
+            <span class="vcm-item-price vcm-sell-price">{{sellPriceDisplay}}</span>
+            <div class="vcm-item-actions">
+              <input type="number" class="vcm-qty-input" value="1" min="1" max="{{quantity}}">
+              <button class="vcm-sell-btn" type="button">
+                <i class="fas fa-coins"></i> Sell
+              </button>
+            </div>
+          </div>
+          {{/each}}
+        {{else}}
+          <div class="vcm-empty">
+            <i class="fas fa-box-open"></i>
+            <p>Nothing to sell.</p>
+          </div>
+        {{/if}}
+      </div>
+    </div>
+    {{/if}}
+
+    {{!-- ═══ LOG TAB ═══ --}}
+    {{#if (eq tab "log")}}
+    <div class="vcm-tab-content vcm-log-tab">
+
+      <div class="vcm-log-toolbar">
+        <button class="vcm-copy-discord" type="button">
+          <i class="fab fa-discord"></i> Copy for Discord
+        </button>
+        {{#if isGM}}
+        <button class="vcm-clear-log" type="button">
+          <i class="fas fa-trash"></i> Clear Log
+        </button>
+        {{/if}}
+      </div>
+
+      <div class="vcm-log-list">
+        {{#if logEntries.length}}
+          {{#each logEntries}}
+          <div class="vcm-log-entry">
+            <span class="vcm-log-time">{{time}}</span>
+            <span class="vcm-log-icon {{#if isBuy}}vcm-log-buy{{else}}vcm-log-sell{{/if}}">
+              <i class="fas {{#if isBuy}}fa-cart-shopping{{else}}fa-coins{{/if}}"></i>
+            </span>
+            <span class="vcm-log-player">{{player}}</span>
+            <span class="vcm-log-action">{{#if isBuy}}bought{{else}}sold{{/if}}</span>
+            <span class="vcm-log-detail">{{item}}{{qtyStr}}</span>
+            <span class="vcm-log-price">{{priceDisplay}}</span>
+          </div>
+          {{/each}}
+        {{else}}
+          <div class="vcm-empty">
+            <i class="fas fa-clipboard-list"></i>
+            <p>No transactions recorded.</p>
+          </div>
+        {{/if}}
+      </div>
+    </div>
+    {{/if}}
+
+    {{!-- ═══ MANAGE TAB (GM) ═══ --}}
+    {{#if (eq tab "manage")}}
+    <div class="vcm-tab-content vcm-manage-tab">
+
+      {{!-- Shop config --}}
+      <div class="vcm-manage-section">
+        <div class="vcm-manage-row">
+          <label>Shop Name</label>
+          <input type="text" class="vcm-shop-name-input" value="{{shopName}}">
+        </div>
+        <div class="vcm-manage-row">
+          <label>Sell Ratio (%)</label>
+          <input type="number" class="vcm-ratio-input" value="{{sellRatio}}" min="0" max="100" step="5">
+        </div>
+        <div class="vcm-manage-row">
+          <label>Player Catalog</label>
+          <label class="vcm-toggle-label">
+            <input type="checkbox" class="vcm-catalog-toggle" {{#if catalogEnabled}}checked{{/if}}>
+            Allow players to browse the full compendium catalog
+          </label>
+        </div>
+      </div>
+
+      {{!-- Mode selector --}}
+      <div class="vcm-manage-section">
+        <h3>Inventory Source</h3>
+        <div class="vcm-mode-selector">
+          <label>
+            <input type="radio" class="vcm-mode-radio" name="vcm-mode" value="compendium"
+              {{#if (eq mode "compendium")}}checked{{/if}}>
+            Compendium Inventory
+          </label>
+          <label>
+            <input type="radio" class="vcm-mode-radio" name="vcm-mode" value="actor"
+              {{#if (eq mode "actor")}}checked{{/if}}>
+            NPC Actor Inventory
+          </label>
+        </div>
+
+        {{#if (eq mode "actor")}}
+        <select class="vcm-actor-select">
+          <option value="">— Select Actor —</option>
+          {{#each npcActors}}
+          <option value="{{id}}" {{#if selected}}selected{{/if}}>{{name}} ({{type}})</option>
+          {{/each}}
+        </select>
+        {{/if}}
+      </div>
+
+      {{!-- Broadcast controls --}}
+      <div class="vcm-manage-section vcm-broadcast-controls">
+        <button class="vcm-open-for-all" type="button">
+          <i class="fas fa-bullhorn"></i> Open Shop for All Players
+        </button>
+        <button class="vcm-close-for-all" type="button">
+          <i class="fas fa-door-closed"></i> Close Shop for All
+        </button>
+      </div>
+
+      {{!-- Compendium mode: inventory editor --}}
+      {{#if (eq mode "compendium")}}
+      <div class="vcm-manage-section">
+        <h3>Shop Inventory</h3>
+
+        {{!-- Drop zone --}}
+        <div class="vcm-drop-zone">
+          <i class="fas fa-cloud-arrow-down"></i> Drag items from compendium here
+        </div>
+
+        {{!-- Current inventory --}}
+        <div class="vcm-manage-inventory">
+          {{#each inventory}}
+          <div class="vcm-manage-item-row" data-shop-item-id="{{id}}">
+            <img src="{{img}}" alt="{{name}}" width="24" height="24">
+            <span class="vcm-manage-item-name">{{name}}</span>
+            <div class="vcm-manage-price">
+              <input type="number" class="vcm-price-gold" value="{{baseCost.gold}}" min="0" title="Gold" placeholder="g">
+              <span>g</span>
+              <input type="number" class="vcm-price-silver" value="{{baseCost.silver}}" min="0" title="Silver" placeholder="s">
+              <span>s</span>
+              <input type="number" class="vcm-price-copper" value="{{baseCost.copper}}" min="0" title="Copper" placeholder="c">
+              <span>c</span>
+            </div>
+            <div class="vcm-manage-stock">
+              <input type="number" class="vcm-stock-input" value="{{stock}}" min="-1" title="Stock (-1 = unlimited)">
+              <span class="vcm-stock-hint">(-1 = ∞)</span>
+            </div>
+            <button class="vcm-remove-item-btn" type="button" title="Remove from shop">
+              <i class="fas fa-xmark"></i>
+            </button>
+          </div>
+          {{/each}}
+        </div>
+
+        {{!-- Compendium browser --}}
+        <h3>Add from Compendium</h3>
+        <div class="vcm-comp-browser">
+          <div class="vcm-comp-controls">
+            <select class="vcm-pack-select">
+              {{#each compendiumPacks}}
+              <option value="{{id}}" {{#if selected}}selected{{/if}}>{{label}}</option>
+              {{/each}}
+            </select>
+            <input type="text" class="vcm-comp-search" placeholder="Filter…" value="{{compendiumFilter}}">
+          </div>
+          <div class="vcm-comp-list">
+            {{#each compendiumItems}}
+            <div class="vcm-comp-item">
+              <img src="{{img}}" alt="{{name}}" width="20" height="20">
+              <span>{{name}}</span>
+              <button class="vcm-add-item-btn" type="button" data-uuid="{{uuid}}" title="Add to shop">
+                <i class="fas fa-plus"></i>
+              </button>
+            </div>
+            {{/each}}
+          </div>
+        </div>
+      </div>
+      {{/if}}
+
+    </div>
+    {{/if}}
+
+  </div>
+</div>

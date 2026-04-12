@@ -10,6 +10,296 @@ import {
 } from "./loot-data.mjs";
 import { LootTracker } from "./loot-tracker.mjs";
 
+/* ── Loot Item Builders ────────────────────────────────── */
+
+const ICONS = {
+  // Gems
+  gemUncommon:  "icons/commodities/gems/gem-faceted-diamond-blue.webp",
+  gemRare:      "icons/commodities/gems/gem-rough-cushion-red.webp",
+  gemVeryRare:  "icons/commodities/gems/gem-cut-square-green.webp",
+  // Ingots
+  ingotGold:    "icons/commodities/metal/ingot-gold.webp",
+  ingotSilver:  "icons/commodities/metal/ingot-silver.webp",
+  ingotCopper:  "icons/commodities/metal/ingot-copper.webp",
+  ingotPlatinum:"icons/commodities/metal/ingot-hammered-gold.webp",
+  // Trade goods
+  spiceCommon:  "icons/consumables/food/spice-anise-pod.webp",
+  spiceExotic:  "icons/consumables/food/salt-seasoning-spice-pink.webp",
+  cloth:        "icons/commodities/cloth/cloth-bolt-gold.webp",
+  // Art
+  tapestry:     "icons/commodities/cloth/cloth-bolt-embroidered-pink.webp",
+  painting:     "icons/commodities/treasure/bust-carved-stone.webp",
+  figurine:     "icons/commodities/treasure/figurine-idol.webp",
+  bust:         "icons/commodities/treasure/statue-bust-stone-grey.webp",
+  pottery:      "icons/containers/kitchenware/mug-simple-wooden-brown.webp",
+  artifact:     "icons/commodities/treasure/statue-gold-laurel-wreath.webp",
+  // Jewelry
+  amulet:       "icons/equipment/neck/amulet-round-gold-green.webp",
+  bracelet:     "icons/equipment/wrist/bracelet-embossed-steel.webp",
+  circlet:      "icons/equipment/head/circlet-gold-blue.webp",
+  earring:      "icons/equipment/neck/pendant-faceted-gold-green.webp",
+  locket:       "icons/equipment/neck/pendant-gold-crystal-blue.webp",
+  monocle:      "icons/commodities/gems/gem-faceted-diamond-pink.webp",
+  pendant:      "icons/equipment/neck/pendant-rough-gold-purple.webp",
+  ring:         "icons/equipment/finger/ring-cabochon-gold-blue.webp",
+  spectacles:   "icons/commodities/gems/gem-cluster-blue-white.webp",
+  necklace:     "icons/equipment/neck/necklace-jeweled-gold-red.webp",
+  beltBuckle:   "icons/equipment/waist/belt-buckle-gold.webp",
+  barrette:     "icons/equipment/neck/necklace-simple-bone.webp",
+  // Clothing
+  belt:         "icons/equipment/waist/belt-leather-brown.webp",
+  boots:        "icons/equipment/feet/boots-leather-brown.webp",
+  cape:         "icons/equipment/back/cape-layered-red.webp",
+  cloak:        "icons/equipment/back/cloak-collared-red-gold.webp",
+  cowl:         "icons/equipment/head/circlet-gold-blue.webp",
+  doublet:      "icons/equipment/chest/shirt-collared-brown.webp",
+  dress:        "icons/equipment/chest/shirt-collared-green.webp",
+  frock:        "icons/equipment/chest/shirt-simple-white.webp",
+  girdle:       "icons/equipment/waist/belt-leather-studded-gold.webp",
+  gloves:       "icons/equipment/hand/glove-leather-brown.webp",
+  leggings:     "icons/equipment/leg/pants-leather-brown.webp",
+  mantle:       "icons/equipment/back/cloak-layered-green.webp",
+  pants:        "icons/equipment/leg/pants-leather-brown.webp",
+  scarf:        "icons/commodities/cloth/cloth-roll-gold-green.webp",
+  shirt:        "icons/equipment/chest/shirt-simple-white.webp",
+  shoes:        "icons/equipment/feet/boots-leather-simple-blue.webp",
+  skirt:        "icons/commodities/cloth/cloth-worn-gold.webp",
+  tunic:        "icons/equipment/chest/shirt-collared-brown.webp",
+  vest:         "icons/equipment/chest/shirt-collared-green.webp",
+  vestments:    "icons/equipment/back/cloak-hooded-red.webp",
+  // Scrolls
+  scroll:       "icons/sundries/scrolls/scroll-bound-gold.webp",
+};
+
+// Jewelry icon lookup by JEWELRY table entry index
+const JEWELRY_ICONS = {
+  1: ICONS.amulet,     // Amulet / Necklace
+  2: ICONS.beltBuckle, // Belt buckle, decorative
+  3: ICONS.barrette,   // Barrette
+  4: ICONS.bracelet,   // Bracelet
+  5: ICONS.circlet,    // Circlet
+  6: ICONS.earring,    // Earring
+  7: ICONS.locket,     // Locket
+  8: ICONS.monocle,    // Monocle
+  9: ICONS.pendant,    // Pendant
+  10: ICONS.ring,      // Ring
+  11: ICONS.spectacles,// Spectacles
+  12: null,            // →Clothing (redirect)
+};
+
+// Clothing icon lookup by CLOTHING table entry index
+const CLOTHING_ICONS = {
+  1: ICONS.belt,    2: ICONS.boots,    3: ICONS.cape,     4: ICONS.cloak,
+  5: ICONS.cowl,    6: ICONS.doublet,  7: ICONS.dress,    8: ICONS.frock,
+  9: ICONS.girdle,  10: ICONS.gloves,  11: ICONS.leggings,12: ICONS.mantle,
+  13: ICONS.pants,  14: ICONS.scarf,   15: ICONS.shirt,   16: ICONS.shoes,
+  17: ICONS.skirt,  18: ICONS.tunic,   19: ICONS.vest,    20: ICONS.vestments,
+};
+
+// Art icon lookup by ART table entry index
+const ART_ICONS = {
+  1: ICONS.tapestry, 2: ICONS.painting, 3: ICONS.painting,
+  4: ICONS.figurine, 5: ICONS.bust, 6: ICONS.pottery,
+  7: ICONS.pottery, 8: ICONS.artifact,
+};
+
+/** Build an equipment itemData object for loot. */
+function _lootItem(name, img, goldValue, slots = 0, description = "") {
+  return {
+    name,
+    type: "equipment",
+    img: img || "icons/svg/item-bag.svg",
+    system: {
+      description: description ? `<p>${description}</p>` : "",
+      equipmentType: "gear",
+      quantity: 1,
+      baseSlots: slots,
+      baseCost: { gold: goldValue, silver: 0, copper: 0 },
+      gearCategory: "Loot",
+      isConsumable: false,
+    },
+  };
+}
+
+/** Relic power gold values from the Vagabond core book (p.148-154). */
+const POWER_VALUES = {
+  // Bonus
+  "+1": 100, "+2": 1250, "+3": 5000,
+  "Weapon +1": 100, "Weapon +2": 1250, "Weapon +3": 5000,
+  "Armor +1": 100, "Armor +2": 5000, "Armor +3": 50000,
+  "Protection +1": 1000, "Protection +2": 10000, "Protection +3": 100000,
+  "Trinket +1": 200, "Trinket +2": 2500, "Trinket +3": 10000,
+  // Strike
+  "Strike 1": 1000, "Strike 2": 2500, "Strike 3": 8000,
+  // Bane
+  "Bane Niche": 500, "Bane, Niche": 500, "Bane, Specific": 2000, "Bane, General": 5000,
+  "Bane Specific": 2000, "Bane General": 5000, "Bane of Last Fought": 500,
+  // Protection (relic)
+  "Protection Niche": 500, "Protection, Niche": 500,
+  "Protection Specific": 2000, "Protection, Specific": 2000,
+  "Protection General": 5000, "Protection, General": 5000,
+  // Resistance
+  "Bravery": 150, "Clarity": 150, "Repulsing": 150, "Resistance": 2500,
+  // Movement
+  "Swiftness 1": 250, "Swiftness 2": 1000, "Swiftness 3": 5000,
+  "Climbing": 500, "Clinging": 2500, "Jumping 1": 500, "Jumping 2": 2500, "Jumping 3": 12500,
+  "Levitation": 500, "Displacement": 1000, "Blinking": 2000, "Flying": 5000,
+  "Waterwalk": 500, "Webwalk": 500,
+  // Senses
+  "Nightvision": 100, "Echolocation": 250, "Tremors": 1000, "Detection": 5000,
+  "Sense Life": 10000, "Sense Valuables": 10000, "Telepathy": 10000, "True-Seeing": 20000,
+  // Ace
+  "Ace": 1500, "Brutal": 2000, "Cleave": 2000, "Entangle": 1000, "Keen": 2000, "Long": 1000, "Thrown": 2000,
+  // Utility (avg by tier)
+  "After-Image 1": 500, "After-Image 2": 2500, "Ambassador": 1250, "Aqua Lung": 5000,
+  "Burning 1": 4000, "Burning 2": 15000, "Burning 3": 64000,
+  "Darkness 1": 500, "Darkness 2": 1250, "Darkness 3": 5000,
+  "Moonlight 1": 500, "Moonlight 2": 1250, "Moonlight 3": 5000, "Moonlit 1": 500, "Moonlit 2": 1250, "Moonlit 3": 5000,
+  "Radiant 1": 2000, "Radiant 2": 5000, "Radiant 3": 20000,
+  "Infinite": 1000, "Loyalty": 1000, "Warning": 7500,
+  "Lifesteal 1": 1000, "Lifesteal 2": 12500, "Lifesteal 3": 50000,
+  "Manasteal 1": 5000, "Manasteal 2": 20000, "Manasteal 3": 50000,
+  "Invisibility 1": 5000, "Invisibility 2": 50000,
+  // Fabled
+  "Benediction": 50000, "Blasting": 5000, "Precision": 10000,
+  "Soul Eater": 50000, "Soul-Eater": 50000, "Vicious": 25000, "Vorpal": 50000,
+  // Material (multiplier value rough estimate for the item, not additive)
+  "Silver": 100, "Cold Iron": 200, "Adamant": 500, "Mythral": 500, "Orichalcum": 500,
+};
+
+/** Look up the gold value of a relic power string. Case-insensitive with prefix stripping. */
+function _powerGoldValue(powerText) {
+  if (!powerText) return 0;
+  // Build case-insensitive lookup on first call
+  if (!_powerGoldValue._map) {
+    _powerGoldValue._map = {};
+    for (const [k, v] of Object.entries(POWER_VALUES)) _powerGoldValue._map[k.toLowerCase()] = v;
+  }
+  const map = _powerGoldValue._map;
+  const lower = powerText.toLowerCase();
+  // Direct match
+  if (map[lower] !== undefined) return map[lower];
+  // Strip common prefixes: "of Climbing" → "climbing", "(Strike 1)" → "strike 1", "(Ace)" → "ace"
+  const stripped = lower.replace(/^\(|\)$/g, "").replace(/^of\s+/i, "").replace(/^bane of\s+/i, "bane ").trim();
+  if (map[stripped] !== undefined) return map[stripped];
+  // Try each known power as a substring
+  for (const [key, val] of Object.entries(map)) {
+    if (lower.includes(key)) return val;
+  }
+  return 0;
+}
+
+/** Add relic power value to an item's baseCost. */
+function _addPowerValue(itemData, powerText, material) {
+  const powerGold = _powerGoldValue(powerText);
+  const matGold = (material && material !== "Mundane") ? (_powerGoldValue(material)) : 0;
+  const extraGold = powerGold + matGold;
+  if (extraGold > 0) {
+    const bc = itemData.system.baseCost ?? { gold: 0, silver: 0, copper: 0 };
+    const totalCopper = (bc.gold ?? 0) * 10000 + (bc.silver ?? 0) * 100 + (bc.copper ?? 0) + extraGold * 10000;
+    itemData.system.baseCost = {
+      gold: Math.floor(totalCopper / 10000),
+      silver: Math.floor((totalCopper % 10000) / 100),
+      copper: totalCopper % 100,
+    };
+  }
+}
+
+/** Build a gem loot item. */
+function _gemItem(rarity, valueGold, qty = 1) {
+  const icon = rarity === "Uncommon" ? ICONS.gemUncommon
+    : rarity === "Rare" ? ICONS.gemRare : ICONS.gemVeryRare;
+  const item = _lootItem(
+    qty > 1 ? `${rarity} Gem ×${qty}` : `${rarity} Gem`,
+    icon, valueGold * qty, 0,
+    `${rarity} gemstone worth ${valueGold}g each.`,
+  );
+  if (qty > 1) item.system.quantity = qty;
+  return item;
+}
+
+/** Build a trade goods loot item from the TRADE_GOODS table. */
+function _tradeGoodItem(entry, qty) {
+  let icon = ICONS.cloth;
+  let name = entry;
+  if (entry.includes("Spice, Common")) { icon = ICONS.spiceCommon; name = "Common Spice"; }
+  else if (entry.includes("Spice, Exotic")) { icon = ICONS.spiceExotic; name = "Exotic Spice"; }
+  else if (entry.includes("Spice, Rare")) { icon = ICONS.spiceExotic; name = "Rare Spice"; }
+  else if (entry.includes("Ingots, Copper")) { icon = ICONS.ingotCopper; name = "Copper Ingot"; }
+  else if (entry.includes("Ingots, Silver")) { icon = ICONS.ingotSilver; name = "Silver Ingot"; }
+  else if (entry.includes("Ingot, Gold") || entry.includes("Ingots, Gold")) { icon = ICONS.ingotGold; name = "Gold Ingot"; }
+  else if (entry.includes("Platinum")) { icon = ICONS.ingotPlatinum; name = "Platinum Ingot"; }
+
+  // Estimate value: spices ~1-5g, copper ingots ~1g, silver ~10g, gold ~100g, platinum ~5000g
+  const values = {
+    "Common Spice": 1, "Exotic Spice": 5, "Rare Spice": 10,
+    "Copper Ingot": 1, "Silver Ingot": 10, "Gold Ingot": 100, "Platinum Ingot": 5000,
+  };
+  const unitVal = values[name] || 5;
+
+  const item = _lootItem(
+    qty > 1 ? `${name} ×${qty}` : name,
+    icon, unitVal * qty, 1,
+    `Trade goods: ${entry}.`,
+  );
+  if (qty > 1) item.system.quantity = qty;
+  return item;
+}
+
+/** Create a random spell scroll for a given mana cost. */
+async function _createSpellScroll(manaCost) {
+  const pack = game.packs.get("vagabond.spells");
+  if (!pack) return null;
+
+  // Get all spells and pick one that fits this mana cost
+  // Mana cost = delivery cost + damage dice cost + fx cost
+  // For simplicity: pick a random spell and configure it at base (1 die, touch, no fx)
+  // so the mana comes from delivery cost alone, or pick any spell for the given level
+  const docs = await _getCompendiumItems("vagabond.spells");
+  if (!docs.length) return null;
+
+  // Pick a random spell
+  const spell = docs[Math.floor(Math.random() * docs.length)];
+  const goldValue = 5 + 5 * manaCost;
+
+  const deliveryType = spell.system?.deliveryType ?? "touch";
+  const deliveryName = CONFIG.VAGABOND?.deliveryTypes?.[deliveryType] ?? deliveryType;
+
+  const scrollData = {
+    spellName: spell.name,
+    spellUuid: spell.uuid,
+    spellImg: spell.img,
+    damageType: spell.system?.damageType ?? "-",
+    damageDice: 1,
+    deliveryType,
+    deliveryIncrease: 0,
+    useFx: false,
+    manaCost,
+    deliveryText: deliveryName,
+    causedStatuses: spell.system?.causedStatuses ?? [],
+    critCausedStatuses: spell.system?.critCausedStatuses ?? [],
+    canExplode: spell.system?.canExplode ?? false,
+    explodeValues: spell.system?.explodeValues ?? "",
+  };
+
+  return {
+    name: `Scroll of ${spell.name}`,
+    type: "equipment",
+    img: spell.img || ICONS.scroll,
+    system: {
+      description: `<p><strong>Spell Scroll</strong> (${deliveryName})</p><p>${spell.system?.description ?? ""}</p><p><em>Reading this scroll casts the spell. No Mana cost, no Cast Check. The scroll vaporizes after use.</em></p>`,
+      equipmentType: "gear",
+      isConsumable: true,
+      quantity: 1,
+      baseSlots: 0,
+      baseCost: { gold: goldValue, silver: 0, copper: 0 },
+      gearCategory: "Scrolls",
+      lore: "Relic Parchment",
+    },
+    flags: { [MODULE_ID]: { spellScroll: scrollData } },
+  };
+}
+
 /* ── Compendium item cache ─────────────────────────────── */
 
 const _compendiumCache = {};
@@ -23,11 +313,14 @@ async function _getCompendiumItems(packId) {
   return docs;
 }
 
+/** Normalize apostrophes (curly → straight) for matching. */
+function _norm(s) { return s.toLowerCase().replace(/[\u2018\u2019\u201A\u201B]/g, "'"); }
+
 async function _findCompendiumItem(packId, name) {
   const docs = await _getCompendiumItems(packId);
-  const lower = name.toLowerCase();
-  return docs.find(d => d.name.toLowerCase() === lower)
-    || docs.find(d => d.name.toLowerCase().includes(lower));
+  const lower = _norm(name);
+  return docs.find(d => _norm(d.name) === lower)
+    || docs.find(d => _norm(d.name).includes(lower));
 }
 
 /* ── Singleton accessor ─────────────────────────────────── */
@@ -231,19 +524,25 @@ export const LootGenerator = {
     const { currency, items } = result;
 
     // Build the chat card content
-    const itemLines = items.map(d =>
-      `<div class="vcl-gen-claim-item">
+    const itemLines = items.map(d => {
+      const bc = d.system?.baseCost;
+      const valParts = [];
+      if (bc?.gold)   valParts.push(`${bc.gold}g`);
+      if (bc?.silver) valParts.push(`${bc.silver}s`);
+      if (bc?.copper) valParts.push(`${bc.copper}c`);
+      const valStr = valParts.length ? ` (${valParts.join(" ")})` : "";
+      return `<div class="vcl-gen-claim-item">
         <img src="${d.img || "icons/svg/item-bag.svg"}" width="24" height="24" />
-        <span>${d.name}</span>
-      </div>`
-    ).join("");
+        <span>${d.name}${valStr}</span>
+      </div>`;
+    }).join("");
 
     const currParts = [];
-    if (currency.gold) currParts.push(`<span class="vcl-gen-claim-gold">${currency.gold} Gold</span>`);
-    if (currency.silver) currParts.push(`<span class="vcl-gen-claim-silver">${currency.silver} Silver</span>`);
-    if (currency.copper) currParts.push(`<span class="vcl-gen-claim-copper">${currency.copper} Copper</span>`);
+    if (currency.gold) currParts.push(`${currency.gold} Gold`);
+    if (currency.silver) currParts.push(`${currency.silver} Silver`);
+    if (currency.copper) currParts.push(`${currency.copper} Copper`);
     const currencyLine = currParts.length
-      ? `<div class="vcl-gen-claim-currency">${currParts.join(" ")}</div>`
+      ? `<div class="vcl-gen-claim-item"><i class="fas fa-coins" style="width:24px;text-align:center;color:inherit;"></i> <span>${currParts.join(", ")}</span></div>`
       : "";
 
     const hasLoot = items.length > 0 || currParts.length > 0;
@@ -252,16 +551,34 @@ export const LootGenerator = {
       return;
     }
 
+    const lootIcon = items[0]?.img || "icons/svg/item-bag.svg";
+
     const cardContent = `
-      <div class="vcl-gen-claim-card">
-        <div class="vcl-gen-claim-header">
-          <i class="fas fa-dice-d20"></i> Level ${clampedLevel} Loot
+      <div class="vagabond-chat-card-v2" data-card-type="generic">
+        <div class="card-body">
+          <header class="card-header">
+            <div class="header-icon">
+              <img src="${lootIcon}" alt="Loot">
+            </div>
+            <div class="header-info">
+              <h3 class="header-title">Level ${clampedLevel} Loot</h3>
+              <div class="metadata-tags-row">
+                <div class="meta-tag"><span>${actor.name}</span></div>
+              </div>
+            </div>
+          </header>
+          <section class="content-body">
+            <div class="card-description" style="padding:4px 8px;">
+              ${currencyLine}
+              ${itemLines}
+            </div>
+            <div style="padding:4px 8px 8px;">
+              <button type="button" class="vcl-gen-claim-btn">
+                <i class="fas fa-hand-holding"></i> Claim Loot
+              </button>
+            </div>
+          </section>
         </div>
-        ${currencyLine}
-        ${itemLines}
-        <button type="button" class="vcl-gen-claim-btn">
-          <i class="fas fa-hand-holding"></i> Claim Loot
-        </button>
       </div>`;
 
     // Determine whisper targets
@@ -330,7 +647,19 @@ class LootGeneratorApp extends HandlebarsApplicationMixin(ApplicationV2) {
     const players = game.actors.filter(a => a.type === "character" && a.hasPlayerOwner);
     return {
       levels,
-      history: this._history.map((h, i) => ({ ...h, origIndex: i, hasItem: !!h.itemData?.length })).reverse(),
+      history: this._history.map((h, i) => {
+        const bc = h.itemData?.[0]?.system?.baseCost;
+        const valParts = [];
+        if (bc?.gold)   valParts.push(`${bc.gold}g`);
+        if (bc?.silver) valParts.push(`${bc.silver}s`);
+        if (bc?.copper) valParts.push(`${bc.copper}c`);
+        return {
+          ...h,
+          origIndex: i,
+          hasItem: !!h.itemData?.length,
+          valueDisplay: valParts.length ? valParts.join(" ") : "",
+        };
+      }).reverse(),
       hasHistory: this._history.length > 0,
       players,
     };
@@ -407,13 +736,60 @@ class LootGeneratorApp extends HandlebarsApplicationMixin(ApplicationV2) {
 
     const trace = [{ label: "Vagabond Loot (p.186)", formula: `1d${totalWeight}`, total: rollDisplay }];
 
-    // Try to get item data from compendium UUID
+    // Resolve item data
     let itemData = null;
-    if (uuid) {
+
+    // Coins: parse and roll the currency
+    const coinMatch = itemName.match(/^Coins\s+\((.+?)\)\s+(gold|silver|copper)$/i);
+    if (coinMatch) {
+      const coinRoll = new Roll(coinMatch[1]);
+      await coinRoll.evaluate();
+      const coinType = coinMatch[2].toLowerCase();
+      const coinAmount = coinRoll.total;
+      // Create a currency loot item so it can be "given"
+      const coinItem = _lootItem(
+        `${coinAmount} ${coinMatch[2]}`,
+        ICONS.ingotGold,
+        coinType === "gold" ? coinAmount : 0,
+        0,
+        `${coinAmount} ${coinMatch[2]} coins.`,
+      );
+      if (coinType === "silver") coinItem.system.baseCost = { gold: 0, silver: coinAmount, copper: 0 };
+      if (coinType === "copper") coinItem.system.baseCost = { gold: 0, silver: 0, copper: coinAmount };
+      coinItem.system.quantity = 1;
+      itemData = [coinItem];
+    }
+    // Compendium UUID
+    else if (uuid) {
       try {
-        const doc = await fromUuid(uuid);
+        let doc = await fromUuid(uuid);
+        if (!doc) {
+          doc = await _findCompendiumItem("vagabond.gear", itemName)
+            || await _findCompendiumItem("vagabond.weapons", itemName)
+            || await _findCompendiumItem("vagabond.armor", itemName)
+            || await _findCompendiumItem("vagabond.alchemical-items", itemName);
+        }
         if (doc) itemData = [doc.toObject()];
       } catch { /* non-fatal */ }
+    }
+    // Trinkets without UUID
+    else if (itemName.includes("Trinket")) {
+      const doc = await _findCompendiumItem("vagabond.gear", "Trinket");
+      if (doc) {
+        const d = doc.toObject();
+        d.name = itemName;
+        itemData = [d];
+      } else {
+        itemData = [_lootItem(itemName, ICONS.artifact, 50, 0, "A magical trinket.")];
+      }
+    }
+    // Enchantment Scroll
+    else if (itemName.includes("Scroll")) {
+      const scrollItem = await _createSpellScroll(0);
+      if (scrollItem) {
+        scrollItem.name = "Enchantment Scroll (+1)";
+        itemData = [scrollItem];
+      }
     }
 
     const entry = {
@@ -421,7 +797,7 @@ class LootGeneratorApp extends HandlebarsApplicationMixin(ApplicationV2) {
       color: "#c9aa58",
       icon: "fa-book-open",
       trace,
-      item: itemName,
+      item: itemData?.[0]?.name ?? itemName,
       level: 1,
       resolvedParts: { type: "level1", name: itemName },
       itemData,
@@ -526,8 +902,22 @@ class LootGeneratorApp extends HandlebarsApplicationMixin(ApplicationV2) {
   async _createAlchemyItem(result) {
     const items = [];
     for (const name of (result.resolvedParts?.items ?? [])) {
-      const doc = await _findCompendiumItem("vagabond.alchemical-items", name);
-      if (doc) items.push(doc.toObject());
+      // Spell Scrolls
+      const scrollMatch = name.match(/^Spell Scroll\s*\((\d+)\s*Mana\)$/i);
+      if (scrollMatch) {
+        const manaCost = parseInt(scrollMatch[1]);
+        const scrollItem = await _createSpellScroll(manaCost);
+        if (scrollItem) items.push(scrollItem);
+        continue;
+      }
+
+      const doc = await _findCompendiumItem("vagabond.alchemical-items", name)
+        || await _findCompendiumItem("vagabond.gear", name);
+      if (doc) {
+        items.push(doc.toObject());
+      } else {
+        items.push(_lootItem(name, ICONS.scroll, 5, 1, `Alchemical item: ${name}.`));
+      }
     }
     return items.length ? items : null;
   }
@@ -535,9 +925,23 @@ class LootGeneratorApp extends HandlebarsApplicationMixin(ApplicationV2) {
   async _createWeaponItem(result) {
     const { base, material, powerText } = result.resolvedParts ?? {};
     if (!base) return null;
-    const doc = await _findCompendiumItem("vagabond.weapons", base);
-    if (!doc) return null;
-    const itemData = doc.toObject();
+
+    // Try weapons, then gear (trinkets, spell books, scrolls)
+    let doc = await _findCompendiumItem("vagabond.weapons", base)
+      || await _findCompendiumItem("vagabond.gear", base);
+
+    // Trinkets: "Trinket — Arcane" etc. → fall back to generic Trinket
+    if (!doc && base.includes("Trinket")) {
+      doc = await _findCompendiumItem("vagabond.gear", "Trinket");
+    }
+
+    // Still nothing → create a placeholder
+    const itemData = doc ? doc.toObject() : {
+      name: base,
+      img: ICONS.artifact,
+      type: "equipment",
+      system: { description: "", equipmentType: "gear", baseCost: { gold: 0, silver: 0, copper: 0 }, quantity: 1 },
+    };
 
     // Apply material
     if (material && material !== "Mundane") {
@@ -546,6 +950,9 @@ class LootGeneratorApp extends HandlebarsApplicationMixin(ApplicationV2) {
 
     // Update name with full generated name
     itemData.name = result.item;
+
+    // Add relic power value to baseCost
+    _addPowerValue(itemData, powerText, material);
 
     // Store loot gen metadata
     itemData.flags = itemData.flags || {};
@@ -563,15 +970,31 @@ class LootGeneratorApp extends HandlebarsApplicationMixin(ApplicationV2) {
     const { base, material, powerText } = result.resolvedParts ?? {};
     if (!base) return null;
 
-    // Map base name to armor type
-    let armorType = "light";
-    if (base.includes("Medium")) armorType = "medium";
-    if (base.includes("Heavy")) armorType = "heavy";
-    if (base.includes("Clothing") || base.includes("Robes")) armorType = "light";
+    // Special entries that aren't actual armor
+    if (base.includes("Scroll, Enchantment")) {
+      // Enchantment scroll — create a spell scroll instead
+      const scrollItem = await _createSpellScroll(0);
+      if (scrollItem) {
+        scrollItem.name = result.item;
+        _addPowerValue(scrollItem, powerText, material);
+        return [scrollItem];
+      }
+      return [_lootItem(result.item, ICONS.scroll, 0, 0, "An enchantment scroll.")];
+    }
+    if (base.includes("Accessory")) {
+      // Accessory — search gear compendium, or create a generic trinket
+      const doc = await _findCompendiumItem("vagabond.gear", "Trinket")
+        || await _findCompendiumItem("vagabond.gear", "Ring");
+      const itemData = doc ? doc.toObject() : _lootItem(result.item, ICONS.ring, 0, 0, "A magical accessory.");
+      itemData.name = result.item;
+      _addPowerValue(itemData, powerText, material);
+      return [itemData];
+    }
 
-    const searchName = armorType === "light" ? "Light Armor"
-      : armorType === "medium" ? "Medium Armor"
-      : "Heavy Armor";
+    // Map base name to armor type
+    let searchName = "Light Armor";
+    if (base.includes("Medium")) searchName = "Medium Armor";
+    else if (base.includes("Heavy")) searchName = "Heavy Armor";
 
     const doc = await _findCompendiumItem("vagabond.armor", searchName);
     if (!doc) return null;
@@ -581,6 +1004,10 @@ class LootGeneratorApp extends HandlebarsApplicationMixin(ApplicationV2) {
     if (material && material !== "Mundane") {
       itemData.system.metal = material.toLowerCase();
     }
+
+    // Add relic power value to baseCost
+    _addPowerValue(itemData, powerText, material);
+
     itemData.flags = itemData.flags || {};
     itemData.flags["vagabond-crawler"] = {
       lootGenerated: true,
@@ -593,11 +1020,68 @@ class LootGeneratorApp extends HandlebarsApplicationMixin(ApplicationV2) {
   }
 
   async _createTreasureItem(result) {
-    const name = result.item;
-    // Try gear compendium for jewelry/clothing
+    const sub = result.resolvedParts?.subtype;
+    const name = result.resolvedParts?.name || result.item;
+
+    // Currency: "Coins: 5d10 gold" → create a coin loot item
+    if (sub === "currency") {
+      const coinMatch = name.match(/Coins:\s+(.+?)\s+(gold|silver|copper)/i);
+      if (coinMatch) {
+        const r = new Roll(coinMatch[1].replace(/\u00d7/g, "*"));
+        await r.evaluate();
+        const coinType = coinMatch[2].toLowerCase();
+        const amt = r.total;
+        const item = _lootItem(`${amt} ${coinMatch[2]}`, ICONS.ingotGold, coinType === "gold" ? amt : 0, 0, `${amt} ${coinMatch[2]} coins.`);
+        if (coinType === "silver") item.system.baseCost = { gold: 0, silver: amt, copper: 0 };
+        if (coinType === "copper") item.system.baseCost = { gold: 0, silver: 0, copper: amt };
+        return [item];
+      }
+      // Gems
+      const gemMatch = name.match(/(\d+d\d+|\d+)\s+(Uncommon|Rare|Very Rare)\s+Gems.*?(\d+)g\s+each/i);
+      if (gemMatch) {
+        const r = new Roll(gemMatch[1]);
+        await r.evaluate();
+        return [_gemItem(gemMatch[2], parseInt(gemMatch[3]), r.total)];
+      }
+    }
+
+    // Trade goods
+    if (sub === "tradeGoods") {
+      const tgMatch = name.match(/^(\d+d\d+|\d+)\s+(.+)$/);
+      if (tgMatch) {
+        const r = new Roll(tgMatch[1]);
+        await r.evaluate();
+        return [_tradeGoodItem(tgMatch[2], r.total)];
+      }
+      return [_tradeGoodItem(name, 1)];
+    }
+
+    // Art
+    if (sub === "art") {
+      const worthMatch = result.item.match(/worth\s+(\d+)g/i);
+      const worthGold = worthMatch ? parseInt(worthMatch[1]) : 20;
+      const artName = name.replace(/\s*\(.+?\)/g, "").trim();
+      return [_lootItem(artName, ICONS.artifact, worthGold, 1, `Fine art piece worth ${worthGold}g.`)];
+    }
+
+    // Jewelry / clothing
+    if (sub === "jewelry") {
+      const worthMatch = result.item.match(/worth\s+(\d+)g/i);
+      const worthGold = worthMatch ? parseInt(worthMatch[1]) : 10;
+      return [_lootItem(name, ICONS.ring, worthGold, 0, `${name} worth ${worthGold}g.`)];
+    }
+
+    // Relic
+    if (sub === "relic") {
+      const doc = await _findCompendiumItem("vagabond.relics", name);
+      if (doc) return [doc.toObject()];
+      return [_lootItem(name, ICONS.artifact, 0, 1, `Relic: ${name}.`)];
+    }
+
+    // Fallback: try compendium
     const doc = await _findCompendiumItem("vagabond.gear", name);
     if (doc) return [doc.toObject()];
-    return null; // Coins, gems, etc. are text-only
+    return [_lootItem(name, ICONS.artifact, 0, 1, `Treasure: ${name}.`)];
   }
 
   /* ── Treasure resolver ──────────────────────────────── */
@@ -723,27 +1207,50 @@ class LootGeneratorApp extends HandlebarsApplicationMixin(ApplicationV2) {
 
   async _postToChat(entry) {
     const traceHtml = entry.trace.map(t =>
-      `<span style="color:#666">\u2192</span> <span style="color:#aaa">${t.label}</span> <span style="color:#666">(${t.formula}=${t.total})</span>`
+      `<span>\u2192</span> <span>${t.label}</span> <span>(${t.formula}=${t.total})</span>`
     ).join("<br>");
 
     // Build player buttons (GM only)
     const players = game.actors.filter(a => a.type === "character" && a.hasPlayerOwner);
     const playerBtns = players.map(a =>
-      `<button type="button" class="vcl-gen-give-btn" data-actor-id="${a.id}" style="margin:2px;padding:3px 8px;border:1px solid #555;border-radius:3px;background:transparent;color:#aaa;font-size:11px;cursor:pointer;">
-        ${a.name}
-      </button>`
+      `<button type="button" class="vcl-gen-give-btn" data-actor-id="${a.id}">${a.name}</button>`
     ).join("");
 
+    // Item icon for the card
+    const itemImg = entry.itemData?.[0]?.img || "icons/svg/item-bag.svg";
+
+    // Value display
+    const bc = entry.itemData?.[0]?.system?.baseCost;
+    const valParts = [];
+    if (bc?.gold)   valParts.push(`${bc.gold}g`);
+    if (bc?.silver) valParts.push(`${bc.silver}s`);
+    if (bc?.copper) valParts.push(`${bc.copper}c`);
+    const valueStr = valParts.length ? `<div class="meta-tag"><span>${valParts.join(" ")}</span></div>` : "";
+
     const msgData = {
-      content: `<div style="border-left:4px solid ${entry.color};padding:8px 12px;background:var(--vcb-surface-1, #1a1a1a);border-radius:0 6px 6px 0;" data-loot-gen="true">
-        <div style="font-size:10px;color:${entry.color};text-transform:uppercase;letter-spacing:1.5px;font-weight:bold;">
-          <i class="fas ${entry.icon}"></i> Level ${entry.level} ${entry.category}
+      content: `<div class="vagabond-chat-card-v2" data-card-type="generic" data-loot-gen="true">
+        <div class="card-body">
+          <header class="card-header">
+            <div class="header-icon">
+              <img src="${itemImg}" alt="${entry.item}">
+            </div>
+            <div class="header-info">
+              <h3 class="header-title">Level ${entry.level} ${entry.category}</h3>
+              <div class="metadata-tags-row">
+                <div class="meta-tag"><span>${entry.item}</span></div>
+                ${valueStr}
+              </div>
+            </div>
+          </header>
+          <section class="content-body">
+            <div class="card-description" style="padding:4px 8px;">
+              <div style="font-size:14px;line-height:1.6;margin-bottom:6px;font-family:monospace;color:#0b1a23;">${traceHtml}</div>
+            </div>
+            ${entry.itemData ? `<div class="vcl-gen-give-section" style="padding:4px 8px 8px;">
+              <span style="font-size:14px;color:#0b1a23;">Give to:</span> ${playerBtns}
+            </div>` : '<div style="padding:4px 8px 8px;font-size:14px;color:#0b1a23;">(Text-only \u2014 no item to give)</div>'}
+          </section>
         </div>
-        <div style="font-size:11px;line-height:1.6;margin:6px 0;font-family:monospace;">${traceHtml}</div>
-        <div style="font-size:14px;border-top:1px solid var(--vcb-border, #333);padding-top:6px;font-weight:bold;">${entry.item}</div>
-        ${entry.itemData ? `<div class="vcl-gen-give-section" style="margin-top:8px;padding-top:6px;border-top:1px solid #333;">
-          <span style="font-size:11px;color:#888;">Give to:</span> ${playerBtns}
-        </div>` : '<div style="margin-top:4px;font-size:11px;color:#666;">(Text-only \u2014 no item to give)</div>'}
       </div>`,
       speaker: { alias: "Loot Generator" },
       flags: {
@@ -803,9 +1310,35 @@ export async function generateLevelLoot(level) {
     // Compendium item
     if (uuid) {
       try {
-        const doc = await fromUuid(uuid);
+        let doc = await fromUuid(uuid);
+        // Fallback: if UUID is stale, search by name
+        if (!doc) {
+          doc = await _findCompendiumItem("vagabond.gear", name)
+            || await _findCompendiumItem("vagabond.weapons", name)
+            || await _findCompendiumItem("vagabond.armor", name)
+            || await _findCompendiumItem("vagabond.alchemical-items", name);
+        }
         if (doc) items.push(doc.toObject());
       } catch { /* non-fatal */ }
+    }
+    // Trinkets without UUID: look up generic trinket from compendium
+    else if (name.includes("Trinket")) {
+      const doc = await _findCompendiumItem("vagabond.gear", "Trinket");
+      if (doc) {
+        const itemData = doc.toObject();
+        itemData.name = name;  // "Arcane Trinket", "Divine Trinket", etc.
+        items.push(itemData);
+      } else {
+        items.push(_lootItem(name, ICONS.artifact, 50, 0, `A magical trinket.`));
+      }
+    }
+    // Enchantment Scroll: create a spell scroll
+    else if (name.includes("Scroll")) {
+      const scrollItem = await _createSpellScroll(0);
+      if (scrollItem) {
+        scrollItem.name = "Enchantment Scroll (+1)";
+        items.push(scrollItem);
+      }
     }
     return { currency, items };
   }
@@ -817,82 +1350,192 @@ export async function generateLevelLoot(level) {
   const catN = await _roll("1d6");
 
   if (catN === 1) {
-    // Treasure
+    // Treasure chain
     const n = await _roll(formulas.treasure);
     const entry = TREASURE[n];
     if (entry) {
-      // Coins
+      // Coins: "Coins: 5d10 gold"
       const coinMatch = entry.match(/^Coins:\s+(.+)$/);
       if (coinMatch) {
         const formula = coinMatch[1].replace(/\u00d7/g, "*").replace(/gold/i, "").trim();
         try { currency.gold += (await _roll(formula)); } catch { /* complex formula */ }
       }
-      // Trade Goods — resolve to text only (no item)
-      // Art/Jewelry/Relic — text-based, no currency
-      // Try compendium match for non-coin results
-      else if (!entry.startsWith("Coins")) {
-        // Try to find a matching compendium item by name keywords
-        const baseName = entry.replace(/\s*\(.+?\)/g, "").replace(/,.*$/, "").trim();
-        const doc = await _findCompendiumItem("vagabond.gear", baseName)
-          || await _findCompendiumItem("vagabond.weapons", baseName);
-        if (doc) items.push(doc.toObject());
+      // Gems: "1d8 Uncommon Gems (0-Slot, 5g each)"
+      else if (entry.includes("Gems")) {
+        const qtyMatch = entry.match(/(\d+d\d+|\d+)/);
+        const valMatch = entry.match(/(\d+)g\s+each/i);
+        if (qtyMatch && valMatch) {
+          const qty = await _roll(qtyMatch[1]);
+          const rarity = entry.includes("Very Rare") ? "Very Rare"
+            : entry.includes("Rare") ? "Rare" : "Uncommon";
+          items.push(_gemItem(rarity, parseInt(valMatch[1]), qty));
+        }
+      }
+      // Trade Goods: "Trade Goods (d6)" → roll sub-table
+      else if (entry.startsWith("Trade Goods")) {
+        const diceMatch = entry.match(/\((.+?)\)/);
+        if (diceMatch) {
+          const tgN = await _roll(diceMatch[1]);
+          const tgEntry = TRADE_GOODS[tgN];
+          if (tgEntry) {
+            const tgQtyMatch = tgEntry.match(/^(\d+d\d+|\d+)\s+(.+)$/);
+            if (tgQtyMatch) {
+              const qty = await _roll(tgQtyMatch[1]);
+              items.push(_tradeGoodItem(tgQtyMatch[2], qty));
+            } else {
+              items.push(_tradeGoodItem(tgEntry, 1));
+            }
+          }
+        }
+      }
+      // Art: "Art (d8), worth 20g" → roll art sub-table, create item with value
+      else if (entry.startsWith("Art")) {
+        const worthMatch = entry.match(/worth\s+(\d+)g/i);
+        const diceMatch = entry.match(/\((.+?)\)/);
+        const worthGold = worthMatch ? parseInt(worthMatch[1]) : 20;
+        if (diceMatch) {
+          const artN = await _roll(diceMatch[1]);
+          const artName = ART[artN] || "Art Object";
+          const baseName = artName.replace(/\s*\(.+?\)/g, "").trim();
+          const slotsMatch = artName.match(/(\d+)-Slot/);
+          const slots = slotsMatch ? parseInt(slotsMatch[1]) : 1;
+          items.push(_lootItem(baseName, ART_ICONS[artN] || ICONS.artifact, worthGold, slots,
+            `A fine art piece worth ${worthGold}g.`));
+        }
+      }
+      // Jewelry: "Jewelry (d12), worth 10g" → roll jewelry sub-table
+      else if (entry.startsWith("Jewelry")) {
+        const worthMatch = entry.match(/worth\s+(\d+)g/i);
+        const diceMatch = entry.match(/\((.+?)\)/);
+        const worthGold = worthMatch ? parseInt(worthMatch[1]) : 10;
+        if (diceMatch) {
+          const jN = await _roll(diceMatch[1]);
+          if (jN === 12) {
+            // Redirect to Clothing sub-table
+            const cN = await _roll("1d20");
+            const cName = CLOTHING[cN] || "Clothing";
+            items.push(_lootItem(`Fine ${cName}`, CLOTHING_ICONS[cN] || ICONS.cloak, worthGold, 1,
+              `Fine clothing worth ${worthGold}g.`));
+          } else {
+            const jName = JEWELRY[jN] || "Jewelry";
+            items.push(_lootItem(jName, JEWELRY_ICONS[jN] || ICONS.ring, worthGold, 0,
+              `${jName} worth ${worthGold}g.`));
+          }
+        }
+      }
+      // Relic Item: "Relic Item (d6)" → roll relic sub-table
+      else if (entry.startsWith("Relic")) {
+        const diceMatch = entry.match(/\((.+?)\)/);
+        if (diceMatch) {
+          const rN = await _roll(diceMatch[1]);
+          const relicName = RELIC[rN];
+          if (relicName) {
+            const doc = await _findCompendiumItem("vagabond.relics", relicName);
+            if (doc) {
+              items.push(doc.toObject());
+            } else {
+              items.push(_lootItem(relicName, ICONS.artifact, 0, 1, `Relic: ${relicName}.`));
+            }
+          }
+        }
       }
     }
   } else if (catN === 2) {
     // Armor — get base + power
     const baseN = await _roll("1d20");
     const base = _lookupRange(ARMOR_BASE, baseN) ?? "Light Armor";
-    let armorPack = "Light Armor";
-    if (base.includes("Medium")) armorPack = "Medium Armor";
-    if (base.includes("Heavy")) armorPack = "Heavy Armor";
-    const doc = await _findCompendiumItem("vagabond.armor", armorPack);
-    if (doc) {
-      const itemData = doc.toObject();
-      // Apply material if power roll is high enough
-      const powN = await _roll(formulas.armor);
-      if (powN >= 8) {
-        const matN = await _roll("1d12");
-        const mat = ARMOR_MATERIAL[matN];
-        if (mat && mat !== "Mundane") {
-          itemData.system.metal = mat.toLowerCase();
-          itemData.name = `${mat} ${itemData.name}`;
-        }
+
+    // Special entries
+    if (base.includes("Scroll, Enchantment")) {
+      const scrollItem = await _createSpellScroll(0);
+      if (scrollItem) {
+        scrollItem.name = "Enchantment Scroll";
+        items.push(scrollItem);
       }
+    } else if (base.includes("Accessory")) {
+      const doc = await _findCompendiumItem("vagabond.gear", "Trinket");
+      const itemData = doc ? doc.toObject() : _lootItem("Accessory", ICONS.ring, 50, 0, "A magical accessory.");
+      const powN = await _roll(formulas.armor);
       const power = ARMOR_POWER[powN];
-      if (power?.includes("+")) itemData.name += ` ${power}`;
+      if (power?.includes("+")) itemData.name = `Accessory ${power}`;
+      else itemData.name = "Accessory";
+      _addPowerValue(itemData, power, null);
       items.push(itemData);
+    } else {
+      // Actual armor
+      let armorPack = "Light Armor";
+      if (base.includes("Medium")) armorPack = "Medium Armor";
+      if (base.includes("Heavy")) armorPack = "Heavy Armor";
+      const doc = await _findCompendiumItem("vagabond.armor", armorPack);
+      if (doc) {
+        const itemData = doc.toObject();
+        const powN = await _roll(formulas.armor);
+        if (powN >= 8) {
+          const matN = await _roll("1d12");
+          const mat = ARMOR_MATERIAL[matN];
+          if (mat && mat !== "Mundane") {
+            itemData.system.metal = mat.toLowerCase();
+            itemData.name = `${mat} ${itemData.name}`;
+          }
+        }
+        const power = ARMOR_POWER[powN];
+        if (power?.includes("+")) itemData.name += ` ${power}`;
+        _addPowerValue(itemData, power, itemData.system?.metal ?? null);
+        items.push(itemData);
+      }
     }
   } else if (catN <= 4) {
     // Weapons
     const baseN = await _roll("1d48");
     const baseName = WEAPONS_LIST[baseN - 1];
     if (baseName) {
-      const doc = await _findCompendiumItem("vagabond.weapons", baseName);
-      if (doc) {
-        const itemData = doc.toObject();
-        const powN = await _roll(formulas.weapon);
-        if (powN >= 10) {
-          const matN = await _roll("1d8");
-          const mat = WEAPON_MATERIAL[matN];
-          if (mat && mat !== "Mundane") {
-            itemData.system.metal = mat.toLowerCase();
-            itemData.name = `${mat} ${itemData.name}`;
-          }
+      // Try weapons, then gear (for trinkets, spell books, etc.)
+      const doc = await _findCompendiumItem("vagabond.weapons", baseName)
+        || await _findCompendiumItem("vagabond.gear", baseName);
+      const itemData = doc ? doc.toObject() : {
+        name: baseName,
+        img: "icons/svg/item-bag.svg",
+        type: "equipment",
+        system: { description: `Weapon: ${baseName}`, equipmentType: "weapon", baseCost: { gold: 0, silver: 0, copper: 0 } },
+      };
+      const powN = await _roll(formulas.weapon);
+      if (doc && powN >= 10) {
+        const matN = await _roll("1d8");
+        const mat = WEAPON_MATERIAL[matN];
+        if (mat && mat !== "Mundane") {
+          itemData.system.metal = mat.toLowerCase();
+          itemData.name = `${mat} ${itemData.name}`;
         }
-        const power = WEAPON_POWER[powN];
-        if (power?.includes("+")) itemData.name += ` ${power.replace("Weapon/Trinket ", "").replace("Weapon ", "")}`;
-        else if (power?.startsWith("Strike")) itemData.name += ` (${power})`;
-        items.push(itemData);
       }
+      const power = WEAPON_POWER[powN];
+      if (power?.includes("+")) itemData.name += ` ${power.replace("Weapon/Trinket ", "").replace("Weapon ", "")}`;
+      else if (power?.startsWith("Strike")) itemData.name += ` (${power})`;
+      _addPowerValue(itemData, power, itemData.system?.metal ?? null);
+      items.push(itemData);
     }
   } else {
     // Alchemy (roll twice)
     for (let i = 0; i < 2; i++) {
       const n = await _roll(formulas.alchemy);
       const name = ALCHEMY[n];
-      if (name) {
-        const doc = await _findCompendiumItem("vagabond.alchemical-items", name);
-        if (doc) items.push(doc.toObject());
+      if (!name) continue;
+
+      // Spell Scrolls: "Spell Scroll (X Mana)" → create actual scroll
+      const scrollMatch = name.match(/^Spell Scroll\s*\((\d+)\s*Mana\)$/i);
+      if (scrollMatch) {
+        const manaCost = parseInt(scrollMatch[1]);
+        const scrollItem = await _createSpellScroll(manaCost);
+        if (scrollItem) items.push(scrollItem);
+        continue;
+      }
+
+      // Regular alchemical item → find in compendium
+      const doc = await _findCompendiumItem("vagabond.alchemical-items", name)
+        || await _findCompendiumItem("vagabond.gear", name);
+      if (doc) {
+        items.push(doc.toObject());
+      } else {
+        items.push(_lootItem(name, ICONS.scroll, 5, 1, `Alchemical item: ${name}.`));
       }
     }
   }
