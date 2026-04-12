@@ -554,6 +554,25 @@ function _buildMenuData(actor, isNPC) {
       }
     }
 
+    // Gold Sink favorites — merchant gets quick-buy items
+    // Uses vagabond-character-enhancer API (gracefully degrades if not installed)
+    const goldSinkData = game.vagabondCharacterEnhancer?.getGoldSinkData?.(actor);
+    if (goldSinkData?.favorites?.length > 0) {
+      const gsItems = goldSinkData.favorites.map(f => ({
+        label: f.label,
+        dmg: `<span class="vcs-menu-dmg" style="${f.affordable ? "" : "color:#c44;"}">${f.priceLabel}</span>`,
+        type: "goldsink",
+        goldSinkUuid: f.uuid,
+      }));
+      if (!result.tabC) {
+        result.tabC = "Gold Sink";
+        result.itemsC = gsItems;
+      } else if (!result.tabD) {
+        result.tabD = "Gold Sink";
+        result.itemsD = gsItems;
+      }
+    }
+
     return result;
   }
 }
@@ -630,6 +649,8 @@ function _showPanel(stripEl, cardWrap, actor, isNPC, activeTab) {
           ? `data-virtuoso-buff="${it.virtuosoBuff}"`
           : it.stepUpAllyId
           ? `data-stepup-ally="${it.stepUpAllyId}"`
+          : it.goldSinkUuid
+          ? `data-goldsink-uuid="${it.goldSinkUuid}"`
           : `data-index="${it.index ?? ""}"`;
         return `<div class="vcs-panel-item" data-type="${it.type}" ${dataAttrs}>
           <span class="vcs-panel-name">${it.label}</span>${it.dmg}
@@ -673,7 +694,7 @@ function _showPanel(stripEl, cardWrap, actor, isNPC, activeTab) {
       const token   = tokenId ? canvas.tokens?.get(tokenId) : null;
       const resolvedActor = token?.actor ?? game.actors.get(actor.id);
       if (!resolvedActor?.isOwner) { ui.notifications.warn("You don't control this character."); return; }
-      await _fireAction(resolvedActor, item.dataset.type, item.dataset.index, item.dataset.itemId ?? item.dataset.craftName ?? item.dataset.virtuosoBuff ?? item.dataset.stepupAlly);
+      await _fireAction(resolvedActor, item.dataset.type, item.dataset.index, item.dataset.itemId ?? item.dataset.craftName ?? item.dataset.virtuosoBuff ?? item.dataset.stepupAlly ?? item.dataset.goldsinkUuid);
       _removePanel();
     });
   });
@@ -826,6 +847,13 @@ async function _fireAction(actor, type, indexStr, itemId) {
       const summonData = game.vagabondCharacterEnhancer?.getSummonData?.(actor);
       if (summonData?.useBanish) {
         await summonData.useBanish();
+      }
+
+    } else if (type === "goldsink") {
+      // Gold Sink — buy a favorited item
+      const gsData = game.vagabondCharacterEnhancer?.getGoldSinkData?.(actor);
+      if (gsData?.buyItem) {
+        await gsData.buyItem(itemId); // itemId holds the UUID here
       }
     }
   } catch (err) {
