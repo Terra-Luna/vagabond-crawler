@@ -373,8 +373,8 @@ async function _resolveRawPower(rawPower, powerTable = "weapon", depth = 0) {
   if (rawPower.startsWith("Movement")) {
     const m = rawPower.match(/\((.+?)\)/); const d = m ? m[1] : "1d6";
     const v = await _roll(d);
-    const clamped = Math.min(v, 13);  // MOVEMENT table max is 13
-    const name = MOVEMENT[clamped] || MOVEMENT[13];
+    const clamped = Math.min(v, 14);  // MOVEMENT table max is 14
+    const name = MOVEMENT[clamped] || MOVEMENT[14];
     return { display: `of ${name}`, powerText: name };
   }
   if (rawPower.startsWith("Resistance")) {

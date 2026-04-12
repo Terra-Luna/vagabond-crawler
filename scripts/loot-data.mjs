@@ -440,6 +440,7 @@ export const MOVEMENT = {
   11: "Jumping 2",
   12: "Flying",
   13: "Swiftness 3",
+  14: "Jumping 3",
 };
 
 export const CREATURE_GENERAL = {
