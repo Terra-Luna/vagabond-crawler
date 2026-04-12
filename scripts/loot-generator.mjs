@@ -340,8 +340,11 @@ function _lastFoughtName() {
 }
 
 /** Resolve a raw power table entry into a concrete power name by rolling sub-tables.
- *  E.g. "Movement (d6)" → "Climbing", "Utility (d4)" → "After-Image 1" */
-async function _resolveRawPower(rawPower) {
+ *  E.g. "Movement (d6)" → "Climbing", "Utility (d4)" → "After-Image 1"
+ *  @param {string} rawPower — raw text from WEAPON_POWER or ARMOR_POWER
+ *  @param {"weapon"|"armor"} [powerTable="weapon"] — which power table for Reroll/Add
+ *  @param {number} [depth=0] — recursion guard */
+async function _resolveRawPower(rawPower, powerTable = "weapon", depth = 0) {
   if (!rawPower) return { display: "", powerText: "" };
 
   const _roll = async (f) => { const r = new Roll(f); await r.evaluate(); return r.total; };
@@ -379,7 +382,7 @@ async function _resolveRawPower(rawPower) {
     let v = await _roll(d);
     // "reroll 4s" or "reroll 1-3s" instructions from the table
     if (rawPower.includes("reroll 4") && v === 4) v = await _roll("1d3");
-    if (rawPower.includes("reroll 1-3") && v <= 3) v = 4 + await _roll("1d5"); // push into armor resistance 4-8
+    if (rawPower.includes("reroll 1-3") && v <= 3) v = 3 + await _roll("1d5"); // push into armor resistance 4-8
     const name = (v <= 3 ? WEAPON_RESISTANCE : ARMOR_RESISTANCE)?.[v] || `Resistance ${v}`;
     return { display: `of ${name}`, powerText: name };
   }
@@ -420,8 +423,48 @@ async function _resolveRawPower(rawPower) {
     // Material table — handled separately via metal
     return { display: "", powerText: rawPower };
   }
-  if (rawPower.startsWith("Reroll") || rawPower.startsWith("Add ")) {
-    // Meta-instructions — no display, no value
+  // Meta: "Reroll as d8, twice" → roll twice on range, pick results
+  // "Add d10 to this roll" → add d10 to current power index
+  // "Reroll d8, d8+9, d8+19, d8+29" → roll on multiple ranges, combine
+  if ((rawPower.startsWith("Reroll") || rawPower.startsWith("Add ")) && depth < 3) {
+    const _roll = async (f) => { const r = new Roll(f); await r.evaluate(); return r.total; };
+    const TABLE = powerTable === "armor" ? ARMOR_POWER : WEAPON_POWER;
+
+    if (rawPower.startsWith("Add d")) {
+      // "Add d10 to this roll" — we don't know the original roll, estimate mid-range
+      const diceMatch = rawPower.match(/d(\d+)/);
+      const bonus = diceMatch ? await _roll(`1d${diceMatch[1]}`) : 5;
+      // Re-resolve from a higher entry
+      const newIdx = Math.min(Object.keys(TABLE).length, 10 + bonus); // rough offset
+      const newPower = TABLE[newIdx];
+      if (newPower) return _resolveRawPower(newPower, powerTable, depth + 1);
+    }
+
+    // "Reroll as d8, twice" or "Reroll as d8+10, twice" etc.
+    const rerollMatch = rawPower.match(/Reroll\s+(?:as\s+)?([\dd+,\s]+?)(?:,?\s*twice)?$/i);
+    if (rerollMatch) {
+      const formulas = rerollMatch[1].split(",").map(s => s.trim()).filter(Boolean);
+      // Roll on each formula, take the best result
+      let bestDisplay = "";
+      let bestPowerText = "";
+      let bestValue = 0;
+      for (const formula of formulas) {
+        const idx = await _roll(formula);
+        const entry = TABLE[idx];
+        if (entry) {
+          const result = await _resolveRawPower(entry, powerTable, depth + 1);
+          const val = _powerGoldValue(result.powerText);
+          if (val > bestValue) {
+            bestValue = val;
+            bestDisplay = result.display;
+            bestPowerText = result.powerText;
+          }
+        }
+      }
+      if (bestDisplay) return { display: bestDisplay, powerText: bestPowerText };
+    }
+
+    // Fallback: couldn't parse the reroll instruction
     return { display: "", powerText: rawPower };
   }
 
@@ -1635,10 +1678,10 @@ export async function generateLevelLoot(level) {
       const doc = await _findCompendiumItem("vagabond.gear", "Trinket");
       const itemData = doc ? doc.toObject() : _lootItem("Accessory", ICONS.ring, 50, 0, "A magical accessory.");
       const powN = await _roll(formulas.armor);
-      const power = ARMOR_POWER[powN];
-      if (power?.includes("+")) itemData.name = `Accessory ${power}`;
-      else itemData.name = "Accessory";
-      _addPowerValue(itemData, power, null);
+      const rawPower = ARMOR_POWER[powN];
+      const { display, powerText } = await _resolveRawPower(rawPower, "armor");
+      itemData.name = display ? `Accessory ${display}` : "Accessory";
+      _addPowerValue(itemData, powerText, null);
       items.push(itemData);
     } else {
       // Actual armor
@@ -1658,7 +1701,7 @@ export async function generateLevelLoot(level) {
           }
         }
         const rawPower = ARMOR_POWER[powN];
-        const { display, powerText } = await _resolveRawPower(rawPower);
+        const { display, powerText } = await _resolveRawPower(rawPower, "armor");
         if (display) itemData.name += ` ${display}`;
         _addPowerValue(itemData, powerText, itemData.system?.metal ?? null);
         items.push(itemData);
