@@ -835,8 +835,8 @@ export const MerchantShop = {
    * Combined session summary: loot drops + merchant transactions, grouped by player.
    */
   formatSessionSummary() {
-    const { LootTracker } = game.vagabondCrawler ?? {};
-    const lootLog = LootTracker?.getLog() ?? [];
+    const lootTracker = game.vagabondCrawler?.lootTracker;
+    const lootLog = lootTracker?.getLog() ?? [];
     const shopLog = this.getLog();
 
     if (!lootLog.length && !shopLog.length) return "No activity recorded this session.";

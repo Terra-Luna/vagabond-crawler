@@ -350,6 +350,14 @@ export const LootGenerator = {
             await Item.create(data, { parent: actor });
           }
 
+          // Log to LootTracker
+          await LootTracker.logClaim(
+            actor.name,
+            "Loot Generator",
+            { gold: 0, silver: 0, copper: 0 },
+            itemData.map(d => ({ name: d.name, img: d.img })),
+          );
+
           // Update the chat card to show it was given
           const giveSection = html.querySelector(".vcl-gen-give-section");
           if (giveSection) {
@@ -712,6 +720,15 @@ class LootGeneratorApp extends HandlebarsApplicationMixin(ApplicationV2) {
       for (const data of entry.itemData) {
         await Item.create(data, { parent: actor });
       }
+
+      // Log to LootTracker
+      await LootTracker.logClaim(
+        actor.name,
+        "Loot Generator",
+        { gold: 0, silver: 0, copper: 0 },
+        entry.itemData.map(d => ({ name: d.name, img: d.img })),
+      );
+
       ui.notifications.info(`Gave loot to ${actor.name}`);
     });
 
