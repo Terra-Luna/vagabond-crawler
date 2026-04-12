@@ -1,5 +1,10 @@
 # Changelog
 
+## v1.8.1
+
+### Bug Fixes
+- **Gold Sink integration** — Added missing CrawlStrip action menu integration for the Merchant class Gold Sink feature (vagabond-character-enhancer). Favorited shop items now appear as a tab in the CrawlStrip action panel for Merchant characters, with prices and quick-buy. This code was present locally but was never committed to the release.
+
 ## v1.8.0
 
 ### New Features
