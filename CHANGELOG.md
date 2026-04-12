@@ -1,5 +1,119 @@
 # Changelog
 
+## v1.8.0
+
+### New Features
+
+#### Merchant Shop
+- **Full buy/sell system** — GM stocks items from compendium packs or designates an NPC actor as a merchant. Players buy items (money deducted, item added to inventory) and sell items (item removed, money added at configurable sell ratio).
+- **Catalog tab** — Browse 484 items across Gear, Weapons, Armor, and Alchemical Items compendium packs with search, pack/folder filters, and sort by name or value. GM can toggle catalog visibility per shop.
+- **Gamble tab** — Players pay a flat gold fee to roll on loot tables. GM configures gamble options with custom names, table sources (built-in Loot Levels 1-10 or any world RollTable), and custom prices.
+- **Buy markup/discount** — GM sets a percentage multiplier (10-500%) per shop. 100% = normal, 150% = shady markup, 80% = friendly discount. Applies to Buy and Catalog tab prices.
+- **GM-controlled broadcast** — GM opens shop privately to configure, then clicks "Open Shop for All Players" to broadcast. Window title shows Open/Closed status.
+- **Junk marking** — Right-click equipment on character sheet to "Mark as Junk." Junk items sort to top of Sell tab with red indicator. "Sell All Junk" button sells all marked items at once.
+- **Transaction log** — All buy/sell/gamble transactions logged per player with Discord markdown export.
+- **Session Summary** — Combined export merging loot tracker + merchant logs, grouped by player with per-player totals.
+- **Item preview** — Single-click item rows to expand inline description. Double-click to open the full item sheet.
+
+#### Party Inventory
+- **New window** showing all player characters' inventories side by side in columns. Shows equipped status (green border), junk markers (red border), slot counts, wallet, and item values. Filters to characters with friendly tokens on the active scene.
+
+#### Loot Generator — Relic Active Effects
+Loot-generated relic items now have **functional Active Effects** that apply when equipped. Uses the same power definitions as the Relic Forge.
+
+**Working AE powers (50 powers with direct system field changes):**
+- **Weapon +1/+2/+3** — `system.universalWeaponDamageBonus` (+1/+2/+3 weapon damage)
+- **Armor +1/+2/+3** — `system.armorBonus` (+1/+2/+3 armor)
+- **Protection +1/+2/+3** — `system.saves.reflex/endure/will.bonus` (+1/+2/+3 to all saves)
+- **Trinket +1/+2/+3** — `system.universalSpellDamageBonus` (+1/+2/+3 spell damage)
+- **Strike I/II/III** — `system.universalWeaponDamageDice` (+1d4/+1d6/+1d8 bonus damage die)
+- **Swiftness I/II/III** — `system.speed.bonus` (+5/+10/+15 speed)
+- **Climbing** — `system.movement.climb` (grants Climb)
+- **Clinging** — `system.movement.cling` (grants Cling)
+- **Flying** — `system.movement.fly` (grants Fly)
+- **Levitation** — `system.movement.levitate` (grants Levitate)
+- **Blinking** — `system.movement.blink` (grants Blink teleport)
+- **Waterwalk** — `system.movement.waterwalk` (walk on water)
+- **Webwalk** — `system.movement.webwalk` (move through webs)
+- **Displacement** — `system.defenderStatusModifiers.attackersAreBlinded` (attackers treated as blinded)
+- **Nightvision** — `system.senses.darksight` (grants Darksight)
+- **Echolocation** — `system.senses.echolocation` (grants Echolocation)
+- **Tremors** — `system.senses.tremorsense` (grants Seismicsense)
+- **Detection** — `system.senses.detection` (detect Being types)
+- **Sense Life** — `system.senses.senseLife` (sense living creatures)
+- **Sense Valuables** — `system.senses.senseValuables` (sense gold/gems)
+- **Telepathy** — `system.senses.telepathy` (grants Telepathy)
+- **True-Seeing** — `system.senses.allsight` (see through illusions)
+- **Bravery** — `system.favorOnSaveVs.frightened` (Favor on Frightened saves)
+- **Clarity** — `system.favorOnSaveVs.confused` (Favor on Confused saves)
+- **Repulsing** — `system.favorOnSaveVs.charmed` (Favor on Charmed saves)
+- **Ambassador** — `system.speakAllLanguages` (understand all languages)
+- **Aqua Lung** — `system.breatheUnderwater` (breathe underwater)
+- **Burning I/II/III** — `system.onHitBurningDice` (Burning status on hit, Cd4/Cd6/Cd8)
+- **Warning** — `system.cannotBeSurprised` (cannot be surprised)
+- **Invisibility II** — `system.defenderStatusModifiers.attackersAreBlinded` (permanent invisibility)
+- **Cursed: Vulnerability -1/-2/-3** — `system.armorBonus` (-1/-2/-3 armor penalty)
+- **Cursed: Weakness -1/-2/-3** — `system.universalWeaponDamageBonus` (-1/-2/-3 damage penalty)
+- **Cursed: Anger** — `system.autoFailSaveVs.berserk` (auto-fail Berserk saves)
+- **Cursed: Cowardice** — `system.autoFailSaveVs.frightened` (auto-fail Frightened saves)
+- **Cursed: Gullibility** — `system.autoFailSaveVs.charmed` (auto-fail Charmed saves)
+- **Cursed: Doom** — `system.healingCappedPerDie` (healing capped at 1 per die)
+
+**Flag-based powers (39 powers — AE flags stored for runtime handling by relic-effects.mjs):**
+- **Jumping I/II/III** — `jumpMultiplier` flag (x2/x3/x4 jump distance)
+- **Elemental Resistance** (Acid/Cold/Fire/Poison/Shock) — `damageResistance` flag (half damage)
+- **Darkness I/II/III** — `lightType`/`lightRange` flags (darken light)
+- **Moonlight I/II/III** — `lightType`/`lightRange` flags (shed moonlight)
+- **Radiant I/II/III** — `lightType`/`lightRange` flags (shed sunlight)
+- **Lifesteal I/II/III** — `onKillHealDice` flag (heal on kill)
+- **Manasteal I/II/III** — `onKillManaDice` flag (restore mana on kill)
+- **After-Image I/II** — `usesPerDay` flag (illusory duplicate)
+- **Invisibility I** — flag-only (skip Move to become invisible)
+- **Blasting** — `blastDamage`/`usesPerDay` flags (6d6 blast, 1/day)
+- **Precision** — `usesPerDay` flag (auto-hit, 1/day)
+- **Benediction** — flag-only (revive on death, 1/week)
+- **Soul Eater** — flag-only (killed creatures can't be resurrected)
+- **Vicious** — flag-only (extra crit damage)
+- **Vorpal** — flag-only (behead on crit)
+- **Infinite** — flag-only (endless mundane item supply)
+- **Loyalty** — flag-only (weapon returns when thrown)
+- **Ace** — adds weapon property (Brutal/Cleave/Keen/etc.)
+
+**Not yet implemented (require GM adjudication):**
+- **Bane** (Niche/Specific/General) — `baneTarget`/`baneDice` flags stored but bonus damage requires manual tracking of target creature type during combat
+- **Protection vs creature type** (Niche/Specific/General) — `wardTarget` flags stored but Favor on saves vs specific creatures requires runtime creature-type matching
+
+#### Loot Generator — Item Generation Overhaul
+- **Treasure chain** produces real items: gems (Uncommon/Rare/Very Rare with blue/red/green gem icons), trade goods (gold/silver/copper ingots, common/exotic/rare spices), art objects (tapestry, painting, figurine, bust, pottery, artifact), jewelry (amulet, ring, bracelet, pendant, circlet, etc.), clothing (belt, boots, cloak, etc.)
+- **Spell Scrolls** generated as actual usable scroll items via the Scroll Forge pattern with random spells, proper flag data, and spell icons
+- **Relic power values** from the core book added to weapon/armor `baseCost` — a Longsword +2 now correctly shows as 1250g 40s instead of just 40s
+- **Enchantment Scrolls and Accessories** handled as proper items with correct sub-table rolls
+- **Trinkets** always resolve to a compendium item
+- **Reroll/Add meta-powers** properly implemented — higher-level rolls that hit "Reroll as d8, twice" or "Add d10 to this roll" entries now produce actual relic powers instead of empty results
+- **Niche powers** pull NPC names from last combat or random world NPC instead of "Unknown Foe"
+- **Chat cards** use system `vagabond-chat-card-v2` styling with parchment background, proper fonts, and black text
+- **Item values** displayed in both the Loot Generator UI and chat cards, summed across all items per roll
+
+### Bug Fixes
+- **Currency math** — Fixed conversion rates: 100 copper = 1 silver, 100 silver = 1 gold (was incorrectly 10:1)
+- **Compendium matching** — Curly apostrophe normalization for items like "Crone's Ire", "Alchemist's Fire"
+- **Typo fixes** — "Tendertwig" → "Tindertwig", "Oil, Annointing" → "Oil, Anointing"
+- **Stale UUIDs** — Poison Basic and Potion Healing I had truncated compendium UUIDs, with name-based fallback
+- **Empty loot rolls eliminated** — Every roll path now produces items or currency
+- **Resistance potion names** — "Potion, Resistance (Cold)" → "Potion, Cold Resistance" to match compendium
+- **Weapon/Trinket +N naming** — Power entries now correctly say "Weapon/Trinket" per source spreadsheet
+- **Missing Movement entry** — Added Jumping 3 (entry 14) to Movement table
+- **Movement overflow** — d8+6 rolling 14 now correctly gives Jumping 3 instead of clamping
+- **Resistance rerolls** — "reroll 4s" and "reroll 1-3s" instructions now implemented with correct clamping
+- **Accessory sub-table** — Now properly rolls d4: 1-2 = Jewelry, 3-4 = Clothing per spreadsheet instructions
+- **Relic power pricing** — Fixed case-insensitive matching, "Bane," comma prefix, "Protection vs" prefix
+- **Pixie Dust** — Fixed compendium price from 10s to 10g
+- **Golden Needle** — Fixed compendium price from 50s to 50g
+- **Sell tab** — Removed filter that hid items with 0 sell value, all equipment now shows
+- **Font sizes** — Increased across merchant shop and loot generator UI for readability
+- **Session summary** — Fixed case mismatch (`LootTracker` vs `lootTracker`) that excluded loot claims
+- **Give buttons** — Both chat card and in-app "Give" buttons now log to LootTracker
+
 ## v1.7.0
 
 ### Bug Fixes
