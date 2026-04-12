@@ -1,0 +1,95 @@
+/**
+ * Vagabond Crawler — Party Inventory View
+ *
+ * Shows all party members' inventories side by side.
+ * GM tool for redistributing loot and seeing who's carrying what.
+ */
+
+import { MODULE_ID } from "./vagabond-crawler.mjs";
+
+const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
+
+/** Format a cost object as short string. */
+function _fmtCost(c) {
+  const p = [];
+  if (c?.gold) p.push(`${c.gold}g`);
+  if (c?.silver) p.push(`${c.silver}s`);
+  if (c?.copper) p.push(`${c.copper}c`);
+  return p.length ? p.join(" ") : "—";
+}
+
+/* ── Singleton ─────────────────────────────────────────── */
+
+export const PartyInventory = {
+  _app: null,
+
+  open() {
+    if (!this._app) this._app = new PartyInventoryApp();
+    this._app.render(true);
+  },
+};
+
+/* ── ApplicationV2 ─────────────────────────────────────── */
+
+class PartyInventoryApp extends HandlebarsApplicationMixin(ApplicationV2) {
+  static DEFAULT_OPTIONS = {
+    id: "vagabond-crawler-party-inventory",
+    tag: "div",
+    window: { title: "Party Inventory", resizable: true },
+    position: { width: 900, height: 620 },
+    classes: ["vagabond-crawler-party-inventory"],
+  };
+
+  static PARTS = {
+    form: { template: "modules/vagabond-crawler/templates/party-inventory.hbs" },
+  };
+
+  async _prepareContext() {
+    // Get all player-owned characters with tokens on active scene (or all player characters)
+    const members = game.actors
+      .filter(a => a.type === "character" && a.hasPlayerOwner)
+      .sort((a, b) => a.name.localeCompare(b.name));
+
+    const columns = members.map(actor => {
+      const currency = actor.system.currency ?? { gold: 0, silver: 0, copper: 0 };
+      const items = actor.items
+        .filter(i => i.type === "equipment")
+        .map(i => ({
+          id: i.id,
+          actorId: actor.id,
+          name: i.name,
+          img: i.img,
+          quantity: i.system.quantity ?? 1,
+          equipped: i.system.equipped,
+          baseCost: _fmtCost(i.system.baseCost),
+          isJunk: !!i.getFlag(MODULE_ID, "junk"),
+          slots: i.system.slots || i.system.baseSlots || 0,
+        }))
+        .sort((a, b) => {
+          // Equipped first, then by name
+          if (a.equipped !== b.equipped) return a.equipped ? -1 : 1;
+          return a.name.localeCompare(b.name);
+        });
+
+      const totalSlots = items.reduce((s, i) => s + i.slots * i.quantity, 0);
+      const maxSlots = actor.system.inventory?.maxSlots ?? actor.system.inventory?.slots ?? "?";
+
+      return {
+        actorId: actor.id,
+        name: actor.name,
+        img: actor.img,
+        wallet: _fmtCost(currency),
+        items,
+        itemCount: items.length,
+        totalSlots,
+        maxSlots,
+      };
+    });
+
+    return { columns, hasMembers: columns.length > 0 };
+  }
+
+  _onRender() {
+    // No special events needed for now — read-only view
+  }
+}

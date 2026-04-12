@@ -24,6 +24,7 @@ import { LootGenerator }    from "./loot-generator.mjs";
 import { CountdownRoller }  from "./countdown-roller.mjs";
 import { ScrollForge }      from "./scroll-forge.mjs";
 import { MerchantShop }     from "./merchant-shop.mjs";
+import { PartyInventory }  from "./party-inventory.mjs";
 
 export const MODULE_ID = "vagabond-crawler";
 
@@ -157,6 +158,7 @@ Hooks.once("ready", async () => {
     countdownRoller: CountdownRoller,
     scrollForge: ScrollForge,
     merchantShop: MerchantShop,
+    partyInventory: PartyInventory,
     debugCombat: () => {
       const combat = game.combat;
       if (!combat) return "No active combat";
@@ -347,6 +349,57 @@ Hooks.once("ready", async () => {
   Hooks.on("renderVagabondCharacterSheet", _attachScrollCtx);
   Hooks.on("renderVagabondNPCSheet", _attachScrollCtx);
   Hooks.on("renderActorSheet", _attachScrollCtx);
+
+  // Junk marking: "Mark as Junk" / "Unmark Junk" context menu on equipment items
+  const _attachJunkCtx = (sheet) => {
+    const el = sheet.element;
+    if (!el) return;
+    const actor = sheet.actor;
+    if (!actor) return;
+    for (const card of el.querySelectorAll(".inventory-card")) {
+      if (card.dataset.vcJunkBound) continue;
+      const item = actor.items.get(card.dataset.itemId);
+      if (!item || item.type !== "equipment") continue;
+      card.dataset.vcJunkBound = "1";
+
+      // Visual junk indicator
+      if (item.getFlag(MODULE_ID, "junk")) {
+        card.style.opacity = "0.5";
+        card.style.borderLeft = "3px solid #e74c3c";
+      }
+
+      card.addEventListener("contextmenu", () => {
+        let attempts = 0;
+        const poll = setInterval(() => {
+          const menu = document.querySelector(".inventory-context-menu");
+          if (menu) {
+            clearInterval(poll);
+            if (menu.querySelector(".vc-junk-ctx-item")) return;
+            const isJunk = !!item.getFlag(MODULE_ID, "junk");
+            const li = document.createElement("li");
+            li.className = "vc-junk-ctx-item";
+            li.innerHTML = isJunk
+              ? `<i class="fas fa-recycle"></i> Unmark Junk`
+              : `<i class="fas fa-trash-can"></i> Mark as Junk`;
+            li.addEventListener("click", async ev => {
+              ev.stopPropagation();
+              menu.remove();
+              if (isJunk) {
+                await item.unsetFlag(MODULE_ID, "junk");
+              } else {
+                await item.setFlag(MODULE_ID, "junk", true);
+              }
+            });
+            menu.insertBefore(li, menu.firstChild);
+          } else if (++attempts >= 10) {
+            clearInterval(poll);
+          }
+        }, 10);
+      });
+    }
+  };
+  Hooks.on("renderVagabondCharacterSheet", _attachJunkCtx);
+  Hooks.on("renderActorSheet", _attachJunkCtx);
 
   // "True Zero Slot" checkbox on item sheets — items flagged skip the 10-per-slot rule
   const _injectTrueZeroSlot = (sheet) => {

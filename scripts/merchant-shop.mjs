@@ -12,6 +12,12 @@ import { MODULE_ID } from "./vagabond-crawler.mjs";
 
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
+/** Default gamble costs per loot level (in gold). */
+const GAMBLE_COSTS = {
+  1: 1, 2: 2, 3: 3, 4: 4, 5: 5,
+  6: 6, 7: 8, 8: 12, 9: 15, 10: 50,
+};
+
 // ── Currency helpers ──────────────────────────────────────────────────────────
 
 /** Convert a { gold, silver, copper } object to a single copper value.
@@ -87,6 +93,7 @@ export const MerchantShop = {
         if (data.action === "shop:buy")        await this._handleBuy(data);
         if (data.action === "shop:sell")       await this._handleSell(data);
         if (data.action === "shop:catalogBuy") await this._handleCatalogBuy(data);
+        if (data.action === "shop:gamble")     await this._handleGamble(data);
       }
 
       // All clients: handle broadcasts from GM
@@ -189,6 +196,8 @@ export const MerchantShop = {
     this._app._actorId = data.actorId;
     this._app._inventory = data.inventory;
     this._app._catalogEnabled = data.catalogEnabled ?? true;
+    this._app._buyMultiplier = data.buyMultiplier ?? 100;
+    this._app._gambleEnabled = data.gambleEnabled ?? false;
     this._app._tab = data.catalogEnabled === false && (!data.inventory || data.inventory.length === 0) ? "catalog" : "buy";
     this._app.render(true);
   },
@@ -224,7 +233,7 @@ export const MerchantShop = {
   // ── Buy handler (GM-side) ─────────────────────────────────────────────────
 
   async _handleBuy(data) {
-    const { buyerActorId, shopItemId, quantity, userId } = data;
+    const { buyerActorId, shopItemId, quantity, buyMultiplier, userId } = data;
     const buyer = game.actors.get(buyerActorId);
     if (!buyer) return this._broadcastError("Actor not found.", userId);
 
@@ -241,9 +250,9 @@ export const MerchantShop = {
       return this._broadcastError("Not enough stock.", userId);
     }
 
-    // Calculate total cost
-    const unitCost = entry.baseCost;
-    const totalCopper = _toCopper(unitCost) * quantity;
+    // Calculate total cost (with buy multiplier)
+    const mult = (buyMultiplier ?? this._app?._buyMultiplier ?? 100) / 100;
+    const totalCopper = Math.round(_toCopper(entry.baseCost) * mult * quantity);
     const totalCost = _fromCopper(totalCopper);
 
     // Check funds
@@ -417,7 +426,7 @@ export const MerchantShop = {
   // ── Catalog buy handler (GM-side) ──────────────────────────────────────────
 
   async _handleCatalogBuy(data) {
-    const { buyerActorId, itemUuid, quantity, userId } = data;
+    const { buyerActorId, itemUuid, quantity, buyMultiplier, userId } = data;
     const buyer = game.actors.get(buyerActorId);
     if (!buyer) return this._broadcastError("Actor not found.", userId);
 
@@ -426,7 +435,8 @@ export const MerchantShop = {
     if (!doc) return this._broadcastError("Item not found in compendium.", userId);
 
     const baseCost = doc.system.baseCost ?? { gold: 0, silver: 0, copper: 0 };
-    const totalCopper = _toCopper(baseCost) * quantity;
+    const catMult = (buyMultiplier ?? this._app?._buyMultiplier ?? 100) / 100;
+    const totalCopper = Math.round(_toCopper(baseCost) * catMult * quantity);
     const totalCost = _fromCopper(totalCopper);
 
     // Check funds
@@ -496,6 +506,124 @@ export const MerchantShop = {
     };
     game.socket.emit(`module.${MODULE_ID}`, result);
     this._onResult(result);
+  },
+
+  // ── Gamble handler (GM-side) ────────────────────────────────────────────
+
+  async _handleGamble(data) {
+    const { buyerActorId, level, userId } = data;
+    const buyer = game.actors.get(buyerActorId);
+    if (!buyer) return this._broadcastError("Actor not found.", userId);
+
+    const cost = GAMBLE_COSTS[level] ?? 5;
+    const costCopper = cost * 10000;  // gold to copper
+
+    // Check funds
+    if (_toCopper(buyer.system.currency) < costCopper) {
+      return this._broadcastError("Insufficient funds.", userId);
+    }
+
+    // Deduct cost
+    const remaining = _fromCopper(_toCopper(buyer.system.currency) - costCopper);
+    await buyer.update({
+      "system.currency.gold": remaining.gold,
+      "system.currency.silver": remaining.silver,
+      "system.currency.copper": remaining.copper,
+    });
+
+    // Roll loot
+    const { generateLevelLoot } = await import("./loot-generator.mjs");
+    const result = await generateLevelLoot(level);
+
+    // Add currency to buyer
+    if (result.currency.gold || result.currency.silver || result.currency.copper) {
+      const newTotal = _fromCopper(
+        _toCopper(buyer.system.currency) +
+        _toCopper(result.currency),
+      );
+      await buyer.update({
+        "system.currency.gold": newTotal.gold,
+        "system.currency.silver": newTotal.silver,
+        "system.currency.copper": newTotal.copper,
+      });
+    }
+
+    // Create items on buyer
+    for (const itemData of result.items) {
+      await Item.create(itemData, { parent: buyer });
+    }
+
+    // Build description of what they got
+    const lootParts = [];
+    if (result.currency.gold) lootParts.push(`${result.currency.gold} Gold`);
+    if (result.currency.silver) lootParts.push(`${result.currency.silver} Silver`);
+    if (result.currency.copper) lootParts.push(`${result.currency.copper} Copper`);
+    for (const it of result.items) lootParts.push(it.name);
+    const lootDesc = lootParts.join(", ") || "nothing";
+
+    // Log
+    await this.logTransaction({
+      player: buyer.name,
+      action: "buy",
+      item: `Gamble Lv${level}: ${lootDesc}`,
+      quantity: 1,
+      price: { gold: cost, silver: 0, copper: 0 },
+    });
+
+    // Chat message
+    const itemIcon = result.items[0]?.img || "icons/svg/dice-target.svg";
+    const itemLines = result.items.map(it => {
+      const bc = it.system?.baseCost;
+      const vp = [];
+      if (bc?.gold) vp.push(`${bc.gold}g`);
+      if (bc?.silver) vp.push(`${bc.silver}s`);
+      const valStr = vp.length ? ` (${vp.join(" ")})` : "";
+      return `<strong>${it.name}</strong>${valStr}`;
+    }).join("<br>");
+
+    const currLine = (result.currency.gold || result.currency.silver || result.currency.copper)
+      ? `<br><i class="fas fa-coins"></i> ${lootParts.filter(p => p.includes("Gold") || p.includes("Silver") || p.includes("Copper")).join(", ")}`
+      : "";
+
+    await ChatMessage.create({
+      speaker: { alias: this._app?._shopName ?? "Merchant" },
+      content: `<div class="vagabond-chat-card-v2" data-card-type="generic">
+        <div class="card-body">
+          <header class="card-header">
+            <div class="header-icon">
+              <img src="${itemIcon}" alt="Gamble">
+            </div>
+            <div class="header-info">
+              <h3 class="header-title">Gamble — Level ${level}</h3>
+              <div class="metadata-tags-row">
+                <div class="meta-tag"><span>${buyer.name}</span></div>
+                <div class="meta-tag"><span>Cost: ${cost}g</span></div>
+              </div>
+            </div>
+          </header>
+          <section class="content-body">
+            <div class="card-description" style="padding:4px 8px;">
+              <p>${itemLines}${currLine}</p>
+            </div>
+          </section>
+        </div>
+      </div>`,
+    });
+
+    // Broadcast result
+    const resultData = {
+      action: "shop:result",
+      success: true,
+      txAction: "buy",
+      playerName: buyer.name,
+      itemName: `Gamble Lv${level}`,
+      quantity: 1,
+      price: { gold: cost, silver: 0, copper: 0 },
+      userId,
+      stockUpdate: null,
+    };
+    game.socket.emit(`module.${MODULE_ID}`, resultData);
+    this._onResult(resultData);
   },
 
   // ── Stock management ──────────────────────────────────────────────────────
@@ -659,6 +787,89 @@ export const MerchantShop = {
 
     return lines.join("\n");
   },
+  /**
+   * Combined session summary: loot drops + merchant transactions, grouped by player.
+   */
+  formatSessionSummary() {
+    const { LootTracker } = game.vagabondCrawler ?? {};
+    const lootLog = LootTracker?.getLog() ?? [];
+    const shopLog = this.getLog();
+
+    if (!lootLog.length && !shopLog.length) return "No activity recorded this session.";
+
+    // Collect all player names
+    const players = new Set();
+    for (const e of lootLog) players.add(e.player);
+    for (const e of shopLog) players.add(e.player);
+
+    const lines = ["# Session Summary", ""];
+
+    for (const player of [...players].sort()) {
+      lines.push(`## ${player}`);
+
+      // Loot gained
+      const lootEntries = lootLog.filter(e => e.player === player);
+      const currEntries = lootEntries.filter(e => e.type === "currency");
+      const itemEntries = lootEntries.filter(e => e.type === "item" || e.type === "pickup");
+
+      if (currEntries.length || itemEntries.length) {
+        lines.push("**Loot Gained:**");
+        if (currEntries.length) {
+          let totalGold = 0, totalSilver = 0, totalCopper = 0;
+          for (const e of currEntries) {
+            const gm = e.detail.match(/(\d+)\s*Gold/i);
+            const sm = e.detail.match(/(\d+)\s*Silver/i);
+            const cm = e.detail.match(/(\d+)\s*Copper/i);
+            if (gm) totalGold += parseInt(gm[1]);
+            if (sm) totalSilver += parseInt(sm[1]);
+            if (cm) totalCopper += parseInt(cm[1]);
+          }
+          const cp = [];
+          if (totalGold) cp.push(`${totalGold}g`);
+          if (totalSilver) cp.push(`${totalSilver}s`);
+          if (totalCopper) cp.push(`${totalCopper}c`);
+          if (cp.length) lines.push(`- Currency: ${cp.join(", ")}`);
+        }
+        for (const e of itemEntries) {
+          const src = e.source !== "Ground" ? ` *(from ${e.source})*` : " *(picked up)*";
+          lines.push(`- ${e.detail}${src}`);
+        }
+      }
+
+      // Purchases
+      const buys = shopLog.filter(e => e.player === player && e.action === "buy");
+      if (buys.length) {
+        lines.push("**Purchased:**");
+        for (const e of buys) {
+          const qtyStr = e.quantity > 1 ? ` ×${e.quantity}` : "";
+          lines.push(`- ${e.item}${qtyStr} (${_formatPrice(e.price)})`);
+        }
+      }
+
+      // Sales
+      const sells = shopLog.filter(e => e.player === player && e.action === "sell");
+      if (sells.length) {
+        lines.push("**Sold:**");
+        for (const e of sells) {
+          const qtyStr = e.quantity > 1 ? ` ×${e.quantity}` : "";
+          lines.push(`- ${e.item}${qtyStr} (${_formatPrice(e.price)})`);
+        }
+      }
+
+      // Player totals
+      let spent = 0, earned = 0;
+      for (const e of buys) spent += _toCopper(e.price);
+      for (const e of sells) earned += _toCopper(e.price);
+      const parts = [];
+      if (spent) parts.push(`Spent: ${_formatPrice(_fromCopper(spent))}`);
+      if (earned) parts.push(`Earned: ${_formatPrice(_fromCopper(earned))}`);
+      if (parts.length) lines.push(`*${parts.join(" | ")}*`);
+
+      lines.push("");
+    }
+
+    return lines.join("\n");
+  },
 };
 
 // ── ApplicationV2: MerchantShopApp ──────────────────────────────────────────
@@ -698,6 +909,7 @@ class MerchantShopApp extends HandlebarsApplicationMixin(ApplicationV2) {
     this._actorId = null;
     this._inventory = [];
     this._sellRatio = 50;
+    this._buyMultiplier = 100;  // percentage: 100 = normal, 150 = markup, 80 = discount
     this._shopName = "The Merchant";
     this._tab = "buy";
     this._searchFilter = "";
@@ -707,6 +919,7 @@ class MerchantShopApp extends HandlebarsApplicationMixin(ApplicationV2) {
     this._compendiumPack = ITEM_PACKS[0];
     // Catalog tab state
     this._catalogEnabled = true;
+    this._gambleEnabled = false;
     this._catalogCache = null;
     this._catalogSearch = "";
     this._catalogPack = "all";
@@ -729,14 +942,16 @@ class MerchantShopApp extends HandlebarsApplicationMixin(ApplicationV2) {
     const wallet = playerActor?.system?.currency ?? { gold: 0, silver: 0, copper: 0 };
     const walletCopper = _toCopper(wallet);
 
-    // Build display inventory
+    // Build display inventory (apply buy multiplier to prices)
+    const mult = this._buyMultiplier / 100;
     const inventory = (this._inventory || []).map(entry => {
-      const priceCopper = _toCopper(entry.baseCost);
-      const canAfford = walletCopper >= priceCopper;
+      const adjustedCopper = Math.round(_toCopper(entry.baseCost) * mult);
+      const adjustedCost = _fromCopper(adjustedCopper);
+      const canAfford = walletCopper >= adjustedCopper;
       const outOfStock = entry.stock === 0;
       return {
         ...entry,
-        priceDisplay: _formatPrice(entry.baseCost),
+        priceDisplay: _formatPrice(adjustedCost),
         stockDisplay: entry.stock === -1 ? "∞" : String(entry.stock),
         canAfford: canAfford && !outOfStock,
         outOfStock,
@@ -773,9 +988,14 @@ class MerchantShopApp extends HandlebarsApplicationMixin(ApplicationV2) {
             baseCostDisplay: _formatPrice(baseCost),
             sellPriceDisplay: _formatPrice(sellPrice),
             sellPriceCopper: _toCopper(sellPrice),
+            isJunk: !!i.getFlag(MODULE_ID, "junk"),
           };
         })
-        .sort((a, b) => a.name.localeCompare(b.name));
+        .sort((a, b) => {
+          // Junk items first
+          if (a.isJunk !== b.isJunk) return a.isJunk ? -1 : 1;
+          return a.name.localeCompare(b.name);
+        });
     }
 
     // Log for Log tab
@@ -837,11 +1057,14 @@ class MerchantShopApp extends HandlebarsApplicationMixin(ApplicationV2) {
       }
 
       // Enrich with affordability
-      catalogItems = filtered.map(e => ({
-        ...e,
-        priceDisplay: _formatPrice(e.baseCost),
-        canAfford: walletCopper >= e.copperValue,
-      }));
+      catalogItems = filtered.map(e => {
+        const adjCopper = Math.round(e.copperValue * mult);
+        return {
+          ...e,
+          priceDisplay: _formatPrice(_fromCopper(adjCopper)),
+          canAfford: walletCopper >= adjCopper,
+        };
+      });
 
       // Pack list for filter
       catalogPacks = CATALOG_PACKS.map(p => ({
@@ -875,6 +1098,7 @@ class MerchantShopApp extends HandlebarsApplicationMixin(ApplicationV2) {
       searchFilter: this._searchFilter,
       sellItems,
       sellRatio: this._sellRatio,
+      hasJunk: sellItems.some(i => i.isJunk),
       logEntries,
       mode: this._mode,
       actorId: this._actorId,
@@ -895,6 +1119,14 @@ class MerchantShopApp extends HandlebarsApplicationMixin(ApplicationV2) {
       catalogSort: this._catalogSort,
       showFolderFilter: catalogFolders.length > 0,
       catalogEnabled: this._catalogEnabled,
+      buyMultiplier: this._buyMultiplier,
+      gambleEnabled: this._gambleEnabled,
+      gambleLevels: Object.entries(GAMBLE_COSTS).map(([lvl, cost]) => ({
+        level: parseInt(lvl),
+        cost,
+        costDisplay: `${cost}g`,
+        canAfford: walletCopper >= cost * 10000,
+      })),
     };
   }
 
@@ -906,6 +1138,9 @@ class MerchantShopApp extends HandlebarsApplicationMixin(ApplicationV2) {
     ];
     if (showCatalog) {
       tabs.push({ id: "catalog", label: "Catalog", icon: "fa-book-open", active: this._tab === "catalog" });
+    }
+    if (this._gambleEnabled || isGM) {
+      tabs.push({ id: "gamble", label: "Gamble", icon: "fa-dice", active: this._tab === "gamble" });
     }
     tabs.push(
       { id: "sell",    label: "Sell",    icon: "fa-coins",           active: this._tab === "sell" },
@@ -1100,6 +1335,14 @@ class MerchantShopApp extends HandlebarsApplicationMixin(ApplicationV2) {
       await this._doCatalogBuy(itemUuid, quantity);
     });
 
+    // ── Gamble tab ──
+
+    on(".vcm-gamble-btn", "click", async (ev) => {
+      const row = ev.currentTarget.closest("[data-gamble-level]");
+      const level = parseInt(row.dataset.gambleLevel);
+      await this._doGamble(level);
+    });
+
     // ── Sell tab ──
 
     on(".vcm-sell-btn", "click", async (ev) => {
@@ -1110,12 +1353,41 @@ class MerchantShopApp extends HandlebarsApplicationMixin(ApplicationV2) {
       await this._doSell(itemId, quantity);
     });
 
+    // Sell all junk
+    el.querySelector(".vcm-sell-all-junk")?.addEventListener("click", async () => {
+      const actor = this._getPlayerActor();
+      if (!actor) { ui.notifications.warn("No character selected."); return; }
+
+      const junkItems = actor.items.filter(i =>
+        i.type === "equipment" && i.getFlag(MODULE_ID, "junk")
+      );
+      if (!junkItems.length) { ui.notifications.info("No junk items to sell."); return; }
+
+      const ok = await foundry.applications.api.DialogV2.confirm({
+        window: { title: "Sell All Junk" },
+        content: `<p>Sell ${junkItems.length} junk item(s)?</p>`,
+        rejectClose: false,
+      });
+      if (!ok) return;
+
+      for (const item of junkItems) {
+        const qty = item.system.quantity ?? 1;
+        await this._doSell(item.id, qty);
+      }
+    }, { signal });
+
     // ── Log tab ──
 
     el.querySelector(".vcm-copy-discord")?.addEventListener("click", async () => {
       const text = MerchantShop.formatForDiscord();
       await navigator.clipboard.writeText(text);
-      ui.notifications.info("Transaction log copied to clipboard!");
+      ui.notifications.info("Shop log copied to clipboard!");
+    }, { signal });
+
+    el.querySelector(".vcm-copy-session")?.addEventListener("click", async () => {
+      const text = MerchantShop.formatSessionSummary();
+      await navigator.clipboard.writeText(text);
+      ui.notifications.info("Session summary copied to clipboard!");
     }, { signal });
 
     el.querySelector(".vcm-clear-log")?.addEventListener("click", async () => {
@@ -1152,6 +1424,12 @@ class MerchantShopApp extends HandlebarsApplicationMixin(ApplicationV2) {
       }, { signal });
 
       // Sell ratio
+      // Buy markup
+      el.querySelector(".vcm-markup-input")?.addEventListener("change", (ev) => {
+        this._buyMultiplier = Math.max(10, Math.min(500, parseInt(ev.currentTarget.value) || 100));
+        this.render();
+      }, { signal });
+
       el.querySelector(".vcm-ratio-input")?.addEventListener("change", async (ev) => {
         this._sellRatio = Math.max(0, Math.min(100, parseInt(ev.currentTarget.value) || 50));
         await game.settings.set(MODULE_ID, "shopSellRatio", this._sellRatio);
@@ -1159,6 +1437,11 @@ class MerchantShopApp extends HandlebarsApplicationMixin(ApplicationV2) {
       }, { signal });
 
       // Catalog toggle
+      el.querySelector(".vcm-gamble-toggle")?.addEventListener("change", (ev) => {
+        this._gambleEnabled = ev.currentTarget.checked;
+        this.render();
+      }, { signal });
+
       el.querySelector(".vcm-catalog-toggle")?.addEventListener("change", (ev) => {
         this._catalogEnabled = ev.currentTarget.checked;
         this.render();
@@ -1258,6 +1541,8 @@ class MerchantShopApp extends HandlebarsApplicationMixin(ApplicationV2) {
           sellRatio: this._sellRatio,
           inventory: this._inventory,
           catalogEnabled: this._catalogEnabled,
+          buyMultiplier: this._buyMultiplier,
+          gambleEnabled: this._gambleEnabled,
         });
         ui.notifications.info("Shop opened for all players!");
         this.render();
@@ -1304,7 +1589,8 @@ class MerchantShopApp extends HandlebarsApplicationMixin(ApplicationV2) {
       ui.notifications.warn("Not enough stock.");
       return;
     }
-    const totalCost = _fromCopper(_toCopper(entry.baseCost) * quantity);
+    const mult = this._buyMultiplier / 100;
+    const totalCost = _fromCopper(Math.round(_toCopper(entry.baseCost) * mult * quantity));
     if (!_canAfford(actor, totalCost)) {
       ui.notifications.warn("Insufficient funds.");
       return;
@@ -1315,6 +1601,7 @@ class MerchantShopApp extends HandlebarsApplicationMixin(ApplicationV2) {
         buyerActorId: actor.id,
         shopItemId,
         quantity,
+        buyMultiplier: this._buyMultiplier,
         userId: game.userId,
       });
     } else {
@@ -1323,6 +1610,7 @@ class MerchantShopApp extends HandlebarsApplicationMixin(ApplicationV2) {
         buyerActorId: actor.id,
         shopItemId,
         quantity,
+        buyMultiplier: this._buyMultiplier,
         userId: game.userId,
       });
     }
@@ -1371,6 +1659,36 @@ class MerchantShopApp extends HandlebarsApplicationMixin(ApplicationV2) {
     return null;
   }
 
+  async _doGamble(level) {
+    const actor = this._getPlayerActor();
+    if (!actor) {
+      ui.notifications.warn("No character selected. Select a token or assign a character.");
+      return;
+    }
+
+    const cost = GAMBLE_COSTS[level] ?? 5;
+    const costCopper = cost * 10000;
+    if (_toCopper(actor.system.currency) < costCopper) {
+      ui.notifications.warn("Insufficient funds.");
+      return;
+    }
+
+    if (game.user.isGM) {
+      await MerchantShop._handleGamble({
+        buyerActorId: actor.id,
+        level,
+        userId: game.userId,
+      });
+    } else {
+      game.socket.emit(`module.${MODULE_ID}`, {
+        action: "shop:gamble",
+        buyerActorId: actor.id,
+        level,
+        userId: game.userId,
+      });
+    }
+  }
+
   async _doCatalogBuy(itemUuid, quantity) {
     const actor = this._getPlayerActor();
     if (!actor) {
@@ -1379,9 +1697,10 @@ class MerchantShopApp extends HandlebarsApplicationMixin(ApplicationV2) {
     }
 
     // Client-side pre-check: find item in catalog cache for price check
+    const catMult = this._buyMultiplier / 100;
     const entry = this._catalogCache?.find(e => e.uuid === itemUuid);
     if (entry) {
-      const totalCost = _fromCopper(entry.copperValue * quantity);
+      const totalCost = _fromCopper(Math.round(entry.copperValue * catMult * quantity));
       if (!_canAfford(actor, totalCost)) {
         ui.notifications.warn("Insufficient funds.");
         return;
@@ -1393,6 +1712,7 @@ class MerchantShopApp extends HandlebarsApplicationMixin(ApplicationV2) {
         buyerActorId: actor.id,
         itemUuid,
         quantity,
+        buyMultiplier: this._buyMultiplier,
         userId: game.userId,
       });
     } else {
@@ -1401,6 +1721,7 @@ class MerchantShopApp extends HandlebarsApplicationMixin(ApplicationV2) {
         buyerActorId: actor.id,
         itemUuid,
         quantity,
+        buyMultiplier: this._buyMultiplier,
         userId: game.userId,
       });
     }

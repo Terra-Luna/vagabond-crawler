@@ -1,0 +1,34 @@
+<div class="vcp-container">
+  {{#if hasMembers}}
+  <div class="vcp-columns">
+    {{#each columns}}
+    <div class="vcp-column">
+      <div class="vcp-column-header">
+        <img src="{{img}}" alt="{{name}}" width="36" height="36" class="vcp-avatar">
+        <div class="vcp-header-info">
+          <span class="vcp-member-name">{{name}}</span>
+          <span class="vcp-member-meta"><i class="fas fa-coins"></i> {{wallet}} &nbsp; <i class="fas fa-box"></i> {{totalSlots}}/{{maxSlots}}</span>
+        </div>
+      </div>
+      <div class="vcp-item-list">
+        {{#each items}}
+        <div class="vcp-item {{#if equipped}}vcp-equipped{{/if}} {{#if isJunk}}vcp-junk{{/if}}">
+          <img src="{{img}}" alt="{{name}}" width="22" height="22">
+          <span class="vcp-item-name">{{name}}{{#if (gt quantity 1)}} ×{{quantity}}{{/if}}</span>
+          <span class="vcp-item-cost">{{baseCost}}</span>
+        </div>
+        {{/each}}
+        {{#unless items.length}}
+        <div class="vcp-empty">Empty</div>
+        {{/unless}}
+      </div>
+    </div>
+    {{/each}}
+  </div>
+  {{else}}
+  <div class="vcp-no-members">
+    <i class="fas fa-users-slash"></i>
+    <p>No player characters found.</p>
+  </div>
+  {{/if}}
+</div>

@@ -2648,6 +2648,19 @@ body.theme-light .vcb-phase-badge {
   color: var(--vcb-text-muted, #666);
 }
 .vcm-sell-ratio strong { color: var(--vcb-text, #BDC1C6); }
+.vcm-sell-all-junk {
+  padding: 4px 10px;
+  border: 1px solid rgba(231, 76, 60, 0.4);
+  border-radius: 4px;
+  background: rgba(231, 76, 60, 0.12);
+  color: #e74c3c;
+  cursor: pointer;
+  font-size: 1em;
+  transition: all 0.15s;
+}
+.vcm-sell-all-junk:hover { background: rgba(231, 76, 60, 0.25); }
+.vcm-junk-item { border-left: 3px solid #e74c3c; opacity: 0.7; }
+.vcm-junk-item:hover { opacity: 1; }
 
 /* ── Log tab ───────────────────────────────────────────────────────────── */
 
@@ -2665,6 +2678,12 @@ body.theme-light .vcb-phase-badge {
   color: #7289da;
 }
 .vcm-copy-discord:hover { background: rgba(88, 101, 242, 0.35); }
+.vcm-copy-session {
+  background: rgba(76, 175, 80, 0.2);
+  border-color: rgba(76, 175, 80, 0.5);
+  color: #4caf50;
+}
+.vcm-copy-session:hover { background: rgba(76, 175, 80, 0.35); }
 .vcm-clear-log {
   background: rgba(192, 57, 43, 0.15);
   border-color: rgba(192, 57, 43, 0.35);
@@ -2950,6 +2969,106 @@ body.theme-light .vcb-phase-badge {
 .vcm-item-desc p { margin: 0 0 4px 0; }
 .vcm-item-desc p:last-child { margin-bottom: 0; }
 .vcm-item-desc em { color: var(--vcb-text-muted, #666); }
+
+/* ── Gamble tab ─────────────────────────────────────────────────────────── */
+
+.vcm-gamble-header {
+  padding: 8px 10px;
+  font-size: 1em;
+  color: var(--vcb-text, #BDC1C6);
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
+  border-left: 3px solid var(--vcb-accent-dim, #94913c);
+}
+.vcm-gamble-header i { margin-right: 6px; color: var(--vcb-accent-dim, #94913c); }
+
+.vcm-gamble-btn {
+  padding: 4px 12px;
+  border: 1px solid rgba(148, 145, 60, 0.4);
+  border-radius: 4px;
+  background: rgba(148, 145, 60, 0.15);
+  color: var(--vcb-accent-dim, #94913c);
+  cursor: pointer;
+  font-size: 1em;
+  transition: all 0.15s;
+}
+.vcm-gamble-btn:hover:not([disabled]) { background: rgba(148, 145, 60, 0.3); }
+.vcm-gamble-btn[disabled] { cursor: not-allowed; opacity: 0.4; }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   Party Inventory (vcp-)
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.vcp-container { display: flex; flex-direction: column; height: 100%; padding: 8px; }
+
+.vcp-columns {
+  display: flex;
+  gap: 8px;
+  flex: 1;
+  overflow-x: auto;
+  min-height: 0;
+}
+
+.vcp-column {
+  flex: 1;
+  min-width: 200px;
+  display: flex;
+  flex-direction: column;
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  overflow: hidden;
+}
+
+.vcp-column-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px;
+  background: rgba(0, 0, 0, 0.15);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.vcp-avatar { border-radius: 4px; flex-shrink: 0; }
+.vcp-header-info { display: flex; flex-direction: column; gap: 2px; }
+.vcp-member-name { font-size: 1em; font-weight: 700; color: var(--vcb-text-bright, #e8eaed); }
+.vcp-member-meta { font-size: 0.85em; color: #daa520; }
+
+.vcp-item-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.vcp-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 6px;
+  border-radius: 3px;
+  font-size: 0.95em;
+  color: var(--vcb-text, #BDC1C6);
+}
+.vcp-item:hover { background: rgba(255, 255, 255, 0.04); }
+.vcp-item img { border-radius: 2px; flex-shrink: 0; }
+.vcp-item-name { flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.vcp-item-cost { color: #daa520; font-size: 0.85em; flex-shrink: 0; }
+
+.vcp-equipped { border-left: 2px solid #4caf50; }
+.vcp-equipped .vcp-item-name { font-weight: 600; }
+.vcp-junk { opacity: 0.5; border-left: 2px solid #e74c3c; }
+
+.vcp-empty { text-align: center; color: var(--vcb-text-muted, #666); padding: 20px; font-size: 0.9em; }
+
+.vcp-no-members {
+  text-align: center;
+  color: var(--vcb-text-muted, #666);
+  padding: 40px;
+}
+.vcp-no-members i { font-size: 2em; display: block; margin-bottom: 8px; }
 
 .vcm-toggle-label {
   display: flex;

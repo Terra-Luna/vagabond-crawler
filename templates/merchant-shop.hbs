@@ -133,6 +133,31 @@
     </div>
     {{/if}}
 
+    {{!-- ═══ GAMBLE TAB ═══ --}}
+    {{#if (eq tab "gamble")}}
+    <div class="vcm-tab-content vcm-gamble-tab">
+      <div class="vcm-gamble-header">
+        <i class="fas fa-dice"></i> Pay gold to roll on a loot table. You might get treasure, weapons, armor, or alchemy!
+      </div>
+      <div class="vcm-item-list">
+        {{#each gambleLevels}}
+        <div class="vcm-item-row {{#unless canAfford}}vcm-cant-afford{{/unless}}" data-gamble-level="{{level}}">
+          <div class="vcm-item-info">
+            <span class="vcm-item-name">Level {{level}} Loot</span>
+            <span class="vcm-item-cat">Roll on the Level {{level}} loot table</span>
+          </div>
+          <span class="vcm-item-price">{{costDisplay}}</span>
+          <div class="vcm-item-actions">
+            <button class="vcm-gamble-btn" type="button" {{#unless canAfford}}disabled{{/unless}}>
+              <i class="fas fa-dice"></i> Gamble
+            </button>
+          </div>
+        </div>
+        {{/each}}
+      </div>
+    </div>
+    {{/if}}
+
     {{!-- ═══ SELL TAB ═══ --}}
     {{#if (eq tab "sell")}}
     <div class="vcm-tab-content vcm-sell-tab">
@@ -140,15 +165,20 @@
       <div class="vcm-sell-header">
         <span>Your Equipment</span>
         <span class="vcm-sell-ratio">Sell Ratio: <strong>{{sellRatio}}%</strong></span>
+        {{#if hasJunk}}
+        <button class="vcm-sell-all-junk" type="button">
+          <i class="fas fa-trash-can"></i> Sell All Junk
+        </button>
+        {{/if}}
       </div>
 
       <div class="vcm-item-list">
         {{#if sellItems.length}}
           {{#each sellItems}}
-          <div class="vcm-item-row" data-item-id="{{id}}">
+          <div class="vcm-item-row {{#if isJunk}}vcm-junk-item{{/if}}" data-item-id="{{id}}">
             <img class="vcm-item-icon" src="{{img}}" alt="{{name}}" width="32" height="32">
             <div class="vcm-item-info">
-              <span class="vcm-item-name">{{name}}{{#if (gt quantity 1)}} ×{{quantity}}{{/if}}</span>
+              <span class="vcm-item-name">{{#if isJunk}}<i class="fas fa-trash-can" style="color:#e74c3c;margin-right:4px;"></i>{{/if}}{{name}}{{#if (gt quantity 1)}} ×{{quantity}}{{/if}}</span>
               <span class="vcm-item-cat">Value: {{baseCostDisplay}}</span>
             </div>
             <span class="vcm-item-price vcm-sell-price">{{sellPriceDisplay}}</span>
@@ -176,7 +206,10 @@
 
       <div class="vcm-log-toolbar">
         <button class="vcm-copy-discord" type="button">
-          <i class="fab fa-discord"></i> Copy for Discord
+          <i class="fab fa-discord"></i> Shop Log
+        </button>
+        <button class="vcm-copy-session" type="button">
+          <i class="fab fa-discord"></i> Session Summary
         </button>
         {{#if isGM}}
         <button class="vcm-clear-log" type="button">
@@ -220,6 +253,11 @@
           <input type="text" class="vcm-shop-name-input" value="{{shopName}}">
         </div>
         <div class="vcm-manage-row">
+          <label>Buy Markup (%)</label>
+          <input type="number" class="vcm-markup-input" value="{{buyMultiplier}}" min="10" max="500" step="10">
+          <span style="font-size:0.85em;color:var(--vcb-text-muted,#666);">100 = normal, 150 = markup, 80 = discount</span>
+        </div>
+        <div class="vcm-manage-row">
           <label>Sell Ratio (%)</label>
           <input type="number" class="vcm-ratio-input" value="{{sellRatio}}" min="0" max="100" step="5">
         </div>
@@ -228,6 +266,13 @@
           <label class="vcm-toggle-label">
             <input type="checkbox" class="vcm-catalog-toggle" {{#if catalogEnabled}}checked{{/if}}>
             Allow players to browse the full compendium catalog
+          </label>
+        </div>
+        <div class="vcm-manage-row">
+          <label>Gamble Table</label>
+          <label class="vcm-toggle-label">
+            <input type="checkbox" class="vcm-gamble-toggle" {{#if gambleEnabled}}checked{{/if}}>
+            Allow players to gamble on loot tables
           </label>
         </div>
       </div>
