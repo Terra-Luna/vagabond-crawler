@@ -140,20 +140,26 @@
         <i class="fas fa-dice"></i> Pay gold to roll on a loot table. You might get treasure, weapons, armor, or alchemy!
       </div>
       <div class="vcm-item-list">
-        {{#each gambleLevels}}
-        <div class="vcm-item-row {{#unless canAfford}}vcm-cant-afford{{/unless}}" data-gamble-level="{{level}}">
-          <div class="vcm-item-info">
-            <span class="vcm-item-name">Level {{level}} Loot</span>
-            <span class="vcm-item-cat">Roll on the Level {{level}} loot table</span>
+        {{#if gambleOptions.length}}
+          {{#each gambleOptions}}
+          <div class="vcm-item-row {{#unless canAfford}}vcm-cant-afford{{/unless}}" data-gamble-id="{{id}}">
+            <div class="vcm-item-info">
+              <span class="vcm-item-name">{{name}}</span>
+            </div>
+            <span class="vcm-item-price">{{costDisplay}}</span>
+            <div class="vcm-item-actions">
+              <button class="vcm-gamble-btn" type="button" {{#unless canAfford}}disabled{{/unless}}>
+                <i class="fas fa-dice"></i> Gamble
+              </button>
+            </div>
           </div>
-          <span class="vcm-item-price">{{costDisplay}}</span>
-          <div class="vcm-item-actions">
-            <button class="vcm-gamble-btn" type="button" {{#unless canAfford}}disabled{{/unless}}>
-              <i class="fas fa-dice"></i> Gamble
-            </button>
+          {{/each}}
+        {{else}}
+          <div class="vcm-empty">
+            <i class="fas fa-dice"></i>
+            <p>No gamble options configured. The GM can set them up on the Manage tab.</p>
           </div>
-        </div>
-        {{/each}}
+        {{/if}}
       </div>
     </div>
     {{/if}}
@@ -373,6 +379,43 @@
         </div>
       </div>
       {{/if}}
+
+      {{!-- Gamble options config --}}
+      <div class="vcm-manage-section">
+        <h3>Gamble Options</h3>
+
+        {{!-- Existing options --}}
+        <div class="vcm-manage-inventory">
+          {{#each gambleOptions}}
+          <div class="vcm-manage-item-row" data-gamble-config-id="{{id}}">
+            <span class="vcm-manage-item-name">{{name}}</span>
+            <div class="vcm-manage-price">
+              <input type="number" class="vcm-gamble-cost-gold" value="{{cost.gold}}" min="0" title="Gold" placeholder="g">
+              <span>g</span>
+              <input type="number" class="vcm-gamble-cost-silver" value="{{cost.silver}}" min="0" title="Silver" placeholder="s">
+              <span>s</span>
+            </div>
+            <button class="vcm-gamble-remove-btn" type="button" title="Remove">
+              <i class="fas fa-xmark"></i>
+            </button>
+          </div>
+          {{/each}}
+        </div>
+
+        {{!-- Add new option --}}
+        <div class="vcm-gamble-add-row">
+          <input type="text" class="vcm-gamble-new-name" placeholder="Display name…">
+          <select class="vcm-gamble-new-source">
+            {{#each gambleSources}}
+            <option value="{{id}}">{{label}}</option>
+            {{/each}}
+          </select>
+          <input type="number" class="vcm-gamble-new-gold" value="5" min="0" placeholder="Gold cost">
+          <button class="vcm-gamble-add-btn" type="button">
+            <i class="fas fa-plus"></i> Add
+          </button>
+        </div>
+      </div>
 
     </div>
     {{/if}}

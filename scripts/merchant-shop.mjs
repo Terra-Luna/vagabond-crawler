@@ -77,6 +77,9 @@ export const MerchantShop = {
     game.settings.register(MODULE_ID, "shopLog", {
       scope: "world", config: false, type: Array, default: [],
     });
+    game.settings.register(MODULE_ID, "gambleOptions", {
+      scope: "world", config: false, type: Array, default: [],
+    });
     game.settings.register(MODULE_ID, "shopName", {
       name: "Merchant Shop Name",
       hint: "Display name shown on the shop window.",
@@ -511,12 +514,16 @@ export const MerchantShop = {
   // ── Gamble handler (GM-side) ────────────────────────────────────────────
 
   async _handleGamble(data) {
-    const { buyerActorId, level, userId } = data;
+    const { buyerActorId, gambleId, userId } = data;
     const buyer = game.actors.get(buyerActorId);
     if (!buyer) return this._broadcastError("Actor not found.", userId);
 
-    const cost = GAMBLE_COSTS[level] ?? 5;
-    const costCopper = cost * 10000;  // gold to copper
+    // Find the gamble option
+    const options = game.settings.get(MODULE_ID, "gambleOptions") || [];
+    const option = options.find(o => o.id === gambleId);
+    if (!option) return this._broadcastError("Gamble option not found.", userId);
+
+    const costCopper = _toCopper(option.cost);
 
     // Check funds
     if (_toCopper(buyer.system.currency) < costCopper) {
@@ -531,15 +538,51 @@ export const MerchantShop = {
       "system.currency.copper": remaining.copper,
     });
 
-    // Roll loot
-    const { generateLevelLoot } = await import("./loot-generator.mjs");
-    const result = await generateLevelLoot(level);
+    // Roll loot from the configured source
+    const result = { currency: { gold: 0, silver: 0, copper: 0 }, items: [] };
+
+    if (option.source.startsWith("loot-level:")) {
+      // Built-in level loot
+      const level = parseInt(option.source.split(":")[1]);
+      const { generateLevelLoot } = await import("./loot-generator.mjs");
+      const r = await generateLevelLoot(level);
+      if (r) {
+        result.currency = r.currency;
+        result.items = r.items;
+      }
+    } else {
+      // World RollTable
+      const table = await fromUuid(option.source);
+      if (table) {
+        const draw = await table.draw({ displayChat: false, resetTable: false });
+        const { generateLoot } = await import("./loot-tables.mjs");
+        // Process table results into currency + items
+        for (const r of draw.results) {
+          if (r.documentUuid) {
+            const doc = await fromUuid(r.documentUuid);
+            if (doc) {
+              if (doc instanceof RollTable) {
+                // Sub-table: draw from it too
+                const subDraw = await doc.draw({ displayChat: false, resetTable: false });
+                for (const sr of subDraw.results) {
+                  if (sr.documentUuid) {
+                    const sdoc = await fromUuid(sr.documentUuid);
+                    if (sdoc && !(sdoc instanceof RollTable)) result.items.push(sdoc.toObject());
+                  }
+                }
+              } else {
+                result.items.push(doc.toObject());
+              }
+            }
+          }
+        }
+      }
+    }
 
     // Add currency to buyer
     if (result.currency.gold || result.currency.silver || result.currency.copper) {
       const newTotal = _fromCopper(
-        _toCopper(buyer.system.currency) +
-        _toCopper(result.currency),
+        _toCopper(buyer.system.currency) + _toCopper(result.currency),
       );
       await buyer.update({
         "system.currency.gold": newTotal.gold,
@@ -553,21 +596,22 @@ export const MerchantShop = {
       await Item.create(itemData, { parent: buyer });
     }
 
-    // Build description of what they got
+    // Build description
     const lootParts = [];
     if (result.currency.gold) lootParts.push(`${result.currency.gold} Gold`);
     if (result.currency.silver) lootParts.push(`${result.currency.silver} Silver`);
     if (result.currency.copper) lootParts.push(`${result.currency.copper} Copper`);
     for (const it of result.items) lootParts.push(it.name);
     const lootDesc = lootParts.join(", ") || "nothing";
+    const costDisplay = _formatPrice(option.cost);
 
     // Log
     await this.logTransaction({
       player: buyer.name,
       action: "buy",
-      item: `Gamble Lv${level}: ${lootDesc}`,
+      item: `Gamble (${option.name}): ${lootDesc}`,
       quantity: 1,
-      price: { gold: cost, silver: 0, copper: 0 },
+      price: option.cost,
     });
 
     // Chat message
@@ -582,7 +626,7 @@ export const MerchantShop = {
     }).join("<br>");
 
     const currLine = (result.currency.gold || result.currency.silver || result.currency.copper)
-      ? `<br><i class="fas fa-coins"></i> ${lootParts.filter(p => p.includes("Gold") || p.includes("Silver") || p.includes("Copper")).join(", ")}`
+      ? `<br><i class="fas fa-coins"></i> ${lootParts.filter(p => p.match(/Gold|Silver|Copper/)).join(", ")}`
       : "";
 
     await ChatMessage.create({
@@ -594,16 +638,16 @@ export const MerchantShop = {
               <img src="${itemIcon}" alt="Gamble">
             </div>
             <div class="header-info">
-              <h3 class="header-title">Gamble — Level ${level}</h3>
+              <h3 class="header-title">Gamble — ${option.name}</h3>
               <div class="metadata-tags-row">
                 <div class="meta-tag"><span>${buyer.name}</span></div>
-                <div class="meta-tag"><span>Cost: ${cost}g</span></div>
+                <div class="meta-tag"><span>Cost: ${costDisplay}</span></div>
               </div>
             </div>
           </header>
           <section class="content-body">
             <div class="card-description" style="padding:4px 8px;">
-              <p>${itemLines}${currLine}</p>
+              <p>${itemLines || "<em>No items</em>"}${currLine}</p>
             </div>
           </section>
         </div>
@@ -616,9 +660,9 @@ export const MerchantShop = {
       success: true,
       txAction: "buy",
       playerName: buyer.name,
-      itemName: `Gamble Lv${level}`,
+      itemName: `Gamble (${option.name})`,
       quantity: 1,
-      price: { gold: cost, silver: 0, copper: 0 },
+      price: option.cost,
       userId,
       stockUpdate: null,
     };
@@ -1121,12 +1165,16 @@ class MerchantShopApp extends HandlebarsApplicationMixin(ApplicationV2) {
       catalogEnabled: this._catalogEnabled,
       buyMultiplier: this._buyMultiplier,
       gambleEnabled: this._gambleEnabled,
-      gambleLevels: Object.entries(GAMBLE_COSTS).map(([lvl, cost]) => ({
-        level: parseInt(lvl),
-        cost,
-        costDisplay: `${cost}g`,
-        canAfford: walletCopper >= cost * 10000,
+      gambleOptions: (game.settings.get(MODULE_ID, "gambleOptions") || []).map(o => ({
+        ...o,
+        costDisplay: _formatPrice(o.cost),
+        canAfford: walletCopper >= _toCopper(o.cost),
       })),
+      // Available sources for the gamble config on Manage tab
+      gambleSources: [
+        ...Array.from({ length: 10 }, (_, i) => ({ id: `loot-level:${i + 1}`, label: `Loot Level ${i + 1}` })),
+        ...game.tables.contents.map(t => ({ id: t.uuid, label: t.name })),
+      ],
     };
   }
 
@@ -1338,9 +1386,9 @@ class MerchantShopApp extends HandlebarsApplicationMixin(ApplicationV2) {
     // ── Gamble tab ──
 
     on(".vcm-gamble-btn", "click", async (ev) => {
-      const row = ev.currentTarget.closest("[data-gamble-level]");
-      const level = parseInt(row.dataset.gambleLevel);
-      await this._doGamble(level);
+      const row = ev.currentTarget.closest("[data-gamble-id]");
+      const gambleId = row.dataset.gambleId;
+      await this._doGamble(gambleId);
     });
 
     // ── Sell tab ──
@@ -1441,6 +1489,49 @@ class MerchantShopApp extends HandlebarsApplicationMixin(ApplicationV2) {
         this._gambleEnabled = ev.currentTarget.checked;
         this.render();
       }, { signal });
+
+      // Gamble config: add option
+      el.querySelector(".vcm-gamble-add-btn")?.addEventListener("click", async () => {
+        const nameInput = el.querySelector(".vcm-gamble-new-name");
+        const sourceSelect = el.querySelector(".vcm-gamble-new-source");
+        const goldInput = el.querySelector(".vcm-gamble-new-gold");
+        const name = nameInput?.value?.trim();
+        const source = sourceSelect?.value;
+        const gold = parseInt(goldInput?.value) || 5;
+        if (!name || !source) { ui.notifications.warn("Enter a name and select a table."); return; }
+
+        const opts = game.settings.get(MODULE_ID, "gambleOptions") || [];
+        opts.push({
+          id: foundry.utils.randomID(),
+          name,
+          source,
+          cost: { gold, silver: 0, copper: 0 },
+        });
+        await game.settings.set(MODULE_ID, "gambleOptions", opts);
+        this.render();
+      }, { signal });
+
+      // Gamble config: remove option
+      on(".vcm-gamble-remove-btn", "click", async (ev) => {
+        const id = ev.currentTarget.closest("[data-gamble-config-id]").dataset.gambleConfigId;
+        const opts = (game.settings.get(MODULE_ID, "gambleOptions") || []).filter(o => o.id !== id);
+        await game.settings.set(MODULE_ID, "gambleOptions", opts);
+        this.render();
+      });
+
+      // Gamble config: edit cost
+      on(".vcm-gamble-cost-gold", "change", async (ev) => {
+        const id = ev.currentTarget.closest("[data-gamble-config-id]").dataset.gambleConfigId;
+        const opts = game.settings.get(MODULE_ID, "gambleOptions") || [];
+        const opt = opts.find(o => o.id === id);
+        if (opt) { opt.cost.gold = Math.max(0, parseInt(ev.currentTarget.value) || 0); await game.settings.set(MODULE_ID, "gambleOptions", opts); }
+      });
+      on(".vcm-gamble-cost-silver", "change", async (ev) => {
+        const id = ev.currentTarget.closest("[data-gamble-config-id]").dataset.gambleConfigId;
+        const opts = game.settings.get(MODULE_ID, "gambleOptions") || [];
+        const opt = opts.find(o => o.id === id);
+        if (opt) { opt.cost.silver = Math.max(0, parseInt(ev.currentTarget.value) || 0); await game.settings.set(MODULE_ID, "gambleOptions", opts); }
+      });
 
       el.querySelector(".vcm-catalog-toggle")?.addEventListener("change", (ev) => {
         this._catalogEnabled = ev.currentTarget.checked;
@@ -1659,16 +1750,19 @@ class MerchantShopApp extends HandlebarsApplicationMixin(ApplicationV2) {
     return null;
   }
 
-  async _doGamble(level) {
+  async _doGamble(gambleId) {
     const actor = this._getPlayerActor();
     if (!actor) {
       ui.notifications.warn("No character selected. Select a token or assign a character.");
       return;
     }
 
-    const cost = GAMBLE_COSTS[level] ?? 5;
-    const costCopper = cost * 10000;
-    if (_toCopper(actor.system.currency) < costCopper) {
+    // Find option and check funds client-side
+    const options = game.settings.get(MODULE_ID, "gambleOptions") || [];
+    const option = options.find(o => o.id === gambleId);
+    if (!option) return;
+
+    if (_toCopper(actor.system.currency) < _toCopper(option.cost)) {
       ui.notifications.warn("Insufficient funds.");
       return;
     }
@@ -1676,14 +1770,14 @@ class MerchantShopApp extends HandlebarsApplicationMixin(ApplicationV2) {
     if (game.user.isGM) {
       await MerchantShop._handleGamble({
         buyerActorId: actor.id,
-        level,
+        gambleId,
         userId: game.userId,
       });
     } else {
       game.socket.emit(`module.${MODULE_ID}`, {
         action: "shop:gamble",
         buyerActorId: actor.id,
-        level,
+        gambleId,
         userId: game.userId,
       });
     }

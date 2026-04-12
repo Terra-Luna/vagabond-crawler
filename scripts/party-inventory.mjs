@@ -45,9 +45,19 @@ class PartyInventoryApp extends HandlebarsApplicationMixin(ApplicationV2) {
   };
 
   async _prepareContext() {
-    // Get all player-owned characters with tokens on active scene (or all player characters)
+    // Get player characters with FRIENDLY tokens on the active scene
+    const scene = game.scenes.active;
+    const sceneActorIds = new Set();
+    if (scene) {
+      for (const token of scene.tokens) {
+        if (token.disposition === CONST.TOKEN_DISPOSITIONS.FRIENDLY && token.actor?.type === "character") {
+          sceneActorIds.add(token.actorId);
+        }
+      }
+    }
+
     const members = game.actors
-      .filter(a => a.type === "character" && a.hasPlayerOwner)
+      .filter(a => sceneActorIds.has(a.id))
       .sort((a, b) => a.name.localeCompare(b.name));
 
     const columns = members.map(actor => {
