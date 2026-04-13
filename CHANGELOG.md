@@ -1,5 +1,10 @@
 # Changelog
 
+## v1.8.3
+
+### Bug Fixes
+- **Crawl menu stuck after combat** — Fixed the crawl bar becoming unresponsive when ending an encounter and clicking "No" on the "Resume crawl mode?" prompt. Previously the bar stayed in a paused state with non-functional buttons because `game.combat` was already deleted. Now clicking "No" cleanly ends the crawl, and clicking "Yes" resumes it as before.
+
 ## v1.8.2
 
 ### Bug Fixes

@@ -766,5 +766,11 @@ Hooks.on("deleteCombat", async () => {
     await MovementTracker.resetAll(); // resets to crawl speed since CrawlState.paused is now false
     CrawlBar.render();
     (await import("./crawl-strip.mjs")).CrawlStrip.render();
+  } else {
+    // User declined resume — end the crawl entirely
+    await CrawlClock.cleanup();
+    await CrawlState.end();
+    CrawlBar.render();
+    (await import("./crawl-strip.mjs")).CrawlStrip.render();
   }
 });
