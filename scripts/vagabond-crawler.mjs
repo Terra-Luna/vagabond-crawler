@@ -85,6 +85,14 @@ Hooks.once("init", () => {
     onChange: () => { game.vagabondCrawler?.strip?.render(); },
   });
 
+  // Hide NPC HP bar from players in the strip
+  game.settings.register(MODULE_ID, "hideNpcHpBar", {
+    name: "Hide NPC Health Bar from Players",
+    hint: "Players won't see HP bars or values on NPC cards in the crawl strip. The GM still sees them.",
+    scope: "world", config: true, type: Boolean, default: false,
+    onChange: () => { game.vagabondCrawler?.strip?.render(); },
+  });
+
   // Auto-remove defeated tokens from strip
   game.settings.register(MODULE_ID, "autoRemoveDefeated", {
     name: "Auto-Hide Defeated Tokens",
@@ -112,7 +120,6 @@ Hooks.once("init", () => {
   LightTracker.registerSettings();
   ItemDrops.registerSettings();
   LootDrops.registerSettings();
-  RelicForge.registerSettings();
   LootManager.registerSettings();
   LootTracker.registerSettings();
   CountdownRoller.registerSettings();

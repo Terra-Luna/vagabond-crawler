@@ -95,6 +95,7 @@ export const CrawlStrip = {
     const isHeroes   = state.isHeroesPhase;
     const inCombat   = state.paused;
     const hideNames  = game.settings.get(MODULE_ID, "hideNpcNames");
+    const hideNpcHp  = game.settings.get(MODULE_ID, "hideNpcHpBar") && !game.user.isGM;
     const autoRemove = game.settings.get(MODULE_ID, "autoRemoveDefeated");
 
     // Build combatant lookup map once instead of repeated .find() calls
@@ -153,6 +154,8 @@ export const CrawlStrip = {
         : (m.type === "player" ? isHeroes : !isHeroes);
 
       const displayName = (m.type === "npc" && hideNames) ? "" : m.name;
+      const isNpcMember = m.type === "npc" || m.type === "gm";
+      const hideHpBar   = isNpcMember && hideNpcHp;
 
       const hpPct   = data && data.hpMax > 0 ? Math.max(0, Math.min(100, Math.round((data.hp / data.hpMax) * 100))) : 0;
       const hpClass = !data || data.hp <= 0     ? "vcs-hp-dead"
@@ -202,10 +205,11 @@ export const CrawlStrip = {
             ${displayName ? `<div class="vcs-name">${displayName}</div>` : ""}
             ${effectsRow}
             <div class="vcs-bottom">
+              ${hideHpBar ? "" : `
               <div class="vcs-hp-bar-wrap">
                 <div class="vcs-hp-bar ${hpClass}" style="width:${hpPct}%"></div>
                 <span class="vcs-hp-label">${data ? `${data.hp}/${data.hpMax}` : ""}</span>
-              </div>
+              </div>`}
               ${pills}
             </div>
           </div>

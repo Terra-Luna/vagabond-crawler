@@ -16,14 +16,6 @@ import { RELIC_POWERS, RELIC_POWER_CATEGORIES, METAL_DISPLAY_NAMES, getRelicPowe
 export const RelicForge = {
   _app: null,
 
-  registerSettings() {
-    game.settings.register(MODULE_ID, "relicForgeEnabled", {
-      name: "Relic Forge",
-      hint: "Enable the Relic Forge tool for upgrading equipment into magical relics.",
-      scope: "world", config: true, type: Boolean, default: true,
-    });
-  },
-
   init() {
     console.log(`${MODULE_ID} | Relic Forge initialized (${RELIC_POWERS.length} powers).`);
   },
