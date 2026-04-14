@@ -13,7 +13,7 @@ import { LightTracker }     from "./light-tracker.mjs";
 import { CrawlClock }       from "./crawl-clock.mjs";
 import { FlankingChecker }  from "./flanking-checker.mjs";
 import { registerChatTooltips } from "./chat-tooltips.mjs";
-import { registerMagicWardHook } from "./npc-abilities.mjs";
+import { registerMagicWardHook, registerEarlyRollBuilderWrap } from "./npc-abilities.mjs";
 import { ItemDrops }        from "./item-drops.mjs";
 import { LootDrops }        from "./loot-drops.mjs";
 import { RelicForge }       from "./relic-forge.mjs";
@@ -29,6 +29,15 @@ import { PartyInventory }  from "./party-inventory.mjs";
 export const MODULE_ID = "vagabond-crawler";
 
 // ── Settings ──────────────────────────────────────────────────────────────────
+
+// ── Setup: wrap buildAndEvaluateD20WithRollData BEFORE vagabond-character-enhancer ──
+// VCE wraps the same function in its "ready" hook. Wrapping in "setup" ensures
+// our wrap is captured as VCE's orig → VCE becomes outermost, we become innermost.
+// This is required so our Nimble clamp sees the FINAL favorHinder after VCE has
+// applied its `_rangeFavorHinder` combine.
+Hooks.once("setup", () => {
+  registerEarlyRollBuilderWrap();
+});
 
 Hooks.once("init", () => {
   // Encounter table UUID

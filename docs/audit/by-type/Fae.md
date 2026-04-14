@@ -7,17 +7,17 @@ Generated: 2026-04-14T20:55:00.591Z
 | Beisht Kione Dhoo | 13 | 6.6 | 3 as Plate | frontline | 3 | 3 | 2 |
 | Blink Dog | 4 | 2.1 | 2 as Chain | midline | 1 | 1 | 1 |
 | Brollachan | 6 | 2.2 | 4 as Plate plus Shield | frontline | 1 | 3 | 5 |
-| Brownie | 1 | 2 | 3 as Plate | backline | 3 | 2 | 1 |
-| Carcolh | 15 | 7.1 | 4 as (+1) Plate | frontline | 3 | 2 | 5 |
+| Brownie | 1 | 2 | 3 as Plate | backline | 3 | 2 | 0 |
+| Carcolh | 15 | 7.1 | 4 as (+1) Plate | frontline | 3 | 2 | 4 |
 | Doppelgänger | 4 | 2.6 | 2 as Chain | frontline | 2 | 1 | 0 |
-| Hag, Green | 9 | 4 | 3 as (+1) Chain | frontline | 3 | 4 | 6 |
-| Hag, Grove | 8 | 9.7 | 4 as (+1) Plate | frontline | 4 | 3 | 5 |
-| Hag, Sea | 3 | 3.6 | 2 as (+1) Leather | midline | 2 | 3 | 4 |
-| Mermaid | 3 | 2 | 2 as (+1) Leather | backline | 4 | 5 | 3 |
-| Nymph | 2 | 0.3 | 0 as Unarmored | frontline | 1 | 2 | 3 |
+| Hag, Green | 9 | 4 | 3 as (+1) Chain | frontline | 3 | 4 | 5 |
+| Hag, Grove | 8 | 9.7 | 4 as (+1) Plate | frontline | 4 | 3 | 4 |
+| Hag, Sea | 3 | 3.6 | 2 as (+1) Leather | midline | 2 | 3 | 3 |
+| Mermaid | 3 | 2 | 2 as (+1) Leather | backline | 4 | 5 | 2 |
+| Nymph | 2 | 0.3 | 0 as Unarmored | frontline | 1 | 2 | 2 |
 | Pixie | 1 | 2 | 3 as Plate | backline | 1 | 1 | 0 |
 | Satyr | 4 | 2.3 | 2 as Chain | frontline | 4 | 1 | 3 |
-| Unicorn | 4 | 4.2 | 3 as (+1) Chain | midline | 5 | 2 | 3 |
+| Unicorn | 4 | 4.2 | 3 as (+1) Chain | midline | 5 | 2 | 2 |
 | Will o' Wisp | 6 | 3.6 | 4 as (+1) Plate | backline | 2 | 2 | 3 |
 
 ---
@@ -120,10 +120,6 @@ Generated: 2026-04-14T20:55:00.591Z
 - **Ambush Innured** — It can't be surprised, and can take an Action and Move before the first Turn of Combat.
 - **Magic Ward I** — The first time it is unwillingly affected by a Spell each Round, the Caster must spend an extra 1 Mana to affect it.
 
-**Findings (1)**
-
-- ❌ `broken-automation`: Compendium text describes a Mana-cost penalty; scripts/npc-abilities.mjs injects a roll-penalty die (1d4) instead.
-
 ### Carcolh
 
 - UUID: `Compendium.vagabond.bestiary.Actor.uDjwEv1gpStc0WzJ`
@@ -144,9 +140,8 @@ Generated: 2026-04-14T20:55:00.591Z
 - **Magic Ward II** — The first time it is unwillingly affected by a Spell each Round, the Caster must spend an extra 2 Mana to affect it.
 - **Tentacles** — Starts with 6 Tentacles. Targetting a Tentacle causes a -4 penalty to the Attack Check, but severs it if at least 16 damage is dealt with the attack.
 
-**Findings (5)**
+**Findings (4)**
 
-- ❌ `broken-automation`: Compendium text describes a Mana-cost penalty; scripts/npc-abilities.mjs injects a roll-penalty die (1d6) instead.
 - ⚠️ `damageless-requiresDamage`: Carcolh / "Tentacle": causedStatus "restrained" has requiresDamage=true but the action deals no damage — status can never apply by that rule.
 - ℹ️ `speed-ambiguous`: Carcolh: speedTypes entry "climb" has no speed and speedValues.climb is 0. Implicit base speed? Intent unclear.
 - ℹ️ `speed-ambiguous`: Carcolh: speedTypes entry "cling" has no speed and speedValues.cling is 0. Implicit base speed? Intent unclear.
@@ -193,9 +188,8 @@ Generated: 2026-04-14T20:55:00.591Z
 - **Magic Ward II** — The first time it is unwillingly affected by a Spell each Round, the Caster must spend an extra 2 Mana to affect it.
 - **Terror I** — Enemies that can see it for the first time and at the start of their Turns must pass [Will] or be Frightened (Cd4).
 
-**Findings (6)**
+**Findings (5)**
 
-- ❌ `broken-automation`: Compendium text describes a Mana-cost penalty; scripts/npc-abilities.mjs injects a roll-penalty die (1d6) instead.
 - ⚠️ `extraInfo-status-mismatch`: Hag, Green / "Claw": extraInfo mentions Restrained but causedStatuses does not include these ids.
 - ⚠️ `unimplemented-passive`: Ability "Fade Out" describes mechanical effects (invisible, restrained) but has no automation in scripts/npc-abilities.mjs.
 - ⚠️ `unimplemented-passive`: Ability "Terror I" describes mechanical effects (frightened, must-pass) but has no automation in scripts/npc-abilities.mjs.
@@ -224,9 +218,8 @@ Generated: 2026-04-14T20:55:00.591Z
 - **Magic Ward I** — The first time it is unwillingly affected by a Spell each Round, the Caster must spend an extra 1 Mana to affect it.
 - **Terror I** — Enemies that can see it for the first time and at the start of their Turns must pass a [Will] Save or be Frightened until they pass this Check on a subsequent Turn, or for Cd4 Rounds afterwards.
 
-**Findings (5)**
+**Findings (4)**
 
-- ❌ `broken-automation`: Compendium text describes a Mana-cost penalty; scripts/npc-abilities.mjs injects a roll-penalty die (1d4) instead.
 - ⚠️ `extraInfo-status-mismatch`: Hag, Grove / "Combo": extraInfo mentions Restrained but causedStatuses does not include these ids.
 - ℹ️ `speed-ambiguous`: Hag, Grove: speedTypes entry "cling" has no speed and speedValues.cling is 0. Implicit base speed? Intent unclear.
 - ⚠️ `unimplemented-passive`: Ability "Terror I" describes mechanical effects (frightened, must-pass) but has no automation in scripts/npc-abilities.mjs.
@@ -252,9 +245,8 @@ Generated: 2026-04-14T20:55:00.591Z
 - **Magic Ward I** — The first time it is unwillingly affected by a Spell each Round, the Caster must spend an extra 1 Mana to affect it.
 - **Terror I** — Enemies that can see it for the first time and at the start of their Turns must pass a [Will] Save or be Frightened until they pass this Check on a subsequent Turn, or for Cd4 Rounds afterwards.
 
-**Findings (4)**
+**Findings (3)**
 
-- ❌ `broken-automation`: Compendium text describes a Mana-cost penalty; scripts/npc-abilities.mjs injects a roll-penalty die (1d4) instead.
 - ℹ️ `speed-ambiguous`: Hag, Sea: speedTypes entry "swim" has no speed and speedValues.swim is 0. Implicit base speed? Intent unclear.
 - ⚠️ `unimplemented-passive`: Ability "Terror I" describes mechanical effects (frightened, must-pass) but has no automation in scripts/npc-abilities.mjs.
 - ⚠️ `ability-mentions-status-without-action`: Ability "Terror I" on Hag, Sea mentions Frightened, but no action on this monster applies those statuses.
@@ -284,9 +276,8 @@ Generated: 2026-04-14T20:55:00.591Z
 - **Immortal of the Sea** — It can’t be reduced below 1 HP while it is even partially submerged in a body of water.
 - **Terror-Bound** — It is bound to a terror of the sea, such as a beisht kione dhoo, kraken, or sea serpent.
 
-**Findings (3)**
+**Findings (2)**
 
-- ❌ `broken-automation`: Compendium text describes a Mana-cost penalty; scripts/npc-abilities.mjs injects a roll-penalty die (1d4) instead.
 - ⚠️ `unimplemented-passive`: Ability "Enchanting Song" describes mechanical effects (charmed, must-pass) but has no automation in scripts/npc-abilities.mjs.
 - ⚠️ `ability-mentions-status-without-action`: Ability "Enchanting Song" on Mermaid mentions Charmed, but no action on this monster applies those statuses.
 
@@ -308,9 +299,8 @@ Generated: 2026-04-14T20:55:00.591Z
 - **Amphibious** — Can breathe air or water.
 - **Magic Ward I** — The first time it is unwillingly affected by a Spell each Round, the Caster must spend an extra 1 Mana to affect it.
 
-**Findings (3)**
+**Findings (2)**
 
-- ❌ `broken-automation`: Compendium text describes a Mana-cost penalty; scripts/npc-abilities.mjs injects a roll-penalty die (1d4) instead.
 - ⚠️ `extraInfo-status-mismatch`: Nymph / "Nymph’s Kiss": extraInfo mentions Suffocating but causedStatuses does not include these ids.
 - ℹ️ `save-mention-orphan`: Nymph / "Nymph’s Kiss": note mentions save type(s) will but action has no causedStatuses and no damage.
 
@@ -380,9 +370,8 @@ Generated: 2026-04-14T20:55:00.591Z
 - **Magic Ward III** — The first time it is unwillingly affected by a Spell each Round, the Caster must spend an extra 3 Mana to affect it.
 - **Regenerate I** — Regains 4 (d8) HP on each of its Turns.
 
-**Findings (3)**
+**Findings (2)**
 
-- ❌ `broken-automation`: Compendium text describes a Mana-cost penalty; scripts/npc-abilities.mjs injects a roll-penalty die (1d8) instead.
 - ⚠️ `extraInfo-status-mismatch`: Unicorn / "Heal": extraInfo mentions Blinded, Confused, Paralyzed, Sickened but causedStatuses does not include these ids.
 - ⚠️ `unimplemented-passive`: Ability "Regenerate I" describes mechanical effects (regains-hp) but has no automation in scripts/npc-abilities.mjs.
 

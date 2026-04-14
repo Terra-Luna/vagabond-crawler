@@ -31,35 +31,25 @@ const OUT_FINDINGS   = resolve(ROOT, "docs", "audit", "findings.json");
 // Must match scripts/npc-abilities.mjs exactly. When that file changes, update here.
 
 const PASSIVE_ABILITIES = {
-  "Magic Ward I":   { type: "castPenalty",   penaltyDie: "1d4" },
-  "Magic Ward II":  { type: "castPenalty",   penaltyDie: "1d6" },
-  "Magic Ward III": { type: "castPenalty",   penaltyDie: "1d8" },
-  "Pack Instincts": { type: "packInstincts" },
-  "Pack Tactics":   { type: "packInstincts" },
+  "Magic Ward I":   { type: "manaSurcharge", surcharge: 1 },
+  "Magic Ward II":  { type: "manaSurcharge", surcharge: 2 },
+  "Magic Ward III": { type: "manaSurcharge", surcharge: 3 },
+  "Magic Ward IV":  { type: "manaSurcharge", surcharge: 4 },
+  "Magic Ward V":   { type: "manaSurcharge", surcharge: 5 },
+  "Magic Ward VI":  { type: "manaSurcharge", surcharge: 6 },
+  "Pack Instincts":  { type: "packInstincts" },
+  "Pack Tactics":    { type: "packInstincts" },
+  "Pack Hunter":     { type: "packInstincts" },
+  "Nimble":          { type: "nimble" },
+  "Soft Underbelly": { type: "softUnderbelly" },
 };
 
 /**
- * A subset of abilities that are known to have a *correct* mechanical
- * expectation even though the module's implementation doesn't match.
- * `expectedRule` explains what compendium text actually says.
- * `implementedRule` explains what scripts/npc-abilities.mjs actually does.
- * A `broken` verdict fires if PASSIVE_ABILITIES.type is `castPenalty` but
- * the description matches the mana-cost phrasing.
+ * Reserved for abilities whose PASSIVE_ABILITIES entry exists but implements
+ * a demonstrably wrong mechanic. The Magic Ward castPenalty-vs-manaSurcharge
+ * case (pre-v1.8.5) lived here. Empty at v1.8.5.
  */
-const KNOWN_BROKEN_RULES = {
-  "Magic Ward I": {
-    expectedRule: "The caster of a spell targeting this being pays +1 Mana the first time per round.",
-    implementedRule: "Injects 1d4 penalty die into the caster's Cast Check d20.",
-  },
-  "Magic Ward II": {
-    expectedRule: "The caster pays +2 Mana the first time per round.",
-    implementedRule: "Injects 1d6 penalty die into the caster's Cast Check d20.",
-  },
-  "Magic Ward III": {
-    expectedRule: "The caster pays +3 Mana the first time per round.",
-    implementedRule: "Injects 1d8 penalty die into the caster's Cast Check d20.",
-  },
-};
+const KNOWN_BROKEN_RULES = {};
 
 // ── Utilities ────────────────────────────────────────────────────────────────
 
@@ -174,15 +164,9 @@ function buildAbilitiesIndex(monsters) {
     let automationStatus = "unknown";
     let reason = "";
 
-    if (passive && passive.type === "castPenalty" && knownBroken) {
-      // Compendium text describes mana cost; automation injects roll penalty → broken.
-      if (/must\s+spend(?:\s+an\s+extra)?\s+\d+\s+Mana/i.test(representativeText)) {
-        automationStatus = "broken";
-        reason = `Compendium text describes a Mana-cost penalty; scripts/npc-abilities.mjs injects a roll-penalty die (${passive.penaltyDie}) instead.`;
-      } else {
-        automationStatus = "unknown";
-        reason = "PASSIVE_ABILITIES entry exists but description doesn't match expected mana-cost phrasing.";
-      }
+    if (knownBroken) {
+      automationStatus = "broken";
+      reason = knownBroken.implementedRule ?? "Known-broken automation per KNOWN_BROKEN_RULES.";
     } else if (passive) {
       automationStatus = "implemented";
       reason = `Matched scripts/npc-abilities.mjs PASSIVE_ABILITIES entry (type: ${passive.type}).`;

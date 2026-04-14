@@ -1,5 +1,21 @@
 # Changelog
 
+## v1.8.5
+
+### New Features
+- **Ability automation — 4 new / fixed abilities (82 monsters affected).**
+  - **Magic Ward I–VI** — Fixed. Old behavior injected a `1d4`/`1d6`/`1d8` penalty die into the caster's d20 Cast Check. The compendium text actually says *"the Caster must spend an extra N Mana to affect it"* — a cost, not a roll penalty, and only on the first affecting spell per Round per warded being. New implementation adds the surcharge to `_calculateSpellCost.totalCost` so the cost preview, mana-available validation, and castingMax validation all see the inflated cost. If the caster lacks enough Mana for spell + surcharge, the cast is blocked outright (no roll). On success, each warded target is flagged as triggered for the current round and won't re-charge that caster (or any caster) that round. Flags reset on round advance and combat end. Applies to both the character sheet cast path and the crawl-strip spell dialog. Ward levels IV–VI (previously unimplemented silently) now work. 44 monsters.
+  - **Nimble** — Implemented. *"Attacks against it can't be Favored if it can Move."* When any targeted actor has Nimble and is not Incapacitated / Paralyzed / Restrained / Unconscious, any computed `favor` on the attacker's d20 is clamped to `none`. Applies to both weapon attacks and spell cast checks. Clamps only `favor`; `hinder` and `none` pass through unchanged. The roll-builder wrap is now registered in a `setup` hook (not `ready`) so it runs innermost relative to `vagabond-character-enhancer`'s own roll-builder wrap — critical for flanked-vs-flanked targeting where VCE re-combines favor via `_rangeFavorHinder`. 15 monsters.
+  - **Pack Hunter** — Implemented. *"Targets within 5 feet of one of this Being's Allies are Vulnerable to its attacks."* Shares the narrow `packInstincts` mechanic: transient Active Effect sets `outgoingSavesModifier: hinder` on the attacker (mirrored to world actor for unlinked tokens) so the defender's saves are Hindered. Does **not** grant favor on incoming attacks — Pack Hunter "Vulnerable to its attacks" is narrower than full Vulnerable. 15 monsters.
+  - **Soft Underbelly** — Implemented. *"Its Armor is 0 while it is Prone."* When a Prone active effect is created on a being with Soft Underbelly, a transient module-owned effect applies `system.armor: 0` (OVERRIDE); when Prone is removed, the override is removed. `VagabondDamageHelper.calculateFinalDamage` reads `actor.system.armor` directly, so damage math is correct for every damage-resolution path. World-load catch-up hook covers pre-existing state. 5 monsters (Ankheg, Bulette, Carcass Crawler, Giant Fire Beetle, Giant Tiger Beetle).
+
+### Fixes
+- **`scripts/mutation-data.mjs`** — Magic Ward I and II mutation descriptions were wrong (claimed "Favored on saves against spells" and "Takes half damage from non-magical attacks" respectively). Corrected to match the compendium Mana-cost text so all three sources of truth (compendium, automation, mutation UI) agree.
+
+### Audit Database
+- Regenerated `docs/audit/*` — Magic Ward I–VI, Nimble, Pack Hunter, Pack Tactics, Pack Instincts, and Soft Underbelly now show `automationStatus: implemented`. Total findings drop from 426 to 397 (all 3 previous errors resolved).
+- Added `docs/audit/automation-candidates.md` — prioritized triage of the 84 unimplemented abilities by feasibility tier (A–D), with shared-framework clusters identified for future ability-automation PRs.
+
 ## v1.8.4
 
 ### New Features

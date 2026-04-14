@@ -6,16 +6,16 @@ Generated: 2026-04-14T20:55:00.591Z
 |---|---|---|---|---|---|---|---|
 | Achaierai | 4 | 3.3 | 1 as Leather | frontline | 4 | 0 | 0 |
 | Agropelter | 2 | 1.5 | 1 as Leather | backline | 2 | 0 | 1 |
-| Almiraj | 1 | 1 | 1 as Leather | backline | 1 | 1 | 1 |
+| Almiraj | 1 | 1 | 1 as Leather | backline | 1 | 1 | 0 |
 | Amikuk | 4 | 3.6 | 1 as Leather | backline | 4 | 1 | 2 |
 | Amphiptere | 3 | 1.9 | 1 as Leather | midline | 2 | 0 | 1 |
-| Ankheg | 5 | 5.1 | 3 as Chain plus Shield | frontline | 2 | 2 | 3 |
+| Ankheg | 5 | 5.1 | 3 as Chain plus Shield | frontline | 2 | 2 | 1 |
 | Aurumvorax | 6 | 6.3 | 3 as (+2) Leather | frontline | 3 | 0 | 0 |
 | Basilisk | 6 | 3.1 | 3 as (+1) Chain | midline | 2 | 0 | 1 |
 | Bugbear | 3 | 1.6 | 1 as Leather | frontline | 1 | 1 | 0 |
-| Bulette | 9 | 10.9 | 4 as (+1) Plate | frontline | 3 | 1 | 2 |
+| Bulette | 9 | 10.9 | 4 as (+1) Plate | frontline | 3 | 1 | 0 |
 | Carbuncle | 1 | 1.6 | 3 as (+2) Hide | backline | 0 | 2 | 2 |
-| Carcass Crawler | 3 | 2.2 | 1 as Leather | frontline | 3 | 1 | 3 |
+| Carcass Crawler | 3 | 2.2 | 1 as Leather | frontline | 3 | 1 | 1 |
 | Catoblepas | 7 | 5.7 | 1 as Leather | frontline | 3 | 1 | 2 |
 | Cave Fisher | 3 | 2.5 | 1 as Leather | backline | 3 | 1 | 2 |
 | Chimera | 9 | 7 | 3 as (+1) Chain | frontline | 6 | 0 | 2 |
@@ -24,26 +24,26 @@ Generated: 2026-04-14T20:55:00.591Z
 | Darkmantle | 1 | 0.7 | 0 as Unarmored | frontline | 2 | 0 | 1 |
 | Dobar-Chú | 6 | 5.8 | 2 as Chain | frontline | 3 | 0 | 0 |
 | Dragon Turtle | 30 | 10.6 | 5 as (+2) Plate | frontline | 4 | 0 | 1 |
-| Dragon, Ancient - Black | 30 | 12.2 | 7 as (+3) Plate and Shield | frontline | 5 | 3 | 3 |
-| Dragon, Ancient - Blue | 30 | 12.2 | 7 as (+3) Plate and Shield | frontline | 5 | 3 | 3 |
-| Dragon, Ancient - Green | 30 | 12.2 | 7 as (+3) Plate and Shield | frontline | 5 | 3 | 3 |
-| Dragon, Ancient - Red | 30 | 12.2 | 7 as (+3) Plate and Shield | frontline | 5 | 3 | 3 |
-| Dragon, Ancient - White | 30 | 12.2 | 7 as (+3) Plate and Shield | frontline | 5 | 3 | 3 |
-| Dragon, Elder - Black | 20 | 8.7 | 5 as (+1) Plate and Shield | frontline | 5 | 3 | 3 |
-| Dragon, Elder - Blue | 20 | 8.7 | 5 as (+1) Plate and Shield | frontline | 5 | 3 | 3 |
-| Dragon, Elder - Green | 20 | 8.7 | 5 as (+1) Plate and Shield | frontline | 5 | 3 | 3 |
-| Dragon, Elder - Red | 20 | 8.7 | 5 as (+1) Plate and Shield | frontline | 5 | 3 | 3 |
-| Dragon, Elder - White | 20 | 8.7 | 5 as (+1) Plate and Shield | frontline | 5 | 3 | 3 |
+| Dragon, Ancient - Black | 30 | 12.2 | 7 as (+3) Plate and Shield | frontline | 5 | 3 | 2 |
+| Dragon, Ancient - Blue | 30 | 12.2 | 7 as (+3) Plate and Shield | frontline | 5 | 3 | 2 |
+| Dragon, Ancient - Green | 30 | 12.2 | 7 as (+3) Plate and Shield | frontline | 5 | 3 | 2 |
+| Dragon, Ancient - Red | 30 | 12.2 | 7 as (+3) Plate and Shield | frontline | 5 | 3 | 2 |
+| Dragon, Ancient - White | 30 | 12.2 | 7 as (+3) Plate and Shield | frontline | 5 | 3 | 2 |
+| Dragon, Elder - Black | 20 | 8.7 | 5 as (+1) Plate and Shield | frontline | 5 | 3 | 2 |
+| Dragon, Elder - Blue | 20 | 8.7 | 5 as (+1) Plate and Shield | frontline | 5 | 3 | 2 |
+| Dragon, Elder - Green | 20 | 8.7 | 5 as (+1) Plate and Shield | frontline | 5 | 3 | 2 |
+| Dragon, Elder - Red | 20 | 8.7 | 5 as (+1) Plate and Shield | frontline | 5 | 3 | 2 |
+| Dragon, Elder - White | 20 | 8.7 | 5 as (+1) Plate and Shield | frontline | 5 | 3 | 2 |
 | Dragon, Hatchling - Black | 5 | 3.2 | 2 as Chain | frontline | 4 | 0 | 0 |
 | Dragon, Hatchling - Blue | 5 | 3.2 | 2 as Chain | frontline | 4 | 0 | 0 |
 | Dragon, Hatchling - Green | 5 | 3.2 | 2 as Chain | frontline | 4 | 0 | 0 |
 | Dragon, Hatchling - Red | 5 | 3.2 | 2 as Chain | frontline | 4 | 0 | 0 |
 | Dragon, Hatchling - White | 5 | 3.2 | 2 as Chain | frontline | 4 | 0 | 0 |
-| Dragon, Young - Black | 10 | 5.3 | 3 as Plate | frontline | 5 | 2 | 1 |
-| Dragon, Young - Blue | 10 | 5.3 | 3 as Plate | frontline | 5 | 2 | 1 |
-| Dragon, Young - Green | 10 | 5.3 | 3 as Plate | frontline | 5 | 2 | 1 |
-| Dragon, Young - Red | 10 | 5.3 | 3 as Plate | frontline | 5 | 2 | 1 |
-| Dragon, Young - White | 10 | 5.3 | 3 as Plate | frontline | 5 | 2 | 1 |
+| Dragon, Young - Black | 10 | 5.3 | 3 as Plate | frontline | 5 | 2 | 0 |
+| Dragon, Young - Blue | 10 | 5.3 | 3 as Plate | frontline | 5 | 2 | 0 |
+| Dragon, Young - Green | 10 | 5.3 | 3 as Plate | frontline | 5 | 2 | 0 |
+| Dragon, Young - Red | 10 | 5.3 | 3 as Plate | frontline | 5 | 2 | 0 |
+| Dragon, Young - White | 10 | 5.3 | 3 as Plate | frontline | 5 | 2 | 0 |
 | Drake | 7 | 3.5 | 3 as (+1) Chain | frontline | 3 | 0 | 0 |
 | Ettercap | 4 | 2.1 | 1 as Leather | frontline | 1 | 2 | 1 |
 | Flail Snail | 4 | 6.2 | 4 as (+1) Plate | frontline | 2 | 2 | 2 |
@@ -87,13 +87,13 @@ Generated: 2026-04-14T20:55:00.591Z
 | Rot Grub | 1 | 0.7 | 0 as Unarmored | frontline | 0 | 2 | 4 |
 | Rumptifusel | 3 | 1.7 | 1 as Leather | frontline | 3 | 1 | 3 |
 | Rust Monster | 5 | 2.7 | 4 as Plate plus Shield | frontline | 2 | 1 | 0 |
-| Sea Lion | 6 | 4.1 | 2 as Chain | frontline | 3 | 3 | 4 |
+| Sea Lion | 6 | 4.1 | 2 as Chain | frontline | 3 | 3 | 2 |
 | Sea Serpent | 14 | 6.2 | 2 as Chain | frontline | 3 | 2 | 0 |
 | Skeljaskrimsli | 10 | 6.3 | 5 as (+2) Plate | frontline | 4 | 2 | 1 |
-| Snakeman | 6 | 3.2 | 2 as Chain | frontline | 3 | 1 | 1 |
+| Snakeman | 6 | 3.2 | 2 as Chain | frontline | 3 | 1 | 0 |
 | Snallygaster | 10 | 4.4 | 2 as (+1) Leather | frontline | 3 | 2 | 1 |
 | Stirge | 1 | 1.2 | 1 as Leather | frontline | 1 | 2 | 1 |
-| Tarrasque | 36 | 24.7 | 10 as (+3) Plate plus (+3) Shield | frontline | 5 | 5 | 3 |
+| Tarrasque | 36 | 24.7 | 10 as (+3) Plate plus (+3) Shield | frontline | 5 | 5 | 2 |
 | Troglodyte | 2 | 2.9 | 2 as Chain | frontline | 3 | 3 | 5 |
 | Troll | 7 | 3.9 | 2 as Chain | frontline | 3 | 2 | 2 |
 | Warp Beast | 6 | 3.4 | 2 as Chain | frontline | 2 | 1 | 0 |
@@ -154,10 +154,6 @@ Generated: 2026-04-14T20:55:00.591Z
 **Abilities (1)**
 
 - **Nimble** — Attacks against it can’t be Favored if it can Move.
-
-**Findings (1)**
-
-- ⚠️ `unimplemented-passive`: Ability "Nimble" describes mechanical effects (favored) but has no automation in scripts/npc-abilities.mjs.
 
 ### Amikuk
 
@@ -220,11 +216,9 @@ Generated: 2026-04-14T20:55:00.591Z
 - **Soft Underbelly** — Its Armor is 0 while it is Prone.
 - **Tunneler** — It can Move at full Speed through solid earth and stone by digging.
 
-**Findings (3)**
+**Findings (1)**
 
 - ℹ️ `elemental-name-untyped`: Ankheg / "Acid Spray": name suggests elemental damage but damageType is "-".
-- ⚠️ `unimplemented-passive`: Ability "Soft Underbelly" describes mechanical effects (prone) but has no automation in scripts/npc-abilities.mjs.
-- ⚠️ `ability-mentions-status-without-action`: Ability "Soft Underbelly" on Ankheg mentions Prone, but no action on this monster applies those statuses.
 
 ### Aurumvorax
 
@@ -293,11 +287,6 @@ Generated: 2026-04-14T20:55:00.591Z
 
 - **Soft Underbelly** — Its Armor is 0 while it is Prone.
 
-**Findings (2)**
-
-- ⚠️ `unimplemented-passive`: Ability "Soft Underbelly" describes mechanical effects (prone) but has no automation in scripts/npc-abilities.mjs.
-- ⚠️ `ability-mentions-status-without-action`: Ability "Soft Underbelly" on Bulette mentions Prone, but no action on this monster applies those statuses.
-
 ### Carbuncle
 
 - UUID: `Compendium.vagabond.bestiary.Actor.lQ3dyK9D9KJAQ3YD`
@@ -332,11 +321,9 @@ Generated: 2026-04-14T20:55:00.591Z
 
 - **Soft Underbelly** — Its Armor is 0 while it is Prone.
 
-**Findings (3)**
+**Findings (1)**
 
 - ℹ️ `speed-ambiguous`: Carcass Crawler: speedTypes entry "cling" has no speed and speedValues.cling is 0. Implicit base speed? Intent unclear.
-- ⚠️ `unimplemented-passive`: Ability "Soft Underbelly" describes mechanical effects (prone) but has no automation in scripts/npc-abilities.mjs.
-- ⚠️ `ability-mentions-status-without-action`: Ability "Soft Underbelly" on Carcass Crawler mentions Prone, but no action on this monster applies those statuses.
 
 ### Catoblepas
 
@@ -514,9 +501,8 @@ Generated: 2026-04-14T20:55:00.591Z
 - **Magic Ward IV** — The first time it is unwillingly affected by a Spell each Round, the Caster must spend an extra 4 Mana to affect it.
 - **Terror II** — Enemies that can see it for the first time and at the start of their Turns thereafter must pass [Will] or be Frightened (Cd6 Rounds).
 
-**Findings (3)**
+**Findings (2)**
 
-- ⚠️ `unimplemented-passive`: Ability "Magic Ward IV" describes mechanical effects (must-spend-mana) but has no automation in scripts/npc-abilities.mjs.
 - ⚠️ `unimplemented-passive`: Ability "Terror II" describes mechanical effects (frightened) but has no automation in scripts/npc-abilities.mjs.
 - ⚠️ `ability-mentions-status-without-action`: Ability "Terror II" on Dragon, Ancient - Black mentions Frightened, but no action on this monster applies those statuses.
 
@@ -544,9 +530,8 @@ Generated: 2026-04-14T20:55:00.591Z
 - **Magic Ward IV** — The first time it is unwillingly affected by a Spell each Round, the Caster must spend an extra 4 Mana to affect it.
 - **Terror II** — Enemies that can see it for the first time and at the start of their Turns thereafter must pass [Will] or be Frightened (Cd6 Rounds).
 
-**Findings (3)**
+**Findings (2)**
 
-- ⚠️ `unimplemented-passive`: Ability "Magic Ward IV" describes mechanical effects (must-spend-mana) but has no automation in scripts/npc-abilities.mjs.
 - ⚠️ `unimplemented-passive`: Ability "Terror II" describes mechanical effects (frightened) but has no automation in scripts/npc-abilities.mjs.
 - ⚠️ `ability-mentions-status-without-action`: Ability "Terror II" on Dragon, Ancient - Blue mentions Frightened, but no action on this monster applies those statuses.
 
@@ -574,9 +559,8 @@ Generated: 2026-04-14T20:55:00.591Z
 - **Magic Ward IV** — The first time it is unwillingly affected by a Spell each Round, the Caster must spend an extra 4 Mana to affect it.
 - **Terror II** — Enemies that can see it for the first time and at the start of their Turns thereafter must pass [Will] or be Frightened (Cd6 Rounds).
 
-**Findings (3)**
+**Findings (2)**
 
-- ⚠️ `unimplemented-passive`: Ability "Magic Ward IV" describes mechanical effects (must-spend-mana) but has no automation in scripts/npc-abilities.mjs.
 - ⚠️ `unimplemented-passive`: Ability "Terror II" describes mechanical effects (frightened) but has no automation in scripts/npc-abilities.mjs.
 - ⚠️ `ability-mentions-status-without-action`: Ability "Terror II" on Dragon, Ancient - Green mentions Frightened, but no action on this monster applies those statuses.
 
@@ -604,9 +588,8 @@ Generated: 2026-04-14T20:55:00.591Z
 - **Magic Ward IV** — The first time it is unwillingly affected by a Spell each Round, the Caster must spend an extra 4 Mana to affect it.
 - **Terror II** — Enemies that can see it for the first time and at the start of their Turns thereafter must pass [Will] or be Frightened (Cd6 Rounds).
 
-**Findings (3)**
+**Findings (2)**
 
-- ⚠️ `unimplemented-passive`: Ability "Magic Ward IV" describes mechanical effects (must-spend-mana) but has no automation in scripts/npc-abilities.mjs.
 - ⚠️ `unimplemented-passive`: Ability "Terror II" describes mechanical effects (frightened) but has no automation in scripts/npc-abilities.mjs.
 - ⚠️ `ability-mentions-status-without-action`: Ability "Terror II" on Dragon, Ancient - Red mentions Frightened, but no action on this monster applies those statuses.
 
@@ -634,9 +617,8 @@ Generated: 2026-04-14T20:55:00.591Z
 - **Magic Ward IV** — The first time it is unwillingly affected by a Spell each Round, the Caster must spend an extra 4 Mana to affect it.
 - **Terror II** — Enemies that can see it for the first time and at the start of their Turns thereafter must pass [Will] or be Frightened (Cd6 Rounds).
 
-**Findings (3)**
+**Findings (2)**
 
-- ⚠️ `unimplemented-passive`: Ability "Magic Ward IV" describes mechanical effects (must-spend-mana) but has no automation in scripts/npc-abilities.mjs.
 - ⚠️ `unimplemented-passive`: Ability "Terror II" describes mechanical effects (frightened) but has no automation in scripts/npc-abilities.mjs.
 - ⚠️ `ability-mentions-status-without-action`: Ability "Terror II" on Dragon, Ancient - White mentions Frightened, but no action on this monster applies those statuses.
 
@@ -664,9 +646,8 @@ Generated: 2026-04-14T20:55:00.591Z
 - **Magic Ward III** — The first time it is unwillingly affected by a Spell each Round, the Caster must spend an extra 3 Mana to affect it.
 - **Terror I** — Enemies that can see it for the first time and at the start of their Turns thereafter must pass [Will] or be Frightened (Cd4).
 
-**Findings (3)**
+**Findings (2)**
 
-- ❌ `broken-automation`: Compendium text describes a Mana-cost penalty; scripts/npc-abilities.mjs injects a roll-penalty die (1d8) instead.
 - ⚠️ `unimplemented-passive`: Ability "Terror I" describes mechanical effects (frightened, must-pass) but has no automation in scripts/npc-abilities.mjs.
 - ⚠️ `ability-mentions-status-without-action`: Ability "Terror I" on Dragon, Elder - Black mentions Frightened, but no action on this monster applies those statuses.
 
@@ -694,9 +675,8 @@ Generated: 2026-04-14T20:55:00.591Z
 - **Magic Ward III** — The first time it is unwillingly affected by a Spell each Round, the Caster must spend an extra 3 Mana to affect it.
 - **Terror I** — Enemies that can see it for the first time and at the start of their Turns thereafter must pass [Will] or be Frightened (Cd4).
 
-**Findings (3)**
+**Findings (2)**
 
-- ❌ `broken-automation`: Compendium text describes a Mana-cost penalty; scripts/npc-abilities.mjs injects a roll-penalty die (1d8) instead.
 - ⚠️ `unimplemented-passive`: Ability "Terror I" describes mechanical effects (frightened, must-pass) but has no automation in scripts/npc-abilities.mjs.
 - ⚠️ `ability-mentions-status-without-action`: Ability "Terror I" on Dragon, Elder - Blue mentions Frightened, but no action on this monster applies those statuses.
 
@@ -724,9 +704,8 @@ Generated: 2026-04-14T20:55:00.591Z
 - **Magic Ward III** — The first time it is unwillingly affected by a Spell each Round, the Caster must spend an extra 3 Mana to affect it.
 - **Terror I** — Enemies that can see it for the first time and at the start of their Turns thereafter must pass [Will] or be Frightened (Cd4).
 
-**Findings (3)**
+**Findings (2)**
 
-- ❌ `broken-automation`: Compendium text describes a Mana-cost penalty; scripts/npc-abilities.mjs injects a roll-penalty die (1d8) instead.
 - ⚠️ `unimplemented-passive`: Ability "Terror I" describes mechanical effects (frightened, must-pass) but has no automation in scripts/npc-abilities.mjs.
 - ⚠️ `ability-mentions-status-without-action`: Ability "Terror I" on Dragon, Elder - Green mentions Frightened, but no action on this monster applies those statuses.
 
@@ -754,9 +733,8 @@ Generated: 2026-04-14T20:55:00.591Z
 - **Magic Ward III** — The first time it is unwillingly affected by a Spell each Round, the Caster must spend an extra 3 Mana to affect it.
 - **Terror I** — Enemies that can see it for the first time and at the start of their Turns thereafter must pass [Will] or be Frightened (Cd4).
 
-**Findings (3)**
+**Findings (2)**
 
-- ❌ `broken-automation`: Compendium text describes a Mana-cost penalty; scripts/npc-abilities.mjs injects a roll-penalty die (1d8) instead.
 - ⚠️ `unimplemented-passive`: Ability "Terror I" describes mechanical effects (frightened, must-pass) but has no automation in scripts/npc-abilities.mjs.
 - ⚠️ `ability-mentions-status-without-action`: Ability "Terror I" on Dragon, Elder - Red mentions Frightened, but no action on this monster applies those statuses.
 
@@ -784,9 +762,8 @@ Generated: 2026-04-14T20:55:00.591Z
 - **Magic Ward III** — The first time it is unwillingly affected by a Spell each Round, the Caster must spend an extra 3 Mana to affect it.
 - **Terror I** — Enemies that can see it for the first time and at the start of their Turns thereafter must pass [Will] or be Frightened (Cd4).
 
-**Findings (3)**
+**Findings (2)**
 
-- ❌ `broken-automation`: Compendium text describes a Mana-cost penalty; scripts/npc-abilities.mjs injects a roll-penalty die (1d8) instead.
 - ⚠️ `unimplemented-passive`: Ability "Terror I" describes mechanical effects (frightened, must-pass) but has no automation in scripts/npc-abilities.mjs.
 - ⚠️ `ability-mentions-status-without-action`: Ability "Terror I" on Dragon, Elder - White mentions Frightened, but no action on this monster applies those statuses.
 
@@ -893,10 +870,6 @@ Generated: 2026-04-14T20:55:00.591Z
 - **Immutable** — It can't be transformed.
 - **Magic Ward II** — The first time it is unwillingly affected by a Spell each Round, the Caster must spend an extra 2 Mana to affect it.
 
-**Findings (1)**
-
-- ❌ `broken-automation`: Compendium text describes a Mana-cost penalty; scripts/npc-abilities.mjs injects a roll-penalty die (1d6) instead.
-
 ### Dragon, Young - Blue
 
 - UUID: `Compendium.vagabond.bestiary.Actor.trLqdRvjz70izXqj`
@@ -919,10 +892,6 @@ Generated: 2026-04-14T20:55:00.591Z
 
 - **Immutable** — It can't be transformed.
 - **Magic Ward II** — The first time it is unwillingly affected by a Spell each Round, the Caster must spend an extra 2 Mana to affect it.
-
-**Findings (1)**
-
-- ❌ `broken-automation`: Compendium text describes a Mana-cost penalty; scripts/npc-abilities.mjs injects a roll-penalty die (1d6) instead.
 
 ### Dragon, Young - Green
 
@@ -947,10 +916,6 @@ Generated: 2026-04-14T20:55:00.591Z
 - **Immutable** — It can't be transformed.
 - **Magic Ward II** — The first time it is unwillingly affected by a Spell each Round, the Caster must spend an extra 2 Mana to affect it.
 
-**Findings (1)**
-
-- ❌ `broken-automation`: Compendium text describes a Mana-cost penalty; scripts/npc-abilities.mjs injects a roll-penalty die (1d6) instead.
-
 ### Dragon, Young - Red
 
 - UUID: `Compendium.vagabond.bestiary.Actor.ATWC3zLqqZCvDLGF`
@@ -974,10 +939,6 @@ Generated: 2026-04-14T20:55:00.591Z
 - **Immutable** — It can't be transformed.
 - **Magic Ward II** — The first time it is unwillingly affected by a Spell each Round, the Caster must spend an extra 2 Mana to affect it.
 
-**Findings (1)**
-
-- ❌ `broken-automation`: Compendium text describes a Mana-cost penalty; scripts/npc-abilities.mjs injects a roll-penalty die (1d6) instead.
-
 ### Dragon, Young - White
 
 - UUID: `Compendium.vagabond.bestiary.Actor.cUT2qxNSbgNpwhOT`
@@ -1000,10 +961,6 @@ Generated: 2026-04-14T20:55:00.591Z
 
 - **Immutable** — It can't be transformed.
 - **Magic Ward II** — The first time it is unwillingly affected by a Spell each Round, the Caster must spend an extra 2 Mana to affect it.
-
-**Findings (1)**
-
-- ❌ `broken-automation`: Compendium text describes a Mana-cost penalty; scripts/npc-abilities.mjs injects a roll-penalty die (1d6) instead.
 
 ### Drake
 
@@ -1867,11 +1824,9 @@ Generated: 2026-04-14T20:55:00.591Z
 - **Pack Hunter** — Targets within 5 feet of one of this Being's Allies are Vulnerable to its attacks.
 - **Pounce** — If it moves at least 20' immediately before hitting with an attack on the same Turn, the Target is also knocked Prone.
 
-**Findings (4)**
+**Findings (2)**
 
-- ⚠️ `unimplemented-passive`: Ability "Pack Hunter" describes mechanical effects (vulnerable) but has no automation in scripts/npc-abilities.mjs.
 - ⚠️ `unimplemented-passive`: Ability "Pounce" describes mechanical effects (prone) but has no automation in scripts/npc-abilities.mjs.
-- ⚠️ `ability-mentions-status-without-action`: Ability "Pack Hunter" on Sea Lion mentions Vulnerable, but no action on this monster applies those statuses.
 - ⚠️ `ability-mentions-status-without-action`: Ability "Pounce" on Sea Lion mentions Prone, but no action on this monster applies those statuses.
 
 ### Sea Serpent
@@ -1938,10 +1893,6 @@ Generated: 2026-04-14T20:55:00.591Z
 **Abilities (1)**
 
 - **Magic Ward II** — The first time it is unwillingly affected by a Spell each Round, the Caster must spend an extra 2 Mana to affect it.
-
-**Findings (1)**
-
-- ❌ `broken-automation`: Compendium text describes a Mana-cost penalty; scripts/npc-abilities.mjs injects a roll-penalty die (1d6) instead.
 
 ### Snallygaster
 
@@ -2014,10 +1965,9 @@ Generated: 2026-04-14T20:55:00.591Z
 - **Regenerate II** — Regains 9 (2d8) HP on each of its Turns.
 - **Magic Ward VI** — The first time it is unwillingly affected by a Spell each Round, the Caster must spend an extra 6 Mana to affect it.
 
-**Findings (3)**
+**Findings (2)**
 
 - ℹ️ `speed-ambiguous`: Tarrasque: speedTypes entry "swim" has no speed and speedValues.swim is 0. Implicit base speed? Intent unclear.
-- ⚠️ `unimplemented-passive`: Ability "Magic Ward VI" describes mechanical effects (must-spend-mana) but has no automation in scripts/npc-abilities.mjs.
 - ⚠️ `unimplemented-passive`: Ability "Regenerate II" describes mechanical effects (regains-hp) but has no automation in scripts/npc-abilities.mjs.
 
 ### Troglodyte

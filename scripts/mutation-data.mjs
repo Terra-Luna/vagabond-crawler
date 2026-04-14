@@ -692,13 +692,13 @@ export const MUTATIONS = [
     category: "abilities",
     type: "boon",
     tlDelta: 0,
-    description: "Favored on saves vs spells and magical effects",
+    description: "+1 Mana surcharge on spells cast against it (first time per round)",
     namePrefix: "Warded",
     promptFragment: "shimmering with protective runes, magical barrier",
     suggestedBane: "weakness-silver",
     apply(d) {
       if (!d.system.abilities) d.system.abilities = [];
-      d.system.abilities.push({ name: "Magic Ward I", description: "Favored on saves against spells and magical effects." });
+      d.system.abilities.push({ name: "Magic Ward I", description: "The first time it is unwillingly affected by a Spell each Round, the Caster must spend an extra 1 Mana to affect it." });
     },
   },
   {
@@ -839,13 +839,13 @@ export const MUTATIONS = [
     category: "abilities",
     type: "boon",
     tlDelta: 0,
-    description: "Takes half damage from non-magical sources (11 monsters have this)",
+    description: "+2 Mana surcharge on spells cast against it (first time per round)",
     namePrefix: "Arcane",
     promptFragment: "glowing with arcane sigils, magical energy radiating from body",
     suggestedBane: "weakness-silver",
     apply(d) {
       if (!d.system.abilities) d.system.abilities = [];
-      d.system.abilities.push({ name: "Magic Ward II", description: "Takes half damage from non-magical attacks and effects." });
+      d.system.abilities.push({ name: "Magic Ward II", description: "The first time it is unwillingly affected by a Spell each Round, the Caster must spend an extra 2 Mana to affect it." });
     },
   },
   {

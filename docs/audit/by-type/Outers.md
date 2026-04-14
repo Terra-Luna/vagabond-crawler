@@ -5,9 +5,9 @@ Generated: 2026-04-14T20:55:00.591Z
 | Name | HD | TL | Armor | Zone | Actions | Abilities | Findings |
 |---|---|---|---|---|---|---|---|
 | Agnar | 10 | 3.9 | 2 as Chain | frontline | 2 | 3 | 5 |
-| Angel | 12 | 10.5 | 6 as (+3) Plate; Divine Armor | midline | 6 | 5 | 3 |
+| Angel | 12 | 10.5 | 6 as (+3) Plate; Divine Armor | midline | 6 | 5 | 2 |
 | Byakhee | 15 | 10.5 | 5 as (+2) Plate | midline | 3 | 2 | 1 |
-| Chort | 7 | 5 | 3 as (+1) Chain | frontline | 3 | 1 | 1 |
+| Chort | 7 | 5 | 3 as (+1) Chain | frontline | 3 | 1 | 0 |
 | Cloaker | 6 | 2.6 | 2 as Chain | frontline | 3 | 1 | 2 |
 | Couatl | 9 | 3.8 | 3 as (+1) Chain | backline | 3 | 0 | 1 |
 | Deep One | 3 | 2.5 | 2 as Chain | midline | 3 | 2 | 3 |
@@ -23,18 +23,18 @@ Generated: 2026-04-14T20:55:00.591Z
 | Ogler | 12 | 11.2 | 4 as (+1) Plate | backline | 11 | 3 | 9 |
 | Oni | 8 | 7.9 | 2 as Chain | backline | 8 | 1 | 7 |
 | Otyugh | 6 | 4.6 | 3 as (+1) Chain | frontline | 4 | 1 | 2 |
-| Phoenix | 20 | 10.5 | 5 as (+3) Chain | backline | 4 | 5 | 5 |
-| Pit Fiend | 13 | 7.9 | 5 as (+3) Plate | frontline | 8 | 4 | 8 |
-| Sphinx | 12 | 5.7 | 4 as (+1) Plate | frontline | 4 | 2 | 4 |
-| Sphinx, Archon | 24 | 12.6 | 6 as (+3) Plate | frontline | 10 | 4 | 8 |
-| Stolas Demon | 27 | 11.2 | 7 as (+4) Plate | frontline | 4 | 2 | 3 |
+| Phoenix | 20 | 10.5 | 5 as (+3) Chain | backline | 4 | 5 | 4 |
+| Pit Fiend | 13 | 7.9 | 5 as (+3) Plate | frontline | 8 | 4 | 7 |
+| Sphinx | 12 | 5.7 | 4 as (+1) Plate | frontline | 4 | 2 | 3 |
+| Sphinx, Archon | 24 | 12.6 | 6 as (+3) Plate | frontline | 10 | 4 | 7 |
+| Stolas Demon | 27 | 11.2 | 7 as (+4) Plate | frontline | 4 | 2 | 2 |
 | Thoom | 2 | 2.2 | 1 as Leather | backline | 3 | 2 | 2 |
-| Thulhan | 8 | 3.8 | 3 as (+1) Chain | midline | 4 | 2 | 1 |
+| Thulhan | 8 | 3.8 | 3 as (+1) Chain | midline | 4 | 2 | 0 |
 | Vigzud | 5 | 3.5 | 2 as Chain | midline | 4 | 4 | 8 |
 | Viper Tree | 9 | 3.2 | 2 Bark | frontline | 1 | 0 | 0 |
-| Viskyd | 1 | 1.2 | 1 as Leather | frontline | 2 | 3 | 2 |
+| Viskyd | 1 | 1.2 | 1 as Leather | frontline | 2 | 3 | 1 |
 | Wolf in Sheep's Clothing | 9 | 2.4 | 1 as Leather | frontline | 2 | 0 | 0 |
-| Zotz, Demon | 14 | 9.2 | 4 as (+1) Plate | frontline | 4 | 3 | 3 |
+| Zotz, Demon | 14 | 9.2 | 4 as (+1) Plate | frontline | 4 | 3 | 1 |
 
 ---
 
@@ -95,9 +95,8 @@ Generated: 2026-04-14T20:55:00.591Z
 - **Magic Ward III** — The first time it is unwillingly affected by a Spell each Round, the Caster must spend an extra 3 Mana to affect it.
 - **Flaming Sword** — [Relic; (+3) Silvered Greatsword] Has the Loyalty Power.
 
-**Findings (3)**
+**Findings (2)**
 
-- ❌ `broken-automation`: Compendium text describes a Mana-cost penalty; scripts/npc-abilities.mjs injects a roll-penalty die (1d8) instead.
 - ⚠️ `extraInfo-status-mismatch`: Angel / "Heal": extraInfo mentions Blinded, Paralyzed, Sickened but causedStatuses does not include these ids.
 - ℹ️ `save-mention-orphan`: Angel / "Banish": note mentions save type(s) will but action has no causedStatuses and no damage.
 
@@ -143,10 +142,6 @@ Generated: 2026-04-14T20:55:00.591Z
 **Abilities (1)**
 
 - **Magic Ward II** — The first time it is unwillingly affected by a Spell each Round, the Caster must spend an extra 2 Mana to affect it.
-
-**Findings (1)**
-
-- ❌ `broken-automation`: Compendium text describes a Mana-cost penalty; scripts/npc-abilities.mjs injects a roll-penalty die (1d6) instead.
 
 ### Cloaker
 
@@ -557,9 +552,8 @@ Generated: 2026-04-14T20:55:00.591Z
 - **Magic Ward II** — The first time it is unwillingly affected by a Spell each Round, the Caster must spend an extra 2 Mana to affect it.
 - **Phoenix Down** — [Item] Extremely magical Material. Can Use to revive a dead Being whose corpse the down is placed on at full HP. This does not work on Undead.
 
-**Findings (5)**
+**Findings (4)**
 
-- ❌ `broken-automation`: Compendium text describes a Mana-cost penalty; scripts/npc-abilities.mjs injects a roll-penalty die (1d6) instead.
 - ⚠️ `unimplemented-passive`: Ability "Fiery Revival" describes mechanical effects (burning, must-pass) but has no automation in scripts/npc-abilities.mjs.
 - ⚠️ `unimplemented-passive`: Ability "Living Fire" describes mechanical effects (burning) but has no automation in scripts/npc-abilities.mjs.
 - ⚠️ `ability-mentions-status-without-action`: Ability "Fiery Revival" on Phoenix mentions Burning, but no action on this monster applies those statuses.
@@ -593,9 +587,8 @@ Generated: 2026-04-14T20:55:00.591Z
 - **Regenerate II** — Regains 9 (2d8) HP on each of its Turns.
 - **Terror II** — Enemies that can see it for the first time and at the start of their Turns thereafter must pass [Will] or be Frightened (Cd6 Rounds).
 
-**Findings (8)**
+**Findings (7)**
 
-- ❌ `broken-automation`: Compendium text describes a Mana-cost penalty; scripts/npc-abilities.mjs injects a roll-penalty die (1d8) instead.
 - ⚠️ `damageless-requiresDamage`: Pit Fiend / "Hold": causedStatus "paralyzed" has requiresDamage=true but the action deals no damage — status can never apply by that rule.
 - ℹ️ `elemental-name-untyped`: Pit Fiend / "Wall of Fire": name suggests elemental damage but damageType is "-".
 - ℹ️ `save-mention-orphan`: Pit Fiend / "Symbol of Pain": note mentions save type(s) will but action has no causedStatuses and no damage.
@@ -626,9 +619,8 @@ Generated: 2026-04-14T20:55:00.591Z
 - **Future Sight** — Hinders Saves against its Attacks.
 - **Magic Ward II** — The first time it is unwillingly affected by a Spell each Round, the Caster must spend an extra 2 Mana to affect it.
 
-**Findings (4)**
+**Findings (3)**
 
-- ❌ `broken-automation`: Compendium text describes a Mana-cost penalty; scripts/npc-abilities.mjs injects a roll-penalty die (1d6) instead.
 - ⚠️ `damageless-requiresDamage`: Sphinx / "Roar": causedStatus "dazed" has requiresDamage=true but the action deals no damage — status can never apply by that rule.
 - ⚠️ `damageless-requiresDamage`: Sphinx / "Roar": causedStatus "frightened" has requiresDamage=true but the action deals no damage — status can never apply by that rule.
 - ℹ️ `save-mention-orphan`: Sphinx / "Dispel Magic": note mentions save type(s) will but action has no causedStatuses and no damage.
@@ -663,9 +655,8 @@ Generated: 2026-04-14T20:55:00.591Z
 - **Metalepsis** — (1/Day): This Being gains the approximate answer to a question it asks itself.
 - **Teleporting** — (Recharge Cd4): It can use its Move to teleport to an open space it can see.
 
-**Findings (8)**
+**Findings (7)**
 
-- ❌ `broken-automation`: Compendium text describes a Mana-cost penalty; scripts/npc-abilities.mjs injects a roll-penalty die (1d8) instead.
 - ⚠️ `damageless-requiresDamage`: Sphinx, Archon / "2 - Riddle": causedStatus "dazed" has requiresDamage=true but the action deals no damage — status can never apply by that rule.
 - ⚠️ `damageless-requiresDamage`: Sphinx, Archon / "3 - Time Lock": causedStatus "paralyzed" has requiresDamage=true but the action deals no damage — status can never apply by that rule.
 - ⚠️ `damageless-requiresDamage`: Sphinx, Archon / "Banish": causedStatus "incapacitated" has requiresDamage=true but the action deals no damage — status can never apply by that rule.
@@ -695,10 +686,9 @@ Generated: 2026-04-14T20:55:00.591Z
 - **Magic Ward IV** — The first time it is unwillingly affected by a Spell each Round, the Caster must spend an extra 4 Mana to affect it.
 - **Regenerate III** — Regains 13 (3d8) HP on each of itsTurns.
 
-**Findings (3)**
+**Findings (2)**
 
 - ℹ️ `speed-ambiguous`: Stolas Demon: speedTypes entry "cling" has no speed and speedValues.cling is 0. Implicit base speed? Intent unclear.
-- ⚠️ `unimplemented-passive`: Ability "Magic Ward IV" describes mechanical effects (must-spend-mana) but has no automation in scripts/npc-abilities.mjs.
 - ⚠️ `unimplemented-passive`: Ability "Regenerate III" describes mechanical effects (regains-hp) but has no automation in scripts/npc-abilities.mjs.
 
 ### Thoom
@@ -744,10 +734,6 @@ Generated: 2026-04-14T20:55:00.591Z
 
 - **Levitation** — (Focus) It has Fly
 - **Magic Ward II** — The first time it is unwillingly affected by a Spell each Round, the Caster must spend an extra 2 Mana to affect it.
-
-**Findings (1)**
-
-- ❌ `broken-automation`: Compendium text describes a Mana-cost penalty; scripts/npc-abilities.mjs injects a roll-penalty die (1d6) instead.
 
 ### Vigzud
 
@@ -820,9 +806,8 @@ Generated: 2026-04-14T20:55:00.591Z
 - **Magic Ward I** — The first time it is unwillingly affected by a Spell each Round, the Caster must spend an extra 1 Mana to affect it.
 - **Sticky** — Hinders attempts to end being Restrained by it. Beings that make physical contact with it must pass [Endure] or be Restrained.
 
-**Findings (2)**
+**Findings (1)**
 
-- ❌ `broken-automation`: Compendium text describes a Mana-cost penalty; scripts/npc-abilities.mjs injects a roll-penalty die (1d4) instead.
 - ⚠️ `unimplemented-passive`: Ability "Sticky" describes mechanical effects (restrained, must-pass) but has no automation in scripts/npc-abilities.mjs.
 
 ### Wolf in Sheep's Clothing
@@ -862,8 +847,6 @@ Generated: 2026-04-14T20:55:00.591Z
 - **Magic Ward II** — The first time it is unwillingly affected by a Spell each Round, the Caster must spend an extra 2 Mana to affect it.
 - **Nimble** — Attacks against it can’t be Favored if it can Move.
 
-**Findings (3)**
+**Findings (1)**
 
-- ❌ `broken-automation`: Compendium text describes a Mana-cost penalty; scripts/npc-abilities.mjs injects a roll-penalty die (1d6) instead.
 - ⚠️ `damageless-requiresDamage`: Zotz, Demon / "Shriek": causedStatus "frightened" has requiresDamage=true but the action deals no damage — status can never apply by that rule.
-- ⚠️ `unimplemented-passive`: Ability "Nimble" describes mechanical effects (favored) but has no automation in scripts/npc-abilities.mjs.

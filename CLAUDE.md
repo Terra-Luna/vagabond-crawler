@@ -50,7 +50,7 @@ Two patterns:
 - `_bindEvents()` — delegate via `[data-action]` attributes
 - Guard: `if (!this._el) return;` at top of render
 
-**2. ApplicationV2 windows** (encounter roller, alchemy cookbook, relic forge, loot manager/tracker):
+**2. ApplicationV2 windows** (encounter roller, relic forge, loot manager/tracker, scroll forge, merchant shop, party inventory):
 ```js
 class MyApp extends HandlebarsApplicationMixin(ApplicationV2) {
   static DEFAULT_OPTIONS = { id: "vagabond-crawler-my-app", window: { title: "..." }, position: { width: 700 } };
@@ -84,6 +84,7 @@ class MyApp extends HandlebarsApplicationMixin(ApplicationV2) {
 | `flanking-checker.mjs` | Auto-apply Vulnerable when 2+ allies adjacent to foe, mirrors outgoingSavesModifier to world actor for unlinked tokens |
 | `npc-abilities.mjs` | Passive hooks: Pack Instincts/Tactics (save hinder), Magic Ward I/II/III (cast penalty), item-sequencer cone patch, npcAction wrapper |
 | `npc-action-menu.mjs` | Combat action dropdown + spell cast dialog with mana cost calc, CrawlerSpellDialog |
+| `combat-helpers.mjs` | Shared utilities for combat-related subsystems (plain module, not a singleton) |
 | `countdown-roller.mjs` | Auto-rolls countdown dice at round start, applies tick damage, cleans up on combat end |
 | `scroll-forge.mjs` | Spell Scroll Forge ApplicationV2 — create consumable scrolls from compendium, use via context menu |
 | `relic-forge.mjs` | Relic crafting ApplicationV2 window |
@@ -95,6 +96,8 @@ class MyApp extends HandlebarsApplicationMixin(ApplicationV2) {
 | `loot-tables.mjs` | Loot table definitions and roll logic |
 | `loot-generator.mjs` | Loot Generator — roll on core Vagabond loot tables (Levels 1-10) with compendium item creation |
 | `loot-data.mjs` | Embedded loot table data from the Vagabond core book |
+| `merchant-shop.mjs` | Two-mode shop ApplicationV2 — compendium global inventory or NPC actor inventory; GM opens for all players |
+| `party-inventory.mjs` | Party inventory view ApplicationV2 — side-by-side member inventories for loot redistribution |
 | `item-drops.mjs` | Canvas item drop handling (Owner permission, skipStack on pickup) |
 | `crawl-clock.mjs` | SVG progress clock on canvas |
 | `dialog-helpers.mjs` | `confirmDialog()` and `waitDialog()` wrappers around DialogV2 |
@@ -129,6 +132,7 @@ Conventional Commits: `feat:`, `fix:`, `refactor:`, `docs:`, `chore:`. Short imp
 - **Render debounce**: CrawlStrip uses `requestAnimationFrame` queuing
 - **Linked + unlinked tokens**: always handle both — use `token.actor` (synthetic) not just actor ID
 - **World actor vs token actor**: the save system uses `game.actors.get(actorId)` (world actor). When applying effects to unlinked tokens, mirror relevant changes (e.g. `outgoingSavesModifier`) to the world actor too. See flanking-checker and npc-abilities for examples.
+- **Passing actors to npc-abilities helpers**: `applyPackInstincts` and similar expect the synthetic token actor (`tok.actor`), not the world actor. World-actor `getActiveTokens(true)` often returns empty for unlinked tokens, causing the helper to silently no-op.
 - **Disposition over actor type**: use `token.document.disposition === CONST.TOKEN_DISPOSITIONS.FRIENDLY` for hero/NPC classification, NOT `actor.type === "character"`. Friendly NPC summons must appear on the Heroes side.
 - **Party actor speed**: `system.speed` is an object `{ base, crawl }` on characters but a flat number on party actors. Always check `typeof system.speed === "object"` before accessing `.base` / `.crawl`.
 - **skipStack option**: pass `{ skipStack: true }` to `createEmbeddedDocuments` when creating items that should NOT auto-merge (lit torches, picked-up items with state).
@@ -146,6 +150,33 @@ game.vagabondCrawler.scrollForge.open()  // open Scroll Forge
 game.vagabondCrawler.movement._turnStartPos  // rollback position snapshots
 game.patrol                           // Patrol module instances (if installed)
 ```
+
+**Foundry MCP testing**:
+- `mcp__foundry-vtt__evaluate` runs JS in the live game context. Module-wrapped classes (`SpellHandler`, `VagabondItem`) are already wrapped — test against live behavior, not the raw system code.
+- Reload after editing module files: `window.location.reload()` via evaluate. Wait ~1s then re-query. The MCP reconnects automatically.
+- Results larger than ~256KB are saved to a file path instead of returned inline; use `jq` on the file to extract.
+- For weapon-attack tests, VCE's `RangeValidator` returns `null` from `rollAttack` if target is out of range — pick an adjacent target or expect no roll formula in the result.
+- For transient test actors/tokens: create unlinked tokens from a cloned world actor so `token.actor` is synthetic (matches the real runtime path for NPCs); clean up both tokens and world actors in `finally`.
+
+## System / Module Wrap Chain Gotchas
+
+The `vagabond-character-enhancer` (VCE) module wraps several system methods in its `ready` hook. Since it's alphabetically before `vagabond-crawler`, VCE's ready fires first. Consequences:
+
+- **VCE wraps** `SpellHandler.castSpell`, `VagabondItem.rollAttack`, `VagabondRollBuilder.buildAndEvaluateD20WithRollData`, `VagabondDamageHelper.calculateFinalDamage`, etc.
+- **`_rangeFavorHinder` pattern**: VCE's `rollAttack` wrap strips the `favorHinder` argument and re-injects it via module-scope state inside its `buildAndEvaluateD20` wrap. A wrap that modifies `favorHinder` BEFORE VCE runs its combine will be overwritten.
+- **Fix for "run after VCE's favor combine"**: wrap in `Hooks.once("setup", ...)` (fires before any `ready` hook). Our wrap becomes innermost → VCE calls through to us with the fully-combined favor. See `registerEarlyRollBuilderWrap()` in `scripts/npc-abilities.mjs`.
+- **For weapon attacks**: the system's target-side `incomingAttacksModifier` is applied inside `rollAttack` using 1-for-1 cancellation (`systems/vagabond/module/documents/item.mjs:592`). By the time `buildAndEvaluateD20` fires, target modifiers are already baked into `favorHinder`.
+- **Damage resolution**: `VagabondDamageHelper.calculateFinalDamage` (`systems/vagabond/module/helpers/damage-helper.mjs:1117`) reads `actor.system.armor` directly. Active Effects with `system.armor` OVERRIDE work transparently — no need to wrap the damage helper (see Soft Underbelly).
+
+## Monster Audit Database (`docs/audit/`)
+
+Committed dataset of every NPC across the Vagabond compendium packs. Source JSON + derived Markdown. Used as the ground-truth reference for ability automation work in `scripts/npc-abilities.mjs`.
+
+- **Source files**: `docs/audit/{monsters,abilities,actions,findings}.json`
+- **Readable views**: `docs/audit/abilities.md`, `actions.md`, `by-type/*.md`, `INDEX.md`
+- **Regenerate** (after compendium changes): run `scripts/audit/extract.mjs`'s body via `mcp__foundry-vtt__evaluate`, write result to `monsters.json`, then `node scripts/audit/analyze.mjs && node scripts/audit/markdown.mjs`. Output is deterministic.
+- **`scripts/audit/analyze.mjs` mirrors `PASSIVE_ABILITIES`** from `scripts/npc-abilities.mjs` — update both when adding ability automation so the audit flips the entry from `unimplemented` to `implemented`.
+- **Implementing a new ability**: add `PASSIVE_ABILITIES` entry in `scripts/npc-abilities.mjs`, mirror in `scripts/audit/analyze.mjs`, re-run audit, test via Foundry MCP with live actor tokens (spawn temp world actors for unlinked-token cases).
 
 ## Releasing a New Version
 

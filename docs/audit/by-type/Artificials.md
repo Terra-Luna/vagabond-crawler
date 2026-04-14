@@ -8,14 +8,14 @@ Generated: 2026-04-14T20:55:00.591Z
 | Animated Armor | 2 | 2.4 | 3 as Plate | frontline | 1 | 2 | 2 |
 | Crawling Wall | 13 | 6.1 | 3 as Plate | frontline | 3 | 1 | 0 |
 | Dungeonheart | 10 | 1.7 | 1 as Leather |  | 7 | 0 | 0 |
-| Flying Spellbook | 1 | 0.7 | 0 as Unarmored | backline | 2 | 2 | 2 |
-| Flying Sword | 1 | 2.3 | 3 as Plate | frontline | 1 | 2 | 3 |
+| Flying Spellbook | 1 | 0.7 | 0 as Unarmored | backline | 2 | 2 | 1 |
+| Flying Sword | 1 | 2.3 | 3 as Plate | frontline | 1 | 2 | 2 |
 | Gargoyle | 4 | 2.6 | 2 as Chain | frontline | 3 | 1 | 1 |
-| Golem, Bone | 8 | 4.3 | 2 as Chain | frontline | 2 | 3 | 1 |
-| Golem, Clay | 12 | 9.5 | 0 as Unarmored | frontline | 2 | 4 | 3 |
+| Golem, Bone | 8 | 4.3 | 2 as Chain | frontline | 2 | 3 | 0 |
+| Golem, Clay | 12 | 9.5 | 0 as Unarmored | frontline | 2 | 4 | 2 |
 | Golem, Flesh | 9 | 4.7 | 0 as Unarmored | frontline | 2 | 3 | 5 |
-| Golem, Iron | 18 | 8.9 | 5 as (+2) Plate | frontline | 3 | 3 | 1 |
-| Golem, Stone | 13 | 7.5 | 3 as (+1) Chain | frontline | 3 | 2 | 2 |
+| Golem, Iron | 18 | 8.9 | 5 as (+2) Plate | frontline | 3 | 3 | 0 |
+| Golem, Stone | 13 | 7.5 | 3 as (+1) Chain | frontline | 3 | 2 | 1 |
 | Homunculus | 1 | 0.9 | 0 as Unarmored | midline | 2 | 0 | 1 |
 | Joust Guardian | 6 | 6.3 | 3 as Plate | frontline | 3 | 1 | 0 |
 | Living Statue, Crystal | 3 | 2.6 | 3 as (+1) Chain | frontline | 1 | 1 | 0 |
@@ -27,7 +27,7 @@ Generated: 2026-04-14T20:55:00.591Z
 | Potead, Small | 1 | 1.5 | 2 as Chain | frontline | 1 | 1 | 0 |
 | Ripworm | 4 | 3.1 | 3 as Plate | frontline | 1 | 2 | 0 |
 | Scarecrow | 5 | 2.2 | 1 as Leather | frontline | 3 | 1 | 2 |
-| Stone Colossus | 25 | 11.7 | 6 as (+3) Plate | frontline | 3 | 4 | 2 |
+| Stone Colossus | 25 | 11.7 | 6 as (+3) Plate | frontline | 3 | 4 | 1 |
 
 ---
 
@@ -143,10 +143,9 @@ Generated: 2026-04-14T20:55:00.591Z
 - **Antimagic Vulnerability** — It is Dazed for Cd4 if affected by the Dispel Spell or other antimagic.
 - **Nimble** — Attacks against it can't be Favored if it can Move.
 
-**Findings (2)**
+**Findings (1)**
 
 - ⚠️ `unimplemented-passive`: Ability "Antimagic Vulnerability" describes mechanical effects (dazed) but has no automation in scripts/npc-abilities.mjs.
-- ⚠️ `unimplemented-passive`: Ability "Nimble" describes mechanical effects (favored) but has no automation in scripts/npc-abilities.mjs.
 
 ### Flying Sword
 
@@ -167,10 +166,9 @@ Generated: 2026-04-14T20:55:00.591Z
 - **Antimagic Vulnerability** — It is Dazed (Cd4) if affected by the Dispel Spell or other antimagic.
 - **Nimble** — Attacks against it can't be Favored if it can Move.
 
-**Findings (3)**
+**Findings (2)**
 
 - ⚠️ `unimplemented-passive`: Ability "Antimagic Vulnerability" describes mechanical effects (dazed) but has no automation in scripts/npc-abilities.mjs.
-- ⚠️ `unimplemented-passive`: Ability "Nimble" describes mechanical effects (favored) but has no automation in scripts/npc-abilities.mjs.
 - ⚠️ `ability-mentions-status-without-action`: Ability "Antimagic Vulnerability" on Flying Sword mentions Dazed, but no action on this monster applies those statuses.
 
 ### Gargoyle
@@ -220,10 +218,6 @@ Generated: 2026-04-14T20:55:00.591Z
 - **Limbs** — It is encountered with 5 (d6 + 2) limbs, and loses a limb each time it takes at least 4 damage.
 - **Magic Ward I** — The first time it is unwillingly affected by a Spell each Round, the Caster must spend an extra 1 Mana to affect it.
 
-**Findings (1)**
-
-- ❌ `broken-automation`: Compendium text describes a Mana-cost penalty; scripts/npc-abilities.mjs injects a roll-penalty die (1d4) instead.
-
 ### Golem, Clay
 
 - UUID: `Compendium.vagabond.bestiary.Actor.W5kmv1bYrErmzoUI`
@@ -246,9 +240,8 @@ Generated: 2026-04-14T20:55:00.591Z
 - **Magic Ward I** — The first time it is unwillingly affected by a Spell each Round, the Caster must spend an extra 1 Mana to affect it.
 - **Unbaked** — If it takes 5 or more Fire damage at once, it is Dazed (Cd4).
 
-**Findings (3)**
+**Findings (2)**
 
-- ❌ `broken-automation`: Compendium text describes a Mana-cost penalty; scripts/npc-abilities.mjs injects a roll-penalty die (1d4) instead.
 - ⚠️ `unimplemented-passive`: Ability "Unbaked" describes mechanical effects (dazed, takes-damage) but has no automation in scripts/npc-abilities.mjs.
 - ⚠️ `ability-mentions-status-without-action`: Ability "Unbaked" on Golem, Clay mentions Dazed, but no action on this monster applies those statuses.
 
@@ -304,10 +297,6 @@ Generated: 2026-04-14T20:55:00.591Z
 - **Immutable** — It can't be transformed.
 - **Magic Ward I** — The first time it is unwillingly affected by a Spell each Round, the Caster must spend an extra 1 Mana to affect it.
 
-**Findings (1)**
-
-- ❌ `broken-automation`: Compendium text describes a Mana-cost penalty; scripts/npc-abilities.mjs injects a roll-penalty die (1d4) instead.
-
 ### Golem, Stone
 
 - UUID: `Compendium.vagabond.bestiary.Actor.RCrdmkp96a9uhfT2`
@@ -329,9 +318,8 @@ Generated: 2026-04-14T20:55:00.591Z
 - **Immutable** — It can't be transformed.
 - **Magic Ward I** — The first time it is unwillingly affected by a Spell each Round, the Caster must spend an extra 1 Mana to affect it.
 
-**Findings (2)**
+**Findings (1)**
 
-- ❌ `broken-automation`: Compendium text describes a Mana-cost penalty; scripts/npc-abilities.mjs injects a roll-penalty die (1d4) instead.
 - ⚠️ `damageless-requiresDamage`: Golem, Stone / "Slow Down": causedStatus "dazed" has requiresDamage=true but the action deals no damage — status can never apply by that rule.
 
 ### Homunculus
@@ -581,7 +569,6 @@ Generated: 2026-04-14T20:55:00.591Z
 - **Magic Ward IV** — The first time it is unwillingly affected by a Spell each Round, the Caster must spend an extra 4 Mana to affect it.
 - **Self-Destruct** — If it is at or below half its HP, its core begins self-destructing. This core goes off in 1 minute, and the sonic boom deals 200 damage to everything within 1 mile.
 
-**Findings (2)**
+**Findings (1)**
 
-- ⚠️ `unimplemented-passive`: Ability "Magic Ward IV" describes mechanical effects (must-spend-mana) but has no automation in scripts/npc-abilities.mjs.
 - ⚠️ `unimplemented-passive`: Ability "Self-Destruct" describes mechanical effects (deals-damage) but has no automation in scripts/npc-abilities.mjs.

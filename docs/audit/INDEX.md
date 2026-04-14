@@ -6,7 +6,7 @@ Foundry: 13.351 · System: vagabond 5.2.1
 - **Monsters**: 348
 - **Unique abilities**: 178
 - **Unique actions**: 245
-- **Total findings**: 426  (3 error, 294 warning, 129 info)
+- **Total findings**: 397  (0 error, 268 warning, 129 info)
 
 ## Packs
 
@@ -38,17 +38,13 @@ Foundry: 13.351 · System: vagabond 5.2.1
 
 | Subcategory | Count |
 |---|---|
-| ability-mentions-status-without-action | 116 |
-| broken-automation | 3 |
+| ability-mentions-status-without-action | 96 |
 | damageless-requiresDamage | 69 |
 | elemental-name-untyped | 17 |
 | extraInfo-status-mismatch | 27 |
 | save-mention-orphan | 16 |
 | speed-ambiguous | 96 |
-| unimplemented-passive | 82 |
+| unimplemented-passive | 76 |
 
 ## Top Errors
 
-- **broken-automation** — Compendium text describes a Mana-cost penalty; scripts/npc-abilities.mjs injects a roll-penalty die (1d4) instead. (10 monsters)
-- **broken-automation** — Compendium text describes a Mana-cost penalty; scripts/npc-abilities.mjs injects a roll-penalty die (1d6) instead. (16 monsters)
-- **broken-automation** — Compendium text describes a Mana-cost penalty; scripts/npc-abilities.mjs injects a roll-penalty die (1d8) instead. (9 monsters)

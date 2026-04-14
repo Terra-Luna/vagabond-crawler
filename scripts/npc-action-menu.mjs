@@ -13,7 +13,7 @@
  */
 
 import { MODULE_ID } from "./vagabond-crawler.mjs";
-import { setCastCheckFlag, applyPackInstincts } from "./npc-abilities.mjs";
+import { setCastCheckFlag, applyPackInstincts, computeWardSurcharge, flagWardsTriggered } from "./npc-abilities.mjs";
 
 // ─── Spell State ──────────────────────────────────────────────────────────────
 
@@ -49,8 +49,17 @@ function _calcSpellCost(actor, spell, state) {
     ? Math.max(0, (deliveryDefs[state.deliveryType]?.cost ?? 0) - deliveryRed) : 0;
   const deliveryIncreaseCost = state.deliveryType
     ? state.deliveryIncrease * (increaseCost[state.deliveryType] ?? 0) : 0;
-  const totalCost = Math.max(0, damageCost + fxCost + deliveryBaseCost + deliveryIncreaseCost - spellRed);
-  return { damageCost, fxCost, deliveryBaseCost, deliveryIncreaseCost, totalCost };
+  let totalCost = Math.max(0, damageCost + fxCost + deliveryBaseCost + deliveryIncreaseCost - spellRed);
+
+  // Magic Ward surcharge — matches the sheet cast path wrap in scripts/npc-abilities.mjs.
+  // Adds +N Mana per warded target (first time per round) to the displayed/validated cost.
+  const { totalSurcharge } = computeWardSurcharge(game.user?.targets);
+  const out = { damageCost, fxCost, deliveryBaseCost, deliveryIncreaseCost, totalCost };
+  if (totalSurcharge > 0) {
+    out.wardSurcharge = totalSurcharge;
+    out.totalCost = totalCost + totalSurcharge;
+  }
+  return out;
 }
 
 function _getSizeHint(state) {
@@ -287,6 +296,11 @@ export class CrawlerSpellDialog extends foundry.applications.api.ApplicationV2 {
     const s     = this.spellState;
     const actor = this.actor;
     const spell = this.spell;
+    // Snapshot ward targets at the moment of cast-commit so flagWardsTriggered
+    // can consume them after a successful deduction below. _calcSpellCost also
+    // reads the live targets and folds the surcharge into totalCost — both
+    // call into computeWardSurcharge, which is idempotent (it only reads state).
+    const wardSnapshot = computeWardSurcharge(game.user?.targets);
     const costs = _calcSpellCost(actor, spell, s);
 
     if (!s.deliveryType)                                          { ui.notifications.warn("Select a delivery type first!"); return; }
@@ -336,7 +350,8 @@ export class CrawlerSpellDialog extends foundry.applications.api.ApplicationV2 {
           actor.system.favorHinder || "none", false, false
         );
 
-        // Set cast-check flag so Magic Ward penalty is injected
+        // Flag this roll as a Cast Check so the buildAndEvaluateD20 wrapper
+        // in npc-abilities.mjs applies target favor/hinder (Vulnerable, etc.).
         setCastCheckFlag(true);
         try {
           roll = await VagabondRollBuilder.buildAndEvaluateD20WithRollData(rollData, favorHinder);
@@ -352,6 +367,15 @@ export class CrawlerSpellDialog extends foundry.applications.api.ApplicationV2 {
 
       if (isSuccess) {
         await actor.update({ "system.mana.current": Math.max(0, actor.system.mana.current - costs.totalCost) });
+
+        // Magic Ward: mana was actually spent (including any surcharge), so
+        // consume each targeted ward so it doesn't re-charge this round.
+        if (wardSnapshot.totalSurcharge > 0) {
+          await flagWardsTriggered(wardSnapshot.entries);
+          const names = wardSnapshot.entries.map(e => e.actor.name).join(", ");
+          ui.notifications.info(`Magic Ward: ${actor.name} paid +${wardSnapshot.totalSurcharge} Mana surcharge against ${names}`);
+        }
+
         // Apply focus if requested
         if (s.focusAfterCast) {
           const current = actor.system.focus?.spellIds ?? [];

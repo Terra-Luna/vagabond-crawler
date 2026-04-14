@@ -6,55 +6,11 @@ Generated: 2026-04-14T20:55:00.591Z
 
 | Status | Count |
 |---|---:|
-| ❌ Broken Automation | 3 |
-| ⚠️ Unimplemented (mechanical text, no automation) | 84 |
-| ✅ Implemented | 1 |
+| ⚠️ Unimplemented (mechanical text, no automation) | 78 |
+| ✅ Implemented | 10 |
 | 📖 Flavor (no mechanics detected) | 90 |
 
-## ❌ Broken Automation — 3
-
-### Magic Ward II  `×16`
-
-> The first time it is unwillingly affected by a Spell each Round, the Caster must spend an extra 2 Mana to affect it.
-
-- **Why:** Compendium text describes a Mana-cost penalty; scripts/npc-abilities.mjs injects a roll-penalty die (1d6) instead.
-- **Keywords:** verbs: must-spend-mana
-- **Monsters:** Archmage, Carcolh, Chort, Dragon, Young - Black, Dragon, Young - Blue, Dragon, Young - Green, Dragon, Young - Red, Dragon, Young - White, Hag, Green, Mummy Lord _(+6 more)_
-
-### Magic Ward I  `×10`
-
-> The first time it is unwillingly affected by a Spell each Round, the Caster must spend an extra 1 Mana to affect it.
-
-- **Why:** Compendium text describes a Mana-cost penalty; scripts/npc-abilities.mjs injects a roll-penalty die (1d4) instead.
-- **Keywords:** verbs: must-spend-mana
-- **Monsters:** Brownie, Golem, Bone, Golem, Clay, Golem, Iron, Golem, Stone, Hag, Grove, Hag, Sea, Mermaid, Nymph, Viskyd
-
-### Magic Ward III  `×9`
-
-> The first time it is unwillingly affected by a Spell each Round, the Caster must spend an extra 3 Mana to affect it.
-
-- **Why:** Compendium text describes a Mana-cost penalty; scripts/npc-abilities.mjs injects a roll-penalty die (1d8) instead.
-- **Keywords:** verbs: must-spend-mana
-- **Monsters:** Angel, Dragon, Elder - Black, Dragon, Elder - Blue, Dragon, Elder - Green, Dragon, Elder - Red, Dragon, Elder - White, Pit Fiend, Sphinx, Archon, Unicorn
-
-## ⚠️ Unimplemented (mechanical text, no automation) — 84
-
-### Nimble  `×15`
-
-> Attacks against it can’t be Favored if it can Move.
-
-- **Text variants:** 2
-- **Why:** Description mentions mechanical effects but no PASSIVE_ABILITIES entry exists.
-- **Keywords:** verbs: favored
-- **Monsters:** Almiraj, Bat, Bat, Bat, Giant, Bat, Giant, Flying Spellbook, Flying Sword, Hawk, Owl, Rabbit _(+5 more)_
-
-### Pack Hunter  `×15`
-
-> Targets within 5 feet of one of this Being's Allies are Vulnerable to its attacks.
-
-- **Why:** Description mentions mechanical effects but no PASSIVE_ABILITIES entry exists.
-- **Keywords:** statuses: vulnerable
-- **Monsters:** Cat, Great, Dog, Medium, Dog, Small, Rat, Rat, Rat, Giant, Rat, Giant, Sabre-tooth Tiger, Sea Lion, Velociraptor _(+5 more)_
+## ⚠️ Unimplemented (mechanical text, no automation) — 78
 
 ### Nightwalker  `×9`
 
@@ -72,14 +28,6 @@ Generated: 2026-04-14T20:55:00.591Z
 - **Why:** Description mentions mechanical effects but no PASSIVE_ABILITIES entry exists.
 - **Keywords:** statuses: frightened · verbs: must-pass · saves: Will · durations: cd4
 - **Monsters:** Dimension Ripper, Dragon, Elder - Black, Dragon, Elder - Blue, Dragon, Elder - Green, Dragon, Elder - Red, Dragon, Elder - White, Hag, Green, Hag, Grove, Hag, Sea
-
-### Magic Ward IV  `×7`
-
-> The first time it is unwillingly affected by a Spell each Round, the Caster must spend an extra 4 Mana to affect it.
-
-- **Why:** Description mentions mechanical effects but no PASSIVE_ABILITIES entry exists.
-- **Keywords:** verbs: must-spend-mana
-- **Monsters:** Dragon, Ancient - Black, Dragon, Ancient - Blue, Dragon, Ancient - Green, Dragon, Ancient - Red, Dragon, Ancient - White, Stolas Demon, Stone Colossus
 
 ### Pounce  `×7`
 
@@ -107,14 +55,6 @@ Generated: 2026-04-14T20:55:00.591Z
 - **Why:** Description mentions mechanical effects but no PASSIVE_ABILITIES entry exists.
 - **Keywords:** statuses: burning
 - **Monsters:** Elemental, Fire, Elemental, Greater Fire, Elemental, Lesser Fire, Firebat, Phoenix
-
-### Soft Underbelly  `×5`
-
-> Its Armor is 0 while it is Prone.
-
-- **Why:** Description mentions mechanical effects but no PASSIVE_ABILITIES entry exists.
-- **Keywords:** statuses: prone
-- **Monsters:** Ankheg, Beetle, Giant Fire, Beetle, Giant Tiger, Bulette, Carcass Crawler
 
 ### Sticky  `×5`
 
@@ -507,22 +447,6 @@ Generated: 2026-04-14T20:55:00.591Z
 - **Keywords:** statuses: restrained
 - **Monsters:** Agnar
 
-### Magic Ward V  `×1`
-
-> The first time it is unwillingly affected by a Spell each Round, the Caster must spend an extra 5 Mana to affect it.
-
-- **Why:** Description mentions mechanical effects but no PASSIVE_ABILITIES entry exists.
-- **Keywords:** verbs: must-spend-mana
-- **Monsters:** Lich
-
-### Magic Ward VI  `×1`
-
-> The first time it is unwillingly affected by a Spell each Round, the Caster must spend an extra 6 Mana to affect it.
-
-- **Why:** Description mentions mechanical effects but no PASSIVE_ABILITIES entry exists.
-- **Keywords:** verbs: must-spend-mana
-- **Monsters:** Tarrasque
-
 ### Mind of Madness  `×1`
 
 > It can Cast while Berserk.
@@ -731,7 +655,64 @@ Generated: 2026-04-14T20:55:00.591Z
 - **Keywords:** statuses: charmed, frightened
 - **Monsters:** Cultist
 
-## ✅ Implemented — 1
+## ✅ Implemented — 10
+
+### Magic Ward II  `×16`
+
+> The first time it is unwillingly affected by a Spell each Round, the Caster must spend an extra 2 Mana to affect it.
+
+- **Why:** Matched scripts/npc-abilities.mjs PASSIVE_ABILITIES entry (type: manaSurcharge).
+- **Keywords:** verbs: must-spend-mana
+- **Monsters:** Archmage, Carcolh, Chort, Dragon, Young - Black, Dragon, Young - Blue, Dragon, Young - Green, Dragon, Young - Red, Dragon, Young - White, Hag, Green, Mummy Lord _(+6 more)_
+
+### Nimble  `×15`
+
+> Attacks against it can’t be Favored if it can Move.
+
+- **Text variants:** 2
+- **Why:** Matched scripts/npc-abilities.mjs PASSIVE_ABILITIES entry (type: nimble).
+- **Keywords:** verbs: favored
+- **Monsters:** Almiraj, Bat, Bat, Bat, Giant, Bat, Giant, Flying Spellbook, Flying Sword, Hawk, Owl, Rabbit _(+5 more)_
+
+### Pack Hunter  `×15`
+
+> Targets within 5 feet of one of this Being's Allies are Vulnerable to its attacks.
+
+- **Why:** Matched scripts/npc-abilities.mjs PASSIVE_ABILITIES entry (type: packInstincts).
+- **Keywords:** statuses: vulnerable
+- **Monsters:** Cat, Great, Dog, Medium, Dog, Small, Rat, Rat, Rat, Giant, Rat, Giant, Sabre-tooth Tiger, Sea Lion, Velociraptor _(+5 more)_
+
+### Magic Ward I  `×10`
+
+> The first time it is unwillingly affected by a Spell each Round, the Caster must spend an extra 1 Mana to affect it.
+
+- **Why:** Matched scripts/npc-abilities.mjs PASSIVE_ABILITIES entry (type: manaSurcharge).
+- **Keywords:** verbs: must-spend-mana
+- **Monsters:** Brownie, Golem, Bone, Golem, Clay, Golem, Iron, Golem, Stone, Hag, Grove, Hag, Sea, Mermaid, Nymph, Viskyd
+
+### Magic Ward III  `×9`
+
+> The first time it is unwillingly affected by a Spell each Round, the Caster must spend an extra 3 Mana to affect it.
+
+- **Why:** Matched scripts/npc-abilities.mjs PASSIVE_ABILITIES entry (type: manaSurcharge).
+- **Keywords:** verbs: must-spend-mana
+- **Monsters:** Angel, Dragon, Elder - Black, Dragon, Elder - Blue, Dragon, Elder - Green, Dragon, Elder - Red, Dragon, Elder - White, Pit Fiend, Sphinx, Archon, Unicorn
+
+### Magic Ward IV  `×7`
+
+> The first time it is unwillingly affected by a Spell each Round, the Caster must spend an extra 4 Mana to affect it.
+
+- **Why:** Matched scripts/npc-abilities.mjs PASSIVE_ABILITIES entry (type: manaSurcharge).
+- **Keywords:** verbs: must-spend-mana
+- **Monsters:** Dragon, Ancient - Black, Dragon, Ancient - Blue, Dragon, Ancient - Green, Dragon, Ancient - Red, Dragon, Ancient - White, Stolas Demon, Stone Colossus
+
+### Soft Underbelly  `×5`
+
+> Its Armor is 0 while it is Prone.
+
+- **Why:** Matched scripts/npc-abilities.mjs PASSIVE_ABILITIES entry (type: softUnderbelly).
+- **Keywords:** statuses: prone
+- **Monsters:** Ankheg, Beetle, Giant Fire, Beetle, Giant Tiger, Bulette, Carcass Crawler
 
 ### Pack Instincts  `×3`
 
@@ -740,6 +721,22 @@ Generated: 2026-04-14T20:55:00.591Z
 - **Why:** Matched scripts/npc-abilities.mjs PASSIVE_ABILITIES entry (type: packInstincts).
 - **Keywords:** statuses: vulnerable
 - **Monsters:** Kobold, Kobold, Alchemist, Kobold, Warrior
+
+### Magic Ward V  `×1`
+
+> The first time it is unwillingly affected by a Spell each Round, the Caster must spend an extra 5 Mana to affect it.
+
+- **Why:** Matched scripts/npc-abilities.mjs PASSIVE_ABILITIES entry (type: manaSurcharge).
+- **Keywords:** verbs: must-spend-mana
+- **Monsters:** Lich
+
+### Magic Ward VI  `×1`
+
+> The first time it is unwillingly affected by a Spell each Round, the Caster must spend an extra 6 Mana to affect it.
+
+- **Why:** Matched scripts/npc-abilities.mjs PASSIVE_ABILITIES entry (type: manaSurcharge).
+- **Keywords:** verbs: must-spend-mana
+- **Monsters:** Tarrasque
 
 ## 📖 Flavor (no mechanics detected) — 90
 

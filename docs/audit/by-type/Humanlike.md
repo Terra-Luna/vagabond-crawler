@@ -7,7 +7,7 @@ Generated: 2026-04-14T20:55:00.591Z
 | Acolyte | 1 | 1.3 | 0 as Unarmored | backline | 4 | 0 | 1 |
 | Apothecary | 1 | 0.5 | 0 as Unarmored | backline | 3 | 0 | 1 |
 | Archer | 1 | 2.3 | 1 as Leather | backline | 2 | 1 | 0 |
-| Archmage | 9 | 7.1 | 2 as Chain | backline | 7 | 1 | 2 |
+| Archmage | 9 | 7.1 | 2 as Chain | backline | 7 | 1 | 1 |
 | Assassin | 1 | 2.3 | 1 as Leather | midline | 2 | 1 | 2 |
 | Bandit | 1 | 1.5 | 1 as Leather | midline | 1 | 0 | 0 |
 | Bard | 1 | 1.2 | 1 as Leather | midline | 2 | 0 | 0 |
@@ -116,9 +116,8 @@ Generated: 2026-04-14T20:55:00.591Z
 
 - **Magic Ward II** — The first time it is unwillingly affected by a Spell each Round, the Caster must spend an extra 2 Mana to affect it.
 
-**Findings (2)**
+**Findings (1)**
 
-- ❌ `broken-automation`: Compendium text describes a Mana-cost penalty; scripts/npc-abilities.mjs injects a roll-penalty die (1d6) instead.
 - ℹ️ `elemental-name-untyped`: Archmage / "Lightning Bolt": name suggests elemental damage but damageType is "-".
 
 ### Assassin

@@ -10,20 +10,20 @@ Generated: 2026-04-14T20:55:00.591Z
 | Ape | 4 | 1.3 | 0 as Unarmored | frontline | 2 | 0 | 1 |
 | Ape, Giant | 4 | 2.3 | 2 as (+1) Leather | frontline | 2 | 0 | 1 |
 | Badger | 1 | 0.6 | 0 as Unarmored | frontline | 3 | 0 | 0 |
-| Bat | 1 | 0.2 | 0 as Unarmored | midline | 1 | 1 | 1 |
-| Bat | 1 | 0.2 | 0 as Unarmored | midline | 1 | 1 | 1 |
-| Bat, Giant | 1 | 0.5 | 0 as Unarmored | midline | 1 | 1 | 1 |
-| Bat, Giant | 1 | 0.5 | 0 as Unarmored | midline | 1 | 1 | 1 |
+| Bat | 1 | 0.2 | 0 as Unarmored | midline | 1 | 1 | 0 |
+| Bat | 1 | 0.2 | 0 as Unarmored | midline | 1 | 1 | 0 |
+| Bat, Giant | 1 | 0.5 | 0 as Unarmored | midline | 1 | 1 | 0 |
+| Bat, Giant | 1 | 0.5 | 0 as Unarmored | midline | 1 | 1 | 0 |
 | Bear | 5 | 2.5 | 1 as Leather | frontline | 3 | 1 | 1 |
 | Bee, Giant | 1 | 0.9 | 0 as Unarmored | midline | 1 | 0 | 0 |
 | Beetle, Bombardier | 2 | 2 | 1 as Leather | frontline | 2 | 0 | 0 |
 | Beetle, Bombardier | 2 | 2 | 1 as Leather | frontline | 2 | 0 | 0 |
-| Beetle, Giant Fire | 2 | 1.7 | 1 as Leather | frontline | 1 | 2 | 2 |
-| Beetle, Giant Tiger | 3 | 3 | 3 as Plate | frontline | 1 | 1 | 2 |
+| Beetle, Giant Fire | 2 | 1.7 | 1 as Leather | frontline | 1 | 2 | 0 |
+| Beetle, Giant Tiger | 3 | 3 | 3 as Plate | frontline | 1 | 1 | 0 |
 | Boar | 3 | 2.7 | 1 as Leather | frontline | 1 | 1 | 0 |
 | Boar, Giant | 8 | 3.1 | 2 as (+1) Leather | frontline | 1 | 1 | 0 |
 | Cat | 1 | 0.2 | 0 as Unarmored | midline | 1 | 1 | 1 |
-| Cat, Great | 5 | 3.2 | 1 as Leather | frontline | 3 | 3 | 4 |
+| Cat, Great | 5 | 3.2 | 1 as Leather | frontline | 3 | 3 | 2 |
 | Cattle | 4 | 1.4 | 1 as Leather | frontline | 1 | 0 | 0 |
 | Centipede, Giant | 2 | 0.1 | 0 as Unarmored | frontline | 1 | 0 | 3 |
 | Centipede, Giant | 2 | 0.1 | 0 as Unarmored | frontline | 1 | 0 | 3 |
@@ -31,8 +31,8 @@ Generated: 2026-04-14T20:55:00.591Z
 | Crab, Giant | 3 | 4.2 | 3 as Plate | frontline | 2 | 2 | 2 |
 | Crayfish, Giant | 5 | 4.6 | 2 as Chain | frontline | 2 | 1 | 1 |
 | Deer | 1 | 0.5 | 0 as Unarmored | midline | 1 | 0 | 0 |
-| Dog, Medium | 1 | 0.5 | 0 as Unarmored | frontline | 1 | 1 | 2 |
-| Dog, Small | 1 | 0.2 | 0 as Unarmored | frontline | 1 | 1 | 2 |
+| Dog, Medium | 1 | 0.5 | 0 as Unarmored | frontline | 1 | 1 | 0 |
+| Dog, Small | 1 | 0.2 | 0 as Unarmored | frontline | 1 | 1 | 0 |
 | Electric Eel | 1 | 1.3 | 0 as Unarmored | frontline | 2 | 1 | 2 |
 | Electric Eel | 1 | 1.3 | 0 as Unarmored | frontline | 2 | 1 | 1 |
 | Elephant | 9 | 5 | 2 as Chain | frontline | 2 | 1 | 0 |
@@ -40,7 +40,7 @@ Generated: 2026-04-14T20:55:00.591Z
 | Frog/Toad | 1 | 0.1 | 0 as Unarmored | midline | 1 | 1 | 3 |
 | Frog/Toad, Giant | 2 | 0.9 | 0 as Unarmored | midline | 3 | 1 | 4 |
 | Frog/Toad, Giant | 2 | 0.9 | 0 as Unarmored | midline | 3 | 1 | 4 |
-| Hawk | 1 | 0.2 | 0 as Unarmored | midline | 1 | 1 | 1 |
+| Hawk | 1 | 0.2 | 0 as Unarmored | midline | 1 | 1 | 0 |
 | Hippopotamus | 8 | 3.1 | 2 as Chain | frontline | 1 | 1 | 0 |
 | Hippopotamus, Behemoth | 10 | 4.9 | 3 as Plate | frontline | 1 | 1 | 0 |
 | Horse, Draft | 3 | 1.3 | 1 as Leather | frontline | 1 | 0 | 0 |
@@ -53,17 +53,17 @@ Generated: 2026-04-14T20:55:00.591Z
 | Mantis, Giant | 10 | 4.3 | 4 as (+1) Plate | frontline | 2 | 0 | 2 |
 | Mastodon | 13 | 8.3 | 3 as Plate | frontline | 3 | 1 | 0 |
 | Octopus, Giant | 8 | 4.8 | 1 as Leather | frontline | 3 | 3 | 2 |
-| Owl | 1 | 0.2 | 0 as Unarmored | midline | 1 | 1 | 1 |
+| Owl | 1 | 0.2 | 0 as Unarmored | midline | 1 | 1 | 0 |
 | Phorusrhacos | 7 | 3.3 | 1 as Leather | frontline | 3 | 0 | 0 |
 | Pteranodon | 1 | 1.2 | 1 as Leather | midline | 1 | 0 | 0 |
 | Quetzalcoatlus | 3 | 2.6 | 1 as Leather | midline | 1 | 0 | 0 |
-| Rabbit | 1 | 0.2 | 0 as Unarmored | backline | 1 | 1 | 1 |
-| Rat | 1 | 0.2 | 0 as Unarmored | midline | 1 | 2 | 3 |
-| Rat | 1 | 0.2 | 0 as Unarmored | midline | 1 | 2 | 3 |
-| Rat, Giant | 1 | 1.1 | 0 as Unarmored | midline | 1 | 2 | 3 |
-| Rat, Giant | 1 | 1.1 | 0 as Unarmored | midline | 1 | 2 | 3 |
+| Rabbit | 1 | 0.2 | 0 as Unarmored | backline | 1 | 1 | 0 |
+| Rat | 1 | 0.2 | 0 as Unarmored | midline | 1 | 2 | 0 |
+| Rat | 1 | 0.2 | 0 as Unarmored | midline | 1 | 2 | 0 |
+| Rat, Giant | 1 | 1.1 | 0 as Unarmored | midline | 1 | 2 | 0 |
+| Rat, Giant | 1 | 1.1 | 0 as Unarmored | midline | 1 | 2 | 0 |
 | Rhinoceros | 8 | 3.6 | 2 as Chain | frontline | 2 | 1 | 0 |
-| Sabre-tooth Tiger | 8 | 3.9 | 2 as Chain | frontline | 3 | 2 | 4 |
+| Sabre-tooth Tiger | 8 | 3.9 | 2 as Chain | frontline | 3 | 2 | 2 |
 | Scorpion, Giant | 4 | 4.2 | 3 as (+1) Chain | frontline | 3 | 0 | 1 |
 | Scorpion, Giant | 4 | 4.2 | 3 as (+1) Chain | frontline | 3 | 0 | 1 |
 | Shark, Great White | 8 | 3.8 | 2 as Chain | frontline | 1 | 2 | 0 |
@@ -88,14 +88,14 @@ Generated: 2026-04-14T20:55:00.591Z
 | Thunderfoot | 35 | 10.5 | 4 as (+3) Leather | frontline | 2 | 0 | 0 |
 | Triceratops | 11 | 4.5 | 3 as Chain plus Shield | frontline | 2 | 1 | 0 |
 | Tyrannosaurus Rex | 20 | 6.8 | 2 as Chain | frontline | 1 | 0 | 0 |
-| Velociraptor | 3 | 1.4 | 1 as Leather | frontline | 1 | 1 | 2 |
-| Weasel, Giant | 3 | 1.2 | 1 as Leather | frontline | 2 | 1 | 2 |
+| Velociraptor | 3 | 1.4 | 1 as Leather | frontline | 1 | 1 | 0 |
+| Weasel, Giant | 3 | 1.2 | 1 as Leather | frontline | 2 | 1 | 0 |
 | Whale, Blue | 15 | 8.7 | 1 as Leather | frontline | 1 | 1 | 0 |
 | Whale, Killer | 6 | 3.1 | 1 as Leather | frontline | 1 | 1 | 0 |
-| Wolf | 2 | 0.9 | 1 as Leather | frontline | 1 | 2 | 4 |
-| Wolf, Dire | 5 | 1.9 | 1 as Leather | frontline | 1 | 2 | 4 |
-| Wolf, Winter | 6 | 4.2 | 2 as (+1) Leather | frontline | 2 | 2 | 5 |
-| Wolf, Winter | 6 | 4.2 | 2 as (+1) Leather | frontline | 2 | 2 | 5 |
+| Wolf | 2 | 0.9 | 1 as Leather | frontline | 1 | 2 | 2 |
+| Wolf, Dire | 5 | 1.9 | 1 as Leather | frontline | 1 | 2 | 2 |
+| Wolf, Winter | 6 | 4.2 | 2 as (+1) Leather | frontline | 2 | 2 | 3 |
+| Wolf, Winter | 6 | 4.2 | 2 as (+1) Leather | frontline | 2 | 2 | 3 |
 
 ---
 
@@ -218,10 +218,6 @@ Generated: 2026-04-14T20:55:00.591Z
 
 - **Nimble** — Attacks against it can't be Favored if it can Move.
 
-**Findings (1)**
-
-- ⚠️ `unimplemented-passive`: Ability "Nimble" describes mechanical effects (favored) but has no automation in scripts/npc-abilities.mjs.
-
 ### Bat
 
 - UUID: `Compendium.vagabond-character-enhancer.vce-beasts.Actor.5E6UUHA0yXxCycuA`
@@ -239,10 +235,6 @@ Generated: 2026-04-14T20:55:00.591Z
 
 - **Nimble** — Attacks against it can't be Favored if it can Move.
 
-**Findings (1)**
-
-- ⚠️ `unimplemented-passive`: Ability "Nimble" describes mechanical effects (favored) but has no automation in scripts/npc-abilities.mjs.
-
 ### Bat, Giant
 
 - UUID: `Compendium.vagabond.bestiary.Actor.mfXiP8SZOBYuin8r`
@@ -258,10 +250,6 @@ Generated: 2026-04-14T20:55:00.591Z
 **Abilities (1)**
 
 - **Nimble** — Attacks against it can't be Favored if it can Move.
-
-**Findings (1)**
-
-- ⚠️ `unimplemented-passive`: Ability "Nimble" describes mechanical effects (favored) but has no automation in scripts/npc-abilities.mjs.
 
 ### Bat, Giant
 
@@ -279,10 +267,6 @@ Generated: 2026-04-14T20:55:00.591Z
 **Abilities (1)**
 
 - **Nimble** — Attacks against it can't be Favored if it can Move.
-
-**Findings (1)**
-
-- ⚠️ `unimplemented-passive`: Ability "Nimble" describes mechanical effects (favored) but has no automation in scripts/npc-abilities.mjs.
 
 ### Bear
 
@@ -362,11 +346,6 @@ Generated: 2026-04-14T20:55:00.591Z
 - **Bioluminescent** — Sheds Light out to Near.
 - **Soft Underbelly** — Its Armor is 0 while it is Prone.
 
-**Findings (2)**
-
-- ⚠️ `unimplemented-passive`: Ability "Soft Underbelly" describes mechanical effects (prone) but has no automation in scripts/npc-abilities.mjs.
-- ⚠️ `ability-mentions-status-without-action`: Ability "Soft Underbelly" on Beetle, Giant Fire mentions Prone, but no action on this monster applies those statuses.
-
 ### Beetle, Giant Tiger
 
 - UUID: `Compendium.vagabond.bestiary.Actor.wdqCpTf6IvtPLc80`
@@ -382,11 +361,6 @@ Generated: 2026-04-14T20:55:00.591Z
 **Abilities (1)**
 
 - **Soft Underbelly** — Its Armor is 0 while it is Prone.
-
-**Findings (2)**
-
-- ⚠️ `unimplemented-passive`: Ability "Soft Underbelly" describes mechanical effects (prone) but has no automation in scripts/npc-abilities.mjs.
-- ⚠️ `ability-mentions-status-without-action`: Ability "Soft Underbelly" on Beetle, Giant Tiger mentions Prone, but no action on this monster applies those statuses.
 
 ### Boar
 
@@ -460,11 +434,9 @@ Generated: 2026-04-14T20:55:00.591Z
 - **Pack Hunter** — Targets within 5 feet of one of this Being's Allies are Vulnerable to its attacks.
 - **Pounce** — If it moves at least 20' before an attack on the same Turn, the Target is also knocked Prone.
 
-**Findings (4)**
+**Findings (2)**
 
-- ⚠️ `unimplemented-passive`: Ability "Pack Hunter" describes mechanical effects (vulnerable) but has no automation in scripts/npc-abilities.mjs.
 - ⚠️ `unimplemented-passive`: Ability "Pounce" describes mechanical effects (prone) but has no automation in scripts/npc-abilities.mjs.
-- ⚠️ `ability-mentions-status-without-action`: Ability "Pack Hunter" on Cat, Great mentions Vulnerable, but no action on this monster applies those statuses.
 - ⚠️ `ability-mentions-status-without-action`: Ability "Pounce" on Cat, Great mentions Prone, but no action on this monster applies those statuses.
 
 ### Cattle
@@ -604,11 +576,6 @@ Generated: 2026-04-14T20:55:00.591Z
 
 - **Pack Hunter** — Targets within 5 feet of one of this Being's Allies are Vulnerable to its attacks.
 
-**Findings (2)**
-
-- ⚠️ `unimplemented-passive`: Ability "Pack Hunter" describes mechanical effects (vulnerable) but has no automation in scripts/npc-abilities.mjs.
-- ⚠️ `ability-mentions-status-without-action`: Ability "Pack Hunter" on Dog, Medium mentions Vulnerable, but no action on this monster applies those statuses.
-
 ### Dog, Small
 
 - UUID: `Compendium.vagabond.bestiary.Actor.ssbUeRw0VM03vk6b`
@@ -624,11 +591,6 @@ Generated: 2026-04-14T20:55:00.591Z
 **Abilities (1)**
 
 - **Pack Hunter** — Targets within 5 feet of one of this Being's Allies are Vulnerable to its attacks.
-
-**Findings (2)**
-
-- ⚠️ `unimplemented-passive`: Ability "Pack Hunter" describes mechanical effects (vulnerable) but has no automation in scripts/npc-abilities.mjs.
-- ⚠️ `ability-mentions-status-without-action`: Ability "Pack Hunter" on Dog, Small mentions Vulnerable, but no action on this monster applies those statuses.
 
 ### Electric Eel
 
@@ -797,10 +759,6 @@ Generated: 2026-04-14T20:55:00.591Z
 **Abilities (1)**
 
 - **Nimble** — Attacks against it can’t be Favored if it can Move.
-
-**Findings (1)**
-
-- ⚠️ `unimplemented-passive`: Ability "Nimble" describes mechanical effects (favored) but has no automation in scripts/npc-abilities.mjs.
 
 ### Hippopotamus
 
@@ -1014,10 +972,6 @@ Generated: 2026-04-14T20:55:00.591Z
 
 - **Nimble** — Attacks against it can’t be Favored if it can Move.
 
-**Findings (1)**
-
-- ⚠️ `unimplemented-passive`: Ability "Nimble" describes mechanical effects (favored) but has no automation in scripts/npc-abilities.mjs.
-
 ### Phorusrhacos
 
 - UUID: `Compendium.vagabond.bestiary.Actor.txlrPzpyjCW7Un16`
@@ -1072,10 +1026,6 @@ Generated: 2026-04-14T20:55:00.591Z
 
 - **Nimble** — Attacks against it can’t be Favored if it can Move.
 
-**Findings (1)**
-
-- ⚠️ `unimplemented-passive`: Ability "Nimble" describes mechanical effects (favored) but has no automation in scripts/npc-abilities.mjs.
-
 ### Rat
 
 - UUID: `Compendium.vagabond.bestiary.Actor.kdkY2n6gMSQLT5Tr`
@@ -1092,12 +1042,6 @@ Generated: 2026-04-14T20:55:00.591Z
 
 - **Nimble** — Attacks against it can’t be Favored if it can Move.
 - **Pack Hunter** — Targets within 5 feet of one of this Being's Allies are Vulnerable to its attacks.
-
-**Findings (3)**
-
-- ⚠️ `unimplemented-passive`: Ability "Nimble" describes mechanical effects (favored) but has no automation in scripts/npc-abilities.mjs.
-- ⚠️ `unimplemented-passive`: Ability "Pack Hunter" describes mechanical effects (vulnerable) but has no automation in scripts/npc-abilities.mjs.
-- ⚠️ `ability-mentions-status-without-action`: Ability "Pack Hunter" on Rat mentions Vulnerable, but no action on this monster applies those statuses.
 
 ### Rat
 
@@ -1117,12 +1061,6 @@ Generated: 2026-04-14T20:55:00.591Z
 - **Nimble** — Attacks against it can’t be Favored if it can Move.
 - **Pack Hunter** — Targets within 5 feet of one of this Being's Allies are Vulnerable to its attacks.
 
-**Findings (3)**
-
-- ⚠️ `unimplemented-passive`: Ability "Nimble" describes mechanical effects (favored) but has no automation in scripts/npc-abilities.mjs.
-- ⚠️ `unimplemented-passive`: Ability "Pack Hunter" describes mechanical effects (vulnerable) but has no automation in scripts/npc-abilities.mjs.
-- ⚠️ `ability-mentions-status-without-action`: Ability "Pack Hunter" on Rat mentions Vulnerable, but no action on this monster applies those statuses.
-
 ### Rat, Giant
 
 - UUID: `Compendium.vagabond.bestiary.Actor.fM1JjKdHbzQVm1rI`
@@ -1139,12 +1077,6 @@ Generated: 2026-04-14T20:55:00.591Z
 
 - **Nimble** — Attacks against it can’t be Favored if it can Move.
 - **Pack Hunter** — Targets within 5 feet of one of this Being's Allies are Vulnerable to its attacks.
-
-**Findings (3)**
-
-- ⚠️ `unimplemented-passive`: Ability "Nimble" describes mechanical effects (favored) but has no automation in scripts/npc-abilities.mjs.
-- ⚠️ `unimplemented-passive`: Ability "Pack Hunter" describes mechanical effects (vulnerable) but has no automation in scripts/npc-abilities.mjs.
-- ⚠️ `ability-mentions-status-without-action`: Ability "Pack Hunter" on Rat, Giant mentions Vulnerable, but no action on this monster applies those statuses.
 
 ### Rat, Giant
 
@@ -1163,12 +1095,6 @@ Generated: 2026-04-14T20:55:00.591Z
 
 - **Nimble** — Attacks against it can’t be Favored if it can Move.
 - **Pack Hunter** — Targets within 5 feet of one of this Being's Allies are Vulnerable to its attacks.
-
-**Findings (3)**
-
-- ⚠️ `unimplemented-passive`: Ability "Nimble" describes mechanical effects (favored) but has no automation in scripts/npc-abilities.mjs.
-- ⚠️ `unimplemented-passive`: Ability "Pack Hunter" describes mechanical effects (vulnerable) but has no automation in scripts/npc-abilities.mjs.
-- ⚠️ `ability-mentions-status-without-action`: Ability "Pack Hunter" on Rat, Giant mentions Vulnerable, but no action on this monster applies those statuses.
 
 ### Rhinoceros
 
@@ -1206,11 +1132,9 @@ Generated: 2026-04-14T20:55:00.591Z
 - **Pack Hunter** — Targets within 5 feet of one of this Being's Allies are Vulnerable to its attacks.
 - **Pounce** — If it moves at least 20' before an attack on the same Turn, the Target is also knocked Prone.
 
-**Findings (4)**
+**Findings (2)**
 
-- ⚠️ `unimplemented-passive`: Ability "Pack Hunter" describes mechanical effects (vulnerable) but has no automation in scripts/npc-abilities.mjs.
 - ⚠️ `unimplemented-passive`: Ability "Pounce" describes mechanical effects (prone) but has no automation in scripts/npc-abilities.mjs.
-- ⚠️ `ability-mentions-status-without-action`: Ability "Pack Hunter" on Sabre-tooth Tiger mentions Vulnerable, but no action on this monster applies those statuses.
 - ⚠️ `ability-mentions-status-without-action`: Ability "Pounce" on Sabre-tooth Tiger mentions Prone, but no action on this monster applies those statuses.
 
 ### Scorpion, Giant
@@ -1643,11 +1567,6 @@ Generated: 2026-04-14T20:55:00.591Z
 
 - **Pack Hunter** — Targets within 5 feet of one of this Being's Allies are Vulnerable to its attacks.
 
-**Findings (2)**
-
-- ⚠️ `unimplemented-passive`: Ability "Pack Hunter" describes mechanical effects (vulnerable) but has no automation in scripts/npc-abilities.mjs.
-- ⚠️ `ability-mentions-status-without-action`: Ability "Pack Hunter" on Velociraptor mentions Vulnerable, but no action on this monster applies those statuses.
-
 ### Weasel, Giant
 
 - UUID: `Compendium.vagabond.bestiary.Actor.HmlmtEocbWolrl3F`
@@ -1664,11 +1583,6 @@ Generated: 2026-04-14T20:55:00.591Z
 **Abilities (1)**
 
 - **Pack Hunter** — Targets within 5 feet of one of this Being's Allies are Vulnerable to its attacks.
-
-**Findings (2)**
-
-- ⚠️ `unimplemented-passive`: Ability "Pack Hunter" describes mechanical effects (vulnerable) but has no automation in scripts/npc-abilities.mjs.
-- ⚠️ `ability-mentions-status-without-action`: Ability "Pack Hunter" on Weasel, Giant mentions Vulnerable, but no action on this monster applies those statuses.
 
 ### Whale, Blue
 
@@ -1719,11 +1633,9 @@ Generated: 2026-04-14T20:55:00.591Z
 - **Pack Hunter** — Targets within 5 feet of one of this Being's Allies are Vulnerable to its attacks.
 - **Pounce** — If it moves at least 20' before an attack on the same Turn, the Target is also knocked Prone if it is Medium or smaller.
 
-**Findings (4)**
+**Findings (2)**
 
-- ⚠️ `unimplemented-passive`: Ability "Pack Hunter" describes mechanical effects (vulnerable) but has no automation in scripts/npc-abilities.mjs.
 - ⚠️ `unimplemented-passive`: Ability "Pounce" describes mechanical effects (prone) but has no automation in scripts/npc-abilities.mjs.
-- ⚠️ `ability-mentions-status-without-action`: Ability "Pack Hunter" on Wolf mentions Vulnerable, but no action on this monster applies those statuses.
 - ⚠️ `ability-mentions-status-without-action`: Ability "Pounce" on Wolf mentions Prone, but no action on this monster applies those statuses.
 
 ### Wolf, Dire
@@ -1743,11 +1655,9 @@ Generated: 2026-04-14T20:55:00.591Z
 - **Pack Hunter** — Targets within 5 feet of one of this Being's Allies are Vulnerable to its attacks.
 - **Pounce** — If it moves at least 20' before an attack on the same Turn, the Target is also knocked Prone if it is Large or smaller.
 
-**Findings (4)**
+**Findings (2)**
 
-- ⚠️ `unimplemented-passive`: Ability "Pack Hunter" describes mechanical effects (vulnerable) but has no automation in scripts/npc-abilities.mjs.
 - ⚠️ `unimplemented-passive`: Ability "Pounce" describes mechanical effects (prone) but has no automation in scripts/npc-abilities.mjs.
-- ⚠️ `ability-mentions-status-without-action`: Ability "Pack Hunter" on Wolf, Dire mentions Vulnerable, but no action on this monster applies those statuses.
 - ⚠️ `ability-mentions-status-without-action`: Ability "Pounce" on Wolf, Dire mentions Prone, but no action on this monster applies those statuses.
 
 ### Wolf, Winter
@@ -1770,12 +1680,10 @@ Generated: 2026-04-14T20:55:00.591Z
 - **Pack Hunter** — Targets within 5 feet of one of this Being's Allies are Vulnerable to its attacks.
 - **Pounce** — If it moves at least 20' before an attack on the same Turn, the Target is also knocked Prone if it is Large or smaller.
 
-**Findings (5)**
+**Findings (3)**
 
 - ℹ️ `elemental-name-untyped`: Wolf, Winter / "Frost Breath": name suggests elemental damage but damageType is "-".
-- ⚠️ `unimplemented-passive`: Ability "Pack Hunter" describes mechanical effects (vulnerable) but has no automation in scripts/npc-abilities.mjs.
 - ⚠️ `unimplemented-passive`: Ability "Pounce" describes mechanical effects (prone) but has no automation in scripts/npc-abilities.mjs.
-- ⚠️ `ability-mentions-status-without-action`: Ability "Pack Hunter" on Wolf, Winter mentions Vulnerable, but no action on this monster applies those statuses.
 - ⚠️ `ability-mentions-status-without-action`: Ability "Pounce" on Wolf, Winter mentions Prone, but no action on this monster applies those statuses.
 
 ### Wolf, Winter
@@ -1799,10 +1707,8 @@ Generated: 2026-04-14T20:55:00.591Z
 - **Pack Hunter** — Targets within 5 feet of one of this Being's Allies are Vulnerable to its attacks.
 - **Pounce** — If it moves at least 20' before an attack on the same Turn, the Target is also knocked Prone if it is Large or smaller.
 
-**Findings (5)**
+**Findings (3)**
 
 - ℹ️ `elemental-name-untyped`: Wolf, Winter / "Frost Breath": name suggests elemental damage but damageType is "-".
-- ⚠️ `unimplemented-passive`: Ability "Pack Hunter" describes mechanical effects (vulnerable) but has no automation in scripts/npc-abilities.mjs.
 - ⚠️ `unimplemented-passive`: Ability "Pounce" describes mechanical effects (prone) but has no automation in scripts/npc-abilities.mjs.
-- ⚠️ `ability-mentions-status-without-action`: Ability "Pack Hunter" on Wolf, Winter mentions Vulnerable, but no action on this monster applies those statuses.
 - ⚠️ `ability-mentions-status-without-action`: Ability "Pounce" on Wolf, Winter mentions Prone, but no action on this monster applies those statuses.

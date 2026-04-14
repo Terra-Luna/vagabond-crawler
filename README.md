@@ -2,7 +2,7 @@
 
 ![Foundry v13](https://img.shields.io/badge/foundry-v13-green?style=for-the-badge)
 ![System](https://img.shields.io/badge/system-vagabond-blue?style=for-the-badge)
-![Version](https://img.shields.io/badge/version-1.8.4-orange?style=for-the-badge)
+![Version](https://img.shields.io/badge/version-1.8.5-orange?style=for-the-badge)
 
 A comprehensive dungeon crawl management module for the **Vagabond RPG** system in Foundry VTT. Everything you need to run a crawl — turn tracking, movement enforcement, random encounters, light management, morale, combat integration, crafting, loot, and more — all from a unified interface.
 
@@ -128,12 +128,14 @@ Automatic flanking detection during combat.
 ---
 
 ### NPC Abilities
-Passive automation hooks for monster abilities.
+Passive automation hooks for monster abilities. See `docs/audit/abilities.md` for the full dashboard of which abilities are implemented vs unimplemented across the 348-monster bestiary.
 
 | Ability | Effect |
 |---------|--------|
-| **Pack Instincts / Pack Tactics** | Saves against this NPC's attacks are Hindered when an ally is adjacent to the target |
-| **Magic Ward I/II/III** | Cast Check penalty die (d4/d6/d8) when targeting this NPC |
+| **Magic Ward I–VI** | Caster pays +N Mana surcharge the first time per Round they affect this being with a spell. Surcharge counts against mana availability and casting max — insufficient mana blocks the cast. Applies to both sheet cast path and crawl-strip spell dialog. |
+| **Nimble** | Attacks against this being (weapon or spell) can't be Favored if it can move (not Incapacitated / Paralyzed / Restrained / Unconscious). Clamps `favor` to `none` at roll time. |
+| **Pack Instincts / Pack Tactics / Pack Hunter** | Saves against this NPC's attacks are Hindered when an ally is adjacent to the target. |
+| **Soft Underbelly** | Armor becomes 0 while Prone. Transient Active Effect applied/removed automatically via status change hooks. |
 
 ---
 

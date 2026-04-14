@@ -1887,8 +1887,8 @@
       ],
       "representativeText": "The first time it is unwillingly affected by a Spell each Round, the Caster must spend an extra 1 Mana to affect it.",
       "textVariants": 1,
-      "automationStatus": "broken",
-      "reason": "Compendium text describes a Mana-cost penalty; scripts/npc-abilities.mjs injects a roll-penalty die (1d4) instead.",
+      "automationStatus": "implemented",
+      "reason": "Matched scripts/npc-abilities.mjs PASSIVE_ABILITIES entry (type: manaSurcharge).",
       "keywords": {
         "statuses": [],
         "mechanicalVerbs": [
@@ -1921,8 +1921,8 @@
       ],
       "representativeText": "The first time it is unwillingly affected by a Spell each Round, the Caster must spend an extra 2 Mana to affect it.",
       "textVariants": 1,
-      "automationStatus": "broken",
-      "reason": "Compendium text describes a Mana-cost penalty; scripts/npc-abilities.mjs injects a roll-penalty die (1d6) instead.",
+      "automationStatus": "implemented",
+      "reason": "Matched scripts/npc-abilities.mjs PASSIVE_ABILITIES entry (type: manaSurcharge).",
       "keywords": {
         "statuses": [],
         "mechanicalVerbs": [
@@ -1948,8 +1948,8 @@
       ],
       "representativeText": "The first time it is unwillingly affected by a Spell each Round, the Caster must spend an extra 3 Mana to affect it.",
       "textVariants": 1,
-      "automationStatus": "broken",
-      "reason": "Compendium text describes a Mana-cost penalty; scripts/npc-abilities.mjs injects a roll-penalty die (1d8) instead.",
+      "automationStatus": "implemented",
+      "reason": "Matched scripts/npc-abilities.mjs PASSIVE_ABILITIES entry (type: manaSurcharge).",
       "keywords": {
         "statuses": [],
         "mechanicalVerbs": [
@@ -1973,8 +1973,8 @@
       ],
       "representativeText": "The first time it is unwillingly affected by a Spell each Round, the Caster must spend an extra 4 Mana to affect it.",
       "textVariants": 1,
-      "automationStatus": "unimplemented",
-      "reason": "Description mentions mechanical effects but no PASSIVE_ABILITIES entry exists.",
+      "automationStatus": "implemented",
+      "reason": "Matched scripts/npc-abilities.mjs PASSIVE_ABILITIES entry (type: manaSurcharge).",
       "keywords": {
         "statuses": [],
         "mechanicalVerbs": [
@@ -1992,8 +1992,8 @@
       ],
       "representativeText": "The first time it is unwillingly affected by a Spell each Round, the Caster must spend an extra 5 Mana to affect it.",
       "textVariants": 1,
-      "automationStatus": "unimplemented",
-      "reason": "Description mentions mechanical effects but no PASSIVE_ABILITIES entry exists.",
+      "automationStatus": "implemented",
+      "reason": "Matched scripts/npc-abilities.mjs PASSIVE_ABILITIES entry (type: manaSurcharge).",
       "keywords": {
         "statuses": [],
         "mechanicalVerbs": [
@@ -2011,8 +2011,8 @@
       ],
       "representativeText": "The first time it is unwillingly affected by a Spell each Round, the Caster must spend an extra 6 Mana to affect it.",
       "textVariants": 1,
-      "automationStatus": "unimplemented",
-      "reason": "Description mentions mechanical effects but no PASSIVE_ABILITIES entry exists.",
+      "automationStatus": "implemented",
+      "reason": "Matched scripts/npc-abilities.mjs PASSIVE_ABILITIES entry (type: manaSurcharge).",
       "keywords": {
         "statuses": [],
         "mechanicalVerbs": [
@@ -2179,8 +2179,8 @@
       ],
       "representativeText": "Attacks against it can’t be Favored if it can Move.",
       "textVariants": 2,
-      "automationStatus": "unimplemented",
-      "reason": "Description mentions mechanical effects but no PASSIVE_ABILITIES entry exists.",
+      "automationStatus": "implemented",
+      "reason": "Matched scripts/npc-abilities.mjs PASSIVE_ABILITIES entry (type: nimble).",
       "keywords": {
         "statuses": [],
         "mechanicalVerbs": [
@@ -2294,8 +2294,8 @@
       ],
       "representativeText": "Targets within 5 feet of one of this Being's Allies are Vulnerable to its attacks.",
       "textVariants": 1,
-      "automationStatus": "unimplemented",
-      "reason": "Description mentions mechanical effects but no PASSIVE_ABILITIES entry exists.",
+      "automationStatus": "implemented",
+      "reason": "Matched scripts/npc-abilities.mjs PASSIVE_ABILITIES entry (type: packInstincts).",
       "keywords": {
         "statuses": [
           "vulnerable"
@@ -2907,8 +2907,8 @@
       ],
       "representativeText": "Its Armor is 0 while it is Prone.",
       "textVariants": 1,
-      "automationStatus": "unimplemented",
-      "reason": "Description mentions mechanical effects but no PASSIVE_ABILITIES entry exists.",
+      "automationStatus": "implemented",
+      "reason": "Matched scripts/npc-abilities.mjs PASSIVE_ABILITIES entry (type: softUnderbelly).",
       "keywords": {
         "statuses": [
           "prone"

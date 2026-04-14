@@ -12,14 +12,14 @@ Generated: 2026-04-14T20:55:00.591Z
 | Ghost | 10 | 3.8 | 4 as (+1) Plate | frontline | 2 | 2 | 6 |
 | Ghoul | 2 | 2 | 1 as Leather | frontline | 3 | 1 | 0 |
 | Grim Reaper | 1 | 0 | 8 as (+5) Heavy |  | 1 | 1 | 2 |
-| Lich | 11 | 8.5 | 4 as (+1) Plate | frontline | 7 | 5 | 4 |
+| Lich | 11 | 8.5 | 4 as (+1) Plate | frontline | 7 | 5 | 3 |
 | Mummy | 6 | 2.8 | 3 as Plate | midline | 2 | 1 | 2 |
-| Mummy Lord | 13 | 7 | 4 as (+1) Plate | backline | 2 | 3 | 3 |
+| Mummy Lord | 13 | 7 | 4 as (+1) Plate | backline | 2 | 3 | 2 |
 | Shadow | 2 | 1.6 | 1 as Leather | frontline | 1 | 2 | 5 |
 | Skeleton | 1 | 1.2 | 1 as Leather | midline | 1 | 1 | 2 |
 | Skeleton, Blazing Bones | 1 | 1.6 | 1 as Leather | frontline | 2 | 1 | 2 |
 | Skeleton, Giant | 6 | 4.7 | 2 as Chain | frontline | 3 | 1 | 2 |
-| Vampire | 8 | 6.7 | 4 as (+1) Plate | midline | 4 | 4 | 5 |
+| Vampire | 8 | 6.7 | 4 as (+1) Plate | midline | 4 | 4 | 4 |
 | Wight | 4 | 2.2 | 2 as Chain | frontline | 2 | 1 | 2 |
 | Wraith | 5 | 2.7 | 3 as Plate | frontline | 1 | 3 | 5 |
 | Zombie | 2 | 0.9 | 0 as Unarmored | frontline | 1 | 2 | 2 |
@@ -248,12 +248,11 @@ Generated: 2026-04-14T20:55:00.591Z
 - **Magic Ward V** — The first time it is unwillingly affected by a Spell each Round, the Caster must spend an extra 5 Mana to affect it.
 - **Soul Jar** — It can't die if it has a Soul Jar intact.
 
-**Findings (4)**
+**Findings (3)**
 
 - ⚠️ `damageless-requiresDamage`: Lich / "5 - Fear": causedStatus "frightened" has requiresDamage=true but the action deals no damage — status can never apply by that rule.
 - ℹ️ `speed-ambiguous`: Lich: speedTypes entry "fly" has no speed and speedValues.fly is 0. Implicit base speed? Intent unclear.
 - ⚠️ `unimplemented-passive`: Ability "Fear Aura" describes mechanical effects (frightened) but has no automation in scripts/npc-abilities.mjs.
-- ⚠️ `unimplemented-passive`: Ability "Magic Ward V" describes mechanical effects (must-spend-mana) but has no automation in scripts/npc-abilities.mjs.
 
 ### Mummy
 
@@ -302,9 +301,8 @@ Generated: 2026-04-14T20:55:00.591Z
 - **Doom Magnet** — Near Enemies can't gain Favor.
 - **Zombie** — It can't be reduced below 1 HP unless damaged by a Crit, damage it is Weak to, or while in Sunlight.
 
-**Findings (3)**
+**Findings (2)**
 
-- ❌ `broken-automation`: Compendium text describes a Mana-cost penalty; scripts/npc-abilities.mjs injects a roll-penalty die (1d6) instead.
 - ⚠️ `damageless-requiresDamage`: Mummy Lord / "Glare": causedStatus "frightened" has requiresDamage=true but the action deals no damage — status can never apply by that rule.
 - ⚠️ `damageless-requiresDamage`: Mummy Lord / "Glare": causedStatus "paralyzed" has requiresDamage=true but the action deals no damage — status can never apply by that rule.
 
@@ -436,9 +434,8 @@ Generated: 2026-04-14T20:55:00.591Z
 - **Sunlight Hypersensitivity** — It is Burning (d8) while illuminated by Sunlight.
 - **Vampiric** — It regenerates 3 HP at the start of its Turn unless it is in Sunlight. If it is killed, it reforms in its resting place after 1 Day unless either: A wooden stake is stabbed through its heart; It dies in Sunlight or while doused in holy water; It consumes garlic.
 
-**Findings (5)**
+**Findings (4)**
 
-- ❌ `broken-automation`: Compendium text describes a Mana-cost penalty; scripts/npc-abilities.mjs injects a roll-penalty die (1d6) instead.
 - ⚠️ `damageless-requiresDamage`: Vampire / "Enthrall": causedStatus "charmed" has requiresDamage=true but the action deals no damage — status can never apply by that rule.
 - ℹ️ `speed-ambiguous`: Vampire: speedTypes entry "fly" has no speed and speedValues.fly is 0. Implicit base speed? Intent unclear.
 - ⚠️ `unimplemented-passive`: Ability "Sunlight Hypersensitivity" describes mechanical effects (burning) but has no automation in scripts/npc-abilities.mjs.

@@ -1,224 +1,21 @@
 {
   "generatedAt": "2026-04-14T20:55:00.591Z",
-  "totalFindings": 426,
+  "totalFindings": 397,
   "bySeverity": {
     "info": 129,
-    "warning": 294,
-    "error": 3
+    "warning": 268,
+    "error": 0
   },
   "bySubcategory": {
-    "broken-automation": 3,
     "damageless-requiresDamage": 69,
     "elemental-name-untyped": 17,
     "extraInfo-status-mismatch": 27,
     "save-mention-orphan": 16,
     "speed-ambiguous": 96,
-    "unimplemented-passive": 82,
-    "ability-mentions-status-without-action": 116
+    "unimplemented-passive": 76,
+    "ability-mentions-status-without-action": 96
   },
   "findings": [
-    {
-      "id": "broken-automation:Magic Ward I",
-      "category": "dead-ability-text",
-      "subcategory": "broken-automation",
-      "severity": "error",
-      "message": "Compendium text describes a Mana-cost penalty; scripts/npc-abilities.mjs injects a roll-penalty die (1d4) instead.",
-      "affectedMonsters": [
-        {
-          "uuid": "Compendium.vagabond.bestiary.Actor.14SyZkKvSmv2smFw",
-          "name": "Golem, Bone",
-          "detail": ""
-        },
-        {
-          "uuid": "Compendium.vagabond.bestiary.Actor.5Raq5NE9ahzB09RK",
-          "name": "Viskyd",
-          "detail": ""
-        },
-        {
-          "uuid": "Compendium.vagabond.bestiary.Actor.DIXBdymeCr9HUJOd",
-          "name": "Hag, Grove",
-          "detail": ""
-        },
-        {
-          "uuid": "Compendium.vagabond.bestiary.Actor.OQZbfC2OXrLYLRM8",
-          "name": "Brownie",
-          "detail": ""
-        },
-        {
-          "uuid": "Compendium.vagabond.bestiary.Actor.RCrdmkp96a9uhfT2",
-          "name": "Golem, Stone",
-          "detail": ""
-        },
-        {
-          "uuid": "Compendium.vagabond.bestiary.Actor.W5kmv1bYrErmzoUI",
-          "name": "Golem, Clay",
-          "detail": ""
-        },
-        {
-          "uuid": "Compendium.vagabond.bestiary.Actor.jO00LGH0j3HNTGve",
-          "name": "Mermaid",
-          "detail": ""
-        },
-        {
-          "uuid": "Compendium.vagabond.bestiary.Actor.oDROHzNC8xZ4HY5m",
-          "name": "Hag, Sea",
-          "detail": ""
-        },
-        {
-          "uuid": "Compendium.vagabond.bestiary.Actor.uIRiPIcdtl00VHdb",
-          "name": "Golem, Iron",
-          "detail": ""
-        },
-        {
-          "uuid": "Compendium.vagabond.bestiary.Actor.wZ1lpFv59kCH9Pxj",
-          "name": "Nymph",
-          "detail": ""
-        }
-      ]
-    },
-    {
-      "id": "broken-automation:Magic Ward II",
-      "category": "dead-ability-text",
-      "subcategory": "broken-automation",
-      "severity": "error",
-      "message": "Compendium text describes a Mana-cost penalty; scripts/npc-abilities.mjs injects a roll-penalty die (1d6) instead.",
-      "affectedMonsters": [
-        {
-          "uuid": "Compendium.vagabond.bestiary.Actor.1wsieodgDkGEU0si",
-          "name": "Chort",
-          "detail": ""
-        },
-        {
-          "uuid": "Compendium.vagabond.bestiary.Actor.ATWC3zLqqZCvDLGF",
-          "name": "Dragon, Young - Red",
-          "detail": ""
-        },
-        {
-          "uuid": "Compendium.vagabond.bestiary.Actor.Ht9KJUOiRr1qjSQ2",
-          "name": "Dragon, Young - Green",
-          "detail": ""
-        },
-        {
-          "uuid": "Compendium.vagabond.bestiary.Actor.UGMhE8UODeuZf3Ms",
-          "name": "Vampire",
-          "detail": ""
-        },
-        {
-          "uuid": "Compendium.vagabond.bestiary.Actor.Uylf41QzuircJejb",
-          "name": "Dragon, Young - Black",
-          "detail": ""
-        },
-        {
-          "uuid": "Compendium.vagabond.bestiary.Actor.WgRHBofac5k3IUet",
-          "name": "Thulhan",
-          "detail": ""
-        },
-        {
-          "uuid": "Compendium.vagabond.bestiary.Actor.ZXpSxKZH1Zj3fBcP",
-          "name": "Hag, Green",
-          "detail": ""
-        },
-        {
-          "uuid": "Compendium.vagabond.bestiary.Actor.cUT2qxNSbgNpwhOT",
-          "name": "Dragon, Young - White",
-          "detail": ""
-        },
-        {
-          "uuid": "Compendium.vagabond.bestiary.Actor.lfHGD4OvbUEXP4wJ",
-          "name": "Zotz, Demon",
-          "detail": ""
-        },
-        {
-          "uuid": "Compendium.vagabond.bestiary.Actor.rTePiNbB8qag6HnP",
-          "name": "Sphinx",
-          "detail": ""
-        },
-        {
-          "uuid": "Compendium.vagabond.bestiary.Actor.rb5dVb8peFW4RUIT",
-          "name": "Phoenix",
-          "detail": ""
-        },
-        {
-          "uuid": "Compendium.vagabond.bestiary.Actor.trLqdRvjz70izXqj",
-          "name": "Dragon, Young - Blue",
-          "detail": ""
-        },
-        {
-          "uuid": "Compendium.vagabond.bestiary.Actor.uDjwEv1gpStc0WzJ",
-          "name": "Carcolh",
-          "detail": ""
-        },
-        {
-          "uuid": "Compendium.vagabond.bestiary.Actor.wvnFUicXjGnzt7w6",
-          "name": "Mummy Lord",
-          "detail": ""
-        },
-        {
-          "uuid": "Compendium.vagabond.bestiary.Actor.yn22rgWJrAqwqAV0",
-          "name": "Snakeman",
-          "detail": ""
-        },
-        {
-          "uuid": "Compendium.vagabond.humanlike.Actor.SuDEcZVOA7NgqkXa",
-          "name": "Archmage",
-          "detail": ""
-        }
-      ]
-    },
-    {
-      "id": "broken-automation:Magic Ward III",
-      "category": "dead-ability-text",
-      "subcategory": "broken-automation",
-      "severity": "error",
-      "message": "Compendium text describes a Mana-cost penalty; scripts/npc-abilities.mjs injects a roll-penalty die (1d8) instead.",
-      "affectedMonsters": [
-        {
-          "uuid": "Compendium.vagabond.bestiary.Actor.2Wx5RcpuRN8Nw6T0",
-          "name": "Angel",
-          "detail": ""
-        },
-        {
-          "uuid": "Compendium.vagabond.bestiary.Actor.OtEJxfZ13jBJ1apz",
-          "name": "Dragon, Elder - Black",
-          "detail": ""
-        },
-        {
-          "uuid": "Compendium.vagabond.bestiary.Actor.ZNYqDZ9n236roSBY",
-          "name": "Dragon, Elder - White",
-          "detail": ""
-        },
-        {
-          "uuid": "Compendium.vagabond.bestiary.Actor.fH1TAjmzFTDXdlHF",
-          "name": "Dragon, Elder - Green",
-          "detail": ""
-        },
-        {
-          "uuid": "Compendium.vagabond.bestiary.Actor.gOWR3pPKIEMyriVy",
-          "name": "Dragon, Elder - Red",
-          "detail": ""
-        },
-        {
-          "uuid": "Compendium.vagabond.bestiary.Actor.hPna41WWprqcqawU",
-          "name": "Unicorn",
-          "detail": ""
-        },
-        {
-          "uuid": "Compendium.vagabond.bestiary.Actor.nZBfS7RH0A7N9v11",
-          "name": "Dragon, Elder - Blue",
-          "detail": ""
-        },
-        {
-          "uuid": "Compendium.vagabond.bestiary.Actor.qtILksrMEcYJ47Be",
-          "name": "Sphinx, Archon",
-          "detail": ""
-        },
-        {
-          "uuid": "Compendium.vagabond.bestiary.Actor.tox2rxTF7WFaqSJk",
-          "name": "Pit Fiend",
-          "detail": ""
-        }
-      ]
-    },
     {
       "id": "damageless-requiresDamage:Compendium.vagabond-character-enhancer.vce-beasts.Actor.1PCP5FEH0Jhnz1WZ:Bite:paralyzed",
       "category": "data-inconsistency",
@@ -3945,78 +3742,6 @@
       ]
     },
     {
-      "id": "unimplemented-ability:Magic Ward IV",
-      "category": "dead-ability-text",
-      "subcategory": "unimplemented-passive",
-      "severity": "warning",
-      "message": "Ability \"Magic Ward IV\" describes mechanical effects (must-spend-mana) but has no automation in scripts/npc-abilities.mjs.",
-      "affectedMonsters": [
-        {
-          "uuid": "Compendium.vagabond.bestiary.Actor.87OFFZOTxFeRldz8",
-          "name": "Dragon, Ancient - Green",
-          "detail": "The first time it is unwillingly affected by a Spell each Round, the Caster must spend an extra 4 Mana to affect it."
-        },
-        {
-          "uuid": "Compendium.vagabond.bestiary.Actor.MDeTATYPlrz4jjQb",
-          "name": "Dragon, Ancient - Red",
-          "detail": "The first time it is unwillingly affected by a Spell each Round, the Caster must spend an extra 4 Mana to affect it."
-        },
-        {
-          "uuid": "Compendium.vagabond.bestiary.Actor.Xc30d0v7k9g20Nmu",
-          "name": "Stone Colossus",
-          "detail": "The first time it is unwillingly affected by a Spell each Round, the Caster must spend an extra 4 Mana to affect it."
-        },
-        {
-          "uuid": "Compendium.vagabond.bestiary.Actor.XqDi7xhYi8r25Eu7",
-          "name": "Stolas Demon",
-          "detail": "The first time it is unwillingly affected by a Spell each Round, the Caster must spend an extra 4 Mana to affect it."
-        },
-        {
-          "uuid": "Compendium.vagabond.bestiary.Actor.eim4ggishfz85XVX",
-          "name": "Dragon, Ancient - White",
-          "detail": "The first time it is unwillingly affected by a Spell each Round, the Caster must spend an extra 4 Mana to affect it."
-        },
-        {
-          "uuid": "Compendium.vagabond.bestiary.Actor.peS6wk3Zv8WiS5Dd",
-          "name": "Dragon, Ancient - Black",
-          "detail": "The first time it is unwillingly affected by a Spell each Round, the Caster must spend an extra 4 Mana to affect it."
-        },
-        {
-          "uuid": "Compendium.vagabond.bestiary.Actor.zwwV8fXQhYzPQfKp",
-          "name": "Dragon, Ancient - Blue",
-          "detail": "The first time it is unwillingly affected by a Spell each Round, the Caster must spend an extra 4 Mana to affect it."
-        }
-      ]
-    },
-    {
-      "id": "unimplemented-ability:Magic Ward V",
-      "category": "dead-ability-text",
-      "subcategory": "unimplemented-passive",
-      "severity": "warning",
-      "message": "Ability \"Magic Ward V\" describes mechanical effects (must-spend-mana) but has no automation in scripts/npc-abilities.mjs.",
-      "affectedMonsters": [
-        {
-          "uuid": "Compendium.vagabond.bestiary.Actor.eIjbp2eHJHXPG5kI",
-          "name": "Lich",
-          "detail": "The first time it is unwillingly affected by a Spell each Round, the Caster must spend an extra 5 Mana to affect it."
-        }
-      ]
-    },
-    {
-      "id": "unimplemented-ability:Magic Ward VI",
-      "category": "dead-ability-text",
-      "subcategory": "unimplemented-passive",
-      "severity": "warning",
-      "message": "Ability \"Magic Ward VI\" describes mechanical effects (must-spend-mana) but has no automation in scripts/npc-abilities.mjs.",
-      "affectedMonsters": [
-        {
-          "uuid": "Compendium.vagabond.bestiary.Actor.G2KnbYhwZ2xfT3wM",
-          "name": "Tarrasque",
-          "detail": "The first time it is unwillingly affected by a Spell each Round, the Caster must spend an extra 6 Mana to affect it."
-        }
-      ]
-    },
-    {
       "id": "unimplemented-ability:Mind of Madness",
       "category": "dead-ability-text",
       "subcategory": "unimplemented-passive",
@@ -4104,90 +3829,6 @@
       ]
     },
     {
-      "id": "unimplemented-ability:Nimble",
-      "category": "dead-ability-text",
-      "subcategory": "unimplemented-passive",
-      "severity": "warning",
-      "message": "Ability \"Nimble\" describes mechanical effects (favored) but has no automation in scripts/npc-abilities.mjs.",
-      "affectedMonsters": [
-        {
-          "uuid": "Compendium.vagabond-character-enhancer.vce-beasts.Actor.5E6UUHA0yXxCycuA",
-          "name": "Bat",
-          "detail": "Attacks against it can’t be Favored if it can Move."
-        },
-        {
-          "uuid": "Compendium.vagabond-character-enhancer.vce-beasts.Actor.VWzjyzpmyOzlAF7a",
-          "name": "Rat, Giant",
-          "detail": "Attacks against it can’t be Favored if it can Move."
-        },
-        {
-          "uuid": "Compendium.vagabond-character-enhancer.vce-beasts.Actor.u9QlqAkY5WQgBL0u",
-          "name": "Rat",
-          "detail": "Attacks against it can’t be Favored if it can Move."
-        },
-        {
-          "uuid": "Compendium.vagabond-character-enhancer.vce-beasts.Actor.vIIdLgIoWTWjjymx",
-          "name": "Bat, Giant",
-          "detail": "Attacks against it can’t be Favored if it can Move."
-        },
-        {
-          "uuid": "Compendium.vagabond.bestiary.Actor.01WK986PiOP0uUDE",
-          "name": "Flying Spellbook",
-          "detail": "Attacks against it can’t be Favored if it can Move."
-        },
-        {
-          "uuid": "Compendium.vagabond.bestiary.Actor.8gZeIa8LY8GN4H4u",
-          "name": "Rabbit",
-          "detail": "Attacks against it can’t be Favored if it can Move."
-        },
-        {
-          "uuid": "Compendium.vagabond.bestiary.Actor.FdAlnzOqsprGIwwP",
-          "name": "Owl",
-          "detail": "Attacks against it can’t be Favored if it can Move."
-        },
-        {
-          "uuid": "Compendium.vagabond.bestiary.Actor.S5JBdu7eIlAWclHE",
-          "name": "Hawk",
-          "detail": "Attacks against it can’t be Favored if it can Move."
-        },
-        {
-          "uuid": "Compendium.vagabond.bestiary.Actor.fM1JjKdHbzQVm1rI",
-          "name": "Rat, Giant",
-          "detail": "Attacks against it can’t be Favored if it can Move."
-        },
-        {
-          "uuid": "Compendium.vagabond.bestiary.Actor.kdkY2n6gMSQLT5Tr",
-          "name": "Rat",
-          "detail": "Attacks against it can’t be Favored if it can Move."
-        },
-        {
-          "uuid": "Compendium.vagabond.bestiary.Actor.l0R5eP2Gp0WC6QPq",
-          "name": "Flying Sword",
-          "detail": "Attacks against it can’t be Favored if it can Move."
-        },
-        {
-          "uuid": "Compendium.vagabond.bestiary.Actor.lfHGD4OvbUEXP4wJ",
-          "name": "Zotz, Demon",
-          "detail": "Attacks against it can’t be Favored if it can Move."
-        },
-        {
-          "uuid": "Compendium.vagabond.bestiary.Actor.mfXiP8SZOBYuin8r",
-          "name": "Bat, Giant",
-          "detail": "Attacks against it can’t be Favored if it can Move."
-        },
-        {
-          "uuid": "Compendium.vagabond.bestiary.Actor.qMlyP6vGm2ZAQx3W",
-          "name": "Almiraj",
-          "detail": "Attacks against it can’t be Favored if it can Move."
-        },
-        {
-          "uuid": "Compendium.vagabond.bestiary.Actor.svzEPBpYY23Vg0Dg",
-          "name": "Bat",
-          "detail": "Attacks against it can’t be Favored if it can Move."
-        }
-      ]
-    },
-    {
       "id": "unimplemented-ability:Ocular",
       "category": "dead-ability-text",
       "subcategory": "unimplemented-passive",
@@ -4240,90 +3881,6 @@
           "uuid": "Compendium.vagabond.bestiary.Actor.hpvz01W4mhKZDyrq",
           "name": "Otyugh",
           "detail": "Beings that aren't otyughs that are Sickened this way must pass an an [Endure] Save every day or lose 3 (d6) from their Max HP. This reduction to their Max HP l"
-        }
-      ]
-    },
-    {
-      "id": "unimplemented-ability:Pack Hunter",
-      "category": "dead-ability-text",
-      "subcategory": "unimplemented-passive",
-      "severity": "warning",
-      "message": "Ability \"Pack Hunter\" describes mechanical effects (vulnerable) but has no automation in scripts/npc-abilities.mjs.",
-      "affectedMonsters": [
-        {
-          "uuid": "Compendium.vagabond-character-enhancer.vce-beasts.Actor.VWzjyzpmyOzlAF7a",
-          "name": "Rat, Giant",
-          "detail": "Targets within 5 feet of one of this Being's Allies are Vulnerable to its attacks."
-        },
-        {
-          "uuid": "Compendium.vagabond-character-enhancer.vce-beasts.Actor.qnLEaxqsTlJy4QzJ",
-          "name": "Wolf, Winter",
-          "detail": "Targets within 5 feet of one of this Being's Allies are Vulnerable to its attacks."
-        },
-        {
-          "uuid": "Compendium.vagabond-character-enhancer.vce-beasts.Actor.u9QlqAkY5WQgBL0u",
-          "name": "Rat",
-          "detail": "Targets within 5 feet of one of this Being's Allies are Vulnerable to its attacks."
-        },
-        {
-          "uuid": "Compendium.vagabond.bestiary.Actor.FsDuYyDw3jtO2KYC",
-          "name": "Sea Lion",
-          "detail": "Targets within 5 feet of one of this Being's Allies are Vulnerable to its attacks."
-        },
-        {
-          "uuid": "Compendium.vagabond.bestiary.Actor.HmlmtEocbWolrl3F",
-          "name": "Weasel, Giant",
-          "detail": "Targets within 5 feet of one of this Being's Allies are Vulnerable to its attacks."
-        },
-        {
-          "uuid": "Compendium.vagabond.bestiary.Actor.JEjyqTf7HImNj1hy",
-          "name": "Sabre-tooth Tiger",
-          "detail": "Targets within 5 feet of one of this Being's Allies are Vulnerable to its attacks."
-        },
-        {
-          "uuid": "Compendium.vagabond.bestiary.Actor.OM4n0N2hftXzkcRy",
-          "name": "Cat, Great",
-          "detail": "Targets within 5 feet of one of this Being's Allies are Vulnerable to its attacks."
-        },
-        {
-          "uuid": "Compendium.vagabond.bestiary.Actor.ObCy4kANqhT3rrbJ",
-          "name": "Wolf",
-          "detail": "Targets within 5 feet of one of this Being's Allies are Vulnerable to its attacks."
-        },
-        {
-          "uuid": "Compendium.vagabond.bestiary.Actor.Wpi6ETJ6izgT1aOo",
-          "name": "Wolf, Winter",
-          "detail": "Targets within 5 feet of one of this Being's Allies are Vulnerable to its attacks."
-        },
-        {
-          "uuid": "Compendium.vagabond.bestiary.Actor.YA8mo48WNHLm6saq",
-          "name": "Velociraptor",
-          "detail": "Targets within 5 feet of one of this Being's Allies are Vulnerable to its attacks."
-        },
-        {
-          "uuid": "Compendium.vagabond.bestiary.Actor.bjjglKk2aSt1kqL6",
-          "name": "Wolf, Dire",
-          "detail": "Targets within 5 feet of one of this Being's Allies are Vulnerable to its attacks."
-        },
-        {
-          "uuid": "Compendium.vagabond.bestiary.Actor.fM1JjKdHbzQVm1rI",
-          "name": "Rat, Giant",
-          "detail": "Targets within 5 feet of one of this Being's Allies are Vulnerable to its attacks."
-        },
-        {
-          "uuid": "Compendium.vagabond.bestiary.Actor.kdkY2n6gMSQLT5Tr",
-          "name": "Rat",
-          "detail": "Targets within 5 feet of one of this Being's Allies are Vulnerable to its attacks."
-        },
-        {
-          "uuid": "Compendium.vagabond.bestiary.Actor.pRwsDQBP6ck8LuWs",
-          "name": "Dog, Medium",
-          "detail": "Targets within 5 feet of one of this Being's Allies are Vulnerable to its attacks."
-        },
-        {
-          "uuid": "Compendium.vagabond.bestiary.Actor.ssbUeRw0VM03vk6b",
-          "name": "Dog, Small",
-          "detail": "Targets within 5 feet of one of this Being's Allies are Vulnerable to its attacks."
         }
       ]
     },
@@ -4585,40 +4142,6 @@
           "uuid": "Compendium.vagabond.humanlike.Actor.pztZ1992w2ZhIHII",
           "name": "Assassin",
           "detail": "Once per Turn, it deals 2 (d4) additional damage with an attack against a Vulnerable Target. This attack ignores Armor and can explode."
-        }
-      ]
-    },
-    {
-      "id": "unimplemented-ability:Soft Underbelly",
-      "category": "dead-ability-text",
-      "subcategory": "unimplemented-passive",
-      "severity": "warning",
-      "message": "Ability \"Soft Underbelly\" describes mechanical effects (prone) but has no automation in scripts/npc-abilities.mjs.",
-      "affectedMonsters": [
-        {
-          "uuid": "Compendium.vagabond.bestiary.Actor.0kzsaKPEt9F2cLzh",
-          "name": "Ankheg",
-          "detail": "Its Armor is 0 while it is Prone."
-        },
-        {
-          "uuid": "Compendium.vagabond.bestiary.Actor.JdG9XdEO8Gk3vwpV",
-          "name": "Carcass Crawler",
-          "detail": "Its Armor is 0 while it is Prone."
-        },
-        {
-          "uuid": "Compendium.vagabond.bestiary.Actor.bQRYqctiGqfLigDQ",
-          "name": "Beetle, Giant Fire",
-          "detail": "Its Armor is 0 while it is Prone."
-        },
-        {
-          "uuid": "Compendium.vagabond.bestiary.Actor.mdtMIAyn3qMINoyD",
-          "name": "Bulette",
-          "detail": "Its Armor is 0 while it is Prone."
-        },
-        {
-          "uuid": "Compendium.vagabond.bestiary.Actor.wdqCpTf6IvtPLc80",
-          "name": "Beetle, Giant Tiger",
-          "detail": "Its Armor is 0 while it is Prone."
         }
       ]
     },
@@ -5043,20 +4566,6 @@
       ]
     },
     {
-      "id": "unmatched-status:Compendium.vagabond-character-enhancer.vce-beasts.Actor.qnLEaxqsTlJy4QzJ:Pack Hunter:vulnerable",
-      "category": "dead-ability-text",
-      "subcategory": "ability-mentions-status-without-action",
-      "severity": "warning",
-      "message": "Ability \"Pack Hunter\" on Wolf, Winter mentions Vulnerable, but no action on this monster applies those statuses.",
-      "affectedMonsters": [
-        {
-          "uuid": "Compendium.vagabond-character-enhancer.vce-beasts.Actor.qnLEaxqsTlJy4QzJ",
-          "name": "Wolf, Winter",
-          "detail": "Targets within 5 feet of one of this Being's Allies are Vulnerable to its attacks."
-        }
-      ]
-    },
-    {
       "id": "unmatched-status:Compendium.vagabond-character-enhancer.vce-beasts.Actor.qnLEaxqsTlJy4QzJ:Pounce:prone",
       "category": "dead-ability-text",
       "subcategory": "ability-mentions-status-without-action",
@@ -5071,34 +4580,6 @@
       ]
     },
     {
-      "id": "unmatched-status:Compendium.vagabond-character-enhancer.vce-beasts.Actor.u9QlqAkY5WQgBL0u:Pack Hunter:vulnerable",
-      "category": "dead-ability-text",
-      "subcategory": "ability-mentions-status-without-action",
-      "severity": "warning",
-      "message": "Ability \"Pack Hunter\" on Rat mentions Vulnerable, but no action on this monster applies those statuses.",
-      "affectedMonsters": [
-        {
-          "uuid": "Compendium.vagabond-character-enhancer.vce-beasts.Actor.u9QlqAkY5WQgBL0u",
-          "name": "Rat",
-          "detail": "Targets within 5 feet of one of this Being's Allies are Vulnerable to its attacks."
-        }
-      ]
-    },
-    {
-      "id": "unmatched-status:Compendium.vagabond-character-enhancer.vce-beasts.Actor.VWzjyzpmyOzlAF7a:Pack Hunter:vulnerable",
-      "category": "dead-ability-text",
-      "subcategory": "ability-mentions-status-without-action",
-      "severity": "warning",
-      "message": "Ability \"Pack Hunter\" on Rat, Giant mentions Vulnerable, but no action on this monster applies those statuses.",
-      "affectedMonsters": [
-        {
-          "uuid": "Compendium.vagabond-character-enhancer.vce-beasts.Actor.VWzjyzpmyOzlAF7a",
-          "name": "Rat, Giant",
-          "detail": "Targets within 5 feet of one of this Being's Allies are Vulnerable to its attacks."
-        }
-      ]
-    },
-    {
       "id": "unmatched-status:Compendium.vagabond.bestiary.Actor.0ggPx89IztNk2YN8:Sun-Averse:vulnerable",
       "category": "dead-ability-text",
       "subcategory": "ability-mentions-status-without-action",
@@ -5109,20 +4590,6 @@
           "uuid": "Compendium.vagabond.bestiary.Actor.0ggPx89IztNk2YN8",
           "name": "Goblin, Mage",
           "detail": "Is Vulnerable while in Sunlight"
-        }
-      ]
-    },
-    {
-      "id": "unmatched-status:Compendium.vagabond.bestiary.Actor.0kzsaKPEt9F2cLzh:Soft Underbelly:prone",
-      "category": "dead-ability-text",
-      "subcategory": "ability-mentions-status-without-action",
-      "severity": "warning",
-      "message": "Ability \"Soft Underbelly\" on Ankheg mentions Prone, but no action on this monster applies those statuses.",
-      "affectedMonsters": [
-        {
-          "uuid": "Compendium.vagabond.bestiary.Actor.0kzsaKPEt9F2cLzh",
-          "name": "Ankheg",
-          "detail": "Its Armor is 0 while it is Prone."
         }
       ]
     },
@@ -5393,20 +4860,6 @@
       ]
     },
     {
-      "id": "unmatched-status:Compendium.vagabond.bestiary.Actor.bjjglKk2aSt1kqL6:Pack Hunter:vulnerable",
-      "category": "dead-ability-text",
-      "subcategory": "ability-mentions-status-without-action",
-      "severity": "warning",
-      "message": "Ability \"Pack Hunter\" on Wolf, Dire mentions Vulnerable, but no action on this monster applies those statuses.",
-      "affectedMonsters": [
-        {
-          "uuid": "Compendium.vagabond.bestiary.Actor.bjjglKk2aSt1kqL6",
-          "name": "Wolf, Dire",
-          "detail": "Targets within 5 feet of one of this Being's Allies are Vulnerable to its attacks."
-        }
-      ]
-    },
-    {
       "id": "unmatched-status:Compendium.vagabond.bestiary.Actor.bjjglKk2aSt1kqL6:Pounce:prone",
       "category": "dead-ability-text",
       "subcategory": "ability-mentions-status-without-action",
@@ -5417,20 +4870,6 @@
           "uuid": "Compendium.vagabond.bestiary.Actor.bjjglKk2aSt1kqL6",
           "name": "Wolf, Dire",
           "detail": "If it moves at least 20' before an attack on the same Turn, the Target is also knocked Prone if it is Large or smaller."
-        }
-      ]
-    },
-    {
-      "id": "unmatched-status:Compendium.vagabond.bestiary.Actor.bQRYqctiGqfLigDQ:Soft Underbelly:prone",
-      "category": "dead-ability-text",
-      "subcategory": "ability-mentions-status-without-action",
-      "severity": "warning",
-      "message": "Ability \"Soft Underbelly\" on Beetle, Giant Fire mentions Prone, but no action on this monster applies those statuses.",
-      "affectedMonsters": [
-        {
-          "uuid": "Compendium.vagabond.bestiary.Actor.bQRYqctiGqfLigDQ",
-          "name": "Beetle, Giant Fire",
-          "detail": "Its Armor is 0 while it is Prone."
         }
       ]
     },
@@ -5543,34 +4982,6 @@
           "uuid": "Compendium.vagabond.bestiary.Actor.fH1TAjmzFTDXdlHF",
           "name": "Dragon, Elder - Green",
           "detail": "Enemies that can see it for the first time and at the start of their Turns thereafter must pass [Will] or be Frightened (Cd4)."
-        }
-      ]
-    },
-    {
-      "id": "unmatched-status:Compendium.vagabond.bestiary.Actor.fM1JjKdHbzQVm1rI:Pack Hunter:vulnerable",
-      "category": "dead-ability-text",
-      "subcategory": "ability-mentions-status-without-action",
-      "severity": "warning",
-      "message": "Ability \"Pack Hunter\" on Rat, Giant mentions Vulnerable, but no action on this monster applies those statuses.",
-      "affectedMonsters": [
-        {
-          "uuid": "Compendium.vagabond.bestiary.Actor.fM1JjKdHbzQVm1rI",
-          "name": "Rat, Giant",
-          "detail": "Targets within 5 feet of one of this Being's Allies are Vulnerable to its attacks."
-        }
-      ]
-    },
-    {
-      "id": "unmatched-status:Compendium.vagabond.bestiary.Actor.FsDuYyDw3jtO2KYC:Pack Hunter:vulnerable",
-      "category": "dead-ability-text",
-      "subcategory": "ability-mentions-status-without-action",
-      "severity": "warning",
-      "message": "Ability \"Pack Hunter\" on Sea Lion mentions Vulnerable, but no action on this monster applies those statuses.",
-      "affectedMonsters": [
-        {
-          "uuid": "Compendium.vagabond.bestiary.Actor.FsDuYyDw3jtO2KYC",
-          "name": "Sea Lion",
-          "detail": "Targets within 5 feet of one of this Being's Allies are Vulnerable to its attacks."
         }
       ]
     },
@@ -5701,20 +5112,6 @@
       ]
     },
     {
-      "id": "unmatched-status:Compendium.vagabond.bestiary.Actor.HmlmtEocbWolrl3F:Pack Hunter:vulnerable",
-      "category": "dead-ability-text",
-      "subcategory": "ability-mentions-status-without-action",
-      "severity": "warning",
-      "message": "Ability \"Pack Hunter\" on Weasel, Giant mentions Vulnerable, but no action on this monster applies those statuses.",
-      "affectedMonsters": [
-        {
-          "uuid": "Compendium.vagabond.bestiary.Actor.HmlmtEocbWolrl3F",
-          "name": "Weasel, Giant",
-          "detail": "Targets within 5 feet of one of this Being's Allies are Vulnerable to its attacks."
-        }
-      ]
-    },
-    {
       "id": "unmatched-status:Compendium.vagabond.bestiary.Actor.IcbNlle1cmGen0Kk:Nightwalker:burning,incapacitated",
       "category": "dead-ability-text",
       "subcategory": "ability-mentions-status-without-action",
@@ -5753,34 +5150,6 @@
           "uuid": "Compendium.vagabond.bestiary.Actor.iyCEulXgz8uABmdD",
           "name": "Ogler",
           "detail": "It can Cast while Berserk."
-        }
-      ]
-    },
-    {
-      "id": "unmatched-status:Compendium.vagabond.bestiary.Actor.JdG9XdEO8Gk3vwpV:Soft Underbelly:prone",
-      "category": "dead-ability-text",
-      "subcategory": "ability-mentions-status-without-action",
-      "severity": "warning",
-      "message": "Ability \"Soft Underbelly\" on Carcass Crawler mentions Prone, but no action on this monster applies those statuses.",
-      "affectedMonsters": [
-        {
-          "uuid": "Compendium.vagabond.bestiary.Actor.JdG9XdEO8Gk3vwpV",
-          "name": "Carcass Crawler",
-          "detail": "Its Armor is 0 while it is Prone."
-        }
-      ]
-    },
-    {
-      "id": "unmatched-status:Compendium.vagabond.bestiary.Actor.JEjyqTf7HImNj1hy:Pack Hunter:vulnerable",
-      "category": "dead-ability-text",
-      "subcategory": "ability-mentions-status-without-action",
-      "severity": "warning",
-      "message": "Ability \"Pack Hunter\" on Sabre-tooth Tiger mentions Vulnerable, but no action on this monster applies those statuses.",
-      "affectedMonsters": [
-        {
-          "uuid": "Compendium.vagabond.bestiary.Actor.JEjyqTf7HImNj1hy",
-          "name": "Sabre-tooth Tiger",
-          "detail": "Targets within 5 feet of one of this Being's Allies are Vulnerable to its attacks."
         }
       ]
     },
@@ -5851,20 +5220,6 @@
           "uuid": "Compendium.vagabond.bestiary.Actor.kcqeeuQ2oDfyKaak",
           "name": "Brollachan",
           "detail": "Enemies that can hear it for the first time and at the start of their Turns must pass a [Will] Save or be Confused (until they pass this Check on a subsequent Turn, or for Cd4 Rounds afterwards)."
-        }
-      ]
-    },
-    {
-      "id": "unmatched-status:Compendium.vagabond.bestiary.Actor.kdkY2n6gMSQLT5Tr:Pack Hunter:vulnerable",
-      "category": "dead-ability-text",
-      "subcategory": "ability-mentions-status-without-action",
-      "severity": "warning",
-      "message": "Ability \"Pack Hunter\" on Rat mentions Vulnerable, but no action on this monster applies those statuses.",
-      "affectedMonsters": [
-        {
-          "uuid": "Compendium.vagabond.bestiary.Actor.kdkY2n6gMSQLT5Tr",
-          "name": "Rat",
-          "detail": "Targets within 5 feet of one of this Being's Allies are Vulnerable to its attacks."
         }
       ]
     },
@@ -5953,20 +5308,6 @@
       ]
     },
     {
-      "id": "unmatched-status:Compendium.vagabond.bestiary.Actor.mdtMIAyn3qMINoyD:Soft Underbelly:prone",
-      "category": "dead-ability-text",
-      "subcategory": "ability-mentions-status-without-action",
-      "severity": "warning",
-      "message": "Ability \"Soft Underbelly\" on Bulette mentions Prone, but no action on this monster applies those statuses.",
-      "affectedMonsters": [
-        {
-          "uuid": "Compendium.vagabond.bestiary.Actor.mdtMIAyn3qMINoyD",
-          "name": "Bulette",
-          "detail": "Its Armor is 0 while it is Prone."
-        }
-      ]
-    },
-    {
       "id": "unmatched-status:Compendium.vagabond.bestiary.Actor.nYO6xGYPRmtNuhV9:Engulfer:burning",
       "category": "dead-ability-text",
       "subcategory": "ability-mentions-status-without-action",
@@ -5991,20 +5332,6 @@
           "uuid": "Compendium.vagabond.bestiary.Actor.nZBfS7RH0A7N9v11",
           "name": "Dragon, Elder - Blue",
           "detail": "Enemies that can see it for the first time and at the start of their Turns thereafter must pass [Will] or be Frightened (Cd4)."
-        }
-      ]
-    },
-    {
-      "id": "unmatched-status:Compendium.vagabond.bestiary.Actor.ObCy4kANqhT3rrbJ:Pack Hunter:vulnerable",
-      "category": "dead-ability-text",
-      "subcategory": "ability-mentions-status-without-action",
-      "severity": "warning",
-      "message": "Ability \"Pack Hunter\" on Wolf mentions Vulnerable, but no action on this monster applies those statuses.",
-      "affectedMonsters": [
-        {
-          "uuid": "Compendium.vagabond.bestiary.Actor.ObCy4kANqhT3rrbJ",
-          "name": "Wolf",
-          "detail": "Targets within 5 feet of one of this Being's Allies are Vulnerable to its attacks."
         }
       ]
     },
@@ -6047,20 +5374,6 @@
           "uuid": "Compendium.vagabond.bestiary.Actor.oDROHzNC8xZ4HY5m",
           "name": "Hag, Sea",
           "detail": "Enemies that can see it for the first time and at the start of their Turns must pass a [Will] Save or be Frightened until they pass this Check on a subsequent Turn, or for Cd4 Rounds afterwards."
-        }
-      ]
-    },
-    {
-      "id": "unmatched-status:Compendium.vagabond.bestiary.Actor.OM4n0N2hftXzkcRy:Pack Hunter:vulnerable",
-      "category": "dead-ability-text",
-      "subcategory": "ability-mentions-status-without-action",
-      "severity": "warning",
-      "message": "Ability \"Pack Hunter\" on Cat, Great mentions Vulnerable, but no action on this monster applies those statuses.",
-      "affectedMonsters": [
-        {
-          "uuid": "Compendium.vagabond.bestiary.Actor.OM4n0N2hftXzkcRy",
-          "name": "Cat, Great",
-          "detail": "Targets within 5 feet of one of this Being's Allies are Vulnerable to its attacks."
         }
       ]
     },
@@ -6131,20 +5444,6 @@
           "uuid": "Compendium.vagabond.bestiary.Actor.peS6wk3Zv8WiS5Dd",
           "name": "Dragon, Ancient - Black",
           "detail": "Enemies that can see it for the first time and at the start of their Turns thereafter must pass [Will] or be Frightened (Cd6 Rounds)."
-        }
-      ]
-    },
-    {
-      "id": "unmatched-status:Compendium.vagabond.bestiary.Actor.pRwsDQBP6ck8LuWs:Pack Hunter:vulnerable",
-      "category": "dead-ability-text",
-      "subcategory": "ability-mentions-status-without-action",
-      "severity": "warning",
-      "message": "Ability \"Pack Hunter\" on Dog, Medium mentions Vulnerable, but no action on this monster applies those statuses.",
-      "affectedMonsters": [
-        {
-          "uuid": "Compendium.vagabond.bestiary.Actor.pRwsDQBP6ck8LuWs",
-          "name": "Dog, Medium",
-          "detail": "Targets within 5 feet of one of this Being's Allies are Vulnerable to its attacks."
         }
       ]
     },
@@ -6261,20 +5560,6 @@
       ]
     },
     {
-      "id": "unmatched-status:Compendium.vagabond.bestiary.Actor.ssbUeRw0VM03vk6b:Pack Hunter:vulnerable",
-      "category": "dead-ability-text",
-      "subcategory": "ability-mentions-status-without-action",
-      "severity": "warning",
-      "message": "Ability \"Pack Hunter\" on Dog, Small mentions Vulnerable, but no action on this monster applies those statuses.",
-      "affectedMonsters": [
-        {
-          "uuid": "Compendium.vagabond.bestiary.Actor.ssbUeRw0VM03vk6b",
-          "name": "Dog, Small",
-          "detail": "Targets within 5 feet of one of this Being's Allies are Vulnerable to its attacks."
-        }
-      ]
-    },
-    {
       "id": "unmatched-status:Compendium.vagabond.bestiary.Actor.TeXpYvmYgkwz7Rkd:Bloodthirst:berserk,vulnerable",
       "category": "dead-ability-text",
       "subcategory": "ability-mentions-status-without-action",
@@ -6327,20 +5612,6 @@
           "uuid": "Compendium.vagabond.bestiary.Actor.W5kmv1bYrErmzoUI",
           "name": "Golem, Clay",
           "detail": "If it takes 5 or more Fire damage at once, it is Dazed (Cd4)."
-        }
-      ]
-    },
-    {
-      "id": "unmatched-status:Compendium.vagabond.bestiary.Actor.wdqCpTf6IvtPLc80:Soft Underbelly:prone",
-      "category": "dead-ability-text",
-      "subcategory": "ability-mentions-status-without-action",
-      "severity": "warning",
-      "message": "Ability \"Soft Underbelly\" on Beetle, Giant Tiger mentions Prone, but no action on this monster applies those statuses.",
-      "affectedMonsters": [
-        {
-          "uuid": "Compendium.vagabond.bestiary.Actor.wdqCpTf6IvtPLc80",
-          "name": "Beetle, Giant Tiger",
-          "detail": "Its Armor is 0 while it is Prone."
         }
       ]
     },
@@ -6401,20 +5672,6 @@
       ]
     },
     {
-      "id": "unmatched-status:Compendium.vagabond.bestiary.Actor.Wpi6ETJ6izgT1aOo:Pack Hunter:vulnerable",
-      "category": "dead-ability-text",
-      "subcategory": "ability-mentions-status-without-action",
-      "severity": "warning",
-      "message": "Ability \"Pack Hunter\" on Wolf, Winter mentions Vulnerable, but no action on this monster applies those statuses.",
-      "affectedMonsters": [
-        {
-          "uuid": "Compendium.vagabond.bestiary.Actor.Wpi6ETJ6izgT1aOo",
-          "name": "Wolf, Winter",
-          "detail": "Targets within 5 feet of one of this Being's Allies are Vulnerable to its attacks."
-        }
-      ]
-    },
-    {
       "id": "unmatched-status:Compendium.vagabond.bestiary.Actor.Wpi6ETJ6izgT1aOo:Pounce:prone",
       "category": "dead-ability-text",
       "subcategory": "ability-mentions-status-without-action",
@@ -6439,20 +5696,6 @@
           "uuid": "Compendium.vagabond.bestiary.Actor.xwAfbjZqqVzOyEAI",
           "name": "Vortex",
           "detail": "Medium or smaller Close Beings must pass [Endure] against being Restrained at the start of their Turns or be thrown 25 (d10x5) feet in the air."
-        }
-      ]
-    },
-    {
-      "id": "unmatched-status:Compendium.vagabond.bestiary.Actor.YA8mo48WNHLm6saq:Pack Hunter:vulnerable",
-      "category": "dead-ability-text",
-      "subcategory": "ability-mentions-status-without-action",
-      "severity": "warning",
-      "message": "Ability \"Pack Hunter\" on Velociraptor mentions Vulnerable, but no action on this monster applies those statuses.",
-      "affectedMonsters": [
-        {
-          "uuid": "Compendium.vagabond.bestiary.Actor.YA8mo48WNHLm6saq",
-          "name": "Velociraptor",
-          "detail": "Targets within 5 feet of one of this Being's Allies are Vulnerable to its attacks."
         }
       ]
     },
