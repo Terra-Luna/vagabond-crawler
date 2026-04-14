@@ -1,5 +1,13 @@
 # Changelog
 
+## v1.8.4
+
+### New Features
+- **Hide NPC Health Bar from Players** — New world setting in module config. When enabled, players no longer see HP bars or HP values on NPC/GM cards in the crawl strip. The GM still sees them. Defaults off.
+
+### Changes
+- **Relic Forge always enabled** — Removed the `relicForgeEnabled` setting. The Relic Forge is now always available; it remains GM-only at open.
+
 ## v1.8.3
 
 ### Bug Fixes
