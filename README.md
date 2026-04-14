@@ -2,7 +2,7 @@
 
 ![Foundry v13](https://img.shields.io/badge/foundry-v13-green?style=for-the-badge)
 ![System](https://img.shields.io/badge/system-vagabond-blue?style=for-the-badge)
-![Version](https://img.shields.io/badge/version-1.8.2-orange?style=for-the-badge)
+![Version](https://img.shields.io/badge/version-1.8.4-orange?style=for-the-badge)
 
 A comprehensive dungeon crawl management module for the **Vagabond RPG** system in Foundry VTT. Everything you need to run a crawl — turn tracking, movement enforcement, random encounters, light management, morale, combat integration, crafting, loot, and more — all from a unified interface.
 
@@ -231,6 +231,11 @@ Macro-based trap system using v13 Scene Regions.
 
 ### Item Sequencer Cone Patch
 Temporary workaround for the system's item-sequencer not supporting cone animations (e.g. Breath Attack). Adds cone rendering using the same logic as the spell-sequencer.
+
+---
+
+### Monster Audit Database
+Committed dataset of every NPC across the Vagabond compendium packs (plus `vagabond-character-enhancer.vce-beasts` when present). Ships as structured JSON plus readable Markdown under [`docs/audit/`](docs/audit/README.md) — browse abilities by automation status, actions by attack type, and per-being-type detail pages. Includes machine-readable findings for dead ability text and data inconsistencies. No runtime behavior; regenerate via `scripts/audit/` (extract → analyze → render).
 
 ---
 

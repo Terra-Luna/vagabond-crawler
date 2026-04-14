@@ -1,0 +1,3574 @@
+{
+  "generatedAt": "2026-04-14T20:55:00.591Z",
+  "uniqueCount": 178,
+  "abilities": [
+    {
+      "name": "Acid Bather",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.W5kmv1bYrErmzoUI"
+      ],
+      "representativeText": "Acid damage rolls affect it as healing rolls.",
+      "textVariants": 1,
+      "automationStatus": "flavor",
+      "reason": "Description contains no mechanical keywords.",
+      "keywords": {
+        "statuses": [],
+        "mechanicalVerbs": [],
+        "durationMarkers": [],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "Adhere",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.Tpxw3uVrHbwDUmG2"
+      ],
+      "representativeText": "Hinders Checks to end being Restrained by it.",
+      "textVariants": 1,
+      "automationStatus": "unimplemented",
+      "reason": "Description mentions mechanical effects but no PASSIVE_ABILITIES entry exists.",
+      "keywords": {
+        "statuses": [
+          "restrained"
+        ],
+        "mechanicalVerbs": [],
+        "durationMarkers": [],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "Aggressor",
+      "count": 2,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.Gfk8iD3vEweR7era",
+        "Compendium.vagabond.bestiary.Actor.IH0voiEc6ZkTBjH8"
+      ],
+      "representativeText": "The first time it Moves at least 10 feet toward an Enemy on a Turn, it regains that Speed.",
+      "textVariants": 1,
+      "automationStatus": "flavor",
+      "reason": "Description contains no mechanical keywords.",
+      "keywords": {
+        "statuses": [],
+        "mechanicalVerbs": [],
+        "durationMarkers": [],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "Aging Terror II",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.7t0wb4hi6Oh7vAK1"
+      ],
+      "representativeText": "[Enemies' first time seeing it and on their Turns | Will]: Frightened (Cd6) and aged 10 (d20) years.",
+      "textVariants": 1,
+      "automationStatus": "unimplemented",
+      "reason": "Description mentions mechanical effects but no PASSIVE_ABILITIES entry exists.",
+      "keywords": {
+        "statuses": [
+          "frightened"
+        ],
+        "mechanicalVerbs": [],
+        "durationMarkers": [
+          "cd6"
+        ],
+        "saveKeywords": [
+          "Will"
+        ]
+      }
+    },
+    {
+      "name": "Ambush Innured",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.OQZbfC2OXrLYLRM8"
+      ],
+      "representativeText": "It can't be surprised, and can take an Action and Move before the first Turn of Combat.",
+      "textVariants": 1,
+      "automationStatus": "flavor",
+      "reason": "Description contains no mechanical keywords.",
+      "keywords": {
+        "statuses": [],
+        "mechanicalVerbs": [],
+        "durationMarkers": [],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "Ambusher",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.P4TI9ono7atq1wBw"
+      ],
+      "representativeText": "If it attacks a Being that has not acted in the Combat, it deals an extra die of damage.",
+      "textVariants": 1,
+      "automationStatus": "flavor",
+      "reason": "Description contains no mechanical keywords.",
+      "keywords": {
+        "statuses": [],
+        "mechanicalVerbs": [],
+        "durationMarkers": [],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "Amorphous",
+      "count": 9,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.1w5VfFT6iJ7890ac",
+        "Compendium.vagabond.bestiary.Actor.31QN4EUQL9G9fOTj",
+        "Compendium.vagabond.bestiary.Actor.5Raq5NE9ahzB09RK",
+        "Compendium.vagabond.bestiary.Actor.9rpGK7YO9OfbXJoh",
+        "Compendium.vagabond.bestiary.Actor.FYjFBtN4C5lXvFLA",
+        "Compendium.vagabond.bestiary.Actor.JiYcX0LZZZCqhyrq",
+        "Compendium.vagabond.bestiary.Actor.SvrccBltWb6a6zqw",
+        "Compendium.vagabond.bestiary.Actor.YCnTX125wazTwDGe",
+        "Compendium.vagabond.bestiary.Actor.gpu0T0RHM0TvQO5U"
+      ],
+      "representativeText": "It can enter the space of other Beings and openings as small as 1 inch without squeezing.",
+      "textVariants": 2,
+      "automationStatus": "flavor",
+      "reason": "Description contains no mechanical keywords.",
+      "keywords": {
+        "statuses": [],
+        "mechanicalVerbs": [],
+        "durationMarkers": [],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "Amphibious",
+      "count": 22,
+      "monsters": [
+        "Compendium.vagabond-character-enhancer.vce-beasts.Actor.AZzWsYRh4XtykPfW",
+        "Compendium.vagabond-character-enhancer.vce-beasts.Actor.o7OJb0cb96O8p9Ip",
+        "Compendium.vagabond.bestiary.Actor.5EWozL7AN3eZxhon",
+        "Compendium.vagabond.bestiary.Actor.6374iY64VLoDAtDV",
+        "Compendium.vagabond.bestiary.Actor.64mVh7KUrDrCzHR5",
+        "Compendium.vagabond.bestiary.Actor.8JzYAkpSslsI0HpO",
+        "Compendium.vagabond.bestiary.Actor.9qmdxUzE04c5cprG",
+        "Compendium.vagabond.bestiary.Actor.Dl66ByoWtgTfWJ7C",
+        "Compendium.vagabond.bestiary.Actor.FsDuYyDw3jtO2KYC",
+        "Compendium.vagabond.bestiary.Actor.GAMXQgxdOS165gB8",
+        "Compendium.vagabond.bestiary.Actor.NI1b4rIPgJKsLKQJ",
+        "Compendium.vagabond.bestiary.Actor.Poixlfce7pZDHC8L",
+        "Compendium.vagabond.bestiary.Actor.QlBMPKwPxTNYRSfg",
+        "Compendium.vagabond.bestiary.Actor.ZXpSxKZH1Zj3fBcP",
+        "Compendium.vagabond.bestiary.Actor.j9pfmlTLheG41ABq",
+        "Compendium.vagabond.bestiary.Actor.jO00LGH0j3HNTGve",
+        "Compendium.vagabond.bestiary.Actor.nnB577RG4wcLJN3y",
+        "Compendium.vagabond.bestiary.Actor.oDROHzNC8xZ4HY5m",
+        "Compendium.vagabond.bestiary.Actor.pvwYATClTGQw2qgU",
+        "Compendium.vagabond.bestiary.Actor.vyABoU3fvkulDHHq",
+        "Compendium.vagabond.bestiary.Actor.wZ1lpFv59kCH9Pxj",
+        "Compendium.vagabond.bestiary.Actor.yJbVHu4txMW9HyRG"
+      ],
+      "representativeText": "Breathes air and water.",
+      "textVariants": 5,
+      "automationStatus": "flavor",
+      "reason": "Description contains no mechanical keywords.",
+      "keywords": {
+        "statuses": [],
+        "mechanicalVerbs": [],
+        "durationMarkers": [],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "Antimagic Vulnerability",
+      "count": 4,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.01WK986PiOP0uUDE",
+        "Compendium.vagabond.bestiary.Actor.0PP2iH12NZJB7VoH",
+        "Compendium.vagabond.bestiary.Actor.IWiL8vs9JwuriDcX",
+        "Compendium.vagabond.bestiary.Actor.l0R5eP2Gp0WC6QPq"
+      ],
+      "representativeText": "It is Dazed for Cd4 if affected by the Dispel Spell or other antimagic.",
+      "textVariants": 2,
+      "automationStatus": "unimplemented",
+      "reason": "Description mentions mechanical effects but no PASSIVE_ABILITIES entry exists.",
+      "keywords": {
+        "statuses": [
+          "dazed"
+        ],
+        "mechanicalVerbs": [],
+        "durationMarkers": [
+          "cd4"
+        ],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "Antimagical Cone",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.iyCEulXgz8uABmdD"
+      ],
+      "representativeText": "Cast Checks in a Far Cone from its central eye always fail, and any magic effect in the Cone is\nsuspended while in the Cone.",
+      "textVariants": 1,
+      "automationStatus": "flavor",
+      "reason": "Description contains no mechanical keywords.",
+      "keywords": {
+        "statuses": [],
+        "mechanicalVerbs": [],
+        "durationMarkers": [],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "Antimagical Cone I",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.GueGlPk8Be6uhm0b"
+      ],
+      "representativeText": "Cast Checks in a Near Cone from its central eye always fail, and any magic effect in the Cone is suspended while in the Cone.",
+      "textVariants": 1,
+      "automationStatus": "flavor",
+      "reason": "Description contains no mechanical keywords.",
+      "keywords": {
+        "statuses": [],
+        "mechanicalVerbs": [],
+        "durationMarkers": [],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "Aquatic",
+      "count": 4,
+      "monsters": [
+        "Compendium.vagabond-character-enhancer.vce-beasts.Actor.QeI6mp9PaMOn5til",
+        "Compendium.vagabond.bestiary.Actor.4v5QoFgJEO2q2z9v",
+        "Compendium.vagabond.bestiary.Actor.bemYbAdPHWUkA2Xi",
+        "Compendium.vagabond.bestiary.Actor.ivaexVLsiJiQlx9L"
+      ],
+      "representativeText": "Can only breathe water.",
+      "textVariants": 1,
+      "automationStatus": "flavor",
+      "reason": "Description contains no mechanical keywords.",
+      "keywords": {
+        "statuses": [],
+        "mechanicalVerbs": [],
+        "durationMarkers": [],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "Avatar of Death",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.lfHGD4OvbUEXP4wJ"
+      ],
+      "representativeText": "No Being within Near can be revived.",
+      "textVariants": 1,
+      "automationStatus": "flavor",
+      "reason": "Description contains no mechanical keywords.",
+      "keywords": {
+        "statuses": [],
+        "mechanicalVerbs": [],
+        "durationMarkers": [],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "Befuddling Defense",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.38Ao3uZskQmybbHJ"
+      ],
+      "representativeText": "When it takes damage, all Near Enemies must pass [Will] or become Confused (Cd4 or until damaged).",
+      "textVariants": 1,
+      "automationStatus": "unimplemented",
+      "reason": "Description mentions mechanical effects but no PASSIVE_ABILITIES entry exists.",
+      "keywords": {
+        "statuses": [
+          "confused"
+        ],
+        "mechanicalVerbs": [
+          "must-pass"
+        ],
+        "durationMarkers": [
+          "cd4"
+        ],
+        "saveKeywords": [
+          "Will"
+        ]
+      }
+    },
+    {
+      "name": "Besieger",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.Xc30d0v7k9g20Nmu"
+      ],
+      "representativeText": "Deals double damage to Structures.",
+      "textVariants": 1,
+      "automationStatus": "flavor",
+      "reason": "Description contains no mechanical keywords.",
+      "keywords": {
+        "statuses": [],
+        "mechanicalVerbs": [],
+        "durationMarkers": [],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "Bioluminescent",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.bQRYqctiGqfLigDQ"
+      ],
+      "representativeText": "Sheds Light out to Near.",
+      "textVariants": 1,
+      "automationStatus": "flavor",
+      "reason": "Description contains no mechanical keywords.",
+      "keywords": {
+        "statuses": [],
+        "mechanicalVerbs": [],
+        "durationMarkers": [],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "Blair Omniscience",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.DIXBdymeCr9HUJOd"
+      ],
+      "representativeText": "It is always aware of any Beings within the woodland it claims as its domain.",
+      "textVariants": 1,
+      "automationStatus": "flavor",
+      "reason": "Description contains no mechanical keywords.",
+      "keywords": {
+        "statuses": [],
+        "mechanicalVerbs": [],
+        "durationMarkers": [],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "Blinded",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.yw0kCRbsAd5SyI2D"
+      ],
+      "representativeText": "Blinded without its Echolocation.",
+      "textVariants": 1,
+      "automationStatus": "unimplemented",
+      "reason": "Description mentions mechanical effects but no PASSIVE_ABILITIES entry exists.",
+      "keywords": {
+        "statuses": [
+          "blinded"
+        ],
+        "mechanicalVerbs": [],
+        "durationMarkers": [],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "Blink",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.nUCpW08PbeCZ3wxG"
+      ],
+      "representativeText": "It can use its Speed to magically teleport itself anywhere within the used Speed.",
+      "textVariants": 1,
+      "automationStatus": "flavor",
+      "reason": "Description contains no mechanical keywords.",
+      "keywords": {
+        "statuses": [],
+        "mechanicalVerbs": [],
+        "durationMarkers": [],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "Blood Sense",
+      "count": 4,
+      "monsters": [
+        "Compendium.vagabond-character-enhancer.vce-beasts.Actor.AZzWsYRh4XtykPfW",
+        "Compendium.vagabond.bestiary.Actor.4v5QoFgJEO2q2z9v",
+        "Compendium.vagabond.bestiary.Actor.5EWozL7AN3eZxhon",
+        "Compendium.vagabond.bestiary.Actor.bemYbAdPHWUkA2Xi"
+      ],
+      "representativeText": "It can sense Beings missing any HP within 1 mile as if by Blindsight and deals an extra die of damage to them.",
+      "textVariants": 3,
+      "automationStatus": "flavor",
+      "reason": "Description contains no mechanical keywords.",
+      "keywords": {
+        "statuses": [],
+        "mechanicalVerbs": [],
+        "durationMarkers": [],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "Bloodied Rage",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.gMKwv81k8AHuZBk0"
+      ],
+      "representativeText": "At 20 HP or less, it is Berserk.",
+      "textVariants": 1,
+      "automationStatus": "unimplemented",
+      "reason": "Description mentions mechanical effects but no PASSIVE_ABILITIES entry exists.",
+      "keywords": {
+        "statuses": [
+          "berserk"
+        ],
+        "mechanicalVerbs": [],
+        "durationMarkers": [],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "Bloodlust",
+      "count": 2,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.ZhhuGoH4rFRiiaPp",
+        "Compendium.vagabond.bestiary.Actor.wKPKn9Xuvj4SJA6I"
+      ],
+      "representativeText": "If it is missing at least half its HP, it is Berserk. Whenever it is Berserk, it can make 2 Attacks on its Turn instead of 1.",
+      "textVariants": 2,
+      "automationStatus": "unimplemented",
+      "reason": "Description mentions mechanical effects but no PASSIVE_ABILITIES entry exists.",
+      "keywords": {
+        "statuses": [
+          "berserk"
+        ],
+        "mechanicalVerbs": [],
+        "durationMarkers": [],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "Bloodthirst",
+      "count": 3,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.COZgPuEHq67Lhcjd",
+        "Compendium.vagabond.bestiary.Actor.TeXpYvmYgkwz7Rkd",
+        "Compendium.vagabond.bestiary.Actor.klRBWjiNUz7GlVAb"
+      ],
+      "representativeText": "It is Berserk and Beings at or below half HP make Checks against it as if Vulnerable.",
+      "textVariants": 1,
+      "automationStatus": "unimplemented",
+      "reason": "Description mentions mechanical effects but no PASSIVE_ABILITIES entry exists.",
+      "keywords": {
+        "statuses": [
+          "berserk",
+          "vulnerable"
+        ],
+        "mechanicalVerbs": [],
+        "durationMarkers": [],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "Booze Hound",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.ousYRudW4JSmruXi"
+      ],
+      "representativeText": "It takes half damage from poison-based damage and can sense alcohol within 1 mile as if by All-Sight. It doesn't flee if it is sensing alcohol, except by its Divine-Averse Ability.",
+      "textVariants": 1,
+      "automationStatus": "unimplemented",
+      "reason": "Description mentions mechanical effects but no PASSIVE_ABILITIES entry exists.",
+      "keywords": {
+        "statuses": [],
+        "mechanicalVerbs": [
+          "half-damage"
+        ],
+        "durationMarkers": [],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "Burrow Burst",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.pjgK1vqOzpVobYj0"
+      ],
+      "representativeText": "If it breaches the ground after moving at least 20' on the same Turn, its first Slam deals 18 (4d8) instead.",
+      "textVariants": 1,
+      "automationStatus": "unimplemented",
+      "reason": "Description mentions mechanical effects but no PASSIVE_ABILITIES entry exists.",
+      "keywords": {
+        "statuses": [],
+        "mechanicalVerbs": [
+          "deals-damage"
+        ],
+        "durationMarkers": [],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "Burrower",
+      "count": 3,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.MgwGpLpfzFgXxgEz",
+        "Compendium.vagabond.bestiary.Actor.hK1ium0CxnRa06ba",
+        "Compendium.vagabond.bestiary.Actor.xx33Zy89J7w2Jbmf"
+      ],
+      "representativeText": "It ignores Difficult Terrain of sand, stone, and earth, and it can Move by quickly burrowing in them. However, it can't cross water deeper than its height.",
+      "textVariants": 2,
+      "automationStatus": "flavor",
+      "reason": "Description contains no mechanical keywords.",
+      "keywords": {
+        "statuses": [],
+        "mechanicalVerbs": [],
+        "durationMarkers": [],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "Chameleon Skin",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.BHX4mhjjYrxqIe2E"
+      ],
+      "representativeText": "Detect Checks to find it based on sight are Hindered.",
+      "textVariants": 1,
+      "automationStatus": "unimplemented",
+      "reason": "Description mentions mechanical effects but no PASSIVE_ABILITIES entry exists.",
+      "keywords": {
+        "statuses": [],
+        "mechanicalVerbs": [
+          "hindered"
+        ],
+        "durationMarkers": [],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "Charge",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.G2KnbYhwZ2xfT3wM"
+      ],
+      "representativeText": "If it Moves at least 30 feet in a straight line then makes a Horn Attack on the same Turn, that attack deals double damage.",
+      "textVariants": 1,
+      "automationStatus": "flavor",
+      "reason": "Description contains no mechanical keywords.",
+      "keywords": {
+        "statuses": [],
+        "mechanicalVerbs": [],
+        "durationMarkers": [],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "Charger",
+      "count": 3,
+      "monsters": [
+        "Compendium.vagabond-character-enhancer.vce-beasts.Actor.TITBvQ5rSTFtkWxg",
+        "Compendium.vagabond.bestiary.Actor.dEVG8wVR7MfyZgv9",
+        "Compendium.vagabond.bestiary.Actor.k3EwC9SOab0RkAOM"
+      ],
+      "representativeText": "If it Moves at least 20' in a straight line before making a Tusk Attack, the damage is doubled.",
+      "textVariants": 2,
+      "automationStatus": "flavor",
+      "reason": "Description contains no mechanical keywords.",
+      "keywords": {
+        "statuses": [],
+        "mechanicalVerbs": [],
+        "durationMarkers": [],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "Cloaking",
+      "count": 2,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.8sVozyqwRdex7Vu2",
+        "Compendium.vagabond.bestiary.Actor.EVRDPfOWLjfVf1io"
+      ],
+      "representativeText": "While it has a Target Restrained, attack damage dealt to it is halved and also dealt to the Target.",
+      "textVariants": 2,
+      "automationStatus": "unimplemented",
+      "reason": "Description mentions mechanical effects but no PASSIVE_ABILITIES entry exists.",
+      "keywords": {
+        "statuses": [
+          "restrained"
+        ],
+        "mechanicalVerbs": [],
+        "durationMarkers": [],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "Combo",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.humanlike.Actor.bAcqt2HvrmAE6I5k"
+      ],
+      "representativeText": "",
+      "textVariants": 1,
+      "automationStatus": "flavor",
+      "reason": "Description contains no mechanical keywords.",
+      "keywords": {
+        "statuses": [],
+        "mechanicalVerbs": [],
+        "durationMarkers": [],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "Consume",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.9rpGK7YO9OfbXJoh"
+      ],
+      "representativeText": "[Endure]: Beings in its space are Burning (2d8). A Being that dies this way is dissolved, and becomes another green slime.",
+      "textVariants": 1,
+      "automationStatus": "unimplemented",
+      "reason": "Description mentions mechanical effects but no PASSIVE_ABILITIES entry exists.",
+      "keywords": {
+        "statuses": [
+          "burning"
+        ],
+        "mechanicalVerbs": [],
+        "durationMarkers": [],
+        "saveKeywords": [
+          "Endure"
+        ]
+      }
+    },
+    {
+      "name": "Corroding",
+      "count": 2,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.31QN4EUQL9G9fOTj",
+        "Compendium.vagabond.bestiary.Actor.JiYcX0LZZZCqhyrq"
+      ],
+      "representativeText": "Non-Relic metal Items that make contact with it corrode. When this happens, roll a d6 for each Item. On a roll of 1, the Item breaks. If the Item that breaks is larger than Medium, this destroys a 1-foot square hole that is 1-foot deep in it.",
+      "textVariants": 1,
+      "automationStatus": "flavor",
+      "reason": "Description contains no mechanical keywords.",
+      "keywords": {
+        "statuses": [],
+        "mechanicalVerbs": [],
+        "durationMarkers": [],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "Dense Muscled",
+      "count": 2,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.OM4n0N2hftXzkcRy",
+        "Compendium.vagabond.bestiary.Actor.TtjXGTTkkmhnyxmp"
+      ],
+      "representativeText": "Grapples and Shoves as Large.",
+      "textVariants": 1,
+      "automationStatus": "flavor",
+      "reason": "Description contains no mechanical keywords.",
+      "keywords": {
+        "statuses": [],
+        "mechanicalVerbs": [],
+        "durationMarkers": [],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "Dethbat’s Curse",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.mPEirZNos2d7EOoJ"
+      ],
+      "representativeText": "[Curse] Every hour while cursed and not in Sunlight, the victim rolls a d6, progressing the curse by 1 stage on a roll of 1: \n1. Their hair falls out. \n2. Their ears transform into wings and their teeth become fangs. \n3. They gain 1 Fatigue. If they die due to this, their head rips from their body and becomes a Dethbat.",
+      "textVariants": 1,
+      "automationStatus": "flavor",
+      "reason": "Description contains no mechanical keywords.",
+      "keywords": {
+        "statuses": [],
+        "mechanicalVerbs": [],
+        "durationMarkers": [],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "Dispel",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.AJp7YGvfDGB2C1Yp"
+      ],
+      "representativeText": "It can end a Spell affecting it at the start of its Turns.",
+      "textVariants": 1,
+      "automationStatus": "flavor",
+      "reason": "Description contains no mechanical keywords.",
+      "keywords": {
+        "statuses": [],
+        "mechanicalVerbs": [],
+        "durationMarkers": [],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "Displacement I",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.XJXb7O120A5ewg1N"
+      ],
+      "representativeText": "Attack and Cast Checks that directly Target it have a d4 penalty.",
+      "textVariants": 1,
+      "automationStatus": "flavor",
+      "reason": "Description contains no mechanical keywords.",
+      "keywords": {
+        "statuses": [],
+        "mechanicalVerbs": [],
+        "durationMarkers": [],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "Dive Bomb",
+      "count": 2,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.aSUaMBRdv6PsFx8Q",
+        "Compendium.vagabond.bestiary.Actor.dGCcOIF0MbUWuTIe"
+      ],
+      "representativeText": "If it flies at least 20 feet toward a Target before making an attack, the attack deals an extra die of damage.",
+      "textVariants": 2,
+      "automationStatus": "flavor",
+      "reason": "Description contains no mechanical keywords.",
+      "keywords": {
+        "statuses": [],
+        "mechanicalVerbs": [],
+        "durationMarkers": [],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "Divine-Averse",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.ousYRudW4JSmruXi"
+      ],
+      "representativeText": "It makes Morale Checks if it can see a divine trinket.",
+      "textVariants": 1,
+      "automationStatus": "flavor",
+      "reason": "Description contains no mechanical keywords.",
+      "keywords": {
+        "statuses": [],
+        "mechanicalVerbs": [],
+        "durationMarkers": [],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "Doom Magnet",
+      "count": 2,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.nmjWVM9zzRXsEuCZ",
+        "Compendium.vagabond.bestiary.Actor.wvnFUicXjGnzt7w6"
+      ],
+      "representativeText": "Near Enemies can't gain Favor.",
+      "textVariants": 1,
+      "automationStatus": "flavor",
+      "reason": "Description contains no mechanical keywords.",
+      "keywords": {
+        "statuses": [],
+        "mechanicalVerbs": [],
+        "durationMarkers": [],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "Doppelgang",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.XaZlVpSeim63R5a4"
+      ],
+      "representativeText": "Enemy Abilities treat this Being as an Ally while they are convinced it is an Ally.",
+      "textVariants": 1,
+      "automationStatus": "flavor",
+      "reason": "Description contains no mechanical keywords.",
+      "keywords": {
+        "statuses": [],
+        "mechanicalVerbs": [],
+        "durationMarkers": [],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "Dreadnought",
+      "count": 3,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.64mVh7KUrDrCzHR5",
+        "Compendium.vagabond.bestiary.Actor.9qmdxUzE04c5cprG",
+        "Compendium.vagabond.bestiary.Actor.vyABoU3fvkulDHHq"
+      ],
+      "representativeText": "Deals double damage to vehicles.",
+      "textVariants": 1,
+      "automationStatus": "flavor",
+      "reason": "Description contains no mechanical keywords.",
+      "keywords": {
+        "statuses": [],
+        "mechanicalVerbs": [],
+        "durationMarkers": [],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "Eldritch Ground",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.iDD1iA0svCS8AINS"
+      ],
+      "representativeText": "The Close ground around it is Difficult Terrain made of gummy, warped flesh.",
+      "textVariants": 1,
+      "automationStatus": "flavor",
+      "reason": "Description contains no mechanical keywords.",
+      "keywords": {
+        "statuses": [],
+        "mechanicalVerbs": [],
+        "durationMarkers": [],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "Enchanting Song",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.jO00LGH0j3HNTGve"
+      ],
+      "representativeText": "Enemies that can hear it for the first time and at the start of their Turns must pass [Will] or be Charmed (Cd4). While Charmed this way, they can only Move directly toward this Being.",
+      "textVariants": 1,
+      "automationStatus": "unimplemented",
+      "reason": "Description mentions mechanical effects but no PASSIVE_ABILITIES entry exists.",
+      "keywords": {
+        "statuses": [
+          "charmed"
+        ],
+        "mechanicalVerbs": [
+          "must-pass"
+        ],
+        "durationMarkers": [
+          "cd4"
+        ],
+        "saveKeywords": [
+          "Will"
+        ]
+      }
+    },
+    {
+      "name": "Engulfer",
+      "count": 4,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.FYjFBtN4C5lXvFLA",
+        "Compendium.vagabond.bestiary.Actor.RFENB7RObfPWSY34",
+        "Compendium.vagabond.bestiary.Actor.kcqeeuQ2oDfyKaak",
+        "Compendium.vagabond.bestiary.Actor.nYO6xGYPRmtNuhV9"
+      ],
+      "representativeText": "Beings that share its space are Burning (2d4).",
+      "textVariants": 3,
+      "automationStatus": "unimplemented",
+      "reason": "Description mentions mechanical effects but no PASSIVE_ABILITIES entry exists.",
+      "keywords": {
+        "statuses": [
+          "burning"
+        ],
+        "mechanicalVerbs": [],
+        "durationMarkers": [],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "Fade Out",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.ZXpSxKZH1Zj3fBcP"
+      ],
+      "representativeText": "When it Moves, it turns itself and anything it is carrying Invisible for the duration (Focus). If it has a Being Restrained, it turns them Invisible for the duration as well.",
+      "textVariants": 1,
+      "automationStatus": "unimplemented",
+      "reason": "Description mentions mechanical effects but no PASSIVE_ABILITIES entry exists.",
+      "keywords": {
+        "statuses": [
+          "invisible",
+          "restrained"
+        ],
+        "mechanicalVerbs": [],
+        "durationMarkers": [],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "Fall from Grace",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.2Wx5RcpuRN8Nw6T0"
+      ],
+      "representativeText": "If it ever acts against divine ordainment, it loses Grace, Fly Speed, All-Sight, Immune, and Status Immunities.",
+      "textVariants": 1,
+      "automationStatus": "flavor",
+      "reason": "Description contains no mechanical keywords.",
+      "keywords": {
+        "statuses": [],
+        "mechanicalVerbs": [],
+        "durationMarkers": [],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "Falling Ambush",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.voStbqLKsCCFOaoW"
+      ],
+      "representativeText": "Does not take falling damage from heights of 30' or shorter.",
+      "textVariants": 1,
+      "automationStatus": "flavor",
+      "reason": "Description contains no mechanical keywords.",
+      "keywords": {
+        "statuses": [],
+        "mechanicalVerbs": [],
+        "durationMarkers": [],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "Fear Aura",
+      "count": 2,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.AJp7YGvfDGB2C1Yp",
+        "Compendium.vagabond.bestiary.Actor.eIjbp2eHJHXPG5kI"
+      ],
+      "representativeText": "[Aura Near | Will]: Frightened until they pass this Check on a subsequent Turn, or Cd6 after.",
+      "textVariants": 1,
+      "automationStatus": "unimplemented",
+      "reason": "Description mentions mechanical effects but no PASSIVE_ABILITIES entry exists.",
+      "keywords": {
+        "statuses": [
+          "frightened"
+        ],
+        "mechanicalVerbs": [],
+        "durationMarkers": [
+          "cd6"
+        ],
+        "saveKeywords": [
+          "Will",
+          "Check"
+        ]
+      }
+    },
+    {
+      "name": "Fiery Revival",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.rb5dVb8peFW4RUIT"
+      ],
+      "representativeText": "(1/Day): If it dies, a ball of fire erupts out from it as a Near Aura. All within must pass a [Reflex] Save or take 55 (d10x10) and be Burning (Cd6). This fire is divine, and ignores Immune to Fire. This Being is than revived in 1 Round at full HP. It will always try to flee until this Ability refreshes.",
+      "textVariants": 1,
+      "automationStatus": "unimplemented",
+      "reason": "Description mentions mechanical effects but no PASSIVE_ABILITIES entry exists.",
+      "keywords": {
+        "statuses": [
+          "burning"
+        ],
+        "mechanicalVerbs": [
+          "must-pass"
+        ],
+        "durationMarkers": [
+          "cd6"
+        ],
+        "saveKeywords": [
+          "Reflex"
+        ]
+      }
+    },
+    {
+      "name": "Filament",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.zbCW1iYfN0KJhdJF"
+      ],
+      "representativeText": "As rope with 1 HD (4 HP)",
+      "textVariants": 1,
+      "automationStatus": "flavor",
+      "reason": "Description contains no mechanical keywords.",
+      "keywords": {
+        "statuses": [],
+        "mechanicalVerbs": [],
+        "durationMarkers": [],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "Fire Rider",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.hoo4mqGpqwc1cJA5"
+      ],
+      "representativeText": "Allies mounted on it are Immune to Fire.",
+      "textVariants": 1,
+      "automationStatus": "flavor",
+      "reason": "Description contains no mechanical keywords.",
+      "keywords": {
+        "statuses": [],
+        "mechanicalVerbs": [],
+        "durationMarkers": [],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "Fire-Absorber",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.uIRiPIcdtl00VHdb"
+      ],
+      "representativeText": "Fire damage rolls heal it instead.",
+      "textVariants": 1,
+      "automationStatus": "flavor",
+      "reason": "Description contains no mechanical keywords.",
+      "keywords": {
+        "statuses": [],
+        "mechanicalVerbs": [],
+        "durationMarkers": [],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "Flails",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.rdXUVjQNJjZoXuNE"
+      ],
+      "representativeText": "Starts with 5 Flails. Targetting a Flail causes a -4 penalty to the Attack Check, but severs it if at least 4 damage is dealt with the attack.",
+      "textVariants": 1,
+      "automationStatus": "unimplemented",
+      "reason": "Description mentions mechanical effects but no PASSIVE_ABILITIES entry exists.",
+      "keywords": {
+        "statuses": [],
+        "mechanicalVerbs": [],
+        "durationMarkers": [],
+        "saveKeywords": [
+          "Check"
+        ]
+      }
+    },
+    {
+      "name": "Flame Anger",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.aAONbN10F5bLslSE"
+      ],
+      "representativeText": "If it takes Fire damage or sees open flame, it goes Berserk (Cd4).",
+      "textVariants": 1,
+      "automationStatus": "unimplemented",
+      "reason": "Description mentions mechanical effects but no PASSIVE_ABILITIES entry exists.",
+      "keywords": {
+        "statuses": [
+          "berserk"
+        ],
+        "mechanicalVerbs": [],
+        "durationMarkers": [
+          "cd4"
+        ],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "Flame Aura",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.56Wb96lj19hGzOB9"
+      ],
+      "representativeText": "Close Beings are Burning (d6).",
+      "textVariants": 1,
+      "automationStatus": "unimplemented",
+      "reason": "Description mentions mechanical effects but no PASSIVE_ABILITIES entry exists.",
+      "keywords": {
+        "statuses": [
+          "burning"
+        ],
+        "mechanicalVerbs": [],
+        "durationMarkers": [],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "Flame-Averse",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.gMKwv81k8AHuZBk0"
+      ],
+      "representativeText": "If it can see fire or takes damage from fire, it is Frightened (Cd4).",
+      "textVariants": 1,
+      "automationStatus": "unimplemented",
+      "reason": "Description mentions mechanical effects but no PASSIVE_ABILITIES entry exists.",
+      "keywords": {
+        "statuses": [
+          "frightened"
+        ],
+        "mechanicalVerbs": [],
+        "durationMarkers": [
+          "cd4"
+        ],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "Flaming Sword",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.2Wx5RcpuRN8Nw6T0"
+      ],
+      "representativeText": "[Relic; (+3) Silvered Greatsword] Has the Loyalty Power.",
+      "textVariants": 1,
+      "automationStatus": "flavor",
+      "reason": "Description contains no mechanical keywords.",
+      "keywords": {
+        "statuses": [],
+        "mechanicalVerbs": [],
+        "durationMarkers": [],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "Flesh Burrow",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.bu9vHDopcT6WfCB1"
+      ],
+      "representativeText": "This Being burrows itself into flesh that comes into contact with it, causing that Being to become Sickened (3 (d6) damage each Round).",
+      "textVariants": 1,
+      "automationStatus": "unimplemented",
+      "reason": "Description mentions mechanical effects but no PASSIVE_ABILITIES entry exists.",
+      "keywords": {
+        "statuses": [
+          "sickened"
+        ],
+        "mechanicalVerbs": [],
+        "durationMarkers": [],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "Flutter",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.3RUGcNIIcyNNK5MC"
+      ],
+      "representativeText": "It can't support itself in the air while flying at the end its Turn, but it does not take damage from falling if the distance was 30' or less.",
+      "textVariants": 1,
+      "automationStatus": "flavor",
+      "reason": "Description contains no mechanical keywords.",
+      "keywords": {
+        "statuses": [],
+        "mechanicalVerbs": [],
+        "durationMarkers": [],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "Formless",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.kcqeeuQ2oDfyKaak"
+      ],
+      "representativeText": "It can Move into space occupied by Beings.",
+      "textVariants": 1,
+      "automationStatus": "flavor",
+      "reason": "Description contains no mechanical keywords.",
+      "keywords": {
+        "statuses": [],
+        "mechanicalVerbs": [],
+        "durationMarkers": [],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "Freeze Susceptability",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.31QN4EUQL9G9fOTj"
+      ],
+      "representativeText": "It is Dazed (1 Round) after being harmed by cold.",
+      "textVariants": 1,
+      "automationStatus": "unimplemented",
+      "reason": "Description mentions mechanical effects but no PASSIVE_ABILITIES entry exists.",
+      "keywords": {
+        "statuses": [
+          "dazed"
+        ],
+        "mechanicalVerbs": [],
+        "durationMarkers": [],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "Future Sight",
+      "count": 2,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.qtILksrMEcYJ47Be",
+        "Compendium.vagabond.bestiary.Actor.rTePiNbB8qag6HnP"
+      ],
+      "representativeText": "Hinders Saves against its Attacks.",
+      "textVariants": 2,
+      "automationStatus": "flavor",
+      "reason": "Description contains no mechanical keywords.",
+      "keywords": {
+        "statuses": [],
+        "mechanicalVerbs": [],
+        "durationMarkers": [],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "Grace",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.2Wx5RcpuRN8Nw6T0"
+      ],
+      "representativeText": "It can't be reduced below 1 HP. If its body is destroyed, it immediately appears in its plane of origin at full HP.",
+      "textVariants": 1,
+      "automationStatus": "flavor",
+      "reason": "Description contains no mechanical keywords.",
+      "keywords": {
+        "statuses": [],
+        "mechanicalVerbs": [],
+        "durationMarkers": [],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "Grim Harvester",
+      "count": 2,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.4pxjze1TRnSTeGxV",
+        "Compendium.vagabond.bestiary.Actor.eIjbp2eHJHXPG5kI"
+      ],
+      "representativeText": "Whenever a Being dies within Far, this Being regains HP equal to that Being's HD or Level.",
+      "textVariants": 1,
+      "automationStatus": "flavor",
+      "reason": "Description contains no mechanical keywords.",
+      "keywords": {
+        "statuses": [],
+        "mechanicalVerbs": [],
+        "durationMarkers": [],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "Grim Resurrection",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.TeXpYvmYgkwz7Rkd"
+      ],
+      "representativeText": "It dies instantly if its original corpse is destroyed. If it drops to 0 HP and its original corpse is not destroyed, it vanishes in a puff of smoke and reapparates in its church of origin in the next Scene at full HP.",
+      "textVariants": 1,
+      "automationStatus": "flavor",
+      "reason": "Description contains no mechanical keywords.",
+      "keywords": {
+        "statuses": [],
+        "mechanicalVerbs": [],
+        "durationMarkers": [],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "Hold Breath",
+      "count": 4,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.Dk22iH4Qt3b04hle",
+        "Compendium.vagabond.bestiary.Actor.Im2QfgKyeK3bFyLO",
+        "Compendium.vagabond.bestiary.Actor.tkWK2yke2Jj4OC4w",
+        "Compendium.vagabond.bestiary.Actor.zbkj3u7LKu7obIZF"
+      ],
+      "representativeText": "Can hold its breath for 1 hour.",
+      "textVariants": 2,
+      "automationStatus": "flavor",
+      "reason": "Description contains no mechanical keywords.",
+      "keywords": {
+        "statuses": [],
+        "mechanicalVerbs": [],
+        "durationMarkers": [],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "Hulking",
+      "count": 2,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.sG44of9DOFFzorqC",
+        "Compendium.vagabond.bestiary.Actor.wvsqs13wZtUTrU69"
+      ],
+      "representativeText": "Counts as Large for Grapples and Shoves.",
+      "textVariants": 1,
+      "automationStatus": "flavor",
+      "reason": "Description contains no mechanical keywords.",
+      "keywords": {
+        "statuses": [],
+        "mechanicalVerbs": [],
+        "durationMarkers": [],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "Hunter's Mark",
+      "count": 2,
+      "monsters": [
+        "Compendium.vagabond.humanlike.Actor.FP8tMPuVxIXbK4fN",
+        "Compendium.vagabond.humanlike.Actor.hFAYCTxu7vKNz9mn"
+      ],
+      "representativeText": "",
+      "textVariants": 1,
+      "automationStatus": "flavor",
+      "reason": "Description contains no mechanical keywords.",
+      "keywords": {
+        "statuses": [],
+        "mechanicalVerbs": [],
+        "durationMarkers": [],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "Hydra Regrowth",
+      "count": 2,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.Rq6JPBgL5v88JAd0",
+        "Compendium.vagabond.bestiary.Actor.mCt7qRrjmd5hipbl"
+      ],
+      "representativeText": "Regains 9 HP at the start of its Turns. If it is missing one of its heads when this happens, two Heads sprout. This Ability doesn't work if it took damage from Fire since its last Turn.",
+      "textVariants": 2,
+      "automationStatus": "unimplemented",
+      "reason": "Description mentions mechanical effects but no PASSIVE_ABILITIES entry exists.",
+      "keywords": {
+        "statuses": [],
+        "mechanicalVerbs": [
+          "regains-hp"
+        ],
+        "durationMarkers": [],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "Illuminating",
+      "count": 6,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.CmGogAAhZOFHHJeG",
+        "Compendium.vagabond.bestiary.Actor.FGTs80o3umSqJjZH",
+        "Compendium.vagabond.bestiary.Actor.MVEkTMHMnNsf6rxz",
+        "Compendium.vagabond.bestiary.Actor.XqPwjVW3k3xNa9Ht",
+        "Compendium.vagabond.bestiary.Actor.hoo4mqGpqwc1cJA5",
+        "Compendium.vagabond.bestiary.Actor.jrG1IUD7M1Fkv0Nl"
+      ],
+      "representativeText": "Sheds Light out to Near.",
+      "textVariants": 2,
+      "automationStatus": "flavor",
+      "reason": "Description contains no mechanical keywords.",
+      "keywords": {
+        "statuses": [],
+        "mechanicalVerbs": [],
+        "durationMarkers": [],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "Illuminator",
+      "count": 2,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.2Wx5RcpuRN8Nw6T0",
+        "Compendium.vagabond.bestiary.Actor.rb5dVb8peFW4RUIT"
+      ],
+      "representativeText": "Sheds Sunlight in Near.",
+      "textVariants": 1,
+      "automationStatus": "flavor",
+      "reason": "Description contains no mechanical keywords.",
+      "keywords": {
+        "statuses": [],
+        "mechanicalVerbs": [],
+        "durationMarkers": [],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "Immortal of the Sea",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.jO00LGH0j3HNTGve"
+      ],
+      "representativeText": "It can’t be reduced below 1 HP while it is even partially submerged in a body of water.",
+      "textVariants": 1,
+      "automationStatus": "flavor",
+      "reason": "Description contains no mechanical keywords.",
+      "keywords": {
+        "statuses": [],
+        "mechanicalVerbs": [],
+        "durationMarkers": [],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "Immutable",
+      "count": 34,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.0PP2iH12NZJB7VoH",
+        "Compendium.vagabond.bestiary.Actor.14SyZkKvSmv2smFw",
+        "Compendium.vagabond.bestiary.Actor.87OFFZOTxFeRldz8",
+        "Compendium.vagabond.bestiary.Actor.9ujVnpprisq50dFW",
+        "Compendium.vagabond.bestiary.Actor.ATWC3zLqqZCvDLGF",
+        "Compendium.vagabond.bestiary.Actor.Ht9KJUOiRr1qjSQ2",
+        "Compendium.vagabond.bestiary.Actor.IWiL8vs9JwuriDcX",
+        "Compendium.vagabond.bestiary.Actor.KOz3gxILuvDESwJZ",
+        "Compendium.vagabond.bestiary.Actor.KQSHQH9otaxpToPF",
+        "Compendium.vagabond.bestiary.Actor.LHeJZ3DFQ1ni6og1",
+        "Compendium.vagabond.bestiary.Actor.MDeTATYPlrz4jjQb",
+        "Compendium.vagabond.bestiary.Actor.MV5G94cDuVi9tKt9",
+        "Compendium.vagabond.bestiary.Actor.OtEJxfZ13jBJ1apz",
+        "Compendium.vagabond.bestiary.Actor.RCrdmkp96a9uhfT2",
+        "Compendium.vagabond.bestiary.Actor.TDwppLCtTNicN0kx",
+        "Compendium.vagabond.bestiary.Actor.Uylf41QzuircJejb",
+        "Compendium.vagabond.bestiary.Actor.W5kmv1bYrErmzoUI",
+        "Compendium.vagabond.bestiary.Actor.X5SxKCZtI5jCWBK4",
+        "Compendium.vagabond.bestiary.Actor.Xc30d0v7k9g20Nmu",
+        "Compendium.vagabond.bestiary.Actor.ZNYqDZ9n236roSBY",
+        "Compendium.vagabond.bestiary.Actor.cUT2qxNSbgNpwhOT",
+        "Compendium.vagabond.bestiary.Actor.eim4ggishfz85XVX",
+        "Compendium.vagabond.bestiary.Actor.fH1TAjmzFTDXdlHF",
+        "Compendium.vagabond.bestiary.Actor.gOWR3pPKIEMyriVy",
+        "Compendium.vagabond.bestiary.Actor.gYBtO8FpqNSE26so",
+        "Compendium.vagabond.bestiary.Actor.gt8W22bMxmlzXVXi",
+        "Compendium.vagabond.bestiary.Actor.nZBfS7RH0A7N9v11",
+        "Compendium.vagabond.bestiary.Actor.oM0nBpVMFBGrGlbz",
+        "Compendium.vagabond.bestiary.Actor.peS6wk3Zv8WiS5Dd",
+        "Compendium.vagabond.bestiary.Actor.qoDcl5FH8moHJYq9",
+        "Compendium.vagabond.bestiary.Actor.rCrUMFfwgaBaii4d",
+        "Compendium.vagabond.bestiary.Actor.trLqdRvjz70izXqj",
+        "Compendium.vagabond.bestiary.Actor.uIRiPIcdtl00VHdb",
+        "Compendium.vagabond.bestiary.Actor.zwwV8fXQhYzPQfKp"
+      ],
+      "representativeText": "It can't be transformed.",
+      "textVariants": 1,
+      "automationStatus": "flavor",
+      "reason": "Description contains no mechanical keywords.",
+      "keywords": {
+        "statuses": [],
+        "mechanicalVerbs": [],
+        "durationMarkers": [],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "Incorporeal",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.m8Q6WWcR8LGOFJde"
+      ],
+      "representativeText": "It can Move into occupied space.",
+      "textVariants": 1,
+      "automationStatus": "flavor",
+      "reason": "Description contains no mechanical keywords.",
+      "keywords": {
+        "statuses": [],
+        "mechanicalVerbs": [],
+        "durationMarkers": [],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "Indomitable",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.eIjbp2eHJHXPG5kI"
+      ],
+      "representativeText": "It can't be transformed.",
+      "textVariants": 1,
+      "automationStatus": "flavor",
+      "reason": "Description contains no mechanical keywords.",
+      "keywords": {
+        "statuses": [],
+        "mechanicalVerbs": [],
+        "durationMarkers": [],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "Inevitable",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.veGvTkYC104yHS0D"
+      ],
+      "representativeText": "Its attacks can't be Blocked or Dodged.",
+      "textVariants": 1,
+      "automationStatus": "flavor",
+      "reason": "Description contains no mechanical keywords.",
+      "keywords": {
+        "statuses": [],
+        "mechanicalVerbs": [],
+        "durationMarkers": [],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "Ink Cloud",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.Dl66ByoWtgTfWJ7C"
+      ],
+      "representativeText": "If it retreats, the surrounding 20' of water becomes obscured by ink for 1 minute.",
+      "textVariants": 1,
+      "automationStatus": "flavor",
+      "reason": "Description contains no mechanical keywords.",
+      "keywords": {
+        "statuses": [],
+        "mechanicalVerbs": [],
+        "durationMarkers": [],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "Instant Transmission",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.PSNF8mdWgMS4hZ2E"
+      ],
+      "representativeText": "(Recharge Cd10 days): If it is in space, it can use its Action to teleport itself and any Beings in physical contact with it at lightspeed to anywhere within the nearby star system.",
+      "textVariants": 1,
+      "automationStatus": "unimplemented",
+      "reason": "Description mentions mechanical effects but no PASSIVE_ABILITIES entry exists.",
+      "keywords": {
+        "statuses": [],
+        "mechanicalVerbs": [],
+        "durationMarkers": [
+          "cd10"
+        ],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "Interstellar",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.PSNF8mdWgMS4hZ2E"
+      ],
+      "representativeText": "It can freely move in the vacuum of space.",
+      "textVariants": 1,
+      "automationStatus": "flavor",
+      "reason": "Description contains no mechanical keywords.",
+      "keywords": {
+        "statuses": [],
+        "mechanicalVerbs": [],
+        "durationMarkers": [],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "Invisible",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.oUsPWK1hrCZ0C7SP"
+      ],
+      "representativeText": "All Beings that can't detect invisibility act as Blinded when Targeting this Being and defending against its attacks.",
+      "textVariants": 1,
+      "automationStatus": "unimplemented",
+      "reason": "Description mentions mechanical effects but no PASSIVE_ABILITIES entry exists.",
+      "keywords": {
+        "statuses": [
+          "blinded"
+        ],
+        "mechanicalVerbs": [],
+        "durationMarkers": [],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "Iron Absorption",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.gt8W22bMxmlzXVXi"
+      ],
+      "representativeText": "When hit with a metal weapon that isn’t a Relic, the attacker must pass [Will] or the weapon becomes stuck in this Being's body, and can only be removed if this Being is killed.",
+      "textVariants": 1,
+      "automationStatus": "unimplemented",
+      "reason": "Description mentions mechanical effects but no PASSIVE_ABILITIES entry exists.",
+      "keywords": {
+        "statuses": [],
+        "mechanicalVerbs": [
+          "must-pass"
+        ],
+        "durationMarkers": [],
+        "saveKeywords": [
+          "Will"
+        ]
+      }
+    },
+    {
+      "name": "Latcher",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.3gP8OJd4XdHbmr0W"
+      ],
+      "representativeText": "Checks to end being Restrained by its Beak have a -3 penalty.",
+      "textVariants": 1,
+      "automationStatus": "unimplemented",
+      "reason": "Description mentions mechanical effects but no PASSIVE_ABILITIES entry exists.",
+      "keywords": {
+        "statuses": [
+          "restrained"
+        ],
+        "mechanicalVerbs": [],
+        "durationMarkers": [],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "Leadership",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.humanlike.Actor.ggnyh61eqHCSYSlf"
+      ],
+      "representativeText": "While it is alive and in sight, its Allies always pass Morale Checks and can't be Frightened.",
+      "textVariants": 1,
+      "automationStatus": "unimplemented",
+      "reason": "Description mentions mechanical effects but no PASSIVE_ABILITIES entry exists.",
+      "keywords": {
+        "statuses": [
+          "frightened"
+        ],
+        "mechanicalVerbs": [],
+        "durationMarkers": [],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "Leap",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.aAONbN10F5bLslSE"
+      ],
+      "representativeText": "If it uses its Move to Jump, any Being within 5 feet when it lands must pass a [Reflex] Save or take 10 (3d6) and be shoved Prone.",
+      "textVariants": 1,
+      "automationStatus": "unimplemented",
+      "reason": "Description mentions mechanical effects but no PASSIVE_ABILITIES entry exists.",
+      "keywords": {
+        "statuses": [
+          "prone"
+        ],
+        "mechanicalVerbs": [
+          "must-pass"
+        ],
+        "durationMarkers": [],
+        "saveKeywords": [
+          "Reflex"
+        ]
+      }
+    },
+    {
+      "name": "Leech",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.3gP8OJd4XdHbmr0W"
+      ],
+      "representativeText": "Its Max HP increases by the amount of damage it deals with its Beak, which also heals it for the same amount. Max HP gained this way is lost after 1 minute.",
+      "textVariants": 1,
+      "automationStatus": "flavor",
+      "reason": "Description contains no mechanical keywords.",
+      "keywords": {
+        "statuses": [],
+        "mechanicalVerbs": [],
+        "durationMarkers": [],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "Lemoniphobic",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.wKPKn9Xuvj4SJA6I"
+      ],
+      "representativeText": "Frightened (Cd4) after seeing a lemon.",
+      "textVariants": 1,
+      "automationStatus": "unimplemented",
+      "reason": "Description mentions mechanical effects but no PASSIVE_ABILITIES entry exists.",
+      "keywords": {
+        "statuses": [
+          "frightened"
+        ],
+        "mechanicalVerbs": [],
+        "durationMarkers": [
+          "cd4"
+        ],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "Lesser Regenerate I",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.cNk4q1zCVyOdhZts"
+      ],
+      "representativeText": "Regains 4 (d8) HP on each of its Turns unless it took damage it was Weak to in the last Round. It can’t be reduced below 1 HP except by damage it is Weak to.",
+      "textVariants": 1,
+      "automationStatus": "flavor",
+      "reason": "Description contains no mechanical keywords.",
+      "keywords": {
+        "statuses": [],
+        "mechanicalVerbs": [],
+        "durationMarkers": [],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "Levitation",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.WgRHBofac5k3IUet"
+      ],
+      "representativeText": "(Focus) It has Fly",
+      "textVariants": 1,
+      "automationStatus": "flavor",
+      "reason": "Description contains no mechanical keywords.",
+      "keywords": {
+        "statuses": [],
+        "mechanicalVerbs": [],
+        "durationMarkers": [],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "Limbs",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.14SyZkKvSmv2smFw"
+      ],
+      "representativeText": "It is encountered with 5 (d6 + 2) limbs, and loses a limb each time it takes at least 4 damage.",
+      "textVariants": 1,
+      "automationStatus": "flavor",
+      "reason": "Description contains no mechanical keywords.",
+      "keywords": {
+        "statuses": [],
+        "mechanicalVerbs": [],
+        "durationMarkers": [],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "Living Fire",
+      "count": 5,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.FGTs80o3umSqJjZH",
+        "Compendium.vagabond.bestiary.Actor.MVEkTMHMnNsf6rxz",
+        "Compendium.vagabond.bestiary.Actor.XqPwjVW3k3xNa9Ht",
+        "Compendium.vagabond.bestiary.Actor.jrG1IUD7M1Fkv0Nl",
+        "Compendium.vagabond.bestiary.Actor.rb5dVb8peFW4RUIT"
+      ],
+      "representativeText": "Close Beings are Burning (d8).",
+      "textVariants": 5,
+      "automationStatus": "unimplemented",
+      "reason": "Description mentions mechanical effects but no PASSIVE_ABILITIES entry exists.",
+      "keywords": {
+        "statuses": [
+          "burning"
+        ],
+        "mechanicalVerbs": [],
+        "durationMarkers": [],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "Living Gale",
+      "count": 4,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.4tgJAUkCwHMUbh0L",
+        "Compendium.vagabond.bestiary.Actor.7Q4CeeNTFsoyIvLJ",
+        "Compendium.vagabond.bestiary.Actor.G4yOOmYO0Wahx9d8",
+        "Compendium.vagabond.bestiary.Actor.xwAfbjZqqVzOyEAI"
+      ],
+      "representativeText": "Gusts surround it out to Near, Hindering Enemy Ranged Attacks Targeting those within.",
+      "textVariants": 1,
+      "automationStatus": "flavor",
+      "reason": "Description contains no mechanical keywords.",
+      "keywords": {
+        "statuses": [],
+        "mechanicalVerbs": [],
+        "durationMarkers": [],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "Living Sick",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.9rpGK7YO9OfbXJoh"
+      ],
+      "representativeText": "Sunlight and any effect that ends the Sickened Status or kills bacteria kills this Being.",
+      "textVariants": 1,
+      "automationStatus": "unimplemented",
+      "reason": "Description mentions mechanical effects but no PASSIVE_ABILITIES entry exists.",
+      "keywords": {
+        "statuses": [
+          "sickened"
+        ],
+        "mechanicalVerbs": [],
+        "durationMarkers": [],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "Lockjaw",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.aAONbN10F5bLslSE"
+      ],
+      "representativeText": "Hinders Checks to end being Restrained by it.",
+      "textVariants": 1,
+      "automationStatus": "unimplemented",
+      "reason": "Description mentions mechanical effects but no PASSIVE_ABILITIES entry exists.",
+      "keywords": {
+        "statuses": [
+          "restrained"
+        ],
+        "mechanicalVerbs": [],
+        "durationMarkers": [],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "Maddening I",
+      "count": 2,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.0yQoEPuPUHUKwEAv",
+        "Compendium.vagabond.bestiary.Actor.kcqeeuQ2oDfyKaak"
+      ],
+      "representativeText": "Enemies that can hear it for the first time and at the start of their Turns must pass a [Will] Save or be Confused (until they pass this Check on a subsequent Turn, or for Cd4 Rounds afterwards).",
+      "textVariants": 2,
+      "automationStatus": "unimplemented",
+      "reason": "Description mentions mechanical effects but no PASSIVE_ABILITIES entry exists.",
+      "keywords": {
+        "statuses": [
+          "confused"
+        ],
+        "mechanicalVerbs": [
+          "must-pass"
+        ],
+        "durationMarkers": [
+          "cd4"
+        ],
+        "saveKeywords": [
+          "Will",
+          "Check"
+        ]
+      }
+    },
+    {
+      "name": "Magic Resistance I",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.nmjWVM9zzRXsEuCZ"
+      ],
+      "representativeText": "If Targeted with Magic, roll a d4. On a roll of 1, it ignores the effect.",
+      "textVariants": 1,
+      "automationStatus": "flavor",
+      "reason": "Description contains no mechanical keywords.",
+      "keywords": {
+        "statuses": [],
+        "mechanicalVerbs": [],
+        "durationMarkers": [],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "Magic Ward I",
+      "count": 10,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.14SyZkKvSmv2smFw",
+        "Compendium.vagabond.bestiary.Actor.5Raq5NE9ahzB09RK",
+        "Compendium.vagabond.bestiary.Actor.DIXBdymeCr9HUJOd",
+        "Compendium.vagabond.bestiary.Actor.OQZbfC2OXrLYLRM8",
+        "Compendium.vagabond.bestiary.Actor.RCrdmkp96a9uhfT2",
+        "Compendium.vagabond.bestiary.Actor.W5kmv1bYrErmzoUI",
+        "Compendium.vagabond.bestiary.Actor.jO00LGH0j3HNTGve",
+        "Compendium.vagabond.bestiary.Actor.oDROHzNC8xZ4HY5m",
+        "Compendium.vagabond.bestiary.Actor.uIRiPIcdtl00VHdb",
+        "Compendium.vagabond.bestiary.Actor.wZ1lpFv59kCH9Pxj"
+      ],
+      "representativeText": "The first time it is unwillingly affected by a Spell each Round, the Caster must spend an extra 1 Mana to affect it.",
+      "textVariants": 1,
+      "automationStatus": "broken",
+      "reason": "Compendium text describes a Mana-cost penalty; scripts/npc-abilities.mjs injects a roll-penalty die (1d4) instead.",
+      "keywords": {
+        "statuses": [],
+        "mechanicalVerbs": [
+          "must-spend-mana"
+        ],
+        "durationMarkers": [],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "Magic Ward II",
+      "count": 16,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.1wsieodgDkGEU0si",
+        "Compendium.vagabond.bestiary.Actor.ATWC3zLqqZCvDLGF",
+        "Compendium.vagabond.bestiary.Actor.Ht9KJUOiRr1qjSQ2",
+        "Compendium.vagabond.bestiary.Actor.UGMhE8UODeuZf3Ms",
+        "Compendium.vagabond.bestiary.Actor.Uylf41QzuircJejb",
+        "Compendium.vagabond.bestiary.Actor.WgRHBofac5k3IUet",
+        "Compendium.vagabond.bestiary.Actor.ZXpSxKZH1Zj3fBcP",
+        "Compendium.vagabond.bestiary.Actor.cUT2qxNSbgNpwhOT",
+        "Compendium.vagabond.bestiary.Actor.lfHGD4OvbUEXP4wJ",
+        "Compendium.vagabond.bestiary.Actor.rTePiNbB8qag6HnP",
+        "Compendium.vagabond.bestiary.Actor.rb5dVb8peFW4RUIT",
+        "Compendium.vagabond.bestiary.Actor.trLqdRvjz70izXqj",
+        "Compendium.vagabond.bestiary.Actor.uDjwEv1gpStc0WzJ",
+        "Compendium.vagabond.bestiary.Actor.wvnFUicXjGnzt7w6",
+        "Compendium.vagabond.bestiary.Actor.yn22rgWJrAqwqAV0",
+        "Compendium.vagabond.humanlike.Actor.SuDEcZVOA7NgqkXa"
+      ],
+      "representativeText": "The first time it is unwillingly affected by a Spell each Round, the Caster must spend an extra 2 Mana to affect it.",
+      "textVariants": 1,
+      "automationStatus": "broken",
+      "reason": "Compendium text describes a Mana-cost penalty; scripts/npc-abilities.mjs injects a roll-penalty die (1d6) instead.",
+      "keywords": {
+        "statuses": [],
+        "mechanicalVerbs": [
+          "must-spend-mana"
+        ],
+        "durationMarkers": [],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "Magic Ward III",
+      "count": 9,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.2Wx5RcpuRN8Nw6T0",
+        "Compendium.vagabond.bestiary.Actor.OtEJxfZ13jBJ1apz",
+        "Compendium.vagabond.bestiary.Actor.ZNYqDZ9n236roSBY",
+        "Compendium.vagabond.bestiary.Actor.fH1TAjmzFTDXdlHF",
+        "Compendium.vagabond.bestiary.Actor.gOWR3pPKIEMyriVy",
+        "Compendium.vagabond.bestiary.Actor.hPna41WWprqcqawU",
+        "Compendium.vagabond.bestiary.Actor.nZBfS7RH0A7N9v11",
+        "Compendium.vagabond.bestiary.Actor.qtILksrMEcYJ47Be",
+        "Compendium.vagabond.bestiary.Actor.tox2rxTF7WFaqSJk"
+      ],
+      "representativeText": "The first time it is unwillingly affected by a Spell each Round, the Caster must spend an extra 3 Mana to affect it.",
+      "textVariants": 1,
+      "automationStatus": "broken",
+      "reason": "Compendium text describes a Mana-cost penalty; scripts/npc-abilities.mjs injects a roll-penalty die (1d8) instead.",
+      "keywords": {
+        "statuses": [],
+        "mechanicalVerbs": [
+          "must-spend-mana"
+        ],
+        "durationMarkers": [],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "Magic Ward IV",
+      "count": 7,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.87OFFZOTxFeRldz8",
+        "Compendium.vagabond.bestiary.Actor.MDeTATYPlrz4jjQb",
+        "Compendium.vagabond.bestiary.Actor.Xc30d0v7k9g20Nmu",
+        "Compendium.vagabond.bestiary.Actor.XqDi7xhYi8r25Eu7",
+        "Compendium.vagabond.bestiary.Actor.eim4ggishfz85XVX",
+        "Compendium.vagabond.bestiary.Actor.peS6wk3Zv8WiS5Dd",
+        "Compendium.vagabond.bestiary.Actor.zwwV8fXQhYzPQfKp"
+      ],
+      "representativeText": "The first time it is unwillingly affected by a Spell each Round, the Caster must spend an extra 4 Mana to affect it.",
+      "textVariants": 1,
+      "automationStatus": "unimplemented",
+      "reason": "Description mentions mechanical effects but no PASSIVE_ABILITIES entry exists.",
+      "keywords": {
+        "statuses": [],
+        "mechanicalVerbs": [
+          "must-spend-mana"
+        ],
+        "durationMarkers": [],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "Magic Ward V",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.eIjbp2eHJHXPG5kI"
+      ],
+      "representativeText": "The first time it is unwillingly affected by a Spell each Round, the Caster must spend an extra 5 Mana to affect it.",
+      "textVariants": 1,
+      "automationStatus": "unimplemented",
+      "reason": "Description mentions mechanical effects but no PASSIVE_ABILITIES entry exists.",
+      "keywords": {
+        "statuses": [],
+        "mechanicalVerbs": [
+          "must-spend-mana"
+        ],
+        "durationMarkers": [],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "Magic Ward VI",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.G2KnbYhwZ2xfT3wM"
+      ],
+      "representativeText": "The first time it is unwillingly affected by a Spell each Round, the Caster must spend an extra 6 Mana to affect it.",
+      "textVariants": 1,
+      "automationStatus": "unimplemented",
+      "reason": "Description mentions mechanical effects but no PASSIVE_ABILITIES entry exists.",
+      "keywords": {
+        "statuses": [],
+        "mechanicalVerbs": [
+          "must-spend-mana"
+        ],
+        "durationMarkers": [],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "Mercurial Reflection",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.gpu0T0RHM0TvQO5U"
+      ],
+      "representativeText": "Spells that Target it are reflected at a different randomly-determined Target.",
+      "textVariants": 1,
+      "automationStatus": "flavor",
+      "reason": "Description contains no mechanical keywords.",
+      "keywords": {
+        "statuses": [],
+        "mechanicalVerbs": [],
+        "durationMarkers": [],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "Metalepsis",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.qtILksrMEcYJ47Be"
+      ],
+      "representativeText": "(1/Day): This Being gains the approximate\nanswer to a question it asks itself.",
+      "textVariants": 1,
+      "automationStatus": "flavor",
+      "reason": "Description contains no mechanical keywords.",
+      "keywords": {
+        "statuses": [],
+        "mechanicalVerbs": [],
+        "durationMarkers": [],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "Mind of Madness",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.iyCEulXgz8uABmdD"
+      ],
+      "representativeText": "It can Cast while Berserk.",
+      "textVariants": 1,
+      "automationStatus": "unimplemented",
+      "reason": "Description mentions mechanical effects but no PASSIVE_ABILITIES entry exists.",
+      "keywords": {
+        "statuses": [
+          "berserk"
+        ],
+        "mechanicalVerbs": [],
+        "durationMarkers": [],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "Multi-Headed",
+      "count": 2,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.Rq6JPBgL5v88JAd0",
+        "Compendium.vagabond.bestiary.Actor.mCt7qRrjmd5hipbl"
+      ],
+      "representativeText": "It starts with 8 (d8+4) Heads. Targetting an area that could behead it causes a -3 penalty to the Check, but severs it if at least 10 damage is dealt in a single damage instance.",
+      "textVariants": 2,
+      "automationStatus": "unimplemented",
+      "reason": "Description mentions mechanical effects but no PASSIVE_ABILITIES entry exists.",
+      "keywords": {
+        "statuses": [],
+        "mechanicalVerbs": [],
+        "durationMarkers": [],
+        "saveKeywords": [
+          "Check"
+        ]
+      }
+    },
+    {
+      "name": "Multiple Heads",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.5oYLWXICi7KYOtla"
+      ],
+      "representativeText": "It starts with one head, but grows another as it consumes humanoid Beings. Each time it grows a new head, it gains 3 HD (13 HP), and its stats change as shown below: \n3 Consumed: 2 Heads, Medium, TL 4.1 \n6 Consumed: 3 Heads, Large, TL 5.6 \n9 Consumed: 4 Heads, Large, TL 6.9 \n15 Consumed: 5 Heads, Huge, TL 8.2 \n24 Consumed: 6 Heads, Huge, TL 9.4",
+      "textVariants": 1,
+      "automationStatus": "flavor",
+      "reason": "Description contains no mechanical keywords.",
+      "keywords": {
+        "statuses": [],
+        "mechanicalVerbs": [],
+        "durationMarkers": [],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "Mythic",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.G2KnbYhwZ2xfT3wM"
+      ],
+      "representativeText": "It doesn't die unless a wish is granted to do so.",
+      "textVariants": 1,
+      "automationStatus": "flavor",
+      "reason": "Description contains no mechanical keywords.",
+      "keywords": {
+        "statuses": [],
+        "mechanicalVerbs": [],
+        "durationMarkers": [],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "Nightwalker",
+      "count": 9,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.6l3L0a8gHCSRGPlQ",
+        "Compendium.vagabond.bestiary.Actor.7t0wb4hi6Oh7vAK1",
+        "Compendium.vagabond.bestiary.Actor.Dq3ik1JY5uCLzUDV",
+        "Compendium.vagabond.bestiary.Actor.FTyGaeKSe3Hhi2aw",
+        "Compendium.vagabond.bestiary.Actor.IcbNlle1cmGen0Kk",
+        "Compendium.vagabond.bestiary.Actor.hLO69Zjvz7WaJAmO",
+        "Compendium.vagabond.bestiary.Actor.m8Q6WWcR8LGOFJde",
+        "Compendium.vagabond.bestiary.Actor.wNK06vFyHkFkvgLO",
+        "Compendium.vagabond.bestiary.Actor.zJTSUTgRHCA1233u"
+      ],
+      "representativeText": "Can’t Move or Target over lines of salt or in areas illuminated by Sunlight. It is Incapacitated and Burning (d8) while in Sunlight.",
+      "textVariants": 1,
+      "automationStatus": "unimplemented",
+      "reason": "Description mentions mechanical effects but no PASSIVE_ABILITIES entry exists.",
+      "keywords": {
+        "statuses": [
+          "burning",
+          "incapacitated"
+        ],
+        "mechanicalVerbs": [],
+        "durationMarkers": [],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "Nimble",
+      "count": 15,
+      "monsters": [
+        "Compendium.vagabond-character-enhancer.vce-beasts.Actor.5E6UUHA0yXxCycuA",
+        "Compendium.vagabond-character-enhancer.vce-beasts.Actor.VWzjyzpmyOzlAF7a",
+        "Compendium.vagabond-character-enhancer.vce-beasts.Actor.u9QlqAkY5WQgBL0u",
+        "Compendium.vagabond-character-enhancer.vce-beasts.Actor.vIIdLgIoWTWjjymx",
+        "Compendium.vagabond.bestiary.Actor.01WK986PiOP0uUDE",
+        "Compendium.vagabond.bestiary.Actor.8gZeIa8LY8GN4H4u",
+        "Compendium.vagabond.bestiary.Actor.FdAlnzOqsprGIwwP",
+        "Compendium.vagabond.bestiary.Actor.S5JBdu7eIlAWclHE",
+        "Compendium.vagabond.bestiary.Actor.fM1JjKdHbzQVm1rI",
+        "Compendium.vagabond.bestiary.Actor.kdkY2n6gMSQLT5Tr",
+        "Compendium.vagabond.bestiary.Actor.l0R5eP2Gp0WC6QPq",
+        "Compendium.vagabond.bestiary.Actor.lfHGD4OvbUEXP4wJ",
+        "Compendium.vagabond.bestiary.Actor.mfXiP8SZOBYuin8r",
+        "Compendium.vagabond.bestiary.Actor.qMlyP6vGm2ZAQx3W",
+        "Compendium.vagabond.bestiary.Actor.svzEPBpYY23Vg0Dg"
+      ],
+      "representativeText": "Attacks against it can’t be Favored if it can Move.",
+      "textVariants": 2,
+      "automationStatus": "unimplemented",
+      "reason": "Description mentions mechanical effects but no PASSIVE_ABILITIES entry exists.",
+      "keywords": {
+        "statuses": [],
+        "mechanicalVerbs": [
+          "favored"
+        ],
+        "durationMarkers": [],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "Ocular",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.GueGlPk8Be6uhm0b"
+      ],
+      "representativeText": "Checks to make it Blinded are Favored.",
+      "textVariants": 1,
+      "automationStatus": "unimplemented",
+      "reason": "Description mentions mechanical effects but no PASSIVE_ABILITIES entry exists.",
+      "keywords": {
+        "statuses": [
+          "blinded"
+        ],
+        "mechanicalVerbs": [
+          "favored"
+        ],
+        "durationMarkers": [],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "On-Sight",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.yJbVHu4txMW9HyRG"
+      ],
+      "representativeText": "Is Berserk, considers all Beings Enemies.",
+      "textVariants": 1,
+      "automationStatus": "unimplemented",
+      "reason": "Description mentions mechanical effects but no PASSIVE_ABILITIES entry exists.",
+      "keywords": {
+        "statuses": [
+          "berserk"
+        ],
+        "mechanicalVerbs": [],
+        "durationMarkers": [],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "One-Eyed",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.ZVKHvtT8HSgrZSej"
+      ],
+      "representativeText": "Attacks as if Vulnerable against Targets further than Near.",
+      "textVariants": 1,
+      "automationStatus": "unimplemented",
+      "reason": "Description mentions mechanical effects but no PASSIVE_ABILITIES entry exists.",
+      "keywords": {
+        "statuses": [
+          "vulnerable"
+        ],
+        "mechanicalVerbs": [],
+        "durationMarkers": [],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "Otyugh Disease",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.hpvz01W4mhKZDyrq"
+      ],
+      "representativeText": "Beings that aren't otyughs that are Sickened this way must pass an an [Endure] Save every day or lose 3 (d6) from their Max HP. This reduction to their Max HP lasts while they are Sickened by this disease.",
+      "textVariants": 1,
+      "automationStatus": "unimplemented",
+      "reason": "Description mentions mechanical effects but no PASSIVE_ABILITIES entry exists.",
+      "keywords": {
+        "statuses": [
+          "sickened"
+        ],
+        "mechanicalVerbs": [
+          "must-pass"
+        ],
+        "durationMarkers": [],
+        "saveKeywords": [
+          "Endure"
+        ]
+      }
+    },
+    {
+      "name": "Pack Hunter",
+      "count": 15,
+      "monsters": [
+        "Compendium.vagabond-character-enhancer.vce-beasts.Actor.VWzjyzpmyOzlAF7a",
+        "Compendium.vagabond-character-enhancer.vce-beasts.Actor.qnLEaxqsTlJy4QzJ",
+        "Compendium.vagabond-character-enhancer.vce-beasts.Actor.u9QlqAkY5WQgBL0u",
+        "Compendium.vagabond.bestiary.Actor.FsDuYyDw3jtO2KYC",
+        "Compendium.vagabond.bestiary.Actor.HmlmtEocbWolrl3F",
+        "Compendium.vagabond.bestiary.Actor.JEjyqTf7HImNj1hy",
+        "Compendium.vagabond.bestiary.Actor.OM4n0N2hftXzkcRy",
+        "Compendium.vagabond.bestiary.Actor.ObCy4kANqhT3rrbJ",
+        "Compendium.vagabond.bestiary.Actor.Wpi6ETJ6izgT1aOo",
+        "Compendium.vagabond.bestiary.Actor.YA8mo48WNHLm6saq",
+        "Compendium.vagabond.bestiary.Actor.bjjglKk2aSt1kqL6",
+        "Compendium.vagabond.bestiary.Actor.fM1JjKdHbzQVm1rI",
+        "Compendium.vagabond.bestiary.Actor.kdkY2n6gMSQLT5Tr",
+        "Compendium.vagabond.bestiary.Actor.pRwsDQBP6ck8LuWs",
+        "Compendium.vagabond.bestiary.Actor.ssbUeRw0VM03vk6b"
+      ],
+      "representativeText": "Targets within 5 feet of one of this Being's Allies are Vulnerable to its attacks.",
+      "textVariants": 1,
+      "automationStatus": "unimplemented",
+      "reason": "Description mentions mechanical effects but no PASSIVE_ABILITIES entry exists.",
+      "keywords": {
+        "statuses": [
+          "vulnerable"
+        ],
+        "mechanicalVerbs": [],
+        "durationMarkers": [],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "Pack Instincts",
+      "count": 3,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.F0RHdKPPAxKpxtnG",
+        "Compendium.vagabond.bestiary.Actor.Jqv4wH6JcoviGgE2",
+        "Compendium.vagabond.bestiary.Actor.cClSRTp1wi5nKiTn"
+      ],
+      "representativeText": "If one of its Allies is within 5 feet of a Target of this Being’s Attack, that Target is Vulnerable against the Attack.",
+      "textVariants": 1,
+      "automationStatus": "implemented",
+      "reason": "Matched scripts/npc-abilities.mjs PASSIVE_ABILITIES entry (type: packInstincts).",
+      "keywords": {
+        "statuses": [
+          "vulnerable"
+        ],
+        "mechanicalVerbs": [],
+        "durationMarkers": [],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "Parasite",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.bu9vHDopcT6WfCB1"
+      ],
+      "representativeText": "If this Being or any Being it is burrowing into takes Fire damage or is the Target of an effect that ends the Sickened Status, this Being dies instantly.",
+      "textVariants": 1,
+      "automationStatus": "unimplemented",
+      "reason": "Description mentions mechanical effects but no PASSIVE_ABILITIES entry exists.",
+      "keywords": {
+        "statuses": [
+          "sickened"
+        ],
+        "mechanicalVerbs": [],
+        "durationMarkers": [],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "Petrifying Visage",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.7xz66vMa0tsqNKqx"
+      ],
+      "representativeText": "Beings that look at it for the first time on their Turns must pass [Endure] against Sickened or take 1 Fatigue. A Being with 3 or more Fatigue that gains another Fatigue this way is cursed (petrified as a stone statue until this medusa dies).",
+      "textVariants": 1,
+      "automationStatus": "unimplemented",
+      "reason": "Description mentions mechanical effects but no PASSIVE_ABILITIES entry exists.",
+      "keywords": {
+        "statuses": [
+          "sickened"
+        ],
+        "mechanicalVerbs": [
+          "must-pass"
+        ],
+        "durationMarkers": [],
+        "saveKeywords": [
+          "Endure"
+        ]
+      }
+    },
+    {
+      "name": "Phoenix Down",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.rb5dVb8peFW4RUIT"
+      ],
+      "representativeText": "[Item] Extremely magical Material. Can Use to revive a dead Being whose corpse the down is placed on at full HP. This does not work on Undead.",
+      "textVariants": 1,
+      "automationStatus": "flavor",
+      "reason": "Description contains no mechanical keywords.",
+      "keywords": {
+        "statuses": [],
+        "mechanicalVerbs": [],
+        "durationMarkers": [],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "Pounce",
+      "count": 7,
+      "monsters": [
+        "Compendium.vagabond-character-enhancer.vce-beasts.Actor.qnLEaxqsTlJy4QzJ",
+        "Compendium.vagabond.bestiary.Actor.FsDuYyDw3jtO2KYC",
+        "Compendium.vagabond.bestiary.Actor.JEjyqTf7HImNj1hy",
+        "Compendium.vagabond.bestiary.Actor.OM4n0N2hftXzkcRy",
+        "Compendium.vagabond.bestiary.Actor.ObCy4kANqhT3rrbJ",
+        "Compendium.vagabond.bestiary.Actor.Wpi6ETJ6izgT1aOo",
+        "Compendium.vagabond.bestiary.Actor.bjjglKk2aSt1kqL6"
+      ],
+      "representativeText": "If it moves at least 20' before an attack on the same Turn, the Target is also knocked Prone.",
+      "textVariants": 4,
+      "automationStatus": "unimplemented",
+      "reason": "Description mentions mechanical effects but no PASSIVE_ABILITIES entry exists.",
+      "keywords": {
+        "statuses": [
+          "prone"
+        ],
+        "mechanicalVerbs": [],
+        "durationMarkers": [],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "Pouncer",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.ZhhuGoH4rFRiiaPp"
+      ],
+      "representativeText": "If it moves at least 20 feet before making an Attack on the same Turn, the Target is shoved Prone if it is this Being's size or smaller.",
+      "textVariants": 1,
+      "automationStatus": "unimplemented",
+      "reason": "Description mentions mechanical effects but no PASSIVE_ABILITIES entry exists.",
+      "keywords": {
+        "statuses": [
+          "prone"
+        ],
+        "mechanicalVerbs": [],
+        "durationMarkers": [],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "Prowess",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.humanlike.Actor.LSTCLWY5BPRYAsYH"
+      ],
+      "representativeText": "+1 to attack damage it deals (already factored in).",
+      "textVariants": 1,
+      "automationStatus": "flavor",
+      "reason": "Description contains no mechanical keywords.",
+      "keywords": {
+        "statuses": [],
+        "mechanicalVerbs": [],
+        "durationMarkers": [],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "Pudding Nature",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.RFENB7RObfPWSY34"
+      ],
+      "representativeText": "Is Dazed (1 Round) after being subjected to Cold.",
+      "textVariants": 1,
+      "automationStatus": "unimplemented",
+      "reason": "Description mentions mechanical effects but no PASSIVE_ABILITIES entry exists.",
+      "keywords": {
+        "statuses": [
+          "dazed"
+        ],
+        "mechanicalVerbs": [],
+        "durationMarkers": [],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "Pudding Split",
+      "count": 2,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.RFENB7RObfPWSY34",
+        "Compendium.vagabond.bestiary.Actor.YCnTX125wazTwDGe"
+      ],
+      "representativeText": "If it is larger than Small when subjected to Shock or Slash, it splits into two Black Puddings with half its current HP, round up, and are one size smaller. These deal 1 less d8 with its Pseudopod Action and Engulfer Ability.",
+      "textVariants": 2,
+      "automationStatus": "unimplemented",
+      "reason": "Description mentions mechanical effects but no PASSIVE_ABILITIES entry exists.",
+      "keywords": {
+        "statuses": [],
+        "mechanicalVerbs": [
+          "deals-damage"
+        ],
+        "durationMarkers": [],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "Rage",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.humanlike.Actor.uxqAgvxbvzahOBbL"
+      ],
+      "representativeText": "It goes Berserk when it is attacked or as part of making an Attack. While Berserk by any means, it reduces damage by 1 per damage die.",
+      "textVariants": 1,
+      "automationStatus": "unimplemented",
+      "reason": "Description mentions mechanical effects but no PASSIVE_ABILITIES entry exists.",
+      "keywords": {
+        "statuses": [
+          "berserk"
+        ],
+        "mechanicalVerbs": [],
+        "durationMarkers": [],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "Rampant",
+      "count": 2,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.DhEz76COsuB6EsEn",
+        "Compendium.vagabond.bestiary.Actor.whdFCj27KB6OnkRI"
+      ],
+      "representativeText": "If it Moves at least 20' in a straight line, it can automatically make one Horn Attack against anything in its path for the rest of the Turn (no Action).",
+      "textVariants": 1,
+      "automationStatus": "flavor",
+      "reason": "Description contains no mechanical keywords.",
+      "keywords": {
+        "statuses": [],
+        "mechanicalVerbs": [],
+        "durationMarkers": [],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "Reflective Carapace",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.G2KnbYhwZ2xfT3wM"
+      ],
+      "representativeText": "When Targeted with a Spell, roll d6. On a 1, the Spell is reflected back at its source. On a 2 or 3, the Spell is dispelled. On a 4 to 6, the Spell works as normal.",
+      "textVariants": 1,
+      "automationStatus": "flavor",
+      "reason": "Description contains no mechanical keywords.",
+      "keywords": {
+        "statuses": [],
+        "mechanicalVerbs": [],
+        "durationMarkers": [],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "Reflective Shell",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.rdXUVjQNJjZoXuNE"
+      ],
+      "representativeText": "When Targeted with a Spell, roll d6. On a 1, the Spell is reflected back at its source. On a 2 or 3, the Spell is dispelled. On a 4 to 6, the Spell works as normal.",
+      "textVariants": 1,
+      "automationStatus": "flavor",
+      "reason": "Description contains no mechanical keywords.",
+      "keywords": {
+        "statuses": [],
+        "mechanicalVerbs": [],
+        "durationMarkers": [],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "Regenerate I",
+      "count": 2,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.5slBPAwQ2kDgFCpa",
+        "Compendium.vagabond.bestiary.Actor.hPna41WWprqcqawU"
+      ],
+      "representativeText": "Regains 9 (2d8) HP on its Turns.",
+      "textVariants": 2,
+      "automationStatus": "unimplemented",
+      "reason": "Description mentions mechanical effects but no PASSIVE_ABILITIES entry exists.",
+      "keywords": {
+        "statuses": [],
+        "mechanicalVerbs": [
+          "regains-hp"
+        ],
+        "durationMarkers": [],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "Regenerate II",
+      "count": 4,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.G2KnbYhwZ2xfT3wM",
+        "Compendium.vagabond.bestiary.Actor.OI2CyIrhee1JOYlv",
+        "Compendium.vagabond.bestiary.Actor.WPWcwr72e6bVPaAx",
+        "Compendium.vagabond.bestiary.Actor.tox2rxTF7WFaqSJk"
+      ],
+      "representativeText": "Regains 9 (2d8) HP on each of its Turns.",
+      "textVariants": 2,
+      "automationStatus": "unimplemented",
+      "reason": "Description mentions mechanical effects but no PASSIVE_ABILITIES entry exists.",
+      "keywords": {
+        "statuses": [],
+        "mechanicalVerbs": [
+          "regains-hp"
+        ],
+        "durationMarkers": [],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "Regenerate III",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.XqDi7xhYi8r25Eu7"
+      ],
+      "representativeText": "Regains 13 (3d8) HP on each of itsTurns.",
+      "textVariants": 1,
+      "automationStatus": "unimplemented",
+      "reason": "Description mentions mechanical effects but no PASSIVE_ABILITIES entry exists.",
+      "keywords": {
+        "statuses": [],
+        "mechanicalVerbs": [
+          "regains-hp"
+        ],
+        "durationMarkers": [],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "Relentless",
+      "count": 2,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.9C6nnuhCslXCKstl",
+        "Compendium.vagabond.bestiary.Actor.uHLuS9QzxsZiqviW"
+      ],
+      "representativeText": "Once per Day, if it is reduced to 0 HP, it instead regains d4 HP.",
+      "textVariants": 2,
+      "automationStatus": "flavor",
+      "reason": "Description contains no mechanical keywords.",
+      "keywords": {
+        "statuses": [],
+        "mechanicalVerbs": [],
+        "durationMarkers": [],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "Righting Reflex",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.FqA1XFVfB8o9zigs"
+      ],
+      "representativeText": "It doesn’t take falling damage from falling 40' or less.",
+      "textVariants": 1,
+      "automationStatus": "flavor",
+      "reason": "Description contains no mechanical keywords.",
+      "keywords": {
+        "statuses": [],
+        "mechanicalVerbs": [],
+        "durationMarkers": [],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "Rust Touch",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.YgS0rbltXaYdNsb9"
+      ],
+      "representativeText": "Non-Relic metal Items that make contact with it corrode. When this happens, roll a d6 for each Item. On a roll of 1, the Item breaks. If the Item that breaks is larger than Medium, this destroys a 1-foot square hole that is 1-foot deep in it.",
+      "textVariants": 1,
+      "automationStatus": "flavor",
+      "reason": "Description contains no mechanical keywords.",
+      "keywords": {
+        "statuses": [],
+        "mechanicalVerbs": [],
+        "durationMarkers": [],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "Sand Swimmer",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.bI1V6pqJkiiIGEYJ"
+      ],
+      "representativeText": "Can Move through sand and earth using its Speed.",
+      "textVariants": 1,
+      "automationStatus": "flavor",
+      "reason": "Description contains no mechanical keywords.",
+      "keywords": {
+        "statuses": [],
+        "mechanicalVerbs": [],
+        "durationMarkers": [],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "Scare to Death",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.lQ3dyK9D9KJAQ3YD"
+      ],
+      "representativeText": "If it fails a Morale Check or becomes Frightened, it dies.",
+      "textVariants": 1,
+      "automationStatus": "unimplemented",
+      "reason": "Description mentions mechanical effects but no PASSIVE_ABILITIES entry exists.",
+      "keywords": {
+        "statuses": [
+          "frightened"
+        ],
+        "mechanicalVerbs": [],
+        "durationMarkers": [],
+        "saveKeywords": [
+          "Check"
+        ]
+      }
+    },
+    {
+      "name": "Seep",
+      "count": 8,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.4tgJAUkCwHMUbh0L",
+        "Compendium.vagabond.bestiary.Actor.7Q4CeeNTFsoyIvLJ",
+        "Compendium.vagabond.bestiary.Actor.FGTs80o3umSqJjZH",
+        "Compendium.vagabond.bestiary.Actor.G4yOOmYO0Wahx9d8",
+        "Compendium.vagabond.bestiary.Actor.MVEkTMHMnNsf6rxz",
+        "Compendium.vagabond.bestiary.Actor.RFENB7RObfPWSY34",
+        "Compendium.vagabond.bestiary.Actor.XqPwjVW3k3xNa9Ht",
+        "Compendium.vagabond.bestiary.Actor.nYO6xGYPRmtNuhV9"
+      ],
+      "representativeText": "It can enter the space of other Beings and openings as small as 1 inch without squeezing.",
+      "textVariants": 1,
+      "automationStatus": "flavor",
+      "reason": "Description contains no mechanical keywords.",
+      "keywords": {
+        "statuses": [],
+        "mechanicalVerbs": [],
+        "durationMarkers": [],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "Self-Destruct",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.Xc30d0v7k9g20Nmu"
+      ],
+      "representativeText": "If it is at or below half its HP, its core begins self-destructing. This core goes off in 1 minute, and the sonic boom deals 200 damage to everything within 1 mile.",
+      "textVariants": 1,
+      "automationStatus": "unimplemented",
+      "reason": "Description mentions mechanical effects but no PASSIVE_ABILITIES entry exists.",
+      "keywords": {
+        "statuses": [],
+        "mechanicalVerbs": [
+          "deals-damage"
+        ],
+        "durationMarkers": [],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "Shadow Stealth",
+      "count": 2,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.m8Q6WWcR8LGOFJde",
+        "Compendium.vagabond.bestiary.Actor.zJTSUTgRHCA1233u"
+      ],
+      "representativeText": "It is Invisible in the Dark.",
+      "textVariants": 1,
+      "automationStatus": "unimplemented",
+      "reason": "Description mentions mechanical effects but no PASSIVE_ABILITIES entry exists.",
+      "keywords": {
+        "statuses": [
+          "invisible"
+        ],
+        "mechanicalVerbs": [],
+        "durationMarkers": [],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "Shapechange",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.6374iY64VLoDAtDV"
+      ],
+      "representativeText": "It can skip its Move to turn into a green woman, or an aquatic horse (use the hippocampus statblock). It maintains its HP in these forms.",
+      "textVariants": 1,
+      "automationStatus": "flavor",
+      "reason": "Description contains no mechanical keywords.",
+      "keywords": {
+        "statuses": [],
+        "mechanicalVerbs": [],
+        "durationMarkers": [],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "Shapechanger",
+      "count": 2,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.klRBWjiNUz7GlVAb",
+        "Compendium.vagabond.bestiary.Actor.niDTL17izgqngzej"
+      ],
+      "representativeText": "This is a form that a Humanlike cursed with lycanthropy can become when the curse takes hold. They revert automatically if they die.",
+      "textVariants": 1,
+      "automationStatus": "flavor",
+      "reason": "Description contains no mechanical keywords.",
+      "keywords": {
+        "statuses": [],
+        "mechanicalVerbs": [],
+        "durationMarkers": [],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "Shapeshift",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.UGMhE8UODeuZf3Ms"
+      ],
+      "representativeText": "It can use its Action to change into a bat, owl, rat, or wolf. It typically does so to retreat.",
+      "textVariants": 1,
+      "automationStatus": "flavor",
+      "reason": "Description contains no mechanical keywords.",
+      "keywords": {
+        "statuses": [],
+        "mechanicalVerbs": [],
+        "durationMarkers": [],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "Shattering Death",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.lQ3dyK9D9KJAQ3YD"
+      ],
+      "representativeText": "When it dies, it shatters to dust.",
+      "textVariants": 1,
+      "automationStatus": "flavor",
+      "reason": "Description contains no mechanical keywords.",
+      "keywords": {
+        "statuses": [],
+        "mechanicalVerbs": [],
+        "durationMarkers": [],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "Shock-Absorb",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.NI1b4rIPgJKsLKQJ"
+      ],
+      "representativeText": "It treats all Shock damage as healing",
+      "textVariants": 1,
+      "automationStatus": "flavor",
+      "reason": "Description contains no mechanical keywords.",
+      "keywords": {
+        "statuses": [],
+        "mechanicalVerbs": [],
+        "durationMarkers": [],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "Shock-Absorber",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.gMKwv81k8AHuZBk0"
+      ],
+      "representativeText": "Shock damage rolls heal it instead.",
+      "textVariants": 1,
+      "automationStatus": "flavor",
+      "reason": "Description contains no mechanical keywords.",
+      "keywords": {
+        "statuses": [],
+        "mechanicalVerbs": [],
+        "durationMarkers": [],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "Sneak Attack",
+      "count": 2,
+      "monsters": [
+        "Compendium.vagabond.humanlike.Actor.bAcqt2HvrmAE6I5k",
+        "Compendium.vagabond.humanlike.Actor.pztZ1992w2ZhIHII"
+      ],
+      "representativeText": "Once per Turn, it deals 2 (d4) additional damage with an attack against a Vulnerable Target. This attack ignores Armor and can explode.",
+      "textVariants": 2,
+      "automationStatus": "unimplemented",
+      "reason": "Description mentions mechanical effects but no PASSIVE_ABILITIES entry exists.",
+      "keywords": {
+        "statuses": [
+          "vulnerable"
+        ],
+        "mechanicalVerbs": [
+          "deals-damage"
+        ],
+        "durationMarkers": [],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "Soft Underbelly",
+      "count": 5,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.0kzsaKPEt9F2cLzh",
+        "Compendium.vagabond.bestiary.Actor.JdG9XdEO8Gk3vwpV",
+        "Compendium.vagabond.bestiary.Actor.bQRYqctiGqfLigDQ",
+        "Compendium.vagabond.bestiary.Actor.mdtMIAyn3qMINoyD",
+        "Compendium.vagabond.bestiary.Actor.wdqCpTf6IvtPLc80"
+      ],
+      "representativeText": "Its Armor is 0 while it is Prone.",
+      "textVariants": 1,
+      "automationStatus": "unimplemented",
+      "reason": "Description mentions mechanical effects but no PASSIVE_ABILITIES entry exists.",
+      "keywords": {
+        "statuses": [
+          "prone"
+        ],
+        "mechanicalVerbs": [],
+        "durationMarkers": [],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "Soul Jar",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.eIjbp2eHJHXPG5kI"
+      ],
+      "representativeText": "It can't die if it has a Soul Jar intact.",
+      "textVariants": 1,
+      "automationStatus": "flavor",
+      "reason": "Description contains no mechanical keywords.",
+      "keywords": {
+        "statuses": [],
+        "mechanicalVerbs": [],
+        "durationMarkers": [],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "Spore Cloud",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.OXIrSQsloN8IRgfA"
+      ],
+      "representativeText": "[When Touched, Aura Close | Endure]: 3 (d6) and pass [Endure] or become Sickened (Cd8, +1 Fatigue each Round).",
+      "textVariants": 1,
+      "automationStatus": "unimplemented",
+      "reason": "Description mentions mechanical effects but no PASSIVE_ABILITIES entry exists.",
+      "keywords": {
+        "statuses": [
+          "sickened"
+        ],
+        "mechanicalVerbs": [
+          "adds-fatigue"
+        ],
+        "durationMarkers": [
+          "cd8"
+        ],
+        "saveKeywords": [
+          "Endure"
+        ]
+      }
+    },
+    {
+      "name": "Stench",
+      "count": 3,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.BHX4mhjjYrxqIe2E",
+        "Compendium.vagabond.bestiary.Actor.qi6QdSz3VDqGVx9X",
+        "Compendium.vagabond.bestiary.Actor.wKPKn9Xuvj4SJA6I"
+      ],
+      "representativeText": "Non-Catoblepas Beings that have to breathe are Sickened (Hinder on all Checks) while Near it.",
+      "textVariants": 3,
+      "automationStatus": "unimplemented",
+      "reason": "Description mentions mechanical effects but no PASSIVE_ABILITIES entry exists.",
+      "keywords": {
+        "statuses": [
+          "sickened"
+        ],
+        "mechanicalVerbs": [],
+        "durationMarkers": [],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "Sticky",
+      "count": 5,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.31QN4EUQL9G9fOTj",
+        "Compendium.vagabond.bestiary.Actor.5Raq5NE9ahzB09RK",
+        "Compendium.vagabond.bestiary.Actor.FYjFBtN4C5lXvFLA",
+        "Compendium.vagabond.bestiary.Actor.RFENB7RObfPWSY34",
+        "Compendium.vagabond.bestiary.Actor.nYO6xGYPRmtNuhV9"
+      ],
+      "representativeText": "Hinders attempts to end being Restrained by it. Beings that make physical contact with it must pass [Endure] or be Restrained.",
+      "textVariants": 1,
+      "automationStatus": "unimplemented",
+      "reason": "Description mentions mechanical effects but no PASSIVE_ABILITIES entry exists.",
+      "keywords": {
+        "statuses": [
+          "restrained"
+        ],
+        "mechanicalVerbs": [
+          "must-pass"
+        ],
+        "durationMarkers": [],
+        "saveKeywords": [
+          "Endure"
+        ]
+      }
+    },
+    {
+      "name": "Sun-Averse",
+      "count": 4,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.0ggPx89IztNk2YN8",
+        "Compendium.vagabond.bestiary.Actor.BHX4mhjjYrxqIe2E",
+        "Compendium.vagabond.bestiary.Actor.ODbpq02R0n8eFcGc",
+        "Compendium.vagabond.bestiary.Actor.qtKz79tM6rnnKOq8"
+      ],
+      "representativeText": "Is Vulnerable while in Sunlight",
+      "textVariants": 2,
+      "automationStatus": "unimplemented",
+      "reason": "Description mentions mechanical effects but no PASSIVE_ABILITIES entry exists.",
+      "keywords": {
+        "statuses": [
+          "vulnerable"
+        ],
+        "mechanicalVerbs": [],
+        "durationMarkers": [],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "Sunblinded",
+      "count": 2,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.8JzYAkpSslsI0HpO",
+        "Compendium.vagabond.bestiary.Actor.QlBMPKwPxTNYRSfg"
+      ],
+      "representativeText": "Blinded by Sunlight.",
+      "textVariants": 1,
+      "automationStatus": "unimplemented",
+      "reason": "Description mentions mechanical effects but no PASSIVE_ABILITIES entry exists.",
+      "keywords": {
+        "statuses": [
+          "blinded"
+        ],
+        "mechanicalVerbs": [],
+        "durationMarkers": [],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "Sunlight Aversion",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.cNk4q1zCVyOdhZts"
+      ],
+      "representativeText": "The troll’s Armor and Lesser Regenerate trait are suspended while it is in sunlight, and it is Burning (d6). If the troll dies within sunlight, it is turned to stone.",
+      "textVariants": 1,
+      "automationStatus": "unimplemented",
+      "reason": "Description mentions mechanical effects but no PASSIVE_ABILITIES entry exists.",
+      "keywords": {
+        "statuses": [
+          "burning"
+        ],
+        "mechanicalVerbs": [],
+        "durationMarkers": [],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "Sunlight Hypersensitivity",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.UGMhE8UODeuZf3Ms"
+      ],
+      "representativeText": "It is Burning (d8) while illuminated by Sunlight.",
+      "textVariants": 1,
+      "automationStatus": "unimplemented",
+      "reason": "Description mentions mechanical effects but no PASSIVE_ABILITIES entry exists.",
+      "keywords": {
+        "statuses": [
+          "burning"
+        ],
+        "mechanicalVerbs": [],
+        "durationMarkers": [],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "Supreme Hellspawn",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.tox2rxTF7WFaqSJk"
+      ],
+      "representativeText": "Regains 13 HP each Round.",
+      "textVariants": 1,
+      "automationStatus": "unimplemented",
+      "reason": "Description mentions mechanical effects but no PASSIVE_ABILITIES entry exists.",
+      "keywords": {
+        "statuses": [],
+        "mechanicalVerbs": [
+          "regains-hp"
+        ],
+        "durationMarkers": [],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "Tactical",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.gJlZhYArQK0sg2er"
+      ],
+      "representativeText": "Targets Save against its attacks as if Vulnerable if at least one of this Being's Allies are within 5 feet of the Target.",
+      "textVariants": 1,
+      "automationStatus": "unimplemented",
+      "reason": "Description mentions mechanical effects but no PASSIVE_ABILITIES entry exists.",
+      "keywords": {
+        "statuses": [
+          "vulnerable"
+        ],
+        "mechanicalVerbs": [],
+        "durationMarkers": [],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "Teleporting",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.qtILksrMEcYJ47Be"
+      ],
+      "representativeText": "(Recharge Cd4): It can use its Move to\nteleport to an open space it can see.",
+      "textVariants": 1,
+      "automationStatus": "unimplemented",
+      "reason": "Description mentions mechanical effects but no PASSIVE_ABILITIES entry exists.",
+      "keywords": {
+        "statuses": [],
+        "mechanicalVerbs": [],
+        "durationMarkers": [
+          "cd4"
+        ],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "Tendrils",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.iHkYA8Y2dGZ5bOXb"
+      ],
+      "representativeText": "Starts with 6. Targetting one causes a -4 penalty to the Check, but severs it if at least 4 damage is dealt.",
+      "textVariants": 1,
+      "automationStatus": "unimplemented",
+      "reason": "Description mentions mechanical effects but no PASSIVE_ABILITIES entry exists.",
+      "keywords": {
+        "statuses": [],
+        "mechanicalVerbs": [],
+        "durationMarkers": [],
+        "saveKeywords": [
+          "Check"
+        ]
+      }
+    },
+    {
+      "name": "Tentacle",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.GAMXQgxdOS165gB8"
+      ],
+      "representativeText": "Starts with 4. Targetting one causes a\n-1 penalty to the Check, but severs it if at least 2 damage is dealt.",
+      "textVariants": 1,
+      "automationStatus": "unimplemented",
+      "reason": "Description mentions mechanical effects but no PASSIVE_ABILITIES entry exists.",
+      "keywords": {
+        "statuses": [],
+        "mechanicalVerbs": [],
+        "durationMarkers": [],
+        "saveKeywords": [
+          "Check"
+        ]
+      }
+    },
+    {
+      "name": "Tentacles",
+      "count": 4,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.Dl66ByoWtgTfWJ7C",
+        "Compendium.vagabond.bestiary.Actor.QP5xEKlWLoRQhS3t",
+        "Compendium.vagabond.bestiary.Actor.mzHfFclIaG0WIeUi",
+        "Compendium.vagabond.bestiary.Actor.uDjwEv1gpStc0WzJ"
+      ],
+      "representativeText": "Starts with 6 Tentacles. Targetting a Tentacle causes a -4 penalty to the Attack Check, but severs it if at least 16 damage is dealt with the attack.",
+      "textVariants": 4,
+      "automationStatus": "unimplemented",
+      "reason": "Description mentions mechanical effects but no PASSIVE_ABILITIES entry exists.",
+      "keywords": {
+        "statuses": [],
+        "mechanicalVerbs": [],
+        "durationMarkers": [],
+        "saveKeywords": [
+          "Check"
+        ]
+      }
+    },
+    {
+      "name": "Terror I",
+      "count": 9,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.0yQoEPuPUHUKwEAv",
+        "Compendium.vagabond.bestiary.Actor.DIXBdymeCr9HUJOd",
+        "Compendium.vagabond.bestiary.Actor.OtEJxfZ13jBJ1apz",
+        "Compendium.vagabond.bestiary.Actor.ZNYqDZ9n236roSBY",
+        "Compendium.vagabond.bestiary.Actor.ZXpSxKZH1Zj3fBcP",
+        "Compendium.vagabond.bestiary.Actor.fH1TAjmzFTDXdlHF",
+        "Compendium.vagabond.bestiary.Actor.gOWR3pPKIEMyriVy",
+        "Compendium.vagabond.bestiary.Actor.nZBfS7RH0A7N9v11",
+        "Compendium.vagabond.bestiary.Actor.oDROHzNC8xZ4HY5m"
+      ],
+      "representativeText": "Enemies that can see it for the first time and at the start of their Turns must pass [Will] or be Frightened (Cd4).",
+      "textVariants": 3,
+      "automationStatus": "unimplemented",
+      "reason": "Description mentions mechanical effects but no PASSIVE_ABILITIES entry exists.",
+      "keywords": {
+        "statuses": [
+          "frightened"
+        ],
+        "mechanicalVerbs": [
+          "must-pass"
+        ],
+        "durationMarkers": [
+          "cd4"
+        ],
+        "saveKeywords": [
+          "Will"
+        ]
+      }
+    },
+    {
+      "name": "Terror II",
+      "count": 7,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.6l3L0a8gHCSRGPlQ",
+        "Compendium.vagabond.bestiary.Actor.87OFFZOTxFeRldz8",
+        "Compendium.vagabond.bestiary.Actor.MDeTATYPlrz4jjQb",
+        "Compendium.vagabond.bestiary.Actor.eim4ggishfz85XVX",
+        "Compendium.vagabond.bestiary.Actor.peS6wk3Zv8WiS5Dd",
+        "Compendium.vagabond.bestiary.Actor.tox2rxTF7WFaqSJk",
+        "Compendium.vagabond.bestiary.Actor.zwwV8fXQhYzPQfKp"
+      ],
+      "representativeText": "[Enemies' first time seeing it and on their Turns | Will]: Frightened until they pass this Check on a subsequent Turn, or for Cd6 after.",
+      "textVariants": 2,
+      "automationStatus": "unimplemented",
+      "reason": "Description mentions mechanical effects but no PASSIVE_ABILITIES entry exists.",
+      "keywords": {
+        "statuses": [
+          "frightened"
+        ],
+        "mechanicalVerbs": [],
+        "durationMarkers": [
+          "cd6"
+        ],
+        "saveKeywords": [
+          "Will",
+          "Check"
+        ]
+      }
+    },
+    {
+      "name": "Terror III",
+      "count": 2,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.4pxjze1TRnSTeGxV",
+        "Compendium.vagabond.bestiary.Actor.64mVh7KUrDrCzHR5"
+      ],
+      "representativeText": "Enemies that can see it for the first time and at the start of their Turns must pass a [Will] Save or be Frightened (until they pass this Check on a subsequent Turn, or for Cd8 Rounds afterwards).",
+      "textVariants": 2,
+      "automationStatus": "unimplemented",
+      "reason": "Description mentions mechanical effects but no PASSIVE_ABILITIES entry exists.",
+      "keywords": {
+        "statuses": [
+          "frightened"
+        ],
+        "mechanicalVerbs": [
+          "must-pass"
+        ],
+        "durationMarkers": [
+          "cd8"
+        ],
+        "saveKeywords": [
+          "Will",
+          "Check"
+        ]
+      }
+    },
+    {
+      "name": "Terror-Bound",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.jO00LGH0j3HNTGve"
+      ],
+      "representativeText": "It is bound to a terror of the sea, such as a beisht kione dhoo, kraken, or sea serpent.",
+      "textVariants": 1,
+      "automationStatus": "flavor",
+      "reason": "Description contains no mechanical keywords.",
+      "keywords": {
+        "statuses": [],
+        "mechanicalVerbs": [],
+        "durationMarkers": [],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "Tunneler",
+      "count": 3,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.0kzsaKPEt9F2cLzh",
+        "Compendium.vagabond.bestiary.Actor.5oYLWXICi7KYOtla",
+        "Compendium.vagabond.bestiary.Actor.pjgK1vqOzpVobYj0"
+      ],
+      "representativeText": "It can Move at full Speed through solid earth and stone by digging.",
+      "textVariants": 3,
+      "automationStatus": "flavor",
+      "reason": "Description contains no mechanical keywords.",
+      "keywords": {
+        "statuses": [],
+        "mechanicalVerbs": [],
+        "durationMarkers": [],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "Tunneller",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.KOz3gxILuvDESwJZ"
+      ],
+      "representativeText": "Can Move through solid rock and earth, leaving a 3-foot tunnel in its path.",
+      "textVariants": 1,
+      "automationStatus": "flavor",
+      "reason": "Description contains no mechanical keywords.",
+      "keywords": {
+        "statuses": [],
+        "mechanicalVerbs": [],
+        "durationMarkers": [],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "Unbaked",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.W5kmv1bYrErmzoUI"
+      ],
+      "representativeText": "If it takes 5 or more Fire damage at once, it is Dazed (Cd4).",
+      "textVariants": 1,
+      "automationStatus": "unimplemented",
+      "reason": "Description mentions mechanical effects but no PASSIVE_ABILITIES entry exists.",
+      "keywords": {
+        "statuses": [
+          "dazed"
+        ],
+        "mechanicalVerbs": [
+          "takes-damage"
+        ],
+        "durationMarkers": [
+          "cd4"
+        ],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "Vampiric",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.UGMhE8UODeuZf3Ms"
+      ],
+      "representativeText": "It regenerates 3 HP at the start of its Turn unless it is in Sunlight. If it is killed, it reforms in its resting place after 1 Day unless either: A wooden stake is stabbed through its heart; It dies in Sunlight or while doused in holy water; It consumes garlic.",
+      "textVariants": 1,
+      "automationStatus": "flavor",
+      "reason": "Description contains no mechanical keywords.",
+      "keywords": {
+        "statuses": [],
+        "mechanicalVerbs": [],
+        "durationMarkers": [],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "Waterbound",
+      "count": 3,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.1MdGIIKX4t4kz9Ok",
+        "Compendium.vagabond.bestiary.Actor.6LjwOPsMtm36DT2g",
+        "Compendium.vagabond.bestiary.Actor.x6LlT39h6rhvtCQi"
+      ],
+      "representativeText": "Must stay Near a body of water.",
+      "textVariants": 1,
+      "automationStatus": "flavor",
+      "reason": "Description contains no mechanical keywords.",
+      "keywords": {
+        "statuses": [],
+        "mechanicalVerbs": [],
+        "durationMarkers": [],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "Web",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.ZhhuGoH4rFRiiaPp"
+      ],
+      "representativeText": "Its web is an Object with 5 HP and Armor 1. The webs are Difficult Terrain as a surface, and cause a Target to be Restrained if hit with a Web Spit Attack from the Vigzud.",
+      "textVariants": 1,
+      "automationStatus": "unimplemented",
+      "reason": "Description mentions mechanical effects but no PASSIVE_ABILITIES entry exists.",
+      "keywords": {
+        "statuses": [
+          "restrained"
+        ],
+        "mechanicalVerbs": [],
+        "durationMarkers": [],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "Web Walker",
+      "count": 5,
+      "monsters": [
+        "Compendium.vagabond-character-enhancer.vce-beasts.Actor.YkAYCqP2eY06I0gl",
+        "Compendium.vagabond-character-enhancer.vce-beasts.Actor.r8qk6DGSS9rOZKT7",
+        "Compendium.vagabond.bestiary.Actor.KYnkN1KyQ0P1HXgJ",
+        "Compendium.vagabond.bestiary.Actor.KiEAtgHOGTguu2SW",
+        "Compendium.vagabond.bestiary.Actor.kC1nLXnixm7d7O6p"
+      ],
+      "representativeText": "It can sense any Being on the same web as it as if by Blindsight, and is not impeded by web as Difficult Terrain.",
+      "textVariants": 1,
+      "automationStatus": "flavor",
+      "reason": "Description contains no mechanical keywords.",
+      "keywords": {
+        "statuses": [],
+        "mechanicalVerbs": [],
+        "durationMarkers": [],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "Web-Walk",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.ZhhuGoH4rFRiiaPp"
+      ],
+      "representativeText": "Its Move is not impeded by webbing.",
+      "textVariants": 1,
+      "automationStatus": "flavor",
+      "reason": "Description contains no mechanical keywords.",
+      "keywords": {
+        "statuses": [],
+        "mechanicalVerbs": [],
+        "durationMarkers": [],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "Webs",
+      "count": 5,
+      "monsters": [
+        "Compendium.vagabond-character-enhancer.vce-beasts.Actor.YkAYCqP2eY06I0gl",
+        "Compendium.vagabond-character-enhancer.vce-beasts.Actor.r8qk6DGSS9rOZKT7",
+        "Compendium.vagabond.bestiary.Actor.KYnkN1KyQ0P1HXgJ",
+        "Compendium.vagabond.bestiary.Actor.KiEAtgHOGTguu2SW",
+        "Compendium.vagabond.bestiary.Actor.kC1nLXnixm7d7O6p"
+      ],
+      "representativeText": "Its web is an Object with 4 HP and Armor: 5.",
+      "textVariants": 2,
+      "automationStatus": "flavor",
+      "reason": "Description contains no mechanical keywords.",
+      "keywords": {
+        "statuses": [],
+        "mechanicalVerbs": [],
+        "durationMarkers": [],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "Whirlwind",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.xwAfbjZqqVzOyEAI"
+      ],
+      "representativeText": "Medium or smaller Close Beings must pass [Endure] against being Restrained at the start of their Turns or be thrown 25 (d10x5) feet in the air.",
+      "textVariants": 1,
+      "automationStatus": "unimplemented",
+      "reason": "Description mentions mechanical effects but no PASSIVE_ABILITIES entry exists.",
+      "keywords": {
+        "statuses": [
+          "restrained"
+        ],
+        "mechanicalVerbs": [
+          "must-pass"
+        ],
+        "durationMarkers": [],
+        "saveKeywords": [
+          "Endure"
+        ]
+      }
+    },
+    {
+      "name": "Wyrd Ward",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.CmGogAAhZOFHHJeG"
+      ],
+      "representativeText": "Cast Checks Targeting it are Hindered, as are attacks made with Magically-enhanced Weapons.",
+      "textVariants": 1,
+      "automationStatus": "unimplemented",
+      "reason": "Description mentions mechanical effects but no PASSIVE_ABILITIES entry exists.",
+      "keywords": {
+        "statuses": [],
+        "mechanicalVerbs": [
+          "hindered"
+        ],
+        "durationMarkers": [],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "Zealot",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.humanlike.Actor.dkIeYNQafNyYpUqx"
+      ],
+      "representativeText": "Can't be Charmed or Frightened.",
+      "textVariants": 1,
+      "automationStatus": "unimplemented",
+      "reason": "Description mentions mechanical effects but no PASSIVE_ABILITIES entry exists.",
+      "keywords": {
+        "statuses": [
+          "charmed",
+          "frightened"
+        ],
+        "mechanicalVerbs": [],
+        "durationMarkers": [],
+        "saveKeywords": []
+      }
+    },
+    {
+      "name": "Zombie",
+      "count": 7,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.4k5nmsYtlwGLqqdM",
+        "Compendium.vagabond.bestiary.Actor.4pxjze1TRnSTeGxV",
+        "Compendium.vagabond.bestiary.Actor.AJp7YGvfDGB2C1Yp",
+        "Compendium.vagabond.bestiary.Actor.hLO69Zjvz7WaJAmO",
+        "Compendium.vagabond.bestiary.Actor.s62GZ293jOYSyOzO",
+        "Compendium.vagabond.bestiary.Actor.wNK06vFyHkFkvgLO",
+        "Compendium.vagabond.bestiary.Actor.wvnFUicXjGnzt7w6"
+      ],
+      "representativeText": "It can't be reduced below 1 HP unless damaged by a Crit, damage it is Weak to, or while in Sunlight.",
+      "textVariants": 2,
+      "automationStatus": "flavor",
+      "reason": "Description contains no mechanical keywords.",
+      "keywords": {
+        "statuses": [],
+        "mechanicalVerbs": [],
+        "durationMarkers": [],
+        "saveKeywords": []
+      }
+    }
+  ]
+}

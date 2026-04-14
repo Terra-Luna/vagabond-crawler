@@ -4,6 +4,7 @@
 
 ### New Features
 - **Hide NPC Health Bar from Players** — New world setting in module config. When enabled, players no longer see HP bars or HP values on NPC/GM cards in the crawl strip. The GM still sees them. Defaults off.
+- **Monster Audit Database** — Dev/maintenance dataset covering every NPC across `vagabond.bestiary`, `vagabond.humanlike`, and `vagabond-character-enhancer.vce-beasts` (348 actors total). Ships as committed JSON under `docs/audit/` plus readable Markdown renderings (`abilities.md`, `actions.md`, `INDEX.md`, `by-type/*.md`). Includes 178 unique abilities with automation status and 245 unique actions with attack/damage breakdowns. Surfaces 426 findings for dead ability text and data inconsistencies — including a broken Magic Ward implementation (compendium says `+N Mana` cost; `scripts/npc-abilities.mjs` injects a `1d4/1d6/1d8` roll penalty instead; affects 35 monsters) and 9 monsters using Magic Ward IV/V/VI which are entirely unimplemented. Regenerates via `scripts/audit/*` (extract → analyze → render). No runtime behavior change.
 
 ### Changes
 - **Relic Forge always enabled** — Removed the `relicForgeEnabled` setting. The Relic Forge is now always available; it remains GM-only at open.

@@ -1,0 +1,5887 @@
+{
+  "generatedAt": "2026-04-14T20:55:00.591Z",
+  "uniqueCount": 245,
+  "actions": [
+    {
+      "name": "(+1) Bite",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.0yQoEPuPUHUKwEAv"
+      ],
+      "attackTypes": {
+        "melee": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        5,
+        5
+      ],
+      "rollDamageVariants": [
+        "1d8+1"
+      ],
+      "hasCausedStatuses": 0,
+      "hasRecharge": 0
+    },
+    {
+      "name": "(+1) Claw",
+      "count": 3,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.0yQoEPuPUHUKwEAv",
+        "Compendium.vagabond.bestiary.Actor.1wsieodgDkGEU0si",
+        "Compendium.vagabond.bestiary.Actor.4pxjze1TRnSTeGxV"
+      ],
+      "attackTypes": {
+        "melee": 3
+      },
+      "damageTypes": {
+        "-": 3
+      },
+      "flatDamageRange": [
+        3,
+        8
+      ],
+      "rollDamageVariants": [
+        "1d4+1",
+        "1d6+1",
+        "2d6+1"
+      ],
+      "hasCausedStatuses": 0,
+      "hasRecharge": 0
+    },
+    {
+      "name": "(+2) Bite",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.lfHGD4OvbUEXP4wJ"
+      ],
+      "attackTypes": {
+        "melee": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        15,
+        15
+      ],
+      "rollDamageVariants": [
+        "3d8+2"
+      ],
+      "hasCausedStatuses": 0,
+      "hasRecharge": 0
+    },
+    {
+      "name": "(+2) Claw",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.lfHGD4OvbUEXP4wJ"
+      ],
+      "attackTypes": {
+        "melee": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        9,
+        9
+      ],
+      "rollDamageVariants": [
+        "2d6+2"
+      ],
+      "hasCausedStatuses": 0,
+      "hasRecharge": 0
+    },
+    {
+      "name": "(+2) Longsword",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.AJp7YGvfDGB2C1Yp"
+      ],
+      "attackTypes": {
+        "melee": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        6,
+        6
+      ],
+      "rollDamageVariants": [
+        "1d8+2"
+      ],
+      "hasCausedStatuses": 0,
+      "hasRecharge": 0
+    },
+    {
+      "name": "(+2) Mace",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.tox2rxTF7WFaqSJk"
+      ],
+      "attackTypes": {
+        "melee": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        5,
+        5
+      ],
+      "rollDamageVariants": [
+        "1d6+2"
+      ],
+      "hasCausedStatuses": 1,
+      "hasRecharge": 0
+    },
+    {
+      "name": "1 - Anti-Life Drain",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.eIjbp2eHJHXPG5kI"
+      ],
+      "attackTypes": {
+        "castRanged": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        10,
+        10
+      ],
+      "rollDamageVariants": [
+        "3d6"
+      ],
+      "hasCausedStatuses": 0,
+      "hasRecharge": 0
+    },
+    {
+      "name": "1 - Charm",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.iyCEulXgz8uABmdD"
+      ],
+      "attackTypes": {
+        "castRanged": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        0,
+        0
+      ],
+      "rollDamageVariants": [],
+      "hasCausedStatuses": 1,
+      "hasRecharge": 0
+    },
+    {
+      "name": "1 - Gate",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.qtILksrMEcYJ47Be"
+      ],
+      "attackTypes": {
+        "melee": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        0,
+        0
+      ],
+      "rollDamageVariants": [],
+      "hasCausedStatuses": 0,
+      "hasRecharge": 0
+    },
+    {
+      "name": "1 - Giant Spider",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.qNPV7PkPDVdXdCJ4"
+      ],
+      "attackTypes": {
+        "melee": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        0,
+        0
+      ],
+      "rollDamageVariants": [],
+      "hasCausedStatuses": 0,
+      "hasRecharge": 0
+    },
+    {
+      "name": "2 - Basilisk",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.qNPV7PkPDVdXdCJ4"
+      ],
+      "attackTypes": {
+        "melee": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        0,
+        0
+      ],
+      "rollDamageVariants": [],
+      "hasCausedStatuses": 0,
+      "hasRecharge": 0
+    },
+    {
+      "name": "2 - Riddle",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.qtILksrMEcYJ47Be"
+      ],
+      "attackTypes": {
+        "melee": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        0,
+        0
+      ],
+      "rollDamageVariants": [],
+      "hasCausedStatuses": 1,
+      "hasRecharge": 0
+    },
+    {
+      "name": "2 - Sleep",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.iyCEulXgz8uABmdD"
+      ],
+      "attackTypes": {
+        "castRanged": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        0,
+        0
+      ],
+      "rollDamageVariants": [],
+      "hasCausedStatuses": 1,
+      "hasRecharge": 0
+    },
+    {
+      "name": "2 -Disintegrate",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.eIjbp2eHJHXPG5kI"
+      ],
+      "attackTypes": {
+        "castRanged": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        21,
+        21
+      ],
+      "rollDamageVariants": [
+        "6d6"
+      ],
+      "hasCausedStatuses": 0,
+      "hasRecharge": 1
+    },
+    {
+      "name": "3 - Kinesis",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.iyCEulXgz8uABmdD"
+      ],
+      "attackTypes": {
+        "castRanged": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        0,
+        0
+      ],
+      "rollDamageVariants": [],
+      "hasCausedStatuses": 1,
+      "hasRecharge": 0
+    },
+    {
+      "name": "3 - Owl Bear",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.qNPV7PkPDVdXdCJ4"
+      ],
+      "attackTypes": {
+        "melee": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        0,
+        0
+      ],
+      "rollDamageVariants": [],
+      "hasCausedStatuses": 0,
+      "hasRecharge": 0
+    },
+    {
+      "name": "3 - Raise",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.eIjbp2eHJHXPG5kI"
+      ],
+      "attackTypes": {
+        "ranged": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        0,
+        0
+      ],
+      "rollDamageVariants": [],
+      "hasCausedStatuses": 0,
+      "hasRecharge": 0
+    },
+    {
+      "name": "3 - Time Lock",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.qtILksrMEcYJ47Be"
+      ],
+      "attackTypes": {
+        "melee": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        0,
+        0
+      ],
+      "rollDamageVariants": [],
+      "hasCausedStatuses": 1,
+      "hasRecharge": 0
+    },
+    {
+      "name": "4 - Death Touch",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.eIjbp2eHJHXPG5kI"
+      ],
+      "attackTypes": {
+        "melee": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        5,
+        5
+      ],
+      "rollDamageVariants": [
+        "d10"
+      ],
+      "hasCausedStatuses": 1,
+      "hasRecharge": 0
+    },
+    {
+      "name": "4 - Petrify",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.iyCEulXgz8uABmdD"
+      ],
+      "attackTypes": {
+        "castRanged": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        0,
+        0
+      ],
+      "rollDamageVariants": [],
+      "hasCausedStatuses": 0,
+      "hasRecharge": 0
+    },
+    {
+      "name": "4 - Rust Monster",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.qNPV7PkPDVdXdCJ4"
+      ],
+      "attackTypes": {
+        "melee": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        0,
+        0
+      ],
+      "rollDamageVariants": [],
+      "hasCausedStatuses": 0,
+      "hasRecharge": 0
+    },
+    {
+      "name": "4 - Unmake",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.qtILksrMEcYJ47Be"
+      ],
+      "attackTypes": {
+        "melee": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        13,
+        13
+      ],
+      "rollDamageVariants": [
+        "3d8"
+      ],
+      "hasCausedStatuses": 0,
+      "hasRecharge": 0
+    },
+    {
+      "name": "5 - Death",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.iyCEulXgz8uABmdD"
+      ],
+      "attackTypes": {
+        "castRanged": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        14,
+        14
+      ],
+      "rollDamageVariants": [
+        "4d6"
+      ],
+      "hasCausedStatuses": 0,
+      "hasRecharge": 0
+    },
+    {
+      "name": "5 - Fear",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.eIjbp2eHJHXPG5kI"
+      ],
+      "attackTypes": {
+        "castRanged": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        0,
+        0
+      ],
+      "rollDamageVariants": [],
+      "hasCausedStatuses": 1,
+      "hasRecharge": 0
+    },
+    {
+      "name": "5 - Warp Beast",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.qNPV7PkPDVdXdCJ4"
+      ],
+      "attackTypes": {
+        "melee": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        0,
+        0
+      ],
+      "rollDamageVariants": [],
+      "hasCausedStatuses": 0,
+      "hasRecharge": 0
+    },
+    {
+      "name": "6 - Fear",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.iyCEulXgz8uABmdD"
+      ],
+      "attackTypes": {
+        "castRanged": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        0,
+        0
+      ],
+      "rollDamageVariants": [],
+      "hasCausedStatuses": 1,
+      "hasRecharge": 0
+    },
+    {
+      "name": "6 - Gelatinous Cube",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.qNPV7PkPDVdXdCJ4"
+      ],
+      "attackTypes": {
+        "melee": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        0,
+        0
+      ],
+      "rollDamageVariants": [],
+      "hasCausedStatuses": 0,
+      "hasRecharge": 0
+    },
+    {
+      "name": "6 - Life Disruption",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.eIjbp2eHJHXPG5kI"
+      ],
+      "attackTypes": {
+        "melee": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        10,
+        10
+      ],
+      "rollDamageVariants": [
+        "3d6"
+      ],
+      "hasCausedStatuses": 0,
+      "hasRecharge": 0
+    },
+    {
+      "name": "7 - Slow",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.iyCEulXgz8uABmdD"
+      ],
+      "attackTypes": {
+        "castRanged": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        0,
+        0
+      ],
+      "rollDamageVariants": [],
+      "hasCausedStatuses": 0,
+      "hasRecharge": 0
+    },
+    {
+      "name": "8 - Paralysis",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.iyCEulXgz8uABmdD"
+      ],
+      "attackTypes": {
+        "castRanged": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        0,
+        0
+      ],
+      "rollDamageVariants": [],
+      "hasCausedStatuses": 1,
+      "hasRecharge": 0
+    },
+    {
+      "name": "Acid Spit",
+      "count": 2,
+      "monsters": [
+        "Compendium.vagabond-character-enhancer.vce-beasts.Actor.z12kqBm8eDG1scRJ",
+        "Compendium.vagabond.bestiary.Actor.u7dDldbTI4t7OzfO"
+      ],
+      "attackTypes": {
+        "ranged": 2
+      },
+      "damageTypes": {
+        "-": 2
+      },
+      "flatDamageRange": [
+        10,
+        10
+      ],
+      "rollDamageVariants": [
+        "3d6"
+      ],
+      "hasCausedStatuses": 2,
+      "hasRecharge": 2
+    },
+    {
+      "name": "Acid Spray",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.0kzsaKPEt9F2cLzh"
+      ],
+      "attackTypes": {
+        "ranged": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        18,
+        18
+      ],
+      "rollDamageVariants": [
+        "4d8"
+      ],
+      "hasCausedStatuses": 1,
+      "hasRecharge": 1
+    },
+    {
+      "name": "Advise",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.humanlike.Actor.Jj8oUrV1ePMqe5hO"
+      ],
+      "attackTypes": {
+        "melee": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        0,
+        0
+      ],
+      "rollDamageVariants": [],
+      "hasCausedStatuses": 0,
+      "hasRecharge": 1
+    },
+    {
+      "name": "Alchemist’s Fire",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.Jqv4wH6JcoviGgE2"
+      ],
+      "attackTypes": {
+        "ranged": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        3,
+        3
+      ],
+      "rollDamageVariants": [
+        "1d6"
+      ],
+      "hasCausedStatuses": 1,
+      "hasRecharge": 1
+    },
+    {
+      "name": "Animate",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.humanlike.Actor.9wvYwUJ7mAU3eHcX"
+      ],
+      "attackTypes": {
+        "castRanged": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        0,
+        0
+      ],
+      "rollDamageVariants": [],
+      "hasCausedStatuses": 0,
+      "hasRecharge": 1
+    },
+    {
+      "name": "Animate Trees",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.mRKPp10Yiq0n7ddR"
+      ],
+      "attackTypes": {
+        "castRanged": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        0,
+        0
+      ],
+      "rollDamageVariants": [],
+      "hasCausedStatuses": 0,
+      "hasRecharge": 0
+    },
+    {
+      "name": "Antenna",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.YgS0rbltXaYdNsb9"
+      ],
+      "attackTypes": {
+        "melee": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        0,
+        0
+      ],
+      "rollDamageVariants": [],
+      "hasCausedStatuses": 0,
+      "hasRecharge": 0
+    },
+    {
+      "name": "Apoplex",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.0ggPx89IztNk2YN8"
+      ],
+      "attackTypes": {
+        "castRanged": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        0,
+        0
+      ],
+      "rollDamageVariants": [],
+      "hasCausedStatuses": 1,
+      "hasRecharge": 1
+    },
+    {
+      "name": "Arbalest",
+      "count": 2,
+      "monsters": [
+        "Compendium.vagabond.humanlike.Actor.3NH0htaYJBRV1kxt",
+        "Compendium.vagabond.humanlike.Actor.5ZhZQtVVIopbiWQY"
+      ],
+      "attackTypes": {
+        "ranged": 2
+      },
+      "damageTypes": {
+        "-": 2
+      },
+      "flatDamageRange": [
+        5,
+        5
+      ],
+      "rollDamageVariants": [
+        "d10"
+      ],
+      "hasCausedStatuses": 0,
+      "hasRecharge": 0
+    },
+    {
+      "name": "Arcane Wings",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.qtILksrMEcYJ47Be"
+      ],
+      "attackTypes": {
+        "castRanged": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        27,
+        27
+      ],
+      "rollDamageVariants": [
+        "5d10"
+      ],
+      "hasCausedStatuses": 0,
+      "hasRecharge": 0
+    },
+    {
+      "name": "Assault",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.MV5G94cDuVi9tKt9"
+      ],
+      "attackTypes": {
+        "melee": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        0,
+        0
+      ],
+      "rollDamageVariants": [],
+      "hasCausedStatuses": 0,
+      "hasRecharge": 0
+    },
+    {
+      "name": "Babble",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.iDD1iA0svCS8AINS"
+      ],
+      "attackTypes": {
+        "castClose": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        0,
+        0
+      ],
+      "rollDamageVariants": [],
+      "hasCausedStatuses": 1,
+      "hasRecharge": 0
+    },
+    {
+      "name": "Banish",
+      "count": 2,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.2Wx5RcpuRN8Nw6T0",
+        "Compendium.vagabond.bestiary.Actor.qtILksrMEcYJ47Be"
+      ],
+      "attackTypes": {
+        "castRanged": 1,
+        "melee": 1
+      },
+      "damageTypes": {
+        "-": 2
+      },
+      "flatDamageRange": [
+        0,
+        0
+      ],
+      "rollDamageVariants": [],
+      "hasCausedStatuses": 1,
+      "hasRecharge": 0
+    },
+    {
+      "name": "Beak",
+      "count": 14,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.3RUGcNIIcyNNK5MC",
+        "Compendium.vagabond.bestiary.Actor.3gP8OJd4XdHbmr0W",
+        "Compendium.vagabond.bestiary.Actor.Dl66ByoWtgTfWJ7C",
+        "Compendium.vagabond.bestiary.Actor.IXUAeSvvSjPDcxNC",
+        "Compendium.vagabond.bestiary.Actor.Ja6yNDG2LptOgMjn",
+        "Compendium.vagabond.bestiary.Actor.KeV6hUgx2XhZQcSD",
+        "Compendium.vagabond.bestiary.Actor.XqDi7xhYi8r25Eu7",
+        "Compendium.vagabond.bestiary.Actor.XwTiSBdAiTX6XVqp",
+        "Compendium.vagabond.bestiary.Actor.aSUaMBRdv6PsFx8Q",
+        "Compendium.vagabond.bestiary.Actor.bkADyFuc1qzUBCEP",
+        "Compendium.vagabond.bestiary.Actor.eb6eSw47fMgSb2Dz",
+        "Compendium.vagabond.bestiary.Actor.rb5dVb8peFW4RUIT",
+        "Compendium.vagabond.bestiary.Actor.txlrPzpyjCW7Un16",
+        "Compendium.vagabond.bestiary.Actor.tzcSHcrAb3ht8Xu2"
+      ],
+      "attackTypes": {
+        "melee": 14
+      },
+      "damageTypes": {
+        "-": 14
+      },
+      "flatDamageRange": [
+        1,
+        28
+      ],
+      "rollDamageVariants": [
+        "1d10",
+        "1d3",
+        "1d6",
+        "1d8",
+        "2d6",
+        "2d8",
+        "3d6",
+        "4d6",
+        "8d6"
+      ],
+      "hasCausedStatuses": 1,
+      "hasRecharge": 0
+    },
+    {
+      "name": "Bite",
+      "count": 147,
+      "monsters": [
+        "Compendium.vagabond-character-enhancer.vce-beasts.Actor.1PCP5FEH0Jhnz1WZ",
+        "Compendium.vagabond-character-enhancer.vce-beasts.Actor.39jRavnXM36LTREo",
+        "Compendium.vagabond-character-enhancer.vce-beasts.Actor.5E6UUHA0yXxCycuA",
+        "Compendium.vagabond-character-enhancer.vce-beasts.Actor.BO8FOcizkDZ6qv0w",
+        "Compendium.vagabond-character-enhancer.vce-beasts.Actor.QeI6mp9PaMOn5til",
+        "Compendium.vagabond-character-enhancer.vce-beasts.Actor.RMTbhlwSrzP7Zdls",
+        "Compendium.vagabond-character-enhancer.vce-beasts.Actor.VWzjyzpmyOzlAF7a",
+        "Compendium.vagabond-character-enhancer.vce-beasts.Actor.XDmEWR1EZuEdTxBt",
+        "Compendium.vagabond-character-enhancer.vce-beasts.Actor.YkAYCqP2eY06I0gl",
+        "Compendium.vagabond-character-enhancer.vce-beasts.Actor.cfzRJox8U2vTDcvL",
+        "Compendium.vagabond-character-enhancer.vce-beasts.Actor.o7OJb0cb96O8p9Ip",
+        "Compendium.vagabond-character-enhancer.vce-beasts.Actor.qnLEaxqsTlJy4QzJ",
+        "Compendium.vagabond-character-enhancer.vce-beasts.Actor.r8qk6DGSS9rOZKT7",
+        "Compendium.vagabond-character-enhancer.vce-beasts.Actor.u9QlqAkY5WQgBL0u",
+        "Compendium.vagabond-character-enhancer.vce-beasts.Actor.vIIdLgIoWTWjjymx",
+        "Compendium.vagabond-character-enhancer.vce-beasts.Actor.ytLxtSF6VhnEVc2e",
+        "Compendium.vagabond-character-enhancer.vce-beasts.Actor.z12kqBm8eDG1scRJ",
+        "Compendium.vagabond.bestiary.Actor.0kzsaKPEt9F2cLzh",
+        "Compendium.vagabond.bestiary.Actor.35jFokbHaywW57P4",
+        "Compendium.vagabond.bestiary.Actor.4k5nmsYtlwGLqqdM",
+        "Compendium.vagabond.bestiary.Actor.4pxjze1TRnSTeGxV",
+        "Compendium.vagabond.bestiary.Actor.4v5QoFgJEO2q2z9v",
+        "Compendium.vagabond.bestiary.Actor.4vBxGDQxMm4xvHxQ",
+        "Compendium.vagabond.bestiary.Actor.5Raq5NE9ahzB09RK",
+        "Compendium.vagabond.bestiary.Actor.5oYLWXICi7KYOtla",
+        "Compendium.vagabond.bestiary.Actor.5slBPAwQ2kDgFCpa",
+        "Compendium.vagabond.bestiary.Actor.64mVh7KUrDrCzHR5",
+        "Compendium.vagabond.bestiary.Actor.87OFFZOTxFeRldz8",
+        "Compendium.vagabond.bestiary.Actor.8gZeIa8LY8GN4H4u",
+        "Compendium.vagabond.bestiary.Actor.8sVozyqwRdex7Vu2",
+        "Compendium.vagabond.bestiary.Actor.9qmdxUzE04c5cprG",
+        "Compendium.vagabond.bestiary.Actor.ATWC3zLqqZCvDLGF",
+        "Compendium.vagabond.bestiary.Actor.BHX4mhjjYrxqIe2E",
+        "Compendium.vagabond.bestiary.Actor.COZgPuEHq67Lhcjd",
+        "Compendium.vagabond.bestiary.Actor.DIXBdymeCr9HUJOd",
+        "Compendium.vagabond.bestiary.Actor.EbaM51lNKlSiwgqf",
+        "Compendium.vagabond.bestiary.Actor.FHY3U8iRqDufmcZT",
+        "Compendium.vagabond.bestiary.Actor.FsDuYyDw3jtO2KYC",
+        "Compendium.vagabond.bestiary.Actor.Fup7vnsrE5fRJwyP",
+        "Compendium.vagabond.bestiary.Actor.FwKNYxhPvyTu4D1c",
+        "Compendium.vagabond.bestiary.Actor.G2KnbYhwZ2xfT3wM",
+        "Compendium.vagabond.bestiary.Actor.GC7oKXEGCyiVXrxw",
+        "Compendium.vagabond.bestiary.Actor.GSppPxCY8u1FvIDQ",
+        "Compendium.vagabond.bestiary.Actor.Gfk8iD3vEweR7era",
+        "Compendium.vagabond.bestiary.Actor.H75dZV7HI4VHjtKR",
+        "Compendium.vagabond.bestiary.Actor.HmlmtEocbWolrl3F",
+        "Compendium.vagabond.bestiary.Actor.Ht9KJUOiRr1qjSQ2",
+        "Compendium.vagabond.bestiary.Actor.Hxp3Jl8LovAmxeNY",
+        "Compendium.vagabond.bestiary.Actor.IH0voiEc6ZkTBjH8",
+        "Compendium.vagabond.bestiary.Actor.Im2QfgKyeK3bFyLO",
+        "Compendium.vagabond.bestiary.Actor.JEjyqTf7HImNj1hy",
+        "Compendium.vagabond.bestiary.Actor.JdG9XdEO8Gk3vwpV",
+        "Compendium.vagabond.bestiary.Actor.KYnkN1KyQ0P1HXgJ",
+        "Compendium.vagabond.bestiary.Actor.KiEAtgHOGTguu2SW",
+        "Compendium.vagabond.bestiary.Actor.LQTZ2AFyaI4IJD7b",
+        "Compendium.vagabond.bestiary.Actor.MDeTATYPlrz4jjQb",
+        "Compendium.vagabond.bestiary.Actor.OM4n0N2hftXzkcRy",
+        "Compendium.vagabond.bestiary.Actor.OYXQp77BI8QgFh7s",
+        "Compendium.vagabond.bestiary.Actor.ObCy4kANqhT3rrbJ",
+        "Compendium.vagabond.bestiary.Actor.OtEJxfZ13jBJ1apz",
+        "Compendium.vagabond.bestiary.Actor.PSNF8mdWgMS4hZ2E",
+        "Compendium.vagabond.bestiary.Actor.Poixlfce7pZDHC8L",
+        "Compendium.vagabond.bestiary.Actor.QP5xEKlWLoRQhS3t",
+        "Compendium.vagabond.bestiary.Actor.QlBMPKwPxTNYRSfg",
+        "Compendium.vagabond.bestiary.Actor.Rq6JPBgL5v88JAd0",
+        "Compendium.vagabond.bestiary.Actor.SZpO5yGzoB9FI2cM",
+        "Compendium.vagabond.bestiary.Actor.T2fW1gvdOsDS4D5J",
+        "Compendium.vagabond.bestiary.Actor.TeXpYvmYgkwz7Rkd",
+        "Compendium.vagabond.bestiary.Actor.Tpxw3uVrHbwDUmG2",
+        "Compendium.vagabond.bestiary.Actor.TtjXGTTkkmhnyxmp",
+        "Compendium.vagabond.bestiary.Actor.UGMhE8UODeuZf3Ms",
+        "Compendium.vagabond.bestiary.Actor.UpPKdvIZe9N3MH2B",
+        "Compendium.vagabond.bestiary.Actor.Uylf41QzuircJejb",
+        "Compendium.vagabond.bestiary.Actor.V9e8mIbkjjc0QRSj",
+        "Compendium.vagabond.bestiary.Actor.VfJhWuklmjdqGn6j",
+        "Compendium.vagabond.bestiary.Actor.Wpi6ETJ6izgT1aOo",
+        "Compendium.vagabond.bestiary.Actor.X5SxKCZtI5jCWBK4",
+        "Compendium.vagabond.bestiary.Actor.XPOst99o80XqI6KY",
+        "Compendium.vagabond.bestiary.Actor.XaZlVpSeim63R5a4",
+        "Compendium.vagabond.bestiary.Actor.YA8mo48WNHLm6saq",
+        "Compendium.vagabond.bestiary.Actor.YgS0rbltXaYdNsb9",
+        "Compendium.vagabond.bestiary.Actor.ZNYqDZ9n236roSBY",
+        "Compendium.vagabond.bestiary.Actor.ZSzkV0ojXvGImY34",
+        "Compendium.vagabond.bestiary.Actor.ZhhuGoH4rFRiiaPp",
+        "Compendium.vagabond.bestiary.Actor.aK6Z8qAChqIblIfM",
+        "Compendium.vagabond.bestiary.Actor.bI1V6pqJkiiIGEYJ",
+        "Compendium.vagabond.bestiary.Actor.bQRYqctiGqfLigDQ",
+        "Compendium.vagabond.bestiary.Actor.bemYbAdPHWUkA2Xi",
+        "Compendium.vagabond.bestiary.Actor.bjjglKk2aSt1kqL6",
+        "Compendium.vagabond.bestiary.Actor.cF5pczTJMIq2Uk0K",
+        "Compendium.vagabond.bestiary.Actor.cNk4q1zCVyOdhZts",
+        "Compendium.vagabond.bestiary.Actor.cUT2qxNSbgNpwhOT",
+        "Compendium.vagabond.bestiary.Actor.eSxup7PeewOpxVft",
+        "Compendium.vagabond.bestiary.Actor.eim4ggishfz85XVX",
+        "Compendium.vagabond.bestiary.Actor.f3WRM4LB2A6Lulew",
+        "Compendium.vagabond.bestiary.Actor.fCH7Tzir9ujPavZ3",
+        "Compendium.vagabond.bestiary.Actor.fH1TAjmzFTDXdlHF",
+        "Compendium.vagabond.bestiary.Actor.fM1JjKdHbzQVm1rI",
+        "Compendium.vagabond.bestiary.Actor.gOWR3pPKIEMyriVy",
+        "Compendium.vagabond.bestiary.Actor.gnz6BaC1eD9hgHka",
+        "Compendium.vagabond.bestiary.Actor.hAkT666Zj6PpoQeB",
+        "Compendium.vagabond.bestiary.Actor.hoo4mqGpqwc1cJA5",
+        "Compendium.vagabond.bestiary.Actor.hpvz01W4mhKZDyrq",
+        "Compendium.vagabond.bestiary.Actor.iDD1iA0svCS8AINS",
+        "Compendium.vagabond.bestiary.Actor.iHkYA8Y2dGZ5bOXb",
+        "Compendium.vagabond.bestiary.Actor.ivaexVLsiJiQlx9L",
+        "Compendium.vagabond.bestiary.Actor.iyCEulXgz8uABmdD",
+        "Compendium.vagabond.bestiary.Actor.j9pfmlTLheG41ABq",
+        "Compendium.vagabond.bestiary.Actor.jrG1IUD7M1Fkv0Nl",
+        "Compendium.vagabond.bestiary.Actor.kC1nLXnixm7d7O6p",
+        "Compendium.vagabond.bestiary.Actor.kdkY2n6gMSQLT5Tr",
+        "Compendium.vagabond.bestiary.Actor.klRBWjiNUz7GlVAb",
+        "Compendium.vagabond.bestiary.Actor.mCt7qRrjmd5hipbl",
+        "Compendium.vagabond.bestiary.Actor.mPEirZNos2d7EOoJ",
+        "Compendium.vagabond.bestiary.Actor.mdtMIAyn3qMINoyD",
+        "Compendium.vagabond.bestiary.Actor.mfXiP8SZOBYuin8r",
+        "Compendium.vagabond.bestiary.Actor.mv0wyiZlTaFnxa7r",
+        "Compendium.vagabond.bestiary.Actor.myX3mcLd7SWBpFku",
+        "Compendium.vagabond.bestiary.Actor.nTDQhDi3B8l7kMUB",
+        "Compendium.vagabond.bestiary.Actor.nUCpW08PbeCZ3wxG",
+        "Compendium.vagabond.bestiary.Actor.nZBfS7RH0A7N9v11",
+        "Compendium.vagabond.bestiary.Actor.niDTL17izgqngzej",
+        "Compendium.vagabond.bestiary.Actor.nmjWVM9zzRXsEuCZ",
+        "Compendium.vagabond.bestiary.Actor.nnB577RG4wcLJN3y",
+        "Compendium.vagabond.bestiary.Actor.oM0nBpVMFBGrGlbz",
+        "Compendium.vagabond.bestiary.Actor.pRwsDQBP6ck8LuWs",
+        "Compendium.vagabond.bestiary.Actor.peS6wk3Zv8WiS5Dd",
+        "Compendium.vagabond.bestiary.Actor.ptHOZjMHox7xssPa",
+        "Compendium.vagabond.bestiary.Actor.rCwEUw6tad40GBYw",
+        "Compendium.vagabond.bestiary.Actor.s62GZ293jOYSyOzO",
+        "Compendium.vagabond.bestiary.Actor.sKTQolDkwr6rAq0O",
+        "Compendium.vagabond.bestiary.Actor.ssbUeRw0VM03vk6b",
+        "Compendium.vagabond.bestiary.Actor.svzEPBpYY23Vg0Dg",
+        "Compendium.vagabond.bestiary.Actor.tYaJPSfXV1L18hRM",
+        "Compendium.vagabond.bestiary.Actor.tkWK2yke2Jj4OC4w",
+        "Compendium.vagabond.bestiary.Actor.tox2rxTF7WFaqSJk",
+        "Compendium.vagabond.bestiary.Actor.trLqdRvjz70izXqj",
+        "Compendium.vagabond.bestiary.Actor.u7dDldbTI4t7OzfO",
+        "Compendium.vagabond.bestiary.Actor.uDjwEv1gpStc0WzJ",
+        "Compendium.vagabond.bestiary.Actor.vyABoU3fvkulDHHq",
+        "Compendium.vagabond.bestiary.Actor.wKPKn9Xuvj4SJA6I",
+        "Compendium.vagabond.bestiary.Actor.wNK06vFyHkFkvgLO",
+        "Compendium.vagabond.bestiary.Actor.wdqCpTf6IvtPLc80",
+        "Compendium.vagabond.bestiary.Actor.wensvnWLoQYUQbdX",
+        "Compendium.vagabond.bestiary.Actor.yn22rgWJrAqwqAV0",
+        "Compendium.vagabond.bestiary.Actor.zbkj3u7LKu7obIZF",
+        "Compendium.vagabond.bestiary.Actor.zwwV8fXQhYzPQfKp"
+      ],
+      "attackTypes": {
+        "melee": 147
+      },
+      "damageTypes": {
+        "-": 147
+      },
+      "flatDamageRange": [
+        0,
+        27
+      ],
+      "rollDamageVariants": [
+        "1d10",
+        "1d12",
+        "1d3",
+        "1d4",
+        "1d6",
+        "1d8",
+        "1d8+3",
+        "2d10",
+        "2d12",
+        "2d4",
+        "2d6",
+        "2d8",
+        "3d10",
+        "3d4",
+        "3d6",
+        "3d8",
+        "4d10",
+        "4d12",
+        "4d8",
+        "5d10",
+        "5d6",
+        "6d6"
+      ],
+      "hasCausedStatuses": 53,
+      "hasRecharge": 0
+    },
+    {
+      "name": "Blizzard",
+      "count": 2,
+      "monsters": [
+        "Compendium.vagabond.humanlike.Actor.SuDEcZVOA7NgqkXa",
+        "Compendium.vagabond.humanlike.Actor.tdntLkl8mjrX8Yfb"
+      ],
+      "attackTypes": {
+        "castRanged": 2
+      },
+      "damageTypes": {
+        "-": 2
+      },
+      "flatDamageRange": [
+        10,
+        10
+      ],
+      "rollDamageVariants": [
+        "3d6"
+      ],
+      "hasCausedStatuses": 0,
+      "hasRecharge": 2
+    },
+    {
+      "name": "Blow",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.oUsPWK1hrCZ0C7SP"
+      ],
+      "attackTypes": {
+        "melee": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        10,
+        10
+      ],
+      "rollDamageVariants": [
+        "4d4"
+      ],
+      "hasCausedStatuses": 0,
+      "hasRecharge": 0
+    },
+    {
+      "name": "Boom",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.hLO69Zjvz7WaJAmO"
+      ],
+      "attackTypes": {
+        "castClose": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        7,
+        7
+      ],
+      "rollDamageVariants": [
+        "2d6"
+      ],
+      "hasCausedStatuses": 0,
+      "hasRecharge": 0
+    },
+    {
+      "name": "Breath",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.j96QNTFGxzOdM20K"
+      ],
+      "attackTypes": {
+        "castRanged": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        10,
+        10
+      ],
+      "rollDamageVariants": [
+        "3d6"
+      ],
+      "hasCausedStatuses": 0,
+      "hasRecharge": 1
+    },
+    {
+      "name": "Breath Attack",
+      "count": 20,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.87OFFZOTxFeRldz8",
+        "Compendium.vagabond.bestiary.Actor.ATWC3zLqqZCvDLGF",
+        "Compendium.vagabond.bestiary.Actor.Ht9KJUOiRr1qjSQ2",
+        "Compendium.vagabond.bestiary.Actor.MDeTATYPlrz4jjQb",
+        "Compendium.vagabond.bestiary.Actor.OtEJxfZ13jBJ1apz",
+        "Compendium.vagabond.bestiary.Actor.Uylf41QzuircJejb",
+        "Compendium.vagabond.bestiary.Actor.V9e8mIbkjjc0QRSj",
+        "Compendium.vagabond.bestiary.Actor.ZNYqDZ9n236roSBY",
+        "Compendium.vagabond.bestiary.Actor.cUT2qxNSbgNpwhOT",
+        "Compendium.vagabond.bestiary.Actor.eim4ggishfz85XVX",
+        "Compendium.vagabond.bestiary.Actor.f3WRM4LB2A6Lulew",
+        "Compendium.vagabond.bestiary.Actor.fH1TAjmzFTDXdlHF",
+        "Compendium.vagabond.bestiary.Actor.gOWR3pPKIEMyriVy",
+        "Compendium.vagabond.bestiary.Actor.gnz6BaC1eD9hgHka",
+        "Compendium.vagabond.bestiary.Actor.hAkT666Zj6PpoQeB",
+        "Compendium.vagabond.bestiary.Actor.nZBfS7RH0A7N9v11",
+        "Compendium.vagabond.bestiary.Actor.peS6wk3Zv8WiS5Dd",
+        "Compendium.vagabond.bestiary.Actor.trLqdRvjz70izXqj",
+        "Compendium.vagabond.bestiary.Actor.wensvnWLoQYUQbdX",
+        "Compendium.vagabond.bestiary.Actor.zwwV8fXQhYzPQfKp"
+      ],
+      "attackTypes": {
+        "castRanged": 16,
+        "castClose": 4
+      },
+      "damageTypes": {
+        "acid": 4,
+        "shock": 4,
+        "poison": 4,
+        "fire": 4,
+        "cold": 4
+      },
+      "flatDamageRange": [
+        3,
+        28
+      ],
+      "rollDamageVariants": [
+        "1d6",
+        "2d12",
+        "2d6",
+        "3d12",
+        "3d6",
+        "4d12",
+        "4d6",
+        "6d6",
+        "8d6"
+      ],
+      "hasCausedStatuses": 20,
+      "hasRecharge": 20
+    },
+    {
+      "name": "Call Terror",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.jO00LGH0j3HNTGve"
+      ],
+      "attackTypes": {
+        "castRanged": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        0,
+        0
+      ],
+      "rollDamageVariants": [],
+      "hasCausedStatuses": 0,
+      "hasRecharge": 1
+    },
+    {
+      "name": "Cannon",
+      "count": 2,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.GAMXQgxdOS165gB8",
+        "Compendium.vagabond.bestiary.Actor.MV5G94cDuVi9tKt9"
+      ],
+      "attackTypes": {
+        "ranged": 2
+      },
+      "damageTypes": {
+        "-": 2
+      },
+      "flatDamageRange": [
+        3,
+        11
+      ],
+      "rollDamageVariants": [
+        "3d6",
+        "d6"
+      ],
+      "hasCausedStatuses": 0,
+      "hasRecharge": 0
+    },
+    {
+      "name": "Caustic Venom",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.5slBPAwQ2kDgFCpa"
+      ],
+      "attackTypes": {
+        "ranged": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        7,
+        7
+      ],
+      "rollDamageVariants": [
+        "2d6"
+      ],
+      "hasCausedStatuses": 1,
+      "hasRecharge": 1
+    },
+    {
+      "name": "Charm",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.vEW7TmLM86ZiFWRX"
+      ],
+      "attackTypes": {
+        "castRanged": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        0,
+        0
+      ],
+      "rollDamageVariants": [],
+      "hasCausedStatuses": 1,
+      "hasRecharge": 1
+    },
+    {
+      "name": "Charm Person",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.OI2CyIrhee1JOYlv"
+      ],
+      "attackTypes": {
+        "castRanged": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        0,
+        0
+      ],
+      "rollDamageVariants": [],
+      "hasCausedStatuses": 1,
+      "hasRecharge": 1
+    },
+    {
+      "name": "Chill Touch",
+      "count": 2,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.6l3L0a8gHCSRGPlQ",
+        "Compendium.vagabond.bestiary.Actor.7t0wb4hi6Oh7vAK1"
+      ],
+      "attackTypes": {
+        "melee": 1,
+        "castClose": 1
+      },
+      "damageTypes": {
+        "cold": 2
+      },
+      "flatDamageRange": [
+        3,
+        4
+      ],
+      "rollDamageVariants": [
+        "1d6",
+        "1d8"
+      ],
+      "hasCausedStatuses": 0,
+      "hasRecharge": 0
+    },
+    {
+      "name": "Choke",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.6sls2wQDONungyyK"
+      ],
+      "attackTypes": {
+        "melee": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        2,
+        2
+      ],
+      "rollDamageVariants": [
+        "1d4"
+      ],
+      "hasCausedStatuses": 1,
+      "hasRecharge": 0
+    },
+    {
+      "name": "Chomp",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.aAONbN10F5bLslSE"
+      ],
+      "attackTypes": {
+        "melee": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        10,
+        10
+      ],
+      "rollDamageVariants": [
+        "3d6"
+      ],
+      "hasCausedStatuses": 1,
+      "hasRecharge": 0
+    },
+    {
+      "name": "Claw",
+      "count": 66,
+      "monsters": [
+        "Compendium.vagabond-character-enhancer.vce-beasts.Actor.ajcaro7daQnDoNm1",
+        "Compendium.vagabond.bestiary.Actor.0AFjXcf1RLhiuE9M",
+        "Compendium.vagabond.bestiary.Actor.15zTuWanUAXWX4Ee",
+        "Compendium.vagabond.bestiary.Actor.317tiGBZWk0gxSVp",
+        "Compendium.vagabond.bestiary.Actor.4vBxGDQxMm4xvHxQ",
+        "Compendium.vagabond.bestiary.Actor.5slBPAwQ2kDgFCpa",
+        "Compendium.vagabond.bestiary.Actor.6y4J58Z8UGbrm2I2",
+        "Compendium.vagabond.bestiary.Actor.7xz66vMa0tsqNKqx",
+        "Compendium.vagabond.bestiary.Actor.87OFFZOTxFeRldz8",
+        "Compendium.vagabond.bestiary.Actor.8JzYAkpSslsI0HpO",
+        "Compendium.vagabond.bestiary.Actor.9qmdxUzE04c5cprG",
+        "Compendium.vagabond.bestiary.Actor.ATWC3zLqqZCvDLGF",
+        "Compendium.vagabond.bestiary.Actor.DIXBdymeCr9HUJOd",
+        "Compendium.vagabond.bestiary.Actor.FqA1XFVfB8o9zigs",
+        "Compendium.vagabond.bestiary.Actor.FsDuYyDw3jtO2KYC",
+        "Compendium.vagabond.bestiary.Actor.G2KnbYhwZ2xfT3wM",
+        "Compendium.vagabond.bestiary.Actor.Ht9KJUOiRr1qjSQ2",
+        "Compendium.vagabond.bestiary.Actor.Ja6yNDG2LptOgMjn",
+        "Compendium.vagabond.bestiary.Actor.KNtsLMtnvRRhzHq0",
+        "Compendium.vagabond.bestiary.Actor.MDeTATYPlrz4jjQb",
+        "Compendium.vagabond.bestiary.Actor.OI2CyIrhee1JOYlv",
+        "Compendium.vagabond.bestiary.Actor.OYXQp77BI8QgFh7s",
+        "Compendium.vagabond.bestiary.Actor.OtEJxfZ13jBJ1apz",
+        "Compendium.vagabond.bestiary.Actor.PSNF8mdWgMS4hZ2E",
+        "Compendium.vagabond.bestiary.Actor.Poixlfce7pZDHC8L",
+        "Compendium.vagabond.bestiary.Actor.UGMhE8UODeuZf3Ms",
+        "Compendium.vagabond.bestiary.Actor.Uylf41QzuircJejb",
+        "Compendium.vagabond.bestiary.Actor.V9e8mIbkjjc0QRSj",
+        "Compendium.vagabond.bestiary.Actor.XqDi7xhYi8r25Eu7",
+        "Compendium.vagabond.bestiary.Actor.ZNYqDZ9n236roSBY",
+        "Compendium.vagabond.bestiary.Actor.ZXpSxKZH1Zj3fBcP",
+        "Compendium.vagabond.bestiary.Actor.ZhhuGoH4rFRiiaPp",
+        "Compendium.vagabond.bestiary.Actor.aK6Z8qAChqIblIfM",
+        "Compendium.vagabond.bestiary.Actor.aSUaMBRdv6PsFx8Q",
+        "Compendium.vagabond.bestiary.Actor.ayNwvOBMadPIikBb",
+        "Compendium.vagabond.bestiary.Actor.bkADyFuc1qzUBCEP",
+        "Compendium.vagabond.bestiary.Actor.cNk4q1zCVyOdhZts",
+        "Compendium.vagabond.bestiary.Actor.cUT2qxNSbgNpwhOT",
+        "Compendium.vagabond.bestiary.Actor.eb6eSw47fMgSb2Dz",
+        "Compendium.vagabond.bestiary.Actor.eim4ggishfz85XVX",
+        "Compendium.vagabond.bestiary.Actor.f3WRM4LB2A6Lulew",
+        "Compendium.vagabond.bestiary.Actor.fH1TAjmzFTDXdlHF",
+        "Compendium.vagabond.bestiary.Actor.gOWR3pPKIEMyriVy",
+        "Compendium.vagabond.bestiary.Actor.gYBtO8FpqNSE26so",
+        "Compendium.vagabond.bestiary.Actor.gnz6BaC1eD9hgHka",
+        "Compendium.vagabond.bestiary.Actor.hAkT666Zj6PpoQeB",
+        "Compendium.vagabond.bestiary.Actor.j96QNTFGxzOdM20K",
+        "Compendium.vagabond.bestiary.Actor.jlHvHvDg3eWkNDNb",
+        "Compendium.vagabond.bestiary.Actor.kj19gjrvuuO3lUjK",
+        "Compendium.vagabond.bestiary.Actor.mdtMIAyn3qMINoyD",
+        "Compendium.vagabond.bestiary.Actor.mv0wyiZlTaFnxa7r",
+        "Compendium.vagabond.bestiary.Actor.nZBfS7RH0A7N9v11",
+        "Compendium.vagabond.bestiary.Actor.oDROHzNC8xZ4HY5m",
+        "Compendium.vagabond.bestiary.Actor.oM0nBpVMFBGrGlbz",
+        "Compendium.vagabond.bestiary.Actor.peS6wk3Zv8WiS5Dd",
+        "Compendium.vagabond.bestiary.Actor.pvwYATClTGQw2qgU",
+        "Compendium.vagabond.bestiary.Actor.qtILksrMEcYJ47Be",
+        "Compendium.vagabond.bestiary.Actor.rCwEUw6tad40GBYw",
+        "Compendium.vagabond.bestiary.Actor.rTePiNbB8qag6HnP",
+        "Compendium.vagabond.bestiary.Actor.s62GZ293jOYSyOzO",
+        "Compendium.vagabond.bestiary.Actor.tYaJPSfXV1L18hRM",
+        "Compendium.vagabond.bestiary.Actor.trLqdRvjz70izXqj",
+        "Compendium.vagabond.bestiary.Actor.txlrPzpyjCW7Un16",
+        "Compendium.vagabond.bestiary.Actor.wensvnWLoQYUQbdX",
+        "Compendium.vagabond.bestiary.Actor.zbCW1iYfN0KJhdJF",
+        "Compendium.vagabond.bestiary.Actor.zwwV8fXQhYzPQfKp"
+      ],
+      "attackTypes": {
+        "melee": 66
+      },
+      "damageTypes": {
+        "-": 66
+      },
+      "flatDamageRange": [
+        1,
+        18
+      ],
+      "rollDamageVariants": [
+        "1d10",
+        "1d10+1",
+        "1d3",
+        "1d4",
+        "1d6",
+        "1d8",
+        "1d8+2",
+        "1d8+3",
+        "2d4",
+        "2d6",
+        "2d8",
+        "3d4",
+        "3d6",
+        "3d8",
+        "4d6",
+        "4d8"
+      ],
+      "hasCausedStatuses": 2,
+      "hasRecharge": 0
+    },
+    {
+      "name": "Claws",
+      "count": 9,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.BHX4mhjjYrxqIe2E",
+        "Compendium.vagabond.bestiary.Actor.COZgPuEHq67Lhcjd",
+        "Compendium.vagabond.bestiary.Actor.FHY3U8iRqDufmcZT",
+        "Compendium.vagabond.bestiary.Actor.JEjyqTf7HImNj1hy",
+        "Compendium.vagabond.bestiary.Actor.OM4n0N2hftXzkcRy",
+        "Compendium.vagabond.bestiary.Actor.TeXpYvmYgkwz7Rkd",
+        "Compendium.vagabond.bestiary.Actor.TtjXGTTkkmhnyxmp",
+        "Compendium.vagabond.bestiary.Actor.klRBWjiNUz7GlVAb",
+        "Compendium.vagabond.bestiary.Actor.zGwkpzRePCVK8HQE"
+      ],
+      "attackTypes": {
+        "melee": 9
+      },
+      "damageTypes": {
+        "-": 9
+      },
+      "flatDamageRange": [
+        2,
+        5
+      ],
+      "rollDamageVariants": [
+        "1d4",
+        "1d6",
+        "1d8",
+        "2d4"
+      ],
+      "hasCausedStatuses": 0,
+      "hasRecharge": 0
+    },
+    {
+      "name": "Cloak",
+      "count": 2,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.8sVozyqwRdex7Vu2",
+        "Compendium.vagabond.bestiary.Actor.EVRDPfOWLjfVf1io"
+      ],
+      "attackTypes": {
+        "melee": 2
+      },
+      "damageTypes": {
+        "-": 2
+      },
+      "flatDamageRange": [
+        0,
+        0
+      ],
+      "rollDamageVariants": [],
+      "hasCausedStatuses": 2,
+      "hasRecharge": 0
+    },
+    {
+      "name": "Cloak of Darkness",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.cF5pczTJMIq2Uk0K"
+      ],
+      "attackTypes": {
+        "castClose": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        0,
+        0
+      ],
+      "rollDamageVariants": [],
+      "hasCausedStatuses": 0,
+      "hasRecharge": 0
+    },
+    {
+      "name": "Colossal Sword",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.FTyGaeKSe3Hhi2aw"
+      ],
+      "attackTypes": {
+        "melee": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        9,
+        9
+      ],
+      "rollDamageVariants": [
+        "2d8"
+      ],
+      "hasCausedStatuses": 0,
+      "hasRecharge": 0
+    },
+    {
+      "name": "Combo",
+      "count": 108,
+      "monsters": [
+        "Compendium.vagabond-character-enhancer.vce-beasts.Actor.o7OJb0cb96O8p9Ip",
+        "Compendium.vagabond.bestiary.Actor.0yQoEPuPUHUKwEAv",
+        "Compendium.vagabond.bestiary.Actor.14SyZkKvSmv2smFw",
+        "Compendium.vagabond.bestiary.Actor.1wsieodgDkGEU0si",
+        "Compendium.vagabond.bestiary.Actor.317tiGBZWk0gxSVp",
+        "Compendium.vagabond.bestiary.Actor.5oYLWXICi7KYOtla",
+        "Compendium.vagabond.bestiary.Actor.5slBPAwQ2kDgFCpa",
+        "Compendium.vagabond.bestiary.Actor.87OFFZOTxFeRldz8",
+        "Compendium.vagabond.bestiary.Actor.8JzYAkpSslsI0HpO",
+        "Compendium.vagabond.bestiary.Actor.8sVozyqwRdex7Vu2",
+        "Compendium.vagabond.bestiary.Actor.9qmdxUzE04c5cprG",
+        "Compendium.vagabond.bestiary.Actor.9ujVnpprisq50dFW",
+        "Compendium.vagabond.bestiary.Actor.AJp7YGvfDGB2C1Yp",
+        "Compendium.vagabond.bestiary.Actor.ATWC3zLqqZCvDLGF",
+        "Compendium.vagabond.bestiary.Actor.BHX4mhjjYrxqIe2E",
+        "Compendium.vagabond.bestiary.Actor.COZgPuEHq67Lhcjd",
+        "Compendium.vagabond.bestiary.Actor.DIXBdymeCr9HUJOd",
+        "Compendium.vagabond.bestiary.Actor.Dl66ByoWtgTfWJ7C",
+        "Compendium.vagabond.bestiary.Actor.EVRDPfOWLjfVf1io",
+        "Compendium.vagabond.bestiary.Actor.FTyGaeKSe3Hhi2aw",
+        "Compendium.vagabond.bestiary.Actor.GAMXQgxdOS165gB8",
+        "Compendium.vagabond.bestiary.Actor.Ht9KJUOiRr1qjSQ2",
+        "Compendium.vagabond.bestiary.Actor.Ja6yNDG2LptOgMjn",
+        "Compendium.vagabond.bestiary.Actor.JdG9XdEO8Gk3vwpV",
+        "Compendium.vagabond.bestiary.Actor.LWsvMezQ9BvCYFfJ",
+        "Compendium.vagabond.bestiary.Actor.MDeTATYPlrz4jjQb",
+        "Compendium.vagabond.bestiary.Actor.NI1b4rIPgJKsLKQJ",
+        "Compendium.vagabond.bestiary.Actor.OI2CyIrhee1JOYlv",
+        "Compendium.vagabond.bestiary.Actor.OM4n0N2hftXzkcRy",
+        "Compendium.vagabond.bestiary.Actor.OtEJxfZ13jBJ1apz",
+        "Compendium.vagabond.bestiary.Actor.PSNF8mdWgMS4hZ2E",
+        "Compendium.vagabond.bestiary.Actor.Poixlfce7pZDHC8L",
+        "Compendium.vagabond.bestiary.Actor.QP5xEKlWLoRQhS3t",
+        "Compendium.vagabond.bestiary.Actor.RCrdmkp96a9uhfT2",
+        "Compendium.vagabond.bestiary.Actor.Rq6JPBgL5v88JAd0",
+        "Compendium.vagabond.bestiary.Actor.TDwppLCtTNicN0kx",
+        "Compendium.vagabond.bestiary.Actor.TeXpYvmYgkwz7Rkd",
+        "Compendium.vagabond.bestiary.Actor.UGMhE8UODeuZf3Ms",
+        "Compendium.vagabond.bestiary.Actor.Uylf41QzuircJejb",
+        "Compendium.vagabond.bestiary.Actor.V9e8mIbkjjc0QRSj",
+        "Compendium.vagabond.bestiary.Actor.W5kmv1bYrErmzoUI",
+        "Compendium.vagabond.bestiary.Actor.WPWcwr72e6bVPaAx",
+        "Compendium.vagabond.bestiary.Actor.WgRHBofac5k3IUet",
+        "Compendium.vagabond.bestiary.Actor.XJXb7O120A5ewg1N",
+        "Compendium.vagabond.bestiary.Actor.Xc30d0v7k9g20Nmu",
+        "Compendium.vagabond.bestiary.Actor.XqDi7xhYi8r25Eu7",
+        "Compendium.vagabond.bestiary.Actor.ZNYqDZ9n236roSBY",
+        "Compendium.vagabond.bestiary.Actor.ZXpSxKZH1Zj3fBcP",
+        "Compendium.vagabond.bestiary.Actor.ZhhuGoH4rFRiiaPp",
+        "Compendium.vagabond.bestiary.Actor.a8j1GTqT0qCjP5c4",
+        "Compendium.vagabond.bestiary.Actor.aK6Z8qAChqIblIfM",
+        "Compendium.vagabond.bestiary.Actor.ai3fTv3zFIGJByPn",
+        "Compendium.vagabond.bestiary.Actor.b8UREGXp4ESbUZQj",
+        "Compendium.vagabond.bestiary.Actor.bI1V6pqJkiiIGEYJ",
+        "Compendium.vagabond.bestiary.Actor.bkADyFuc1qzUBCEP",
+        "Compendium.vagabond.bestiary.Actor.cNk4q1zCVyOdhZts",
+        "Compendium.vagabond.bestiary.Actor.cUT2qxNSbgNpwhOT",
+        "Compendium.vagabond.bestiary.Actor.eb6eSw47fMgSb2Dz",
+        "Compendium.vagabond.bestiary.Actor.eim4ggishfz85XVX",
+        "Compendium.vagabond.bestiary.Actor.f3WRM4LB2A6Lulew",
+        "Compendium.vagabond.bestiary.Actor.fH1TAjmzFTDXdlHF",
+        "Compendium.vagabond.bestiary.Actor.gMKwv81k8AHuZBk0",
+        "Compendium.vagabond.bestiary.Actor.gOWR3pPKIEMyriVy",
+        "Compendium.vagabond.bestiary.Actor.gYBtO8FpqNSE26so",
+        "Compendium.vagabond.bestiary.Actor.gnz6BaC1eD9hgHka",
+        "Compendium.vagabond.bestiary.Actor.hAkT666Zj6PpoQeB",
+        "Compendium.vagabond.bestiary.Actor.hPna41WWprqcqawU",
+        "Compendium.vagabond.bestiary.Actor.hpvz01W4mhKZDyrq",
+        "Compendium.vagabond.bestiary.Actor.iHkYA8Y2dGZ5bOXb",
+        "Compendium.vagabond.bestiary.Actor.j96QNTFGxzOdM20K",
+        "Compendium.vagabond.bestiary.Actor.j9pfmlTLheG41ABq",
+        "Compendium.vagabond.bestiary.Actor.k3EwC9SOab0RkAOM",
+        "Compendium.vagabond.bestiary.Actor.kj19gjrvuuO3lUjK",
+        "Compendium.vagabond.bestiary.Actor.klRBWjiNUz7GlVAb",
+        "Compendium.vagabond.bestiary.Actor.lfHGD4OvbUEXP4wJ",
+        "Compendium.vagabond.bestiary.Actor.mCt7qRrjmd5hipbl",
+        "Compendium.vagabond.bestiary.Actor.mRKPp10Yiq0n7ddR",
+        "Compendium.vagabond.bestiary.Actor.mdtMIAyn3qMINoyD",
+        "Compendium.vagabond.bestiary.Actor.mv0wyiZlTaFnxa7r",
+        "Compendium.vagabond.bestiary.Actor.mzHfFclIaG0WIeUi",
+        "Compendium.vagabond.bestiary.Actor.nTDQhDi3B8l7kMUB",
+        "Compendium.vagabond.bestiary.Actor.nZBfS7RH0A7N9v11",
+        "Compendium.vagabond.bestiary.Actor.niDTL17izgqngzej",
+        "Compendium.vagabond.bestiary.Actor.oM0nBpVMFBGrGlbz",
+        "Compendium.vagabond.bestiary.Actor.peS6wk3Zv8WiS5Dd",
+        "Compendium.vagabond.bestiary.Actor.pjgK1vqOzpVobYj0",
+        "Compendium.vagabond.bestiary.Actor.ptHOZjMHox7xssPa",
+        "Compendium.vagabond.bestiary.Actor.qi6QdSz3VDqGVx9X",
+        "Compendium.vagabond.bestiary.Actor.qtILksrMEcYJ47Be",
+        "Compendium.vagabond.bestiary.Actor.rCwEUw6tad40GBYw",
+        "Compendium.vagabond.bestiary.Actor.rTePiNbB8qag6HnP",
+        "Compendium.vagabond.bestiary.Actor.rb5dVb8peFW4RUIT",
+        "Compendium.vagabond.bestiary.Actor.rdXUVjQNJjZoXuNE",
+        "Compendium.vagabond.bestiary.Actor.s62GZ293jOYSyOzO",
+        "Compendium.vagabond.bestiary.Actor.sI2DQeLhYZsybo0m",
+        "Compendium.vagabond.bestiary.Actor.tox2rxTF7WFaqSJk",
+        "Compendium.vagabond.bestiary.Actor.trLqdRvjz70izXqj",
+        "Compendium.vagabond.bestiary.Actor.txlrPzpyjCW7Un16",
+        "Compendium.vagabond.bestiary.Actor.tzcSHcrAb3ht8Xu2",
+        "Compendium.vagabond.bestiary.Actor.uDjwEv1gpStc0WzJ",
+        "Compendium.vagabond.bestiary.Actor.uIRiPIcdtl00VHdb",
+        "Compendium.vagabond.bestiary.Actor.vyABoU3fvkulDHHq",
+        "Compendium.vagabond.bestiary.Actor.wensvnWLoQYUQbdX",
+        "Compendium.vagabond.bestiary.Actor.yJbVHu4txMW9HyRG",
+        "Compendium.vagabond.bestiary.Actor.yn22rgWJrAqwqAV0",
+        "Compendium.vagabond.bestiary.Actor.zbCW1iYfN0KJhdJF",
+        "Compendium.vagabond.bestiary.Actor.zwwV8fXQhYzPQfKp",
+        "Compendium.vagabond.humanlike.Actor.SuDEcZVOA7NgqkXa"
+      ],
+      "attackTypes": {
+        "melee": 108
+      },
+      "damageTypes": {
+        "-": 108
+      },
+      "flatDamageRange": [
+        0,
+        0
+      ],
+      "rollDamageVariants": [],
+      "hasCausedStatuses": 0,
+      "hasRecharge": 0
+    },
+    {
+      "name": "Command",
+      "count": 2,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.2Wx5RcpuRN8Nw6T0",
+        "Compendium.vagabond.humanlike.Actor.9wvYwUJ7mAU3eHcX"
+      ],
+      "attackTypes": {
+        "castRanged": 1,
+        "melee": 1
+      },
+      "damageTypes": {
+        "-": 2
+      },
+      "flatDamageRange": [
+        0,
+        4
+      ],
+      "rollDamageVariants": [
+        "d6+1"
+      ],
+      "hasCausedStatuses": 0,
+      "hasRecharge": 0
+    },
+    {
+      "name": "Cone of Cold",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.OI2CyIrhee1JOYlv"
+      ],
+      "attackTypes": {
+        "castRanged": 1
+      },
+      "damageTypes": {
+        "cold": 1
+      },
+      "flatDamageRange": [
+        36,
+        36
+      ],
+      "rollDamageVariants": [
+        "8d8"
+      ],
+      "hasCausedStatuses": 0,
+      "hasRecharge": 1
+    },
+    {
+      "name": "Conjure Object",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.WPWcwr72e6bVPaAx"
+      ],
+      "attackTypes": {
+        "castRanged": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        0,
+        0
+      ],
+      "rollDamageVariants": [],
+      "hasCausedStatuses": 0,
+      "hasRecharge": 1
+    },
+    {
+      "name": "Constrain",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.EjmMNTTsfwFpGdKW"
+      ],
+      "attackTypes": {
+        "melee": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        9,
+        9
+      ],
+      "rollDamageVariants": [
+        "2d8"
+      ],
+      "hasCausedStatuses": 0,
+      "hasRecharge": 0
+    },
+    {
+      "name": "Constrict",
+      "count": 2,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.ptHOZjMHox7xssPa",
+        "Compendium.vagabond.bestiary.Actor.vyABoU3fvkulDHHq"
+      ],
+      "attackTypes": {
+        "melee": 2
+      },
+      "damageTypes": {
+        "-": 2
+      },
+      "flatDamageRange": [
+        9,
+        11
+      ],
+      "rollDamageVariants": [
+        "2d10",
+        "2d8"
+      ],
+      "hasCausedStatuses": 2,
+      "hasRecharge": 0
+    },
+    {
+      "name": "Crossbow",
+      "count": 2,
+      "monsters": [
+        "Compendium.vagabond.humanlike.Actor.Jj8oUrV1ePMqe5hO",
+        "Compendium.vagabond.humanlike.Actor.Xb2FnkVT17Wxdvvs"
+      ],
+      "attackTypes": {
+        "ranged": 2
+      },
+      "damageTypes": {
+        "-": 2
+      },
+      "flatDamageRange": [
+        2,
+        3
+      ],
+      "rollDamageVariants": [
+        "d4",
+        "d6"
+      ],
+      "hasCausedStatuses": 0,
+      "hasRecharge": 0
+    },
+    {
+      "name": "Crush",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.9ujVnpprisq50dFW"
+      ],
+      "attackTypes": {
+        "melee": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        3,
+        3
+      ],
+      "rollDamageVariants": [
+        "1d6"
+      ],
+      "hasCausedStatuses": 0,
+      "hasRecharge": 0
+    },
+    {
+      "name": "Cure Wounds",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.humanlike.Actor.AemomWxuMN4xtRCO"
+      ],
+      "attackTypes": {
+        "castClose": 1
+      },
+      "damageTypes": {
+        "healing": 1
+      },
+      "flatDamageRange": [
+        3,
+        3
+      ],
+      "rollDamageVariants": [
+        "d6"
+      ],
+      "hasCausedStatuses": 0,
+      "hasRecharge": 1
+    },
+    {
+      "name": "Cursed Touch",
+      "count": 2,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.bPJsV7dXotbgPIH8",
+        "Compendium.vagabond.bestiary.Actor.wvnFUicXjGnzt7w6"
+      ],
+      "attackTypes": {
+        "melee": 2
+      },
+      "damageTypes": {
+        "-": 2
+      },
+      "flatDamageRange": [
+        3,
+        10
+      ],
+      "rollDamageVariants": [
+        "1d6",
+        "3d6"
+      ],
+      "hasCausedStatuses": 0,
+      "hasRecharge": 0
+    },
+    {
+      "name": "Cutlass",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.14SyZkKvSmv2smFw"
+      ],
+      "attackTypes": {
+        "melee": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        3,
+        3
+      ],
+      "rollDamageVariants": [
+        "1d6"
+      ],
+      "hasCausedStatuses": 0,
+      "hasRecharge": 0
+    },
+    {
+      "name": "Dagger",
+      "count": 12,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.Jqv4wH6JcoviGgE2",
+        "Compendium.vagabond.bestiary.Actor.ODbpq02R0n8eFcGc",
+        "Compendium.vagabond.bestiary.Actor.OQZbfC2OXrLYLRM8",
+        "Compendium.vagabond.bestiary.Actor.cClSRTp1wi5nKiTn",
+        "Compendium.vagabond.bestiary.Actor.uCCieRHVkOBlo0hS",
+        "Compendium.vagabond.humanlike.Actor.FP8tMPuVxIXbK4fN",
+        "Compendium.vagabond.humanlike.Actor.Jj8oUrV1ePMqe5hO",
+        "Compendium.vagabond.humanlike.Actor.Pgeg3m1KSHSgZFSE",
+        "Compendium.vagabond.humanlike.Actor.YG6GEHVRn6Uufx0v",
+        "Compendium.vagabond.humanlike.Actor.bAcqt2HvrmAE6I5k",
+        "Compendium.vagabond.humanlike.Actor.dkIeYNQafNyYpUqx",
+        "Compendium.vagabond.humanlike.Actor.pztZ1992w2ZhIHII"
+      ],
+      "attackTypes": {
+        "melee": 12
+      },
+      "damageTypes": {
+        "-": 12
+      },
+      "flatDamageRange": [
+        2,
+        2
+      ],
+      "rollDamageVariants": [
+        "1d4",
+        "d4"
+      ],
+      "hasCausedStatuses": 0,
+      "hasRecharge": 0
+    },
+    {
+      "name": "Dagger (Thrown)",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.ODbpq02R0n8eFcGc"
+      ],
+      "attackTypes": {
+        "ranged": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        2,
+        2
+      ],
+      "rollDamageVariants": [
+        "1d4"
+      ],
+      "hasCausedStatuses": 0,
+      "hasRecharge": 0
+    },
+    {
+      "name": "Dance of Death",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.X5SxKCZtI5jCWBK4"
+      ],
+      "attackTypes": {
+        "castRanged": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        0,
+        0
+      ],
+      "rollDamageVariants": [],
+      "hasCausedStatuses": 1,
+      "hasRecharge": 0
+    },
+    {
+      "name": "Dancing Lights",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.OQZbfC2OXrLYLRM8"
+      ],
+      "attackTypes": {
+        "castRanged": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        0,
+        0
+      ],
+      "rollDamageVariants": [],
+      "hasCausedStatuses": 0,
+      "hasRecharge": 0
+    },
+    {
+      "name": "Darkness",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.OI2CyIrhee1JOYlv"
+      ],
+      "attackTypes": {
+        "castRanged": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        0,
+        0
+      ],
+      "rollDamageVariants": [],
+      "hasCausedStatuses": 0,
+      "hasRecharge": 0
+    },
+    {
+      "name": "Death Glare",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.oDROHzNC8xZ4HY5m"
+      ],
+      "attackTypes": {
+        "castRanged": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        13,
+        13
+      ],
+      "rollDamageVariants": [
+        "3d8"
+      ],
+      "hasCausedStatuses": 0,
+      "hasRecharge": 1
+    },
+    {
+      "name": "Death Ray",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.qi6QdSz3VDqGVx9X"
+      ],
+      "attackTypes": {
+        "castRanged": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        24,
+        24
+      ],
+      "rollDamageVariants": [
+        "8d6"
+      ],
+      "hasCausedStatuses": 1,
+      "hasRecharge": 1
+    },
+    {
+      "name": "Dimension Door",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.OQZbfC2OXrLYLRM8"
+      ],
+      "attackTypes": {
+        "castClose": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        0,
+        0
+      ],
+      "rollDamageVariants": [],
+      "hasCausedStatuses": 0,
+      "hasRecharge": 1
+    },
+    {
+      "name": "Dispel Magic",
+      "count": 2,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.qtILksrMEcYJ47Be",
+        "Compendium.vagabond.bestiary.Actor.rTePiNbB8qag6HnP"
+      ],
+      "attackTypes": {
+        "castRanged": 1,
+        "melee": 1
+      },
+      "damageTypes": {
+        "-": 2
+      },
+      "flatDamageRange": [
+        0,
+        0
+      ],
+      "rollDamageVariants": [],
+      "hasCausedStatuses": 0,
+      "hasRecharge": 2
+    },
+    {
+      "name": "Dissipate",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.CmGogAAhZOFHHJeG"
+      ],
+      "attackTypes": {
+        "castClose": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        0,
+        0
+      ],
+      "rollDamageVariants": [],
+      "hasCausedStatuses": 0,
+      "hasRecharge": 0
+    },
+    {
+      "name": "Dominator",
+      "count": 2,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.2Wx5RcpuRN8Nw6T0",
+        "Compendium.vagabond.bestiary.Actor.eIjbp2eHJHXPG5kI"
+      ],
+      "attackTypes": {
+        "melee": 2
+      },
+      "damageTypes": {
+        "-": 2
+      },
+      "flatDamageRange": [
+        0,
+        0
+      ],
+      "rollDamageVariants": [],
+      "hasCausedStatuses": 0,
+      "hasRecharge": 0
+    },
+    {
+      "name": "Dragon’s Bite",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.j96QNTFGxzOdM20K"
+      ],
+      "attackTypes": {
+        "melee": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        0,
+        0
+      ],
+      "rollDamageVariants": [
+        "3d4"
+      ],
+      "hasCausedStatuses": 0,
+      "hasRecharge": 0
+    },
+    {
+      "name": "Drain",
+      "count": 5,
+      "monsters": [
+        "Compendium.vagabond-character-enhancer.vce-beasts.Actor.AZzWsYRh4XtykPfW",
+        "Compendium.vagabond.bestiary.Actor.5EWozL7AN3eZxhon",
+        "Compendium.vagabond.bestiary.Actor.EVRDPfOWLjfVf1io",
+        "Compendium.vagabond.bestiary.Actor.HmlmtEocbWolrl3F",
+        "Compendium.vagabond.bestiary.Actor.ousYRudW4JSmruXi"
+      ],
+      "attackTypes": {
+        "melee": 5
+      },
+      "damageTypes": {
+        "-": 5
+      },
+      "flatDamageRange": [
+        2,
+        5
+      ],
+      "rollDamageVariants": [
+        "1d4",
+        "2d4",
+        "2d6"
+      ],
+      "hasCausedStatuses": 0,
+      "hasRecharge": 0
+    },
+    {
+      "name": "Drop",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.voStbqLKsCCFOaoW"
+      ],
+      "attackTypes": {
+        "melee": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        10,
+        10
+      ],
+      "rollDamageVariants": [
+        "3d6"
+      ],
+      "hasCausedStatuses": 0,
+      "hasRecharge": 0
+    },
+    {
+      "name": "Drown",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.Poixlfce7pZDHC8L"
+      ],
+      "attackTypes": {
+        "melee": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        0,
+        0
+      ],
+      "rollDamageVariants": [],
+      "hasCausedStatuses": 1,
+      "hasRecharge": 0
+    },
+    {
+      "name": "Enchanting Song",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.jO00LGH0j3HNTGve"
+      ],
+      "attackTypes": {
+        "castRanged": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        0,
+        0
+      ],
+      "rollDamageVariants": [],
+      "hasCausedStatuses": 0,
+      "hasRecharge": 0
+    },
+    {
+      "name": "Energy Drain",
+      "count": 2,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.Dq3ik1JY5uCLzUDV",
+        "Compendium.vagabond.bestiary.Actor.m8Q6WWcR8LGOFJde"
+      ],
+      "attackTypes": {
+        "castClose": 2
+      },
+      "damageTypes": {
+        "necrotic": 2
+      },
+      "flatDamageRange": [
+        3,
+        3
+      ],
+      "rollDamageVariants": [
+        "1d6"
+      ],
+      "hasCausedStatuses": 0,
+      "hasRecharge": 0
+    },
+    {
+      "name": "Engulf",
+      "count": 2,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.FYjFBtN4C5lXvFLA",
+        "Compendium.vagabond.bestiary.Actor.nYO6xGYPRmtNuhV9"
+      ],
+      "attackTypes": {
+        "melee": 2
+      },
+      "damageTypes": {
+        "-": 2
+      },
+      "flatDamageRange": [
+        0,
+        0
+      ],
+      "rollDamageVariants": [],
+      "hasCausedStatuses": 2,
+      "hasRecharge": 0
+    },
+    {
+      "name": "Enlure",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.6374iY64VLoDAtDV"
+      ],
+      "attackTypes": {
+        "castRanged": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        0,
+        0
+      ],
+      "rollDamageVariants": [],
+      "hasCausedStatuses": 1,
+      "hasRecharge": 1
+    },
+    {
+      "name": "Enrage",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.GueGlPk8Be6uhm0b"
+      ],
+      "attackTypes": {
+        "castRanged": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        0,
+        0
+      ],
+      "rollDamageVariants": [],
+      "hasCausedStatuses": 1,
+      "hasRecharge": 1
+    },
+    {
+      "name": "Entangle",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.6374iY64VLoDAtDV"
+      ],
+      "attackTypes": {
+        "melee": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        0,
+        0
+      ],
+      "rollDamageVariants": [],
+      "hasCausedStatuses": 1,
+      "hasRecharge": 0
+    },
+    {
+      "name": "Enthrall",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.UGMhE8UODeuZf3Ms"
+      ],
+      "attackTypes": {
+        "castRanged": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        0,
+        0
+      ],
+      "rollDamageVariants": [],
+      "hasCausedStatuses": 1,
+      "hasRecharge": 1
+    },
+    {
+      "name": "Enthralling Song",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.zGwkpzRePCVK8HQE"
+      ],
+      "attackTypes": {
+        "castRanged": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        0,
+        0
+      ],
+      "rollDamageVariants": [],
+      "hasCausedStatuses": 1,
+      "hasRecharge": 1
+    },
+    {
+      "name": "Eyebeam",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.iyCEulXgz8uABmdD"
+      ],
+      "attackTypes": {
+        "castRanged": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        0,
+        0
+      ],
+      "rollDamageVariants": [],
+      "hasCausedStatuses": 0,
+      "hasRecharge": 0
+    },
+    {
+      "name": "Fear",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.vEW7TmLM86ZiFWRX"
+      ],
+      "attackTypes": {
+        "castRanged": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        0,
+        0
+      ],
+      "rollDamageVariants": [],
+      "hasCausedStatuses": 1,
+      "hasRecharge": 1
+    },
+    {
+      "name": "Fire Breath",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.wKPKn9Xuvj4SJA6I"
+      ],
+      "attackTypes": {
+        "castClose": 1
+      },
+      "damageTypes": {
+        "fire": 1
+      },
+      "flatDamageRange": [
+        10,
+        10
+      ],
+      "rollDamageVariants": [
+        "3d6"
+      ],
+      "hasCausedStatuses": 0,
+      "hasRecharge": 0
+    },
+    {
+      "name": "Fireball",
+      "count": 4,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.Hxp3Jl8LovAmxeNY",
+        "Compendium.vagabond.bestiary.Actor.tox2rxTF7WFaqSJk",
+        "Compendium.vagabond.humanlike.Actor.R2nIHe2d2FGZ2y6b",
+        "Compendium.vagabond.humanlike.Actor.SuDEcZVOA7NgqkXa"
+      ],
+      "attackTypes": {
+        "ranged": 1,
+        "castRanged": 3
+      },
+      "damageTypes": {
+        "-": 2,
+        "fire": 2
+      },
+      "flatDamageRange": [
+        3,
+        21
+      ],
+      "rollDamageVariants": [
+        "1d6",
+        "3d6",
+        "6d6"
+      ],
+      "hasCausedStatuses": 4,
+      "hasRecharge": 4
+    },
+    {
+      "name": "Firebolt",
+      "count": 2,
+      "monsters": [
+        "Compendium.vagabond.humanlike.Actor.R2nIHe2d2FGZ2y6b",
+        "Compendium.vagabond.humanlike.Actor.SuDEcZVOA7NgqkXa"
+      ],
+      "attackTypes": {
+        "castRanged": 2
+      },
+      "damageTypes": {
+        "-": 1,
+        "fire": 1
+      },
+      "flatDamageRange": [
+        7,
+        7
+      ],
+      "rollDamageVariants": [
+        "2d6"
+      ],
+      "hasCausedStatuses": 2,
+      "hasRecharge": 0
+    },
+    {
+      "name": "Fish",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.zbCW1iYfN0KJhdJF"
+      ],
+      "attackTypes": {
+        "ranged": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        0,
+        0
+      ],
+      "rollDamageVariants": [],
+      "hasCausedStatuses": 0,
+      "hasRecharge": 0
+    },
+    {
+      "name": "Fist",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.WPWcwr72e6bVPaAx"
+      ],
+      "attackTypes": {
+        "melee": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        9,
+        9
+      ],
+      "rollDamageVariants": [
+        "2d8"
+      ],
+      "hasCausedStatuses": 0,
+      "hasRecharge": 0
+    },
+    {
+      "name": "Flail",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.rdXUVjQNJjZoXuNE"
+      ],
+      "attackTypes": {
+        "melee": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        4,
+        4
+      ],
+      "rollDamageVariants": [
+        "1d8"
+      ],
+      "hasCausedStatuses": 0,
+      "hasRecharge": 0
+    },
+    {
+      "name": "Flame",
+      "count": 3,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.FGTs80o3umSqJjZH",
+        "Compendium.vagabond.bestiary.Actor.MVEkTMHMnNsf6rxz",
+        "Compendium.vagabond.bestiary.Actor.XqPwjVW3k3xNa9Ht"
+      ],
+      "attackTypes": {
+        "ranged": 3
+      },
+      "damageTypes": {
+        "fire": 3
+      },
+      "flatDamageRange": [
+        4,
+        13
+      ],
+      "rollDamageVariants": [
+        "1d8",
+        "2d8",
+        "3d8"
+      ],
+      "hasCausedStatuses": 3,
+      "hasRecharge": 0
+    },
+    {
+      "name": "Flaming Sword",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.2Wx5RcpuRN8Nw6T0"
+      ],
+      "attackTypes": {
+        "melee": 1
+      },
+      "damageTypes": {
+        "fire": 1
+      },
+      "flatDamageRange": [
+        17,
+        17
+      ],
+      "rollDamageVariants": [
+        "4d6+3"
+      ],
+      "hasCausedStatuses": 1,
+      "hasRecharge": 0
+    },
+    {
+      "name": "Flare",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.0ggPx89IztNk2YN8"
+      ],
+      "attackTypes": {
+        "castClose": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        7,
+        7
+      ],
+      "rollDamageVariants": [
+        "2d6"
+      ],
+      "hasCausedStatuses": 0,
+      "hasRecharge": 1
+    },
+    {
+      "name": "Flay",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.WgRHBofac5k3IUet"
+      ],
+      "attackTypes": {
+        "melee": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        5,
+        5
+      ],
+      "rollDamageVariants": [
+        "d8+1"
+      ],
+      "hasCausedStatuses": 0,
+      "hasRecharge": 0
+    },
+    {
+      "name": "Flurry",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.humanlike.Actor.pztZ1992w2ZhIHII"
+      ],
+      "attackTypes": {
+        "melee": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        0,
+        0
+      ],
+      "rollDamageVariants": [],
+      "hasCausedStatuses": 0,
+      "hasRecharge": 0
+    },
+    {
+      "name": "Freeze",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.01WK986PiOP0uUDE"
+      ],
+      "attackTypes": {
+        "castRanged": 1
+      },
+      "damageTypes": {
+        "cold": 1
+      },
+      "flatDamageRange": [
+        3,
+        3
+      ],
+      "rollDamageVariants": [
+        "1d6"
+      ],
+      "hasCausedStatuses": 0,
+      "hasRecharge": 1
+    },
+    {
+      "name": "Frenzy",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.iDD1iA0svCS8AINS"
+      ],
+      "attackTypes": {
+        "melee": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        0,
+        0
+      ],
+      "rollDamageVariants": [],
+      "hasCausedStatuses": 0,
+      "hasRecharge": 0
+    },
+    {
+      "name": "Frost Breath",
+      "count": 2,
+      "monsters": [
+        "Compendium.vagabond-character-enhancer.vce-beasts.Actor.qnLEaxqsTlJy4QzJ",
+        "Compendium.vagabond.bestiary.Actor.Wpi6ETJ6izgT1aOo"
+      ],
+      "attackTypes": {
+        "castClose": 2
+      },
+      "damageTypes": {
+        "-": 2
+      },
+      "flatDamageRange": [
+        15,
+        15
+      ],
+      "rollDamageVariants": [
+        "6d4"
+      ],
+      "hasCausedStatuses": 0,
+      "hasRecharge": 2
+    },
+    {
+      "name": "Garrote",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.humanlike.Actor.bAcqt2HvrmAE6I5k"
+      ],
+      "attackTypes": {
+        "melee": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        0,
+        0
+      ],
+      "rollDamageVariants": [],
+      "hasCausedStatuses": 0,
+      "hasRecharge": 0
+    },
+    {
+      "name": "Gaseous Form",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.OI2CyIrhee1JOYlv"
+      ],
+      "attackTypes": {
+        "castClose": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        0,
+        0
+      ],
+      "rollDamageVariants": [],
+      "hasCausedStatuses": 0,
+      "hasRecharge": 1
+    },
+    {
+      "name": "Glare",
+      "count": 5,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.GueGlPk8Be6uhm0b",
+        "Compendium.vagabond.bestiary.Actor.WcINvXEZIYp4rO4s",
+        "Compendium.vagabond.bestiary.Actor.bPJsV7dXotbgPIH8",
+        "Compendium.vagabond.bestiary.Actor.fCH7Tzir9ujPavZ3",
+        "Compendium.vagabond.bestiary.Actor.wvnFUicXjGnzt7w6"
+      ],
+      "attackTypes": {
+        "castClose": 1,
+        "castRanged": 4
+      },
+      "damageTypes": {
+        "-": 5
+      },
+      "flatDamageRange": [
+        0,
+        3
+      ],
+      "rollDamageVariants": [
+        "1d4+1"
+      ],
+      "hasCausedStatuses": 2,
+      "hasRecharge": 5
+    },
+    {
+      "name": "Gore",
+      "count": 2,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.a8j1GTqT0qCjP5c4",
+        "Compendium.vagabond.bestiary.Actor.qMlyP6vGm2ZAQx3W"
+      ],
+      "attackTypes": {
+        "melee": 2
+      },
+      "damageTypes": {
+        "-": 2
+      },
+      "flatDamageRange": [
+        2,
+        7
+      ],
+      "rollDamageVariants": [
+        "1d4",
+        "3d4"
+      ],
+      "hasCausedStatuses": 1,
+      "hasRecharge": 0
+    },
+    {
+      "name": "Gore Spray",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.4pxjze1TRnSTeGxV"
+      ],
+      "attackTypes": {
+        "castRanged": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        7,
+        7
+      ],
+      "rollDamageVariants": [
+        "2d6"
+      ],
+      "hasCausedStatuses": 1,
+      "hasRecharge": 1
+    },
+    {
+      "name": "Grapple",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.56Wb96lj19hGzOB9"
+      ],
+      "attackTypes": {
+        "melee": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        0,
+        0
+      ],
+      "rollDamageVariants": [],
+      "hasCausedStatuses": 1,
+      "hasRecharge": 0
+    },
+    {
+      "name": "Grasp",
+      "count": 2,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.4k5nmsYtlwGLqqdM",
+        "Compendium.vagabond.bestiary.Actor.9ujVnpprisq50dFW"
+      ],
+      "attackTypes": {
+        "melee": 2
+      },
+      "damageTypes": {
+        "-": 2
+      },
+      "flatDamageRange": [
+        0,
+        4
+      ],
+      "rollDamageVariants": [
+        "1d8"
+      ],
+      "hasCausedStatuses": 2,
+      "hasRecharge": 0
+    },
+    {
+      "name": "Greataxe",
+      "count": 2,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.a8j1GTqT0qCjP5c4",
+        "Compendium.vagabond.humanlike.Actor.uxqAgvxbvzahOBbL"
+      ],
+      "attackTypes": {
+        "melee": 2
+      },
+      "damageTypes": {
+        "-": 2
+      },
+      "flatDamageRange": [
+        5,
+        6
+      ],
+      "rollDamageVariants": [
+        "1d10",
+        "d12"
+      ],
+      "hasCausedStatuses": 0,
+      "hasRecharge": 0
+    },
+    {
+      "name": "Greatclub",
+      "count": 4,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.0ZQ07sDbVFlUij3q",
+        "Compendium.vagabond.bestiary.Actor.Y3Y7L4mPVrcxG9O9",
+        "Compendium.vagabond.bestiary.Actor.ZVKHvtT8HSgrZSej",
+        "Compendium.vagabond.bestiary.Actor.sG44of9DOFFzorqC"
+      ],
+      "attackTypes": {
+        "melee": 4
+      },
+      "damageTypes": {
+        "-": 4
+      },
+      "flatDamageRange": [
+        5,
+        9
+      ],
+      "rollDamageVariants": [
+        "1d10",
+        "2d8"
+      ],
+      "hasCausedStatuses": 0,
+      "hasRecharge": 0
+    },
+    {
+      "name": "Greatsword",
+      "count": 2,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.uIRiPIcdtl00VHdb",
+        "Compendium.vagabond.humanlike.Actor.ggnyh61eqHCSYSlf"
+      ],
+      "attackTypes": {
+        "melee": 2
+      },
+      "damageTypes": {
+        "-": 2
+      },
+      "flatDamageRange": [
+        5,
+        13
+      ],
+      "rollDamageVariants": [
+        "2d12",
+        "d10"
+      ],
+      "hasCausedStatuses": 0,
+      "hasRecharge": 0
+    },
+    {
+      "name": "Gust",
+      "count": 3,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.4tgJAUkCwHMUbh0L",
+        "Compendium.vagabond.bestiary.Actor.7Q4CeeNTFsoyIvLJ",
+        "Compendium.vagabond.bestiary.Actor.G4yOOmYO0Wahx9d8"
+      ],
+      "attackTypes": {
+        "ranged": 3
+      },
+      "damageTypes": {
+        "-": 3
+      },
+      "flatDamageRange": [
+        4,
+        13
+      ],
+      "rollDamageVariants": [
+        "1d8",
+        "2d8",
+        "3d8"
+      ],
+      "hasCausedStatuses": 0,
+      "hasRecharge": 0
+    },
+    {
+      "name": "Halberd",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.humanlike.Actor.TZZXAqnJt3awfjs3"
+      ],
+      "attackTypes": {
+        "melee": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        4,
+        4
+      ],
+      "rollDamageVariants": [
+        "d8"
+      ],
+      "hasCausedStatuses": 0,
+      "hasRecharge": 0
+    },
+    {
+      "name": "Headbutt",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.1wsieodgDkGEU0si"
+      ],
+      "attackTypes": {
+        "melee": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        9,
+        9
+      ],
+      "rollDamageVariants": [
+        "2d8"
+      ],
+      "hasCausedStatuses": 0,
+      "hasRecharge": 0
+    },
+    {
+      "name": "Heal",
+      "count": 2,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.2Wx5RcpuRN8Nw6T0",
+        "Compendium.vagabond.bestiary.Actor.hPna41WWprqcqawU"
+      ],
+      "attackTypes": {
+        "castClose": 2
+      },
+      "damageTypes": {
+        "-": 2
+      },
+      "flatDamageRange": [
+        0,
+        0
+      ],
+      "rollDamageVariants": [],
+      "hasCausedStatuses": 0,
+      "hasRecharge": 1
+    },
+    {
+      "name": "Health Potion",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.humanlike.Actor.Xb2FnkVT17Wxdvvs"
+      ],
+      "attackTypes": {
+        "melee": 1
+      },
+      "damageTypes": {
+        "healing": 1
+      },
+      "flatDamageRange": [
+        4,
+        4
+      ],
+      "rollDamageVariants": [
+        "d6+1"
+      ],
+      "hasCausedStatuses": 0,
+      "hasRecharge": 1
+    },
+    {
+      "name": "Hellfire",
+      "count": 2,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.AJp7YGvfDGB2C1Yp",
+        "Compendium.vagabond.bestiary.Actor.Fup7vnsrE5fRJwyP"
+      ],
+      "attackTypes": {
+        "castRanged": 1,
+        "castClose": 1
+      },
+      "damageTypes": {
+        "fire": 2
+      },
+      "flatDamageRange": [
+        10,
+        35
+      ],
+      "rollDamageVariants": [
+        "10d6",
+        "3d6"
+      ],
+      "hasCausedStatuses": 2,
+      "hasRecharge": 2
+    },
+    {
+      "name": "Hold",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.tox2rxTF7WFaqSJk"
+      ],
+      "attackTypes": {
+        "castRanged": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        0,
+        0
+      ],
+      "rollDamageVariants": [],
+      "hasCausedStatuses": 1,
+      "hasRecharge": 1
+    },
+    {
+      "name": "Hoof",
+      "count": 5,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.HgFLrkxTM7oe2w7Z",
+        "Compendium.vagabond.bestiary.Actor.ai3fTv3zFIGJByPn",
+        "Compendium.vagabond.bestiary.Actor.b8UREGXp4ESbUZQj",
+        "Compendium.vagabond.bestiary.Actor.hPna41WWprqcqawU",
+        "Compendium.vagabond.bestiary.Actor.sI2DQeLhYZsybo0m"
+      ],
+      "attackTypes": {
+        "melee": 5
+      },
+      "damageTypes": {
+        "-": 5
+      },
+      "flatDamageRange": [
+        2,
+        4
+      ],
+      "rollDamageVariants": [
+        "1d4",
+        "1d6",
+        "1d8"
+      ],
+      "hasCausedStatuses": 0,
+      "hasRecharge": 0
+    },
+    {
+      "name": "Hooves",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.ni0WqqZrr9OzwdSd"
+      ],
+      "attackTypes": {
+        "melee": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        2,
+        2
+      ],
+      "rollDamageVariants": [
+        "1d4"
+      ],
+      "hasCausedStatuses": 0,
+      "hasRecharge": 0
+    },
+    {
+      "name": "Horn",
+      "count": 6,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.DhEz76COsuB6EsEn",
+        "Compendium.vagabond.bestiary.Actor.XwB5yGfy00XW8UUp",
+        "Compendium.vagabond.bestiary.Actor.dGCcOIF0MbUWuTIe",
+        "Compendium.vagabond.bestiary.Actor.hPna41WWprqcqawU",
+        "Compendium.vagabond.bestiary.Actor.j96QNTFGxzOdM20K",
+        "Compendium.vagabond.bestiary.Actor.whdFCj27KB6OnkRI"
+      ],
+      "attackTypes": {
+        "melee": 6
+      },
+      "damageTypes": {
+        "-": 6
+      },
+      "flatDamageRange": [
+        2,
+        10
+      ],
+      "rollDamageVariants": [
+        "1d4",
+        "1d8",
+        "2d4",
+        "2d6",
+        "3d6"
+      ],
+      "hasCausedStatuses": 0,
+      "hasRecharge": 0
+    },
+    {
+      "name": "Horns",
+      "count": 2,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.G2KnbYhwZ2xfT3wM",
+        "Compendium.vagabond.bestiary.Actor.vEW7TmLM86ZiFWRX"
+      ],
+      "attackTypes": {
+        "melee": 2
+      },
+      "damageTypes": {
+        "-": 2
+      },
+      "flatDamageRange": [
+        5,
+        16
+      ],
+      "rollDamageVariants": [
+        "2d4",
+        "3d10"
+      ],
+      "hasCausedStatuses": 0,
+      "hasRecharge": 0
+    },
+    {
+      "name": "Hurl Fire",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.56Wb96lj19hGzOB9"
+      ],
+      "attackTypes": {
+        "castRanged": 1
+      },
+      "damageTypes": {
+        "fire": 1
+      },
+      "flatDamageRange": [
+        3,
+        3
+      ],
+      "rollDamageVariants": [
+        "1d6"
+      ],
+      "hasCausedStatuses": 1,
+      "hasRecharge": 0
+    },
+    {
+      "name": "Ice Knife",
+      "count": 2,
+      "monsters": [
+        "Compendium.vagabond.humanlike.Actor.SuDEcZVOA7NgqkXa",
+        "Compendium.vagabond.humanlike.Actor.tdntLkl8mjrX8Yfb"
+      ],
+      "attackTypes": {
+        "castRanged": 2
+      },
+      "damageTypes": {
+        "-": 2
+      },
+      "flatDamageRange": [
+        7,
+        7
+      ],
+      "rollDamageVariants": [
+        "2d6"
+      ],
+      "hasCausedStatuses": 0,
+      "hasRecharge": 0
+    },
+    {
+      "name": "Inspiring Anthem",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.humanlike.Actor.zN8WKLkLBGMf1i2V"
+      ],
+      "attackTypes": {
+        "melee": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        0,
+        0
+      ],
+      "rollDamageVariants": [],
+      "hasCausedStatuses": 0,
+      "hasRecharge": 0
+    },
+    {
+      "name": "Invisibility",
+      "count": 2,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.OI2CyIrhee1JOYlv",
+        "Compendium.vagabond.bestiary.Actor.WPWcwr72e6bVPaAx"
+      ],
+      "attackTypes": {
+        "castClose": 2
+      },
+      "damageTypes": {
+        "-": 2
+      },
+      "flatDamageRange": [
+        0,
+        0
+      ],
+      "rollDamageVariants": [],
+      "hasCausedStatuses": 1,
+      "hasRecharge": 0
+    },
+    {
+      "name": "Jaw Lock",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.kj19gjrvuuO3lUjK"
+      ],
+      "attackTypes": {
+        "melee": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        5,
+        5
+      ],
+      "rollDamageVariants": [
+        "2d4"
+      ],
+      "hasCausedStatuses": 1,
+      "hasRecharge": 0
+    },
+    {
+      "name": "Kiss",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.mPEirZNos2d7EOoJ"
+      ],
+      "attackTypes": {
+        "melee": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        0,
+        0
+      ],
+      "rollDamageVariants": [],
+      "hasCausedStatuses": 0,
+      "hasRecharge": 0
+    },
+    {
+      "name": "Lance",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.MV5G94cDuVi9tKt9"
+      ],
+      "attackTypes": {
+        "melee": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        13,
+        13
+      ],
+      "rollDamageVariants": [
+        "2d12"
+      ],
+      "hasCausedStatuses": 0,
+      "hasRecharge": 0
+    },
+    {
+      "name": "Laser",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.Xc30d0v7k9g20Nmu"
+      ],
+      "attackTypes": {
+        "ranged": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        14,
+        14
+      ],
+      "rollDamageVariants": [
+        "4d6"
+      ],
+      "hasCausedStatuses": 0,
+      "hasRecharge": 1
+    },
+    {
+      "name": "Latch",
+      "count": 2,
+      "monsters": [
+        "Compendium.vagabond-character-enhancer.vce-beasts.Actor.AZzWsYRh4XtykPfW",
+        "Compendium.vagabond.bestiary.Actor.5EWozL7AN3eZxhon"
+      ],
+      "attackTypes": {
+        "melee": 2
+      },
+      "damageTypes": {
+        "-": 2
+      },
+      "flatDamageRange": [
+        2,
+        2
+      ],
+      "rollDamageVariants": [
+        "1d4"
+      ],
+      "hasCausedStatuses": 2,
+      "hasRecharge": 0
+    },
+    {
+      "name": "Leech",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.QlBMPKwPxTNYRSfg"
+      ],
+      "attackTypes": {
+        "castRanged": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        3,
+        3
+      ],
+      "rollDamageVariants": [
+        "1d6"
+      ],
+      "hasCausedStatuses": 1,
+      "hasRecharge": 0
+    },
+    {
+      "name": "Life Drain",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.zJTSUTgRHCA1233u"
+      ],
+      "attackTypes": {
+        "melee": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        5,
+        5
+      ],
+      "rollDamageVariants": [
+        "2d4"
+      ],
+      "hasCausedStatuses": 0,
+      "hasRecharge": 0
+    },
+    {
+      "name": "Life Zap",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.CmGogAAhZOFHHJeG"
+      ],
+      "attackTypes": {
+        "castClose": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        5,
+        5
+      ],
+      "rollDamageVariants": [
+        "1d10"
+      ],
+      "hasCausedStatuses": 0,
+      "hasRecharge": 0
+    },
+    {
+      "name": "Light Crossbow",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.humanlike.Actor.TZZXAqnJt3awfjs3"
+      ],
+      "attackTypes": {
+        "ranged": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        2,
+        2
+      ],
+      "rollDamageVariants": [
+        "d4"
+      ],
+      "hasCausedStatuses": 0,
+      "hasRecharge": 0
+    },
+    {
+      "name": "Lightning Bolt",
+      "count": 3,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.mzHfFclIaG0WIeUi",
+        "Compendium.vagabond.humanlike.Actor.SuDEcZVOA7NgqkXa",
+        "Compendium.vagabond.humanlike.Actor.ibWhCUOSu77wCpLM"
+      ],
+      "attackTypes": {
+        "castRanged": 3
+      },
+      "damageTypes": {
+        "shock": 1,
+        "-": 2
+      },
+      "flatDamageRange": [
+        10,
+        21
+      ],
+      "rollDamageVariants": [
+        "3d6",
+        "6d6"
+      ],
+      "hasCausedStatuses": 2,
+      "hasRecharge": 3
+    },
+    {
+      "name": "Lion’s Bite",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.j96QNTFGxzOdM20K"
+      ],
+      "attackTypes": {
+        "melee": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        4,
+        4
+      ],
+      "rollDamageVariants": [
+        "1d8"
+      ],
+      "hasCausedStatuses": 0,
+      "hasRecharge": 0
+    },
+    {
+      "name": "Log Throw",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.ayNwvOBMadPIikBb"
+      ],
+      "attackTypes": {
+        "ranged": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        4,
+        4
+      ],
+      "rollDamageVariants": [
+        "1d8"
+      ],
+      "hasCausedStatuses": 0,
+      "hasRecharge": 0
+    },
+    {
+      "name": "Longbow",
+      "count": 2,
+      "monsters": [
+        "Compendium.vagabond.humanlike.Actor.FP8tMPuVxIXbK4fN",
+        "Compendium.vagabond.humanlike.Actor.Pgeg3m1KSHSgZFSE"
+      ],
+      "attackTypes": {
+        "ranged": 2
+      },
+      "damageTypes": {
+        "-": 2
+      },
+      "flatDamageRange": [
+        4,
+        4
+      ],
+      "rollDamageVariants": [
+        "d8"
+      ],
+      "hasCausedStatuses": 0,
+      "hasRecharge": 0
+    },
+    {
+      "name": "Longsword",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.Dq3ik1JY5uCLzUDV"
+      ],
+      "attackTypes": {
+        "melee": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        4,
+        4
+      ],
+      "rollDamageVariants": [
+        "1d8"
+      ],
+      "hasCausedStatuses": 0,
+      "hasRecharge": 0
+    },
+    {
+      "name": "Mace",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.humanlike.Actor.AemomWxuMN4xtRCO"
+      ],
+      "attackTypes": {
+        "melee": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        3,
+        3
+      ],
+      "rollDamageVariants": [
+        "d6"
+      ],
+      "hasCausedStatuses": 0,
+      "hasRecharge": 0
+    },
+    {
+      "name": "Magma Jet",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.TDwppLCtTNicN0kx"
+      ],
+      "attackTypes": {
+        "ranged": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        7,
+        7
+      ],
+      "rollDamageVariants": [
+        "2d6"
+      ],
+      "hasCausedStatuses": 1,
+      "hasRecharge": 0
+    },
+    {
+      "name": "Maul",
+      "count": 7,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.0AFjXcf1RLhiuE9M",
+        "Compendium.vagabond.bestiary.Actor.JEjyqTf7HImNj1hy",
+        "Compendium.vagabond.bestiary.Actor.KNtsLMtnvRRhzHq0",
+        "Compendium.vagabond.bestiary.Actor.TtjXGTTkkmhnyxmp",
+        "Compendium.vagabond.bestiary.Actor.tYaJPSfXV1L18hRM",
+        "Compendium.vagabond.humanlike.Actor.aD4znybU2n2ezbdF",
+        "Compendium.vagabond.humanlike.Actor.dA1mXxfWcoXO1mma"
+      ],
+      "attackTypes": {
+        "melee": 7
+      },
+      "damageTypes": {
+        "-": 7
+      },
+      "flatDamageRange": [
+        0,
+        5
+      ],
+      "rollDamageVariants": [
+        "d10"
+      ],
+      "hasCausedStatuses": 0,
+      "hasRecharge": 0
+    },
+    {
+      "name": "Mime",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.humanlike.Actor.YG6GEHVRn6Uufx0v"
+      ],
+      "attackTypes": {
+        "melee": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        0,
+        0
+      ],
+      "rollDamageVariants": [],
+      "hasCausedStatuses": 0,
+      "hasRecharge": 1
+    },
+    {
+      "name": "Mimic",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.Tpxw3uVrHbwDUmG2"
+      ],
+      "attackTypes": {
+        "melee": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        0,
+        0
+      ],
+      "rollDamageVariants": [],
+      "hasCausedStatuses": 0,
+      "hasRecharge": 0
+    },
+    {
+      "name": "Mind Blast",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.WgRHBofac5k3IUet"
+      ],
+      "attackTypes": {
+        "melee": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        10,
+        10
+      ],
+      "rollDamageVariants": [
+        "3d6"
+      ],
+      "hasCausedStatuses": 1,
+      "hasRecharge": 1
+    },
+    {
+      "name": "Morningstar",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.P4TI9ono7atq1wBw"
+      ],
+      "attackTypes": {
+        "melee": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        4,
+        4
+      ],
+      "rollDamageVariants": [
+        "1d8"
+      ],
+      "hasCausedStatuses": 0,
+      "hasRecharge": 0
+    },
+    {
+      "name": "Muddle",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.GueGlPk8Be6uhm0b"
+      ],
+      "attackTypes": {
+        "castRanged": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        0,
+        0
+      ],
+      "rollDamageVariants": [],
+      "hasCausedStatuses": 1,
+      "hasRecharge": 1
+    },
+    {
+      "name": "Multi-Attack",
+      "count": 9,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.4pxjze1TRnSTeGxV",
+        "Compendium.vagabond.bestiary.Actor.4vBxGDQxMm4xvHxQ",
+        "Compendium.vagabond.bestiary.Actor.64mVh7KUrDrCzHR5",
+        "Compendium.vagabond.bestiary.Actor.6y4J58Z8UGbrm2I2",
+        "Compendium.vagabond.bestiary.Actor.FsDuYyDw3jtO2KYC",
+        "Compendium.vagabond.bestiary.Actor.G2KnbYhwZ2xfT3wM",
+        "Compendium.vagabond.bestiary.Actor.OYXQp77BI8QgFh7s",
+        "Compendium.vagabond.bestiary.Actor.aSUaMBRdv6PsFx8Q",
+        "Compendium.vagabond.bestiary.Actor.ousYRudW4JSmruXi"
+      ],
+      "attackTypes": {
+        "melee": 9
+      },
+      "damageTypes": {
+        "-": 9
+      },
+      "flatDamageRange": [
+        0,
+        0
+      ],
+      "rollDamageVariants": [],
+      "hasCausedStatuses": 0,
+      "hasRecharge": 0
+    },
+    {
+      "name": "Multi-Attack 1",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.FHY3U8iRqDufmcZT"
+      ],
+      "attackTypes": {
+        "ranged": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        0,
+        0
+      ],
+      "rollDamageVariants": [],
+      "hasCausedStatuses": 0,
+      "hasRecharge": 1
+    },
+    {
+      "name": "Multi-Attack 2",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.FHY3U8iRqDufmcZT"
+      ],
+      "attackTypes": {
+        "melee": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        0,
+        0
+      ],
+      "rollDamageVariants": [],
+      "hasCausedStatuses": 0,
+      "hasRecharge": 0
+    },
+    {
+      "name": "Multi-Cast",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.iyCEulXgz8uABmdD"
+      ],
+      "attackTypes": {
+        "melee": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        0,
+        0
+      ],
+      "rollDamageVariants": [],
+      "hasCausedStatuses": 0,
+      "hasRecharge": 0
+    },
+    {
+      "name": "Necrotic Blast",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.humanlike.Actor.9wvYwUJ7mAU3eHcX"
+      ],
+      "attackTypes": {
+        "castRanged": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        7,
+        7
+      ],
+      "rollDamageVariants": [
+        "2d6"
+      ],
+      "hasCausedStatuses": 1,
+      "hasRecharge": 0
+    },
+    {
+      "name": "Noxious Gas",
+      "count": 2,
+      "monsters": [
+        "Compendium.vagabond-character-enhancer.vce-beasts.Actor.RMTbhlwSrzP7Zdls",
+        "Compendium.vagabond.bestiary.Actor.myX3mcLd7SWBpFku"
+      ],
+      "attackTypes": {
+        "melee": 2
+      },
+      "damageTypes": {
+        "-": 2
+      },
+      "flatDamageRange": [
+        7,
+        7
+      ],
+      "rollDamageVariants": [
+        "2d6"
+      ],
+      "hasCausedStatuses": 0,
+      "hasRecharge": 2
+    },
+    {
+      "name": "Nymph’s Kiss",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.wZ1lpFv59kCH9Pxj"
+      ],
+      "attackTypes": {
+        "castClose": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        0,
+        0
+      ],
+      "rollDamageVariants": [],
+      "hasCausedStatuses": 0,
+      "hasRecharge": 0
+    },
+    {
+      "name": "Panacea",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.humanlike.Actor.Xb2FnkVT17Wxdvvs"
+      ],
+      "attackTypes": {
+        "melee": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        0,
+        0
+      ],
+      "rollDamageVariants": [],
+      "hasCausedStatuses": 0,
+      "hasRecharge": 1
+    },
+    {
+      "name": "Peer Beyond",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.XqDi7xhYi8r25Eu7"
+      ],
+      "attackTypes": {
+        "castRanged": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        21,
+        21
+      ],
+      "rollDamageVariants": [
+        "6d6"
+      ],
+      "hasCausedStatuses": 1,
+      "hasRecharge": 1
+    },
+    {
+      "name": "Pick",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.38Ao3uZskQmybbHJ"
+      ],
+      "attackTypes": {
+        "melee": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        3,
+        3
+      ],
+      "rollDamageVariants": [
+        "1d6"
+      ],
+      "hasCausedStatuses": 0,
+      "hasRecharge": 0
+    },
+    {
+      "name": "Pin",
+      "count": 2,
+      "monsters": [
+        "Compendium.vagabond-character-enhancer.vce-beasts.Actor.ajcaro7daQnDoNm1",
+        "Compendium.vagabond.bestiary.Actor.jlHvHvDg3eWkNDNb"
+      ],
+      "attackTypes": {
+        "melee": 2
+      },
+      "damageTypes": {
+        "-": 2
+      },
+      "flatDamageRange": [
+        0,
+        0
+      ],
+      "rollDamageVariants": [],
+      "hasCausedStatuses": 0,
+      "hasRecharge": 0
+    },
+    {
+      "name": "Pincer",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.yJbVHu4txMW9HyRG"
+      ],
+      "attackTypes": {
+        "melee": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        7,
+        7
+      ],
+      "rollDamageVariants": [
+        "2d6"
+      ],
+      "hasCausedStatuses": 0,
+      "hasRecharge": 0
+    },
+    {
+      "name": "Poison Breath",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.uIRiPIcdtl00VHdb"
+      ],
+      "attackTypes": {
+        "castClose": 1
+      },
+      "damageTypes": {
+        "poison": 1
+      },
+      "flatDamageRange": [
+        2,
+        2
+      ],
+      "rollDamageVariants": [
+        "1d4"
+      ],
+      "hasCausedStatuses": 0,
+      "hasRecharge": 1
+    },
+    {
+      "name": "Pop",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.5Raq5NE9ahzB09RK"
+      ],
+      "attackTypes": {
+        "castClose": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        3,
+        3
+      ],
+      "rollDamageVariants": [
+        "1d6"
+      ],
+      "hasCausedStatuses": 0,
+      "hasRecharge": 1
+    },
+    {
+      "name": "Possession",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.7t0wb4hi6Oh7vAK1"
+      ],
+      "attackTypes": {
+        "castRanged": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        0,
+        0
+      ],
+      "rollDamageVariants": [],
+      "hasCausedStatuses": 0,
+      "hasRecharge": 1
+    },
+    {
+      "name": "Pseudopod",
+      "count": 8,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.1w5VfFT6iJ7890ac",
+        "Compendium.vagabond.bestiary.Actor.31QN4EUQL9G9fOTj",
+        "Compendium.vagabond.bestiary.Actor.JiYcX0LZZZCqhyrq",
+        "Compendium.vagabond.bestiary.Actor.RFENB7RObfPWSY34",
+        "Compendium.vagabond.bestiary.Actor.SvrccBltWb6a6zqw",
+        "Compendium.vagabond.bestiary.Actor.Tpxw3uVrHbwDUmG2",
+        "Compendium.vagabond.bestiary.Actor.YCnTX125wazTwDGe",
+        "Compendium.vagabond.bestiary.Actor.gpu0T0RHM0TvQO5U"
+      ],
+      "attackTypes": {
+        "melee": 8
+      },
+      "damageTypes": {
+        "-": 8
+      },
+      "flatDamageRange": [
+        0,
+        13
+      ],
+      "rollDamageVariants": [
+        "2d6",
+        "2d8",
+        "3d4",
+        "3d8"
+      ],
+      "hasCausedStatuses": 1,
+      "hasRecharge": 0
+    },
+    {
+      "name": "Radiance",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.2Wx5RcpuRN8Nw6T0"
+      ],
+      "attackTypes": {
+        "castRanged": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        0,
+        0
+      ],
+      "rollDamageVariants": [],
+      "hasCausedStatuses": 0,
+      "hasRecharge": 0
+    },
+    {
+      "name": "Rally",
+      "count": 4,
+      "monsters": [
+        "Compendium.vagabond.humanlike.Actor.aD4znybU2n2ezbdF",
+        "Compendium.vagabond.humanlike.Actor.dA1mXxfWcoXO1mma",
+        "Compendium.vagabond.humanlike.Actor.ggnyh61eqHCSYSlf",
+        "Compendium.vagabond.humanlike.Actor.t4LwKjA1gDld7TgW"
+      ],
+      "attackTypes": {
+        "melee": 3,
+        "castClose": 1
+      },
+      "damageTypes": {
+        "-": 4
+      },
+      "flatDamageRange": [
+        0,
+        0
+      ],
+      "rollDamageVariants": [],
+      "hasCausedStatuses": 0,
+      "hasRecharge": 0
+    },
+    {
+      "name": "Rapier",
+      "count": 2,
+      "monsters": [
+        "Compendium.vagabond.humanlike.Actor.t4LwKjA1gDld7TgW",
+        "Compendium.vagabond.humanlike.Actor.zN8WKLkLBGMf1i2V"
+      ],
+      "attackTypes": {
+        "melee": 2
+      },
+      "damageTypes": {
+        "-": 2
+      },
+      "flatDamageRange": [
+        3,
+        3
+      ],
+      "rollDamageVariants": [
+        "d6"
+      ],
+      "hasCausedStatuses": 0,
+      "hasRecharge": 0
+    },
+    {
+      "name": "Reality Warp",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.qtILksrMEcYJ47Be"
+      ],
+      "attackTypes": {
+        "castRanged": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        0,
+        0
+      ],
+      "rollDamageVariants": [],
+      "hasCausedStatuses": 0,
+      "hasRecharge": 0
+    },
+    {
+      "name": "Restoration",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.35jFokbHaywW57P4"
+      ],
+      "attackTypes": {
+        "castClose": 1
+      },
+      "damageTypes": {
+        "healing": 1
+      },
+      "flatDamageRange": [
+        10,
+        10
+      ],
+      "rollDamageVariants": [
+        "3d6"
+      ],
+      "hasCausedStatuses": 0,
+      "hasRecharge": 0
+    },
+    {
+      "name": "Resurrect",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.rb5dVb8peFW4RUIT"
+      ],
+      "attackTypes": {
+        "castClose": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        0,
+        0
+      ],
+      "rollDamageVariants": [],
+      "hasCausedStatuses": 0,
+      "hasRecharge": 1
+    },
+    {
+      "name": "Rifle",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.humanlike.Actor.hFAYCTxu7vKNz9mn"
+      ],
+      "attackTypes": {
+        "ranged": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        4,
+        4
+      ],
+      "rollDamageVariants": [
+        "d8"
+      ],
+      "hasCausedStatuses": 0,
+      "hasRecharge": 0
+    },
+    {
+      "name": "Ripsaw",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.KOz3gxILuvDESwJZ"
+      ],
+      "attackTypes": {
+        "melee": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        7,
+        7
+      ],
+      "rollDamageVariants": [
+        "2d6"
+      ],
+      "hasCausedStatuses": 0,
+      "hasRecharge": 0
+    },
+    {
+      "name": "Roar",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.rTePiNbB8qag6HnP"
+      ],
+      "attackTypes": {
+        "castRanged": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        0,
+        0
+      ],
+      "rollDamageVariants": [],
+      "hasCausedStatuses": 1,
+      "hasRecharge": 1
+    },
+    {
+      "name": "Rock",
+      "count": 4,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.0ZQ07sDbVFlUij3q",
+        "Compendium.vagabond.bestiary.Actor.Y3Y7L4mPVrcxG9O9",
+        "Compendium.vagabond.bestiary.Actor.ZVKHvtT8HSgrZSej",
+        "Compendium.vagabond.humanlike.Actor.iNyB5vndkNTYts7z"
+      ],
+      "attackTypes": {
+        "ranged": 4
+      },
+      "damageTypes": {
+        "-": 4
+      },
+      "flatDamageRange": [
+        1,
+        9
+      ],
+      "rollDamageVariants": [
+        "2d6"
+      ],
+      "hasCausedStatuses": 0,
+      "hasRecharge": 0
+    },
+    {
+      "name": "Sabotage",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.nmjWVM9zzRXsEuCZ"
+      ],
+      "attackTypes": {
+        "castClose": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        0,
+        0
+      ],
+      "rollDamageVariants": [],
+      "hasCausedStatuses": 0,
+      "hasRecharge": 1
+    },
+    {
+      "name": "Sacred Flame",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.humanlike.Actor.AemomWxuMN4xtRCO"
+      ],
+      "attackTypes": {
+        "melee": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        7,
+        7
+      ],
+      "rollDamageVariants": [
+        "2d6"
+      ],
+      "hasCausedStatuses": 1,
+      "hasRecharge": 0
+    },
+    {
+      "name": "Scream",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.gYBtO8FpqNSE26so"
+      ],
+      "attackTypes": {
+        "castRanged": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        0,
+        0
+      ],
+      "rollDamageVariants": [],
+      "hasCausedStatuses": 1,
+      "hasRecharge": 1
+    },
+    {
+      "name": "Scythe",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.veGvTkYC104yHS0D"
+      ],
+      "attackTypes": {
+        "melee": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        9,
+        9
+      ],
+      "rollDamageVariants": [
+        "2d8"
+      ],
+      "hasCausedStatuses": 0,
+      "hasRecharge": 0
+    },
+    {
+      "name": "Shapechange",
+      "count": 2,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.35jFokbHaywW57P4",
+        "Compendium.vagabond.bestiary.Actor.XaZlVpSeim63R5a4"
+      ],
+      "attackTypes": {
+        "castClose": 2
+      },
+      "damageTypes": {
+        "-": 2
+      },
+      "flatDamageRange": [
+        0,
+        0
+      ],
+      "rollDamageVariants": [],
+      "hasCausedStatuses": 0,
+      "hasRecharge": 1
+    },
+    {
+      "name": "Shapeshift",
+      "count": 2,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.DIXBdymeCr9HUJOd",
+        "Compendium.vagabond.bestiary.Actor.ZXpSxKZH1Zj3fBcP"
+      ],
+      "attackTypes": {
+        "castClose": 2
+      },
+      "damageTypes": {
+        "-": 2
+      },
+      "flatDamageRange": [
+        0,
+        0
+      ],
+      "rollDamageVariants": [],
+      "hasCausedStatuses": 0,
+      "hasRecharge": 0
+    },
+    {
+      "name": "Shock",
+      "count": 2,
+      "monsters": [
+        "Compendium.vagabond-character-enhancer.vce-beasts.Actor.QeI6mp9PaMOn5til",
+        "Compendium.vagabond.bestiary.Actor.ivaexVLsiJiQlx9L"
+      ],
+      "attackTypes": {
+        "melee": 2
+      },
+      "damageTypes": {
+        "-": 2
+      },
+      "flatDamageRange": [
+        7,
+        7
+      ],
+      "rollDamageVariants": [
+        "2d6"
+      ],
+      "hasCausedStatuses": 1,
+      "hasRecharge": 0
+    },
+    {
+      "name": "Shortbow",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.qtKz79tM6rnnKOq8"
+      ],
+      "attackTypes": {
+        "ranged": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        3,
+        3
+      ],
+      "rollDamageVariants": [
+        "1d6"
+      ],
+      "hasCausedStatuses": 0,
+      "hasRecharge": 0
+    },
+    {
+      "name": "Shriek",
+      "count": 2,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.lfHGD4OvbUEXP4wJ",
+        "Compendium.vagabond.bestiary.Actor.mPEirZNos2d7EOoJ"
+      ],
+      "attackTypes": {
+        "castClose": 1,
+        "castRanged": 1
+      },
+      "damageTypes": {
+        "-": 2
+      },
+      "flatDamageRange": [
+        0,
+        0
+      ],
+      "rollDamageVariants": [],
+      "hasCausedStatuses": 2,
+      "hasRecharge": 1
+    },
+    {
+      "name": "Slam",
+      "count": 13,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.64mVh7KUrDrCzHR5",
+        "Compendium.vagabond.bestiary.Actor.9qmdxUzE04c5cprG",
+        "Compendium.vagabond.bestiary.Actor.Dk22iH4Qt3b04hle",
+        "Compendium.vagabond.bestiary.Actor.KQSHQH9otaxpToPF",
+        "Compendium.vagabond.bestiary.Actor.LHeJZ3DFQ1ni6og1",
+        "Compendium.vagabond.bestiary.Actor.NI1b4rIPgJKsLKQJ",
+        "Compendium.vagabond.bestiary.Actor.RCrdmkp96a9uhfT2",
+        "Compendium.vagabond.bestiary.Actor.W5kmv1bYrErmzoUI",
+        "Compendium.vagabond.bestiary.Actor.Xc30d0v7k9g20Nmu",
+        "Compendium.vagabond.bestiary.Actor.gMKwv81k8AHuZBk0",
+        "Compendium.vagabond.bestiary.Actor.mRKPp10Yiq0n7ddR",
+        "Compendium.vagabond.bestiary.Actor.pjgK1vqOzpVobYj0",
+        "Compendium.vagabond.bestiary.Actor.qoDcl5FH8moHJYq9"
+      ],
+      "attackTypes": {
+        "melee": 13
+      },
+      "damageTypes": {
+        "-": 13
+      },
+      "flatDamageRange": [
+        2,
+        39
+      ],
+      "rollDamageVariants": [
+        "1d4",
+        "1d8",
+        "2d10",
+        "2d6",
+        "2d8",
+        "3d8",
+        "6d12",
+        "6d6"
+      ],
+      "hasCausedStatuses": 5,
+      "hasRecharge": 0
+    },
+    {
+      "name": "Slash",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.l0R5eP2Gp0WC6QPq"
+      ],
+      "attackTypes": {
+        "melee": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        4,
+        4
+      ],
+      "rollDamageVariants": [
+        "1d8"
+      ],
+      "hasCausedStatuses": 0,
+      "hasRecharge": 0
+    },
+    {
+      "name": "Sleep",
+      "count": 2,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.OI2CyIrhee1JOYlv",
+        "Compendium.vagabond.bestiary.Actor.vEW7TmLM86ZiFWRX"
+      ],
+      "attackTypes": {
+        "castRanged": 2
+      },
+      "damageTypes": {
+        "-": 2
+      },
+      "flatDamageRange": [
+        0,
+        0
+      ],
+      "rollDamageVariants": [],
+      "hasCausedStatuses": 2,
+      "hasRecharge": 2
+    },
+    {
+      "name": "Sling",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.cClSRTp1wi5nKiTn"
+      ],
+      "attackTypes": {
+        "ranged": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        2,
+        2
+      ],
+      "rollDamageVariants": [
+        "1d4"
+      ],
+      "hasCausedStatuses": 0,
+      "hasRecharge": 0
+    },
+    {
+      "name": "Slow Down",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.RCrdmkp96a9uhfT2"
+      ],
+      "attackTypes": {
+        "castRanged": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        0,
+        0
+      ],
+      "rollDamageVariants": [],
+      "hasCausedStatuses": 1,
+      "hasRecharge": 1
+    },
+    {
+      "name": "Smoky Escape",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.tzcSHcrAb3ht8Xu2"
+      ],
+      "attackTypes": {
+        "melee": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        7,
+        7
+      ],
+      "rollDamageVariants": [
+        "2d6"
+      ],
+      "hasCausedStatuses": 0,
+      "hasRecharge": 0
+    },
+    {
+      "name": "Snakebite",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.7xz66vMa0tsqNKqx"
+      ],
+      "attackTypes": {
+        "melee": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        3,
+        3
+      ],
+      "rollDamageVariants": [
+        "1d6"
+      ],
+      "hasCausedStatuses": 1,
+      "hasRecharge": 1
+    },
+    {
+      "name": "Snip-Snip",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.pvwYATClTGQw2qgU"
+      ],
+      "attackTypes": {
+        "melee": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        0,
+        0
+      ],
+      "rollDamageVariants": [],
+      "hasCausedStatuses": 0,
+      "hasRecharge": 0
+    },
+    {
+      "name": "Song of Discord",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.5oYLWXICi7KYOtla"
+      ],
+      "attackTypes": {
+        "castRanged": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        0,
+        0
+      ],
+      "rollDamageVariants": [],
+      "hasCausedStatuses": 1,
+      "hasRecharge": 0
+    },
+    {
+      "name": "Spawn",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.qNPV7PkPDVdXdCJ4"
+      ],
+      "attackTypes": {
+        "melee": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        0,
+        0
+      ],
+      "rollDamageVariants": [],
+      "hasCausedStatuses": 0,
+      "hasRecharge": 0
+    },
+    {
+      "name": "Spear",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.F0RHdKPPAxKpxtnG"
+      ],
+      "attackTypes": {
+        "melee": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        3,
+        3
+      ],
+      "rollDamageVariants": [
+        "1d6"
+      ],
+      "hasCausedStatuses": 0,
+      "hasRecharge": 0
+    },
+    {
+      "name": "Spike",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.wKPKn9Xuvj4SJA6I"
+      ],
+      "attackTypes": {
+        "melee": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        4,
+        4
+      ],
+      "rollDamageVariants": [
+        "1d8"
+      ],
+      "hasCausedStatuses": 0,
+      "hasRecharge": 0
+    },
+    {
+      "name": "Spin-Thrash",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.aAONbN10F5bLslSE"
+      ],
+      "attackTypes": {
+        "castClose": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        9,
+        9
+      ],
+      "rollDamageVariants": [
+        "2d8"
+      ],
+      "hasCausedStatuses": 0,
+      "hasRecharge": 1
+    },
+    {
+      "name": "Spit",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.iDD1iA0svCS8AINS"
+      ],
+      "attackTypes": {
+        "ranged": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        0,
+        0
+      ],
+      "rollDamageVariants": [],
+      "hasCausedStatuses": 1,
+      "hasRecharge": 0
+    },
+    {
+      "name": "Spit Acid",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.FwKNYxhPvyTu4D1c"
+      ],
+      "attackTypes": {
+        "ranged": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        2,
+        2
+      ],
+      "rollDamageVariants": [
+        "1d4"
+      ],
+      "hasCausedStatuses": 1,
+      "hasRecharge": 0
+    },
+    {
+      "name": "Staff",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.0ggPx89IztNk2YN8"
+      ],
+      "attackTypes": {
+        "melee": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        2,
+        2
+      ],
+      "rollDamageVariants": [
+        "1d4"
+      ],
+      "hasCausedStatuses": 0,
+      "hasRecharge": 0
+    },
+    {
+      "name": "Stampede",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.hoo4mqGpqwc1cJA5"
+      ],
+      "attackTypes": {
+        "melee": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        0,
+        0
+      ],
+      "rollDamageVariants": [],
+      "hasCausedStatuses": 0,
+      "hasRecharge": 0
+    },
+    {
+      "name": "Steam Breath",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.4vBxGDQxMm4xvHxQ"
+      ],
+      "attackTypes": {
+        "castRanged": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        28,
+        28
+      ],
+      "rollDamageVariants": [
+        "8d6"
+      ],
+      "hasCausedStatuses": 1,
+      "hasRecharge": 1
+    },
+    {
+      "name": "Sting",
+      "count": 5,
+      "monsters": [
+        "Compendium.vagabond-character-enhancer.vce-beasts.Actor.ajcaro7daQnDoNm1",
+        "Compendium.vagabond.bestiary.Actor.McZrbb872Ohd6o7u",
+        "Compendium.vagabond.bestiary.Actor.NrXxQx5CSfn4Ojzx",
+        "Compendium.vagabond.bestiary.Actor.bI1V6pqJkiiIGEYJ",
+        "Compendium.vagabond.bestiary.Actor.jlHvHvDg3eWkNDNb"
+      ],
+      "attackTypes": {
+        "melee": 5
+      },
+      "damageTypes": {
+        "-": 5
+      },
+      "flatDamageRange": [
+        2,
+        5
+      ],
+      "rollDamageVariants": [
+        "1d4",
+        "1d8",
+        "2d4"
+      ],
+      "hasCausedStatuses": 4,
+      "hasRecharge": 0
+    },
+    {
+      "name": "Stinger",
+      "count": 2,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.GC7oKXEGCyiVXrxw",
+        "Compendium.vagabond.bestiary.Actor.OYXQp77BI8QgFh7s"
+      ],
+      "attackTypes": {
+        "melee": 2
+      },
+      "damageTypes": {
+        "-": 2
+      },
+      "flatDamageRange": [
+        1,
+        3
+      ],
+      "rollDamageVariants": [
+        "1d3",
+        "1d6"
+      ],
+      "hasCausedStatuses": 1,
+      "hasRecharge": 2
+    },
+    {
+      "name": "Stomp",
+      "count": 6,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.DhEz76COsuB6EsEn",
+        "Compendium.vagabond.bestiary.Actor.WcINvXEZIYp4rO4s",
+        "Compendium.vagabond.bestiary.Actor.hoo4mqGpqwc1cJA5",
+        "Compendium.vagabond.bestiary.Actor.k3EwC9SOab0RkAOM",
+        "Compendium.vagabond.bestiary.Actor.kFvtJftws2UsK1rE",
+        "Compendium.vagabond.bestiary.Actor.whdFCj27KB6OnkRI"
+      ],
+      "attackTypes": {
+        "melee": 6
+      },
+      "damageTypes": {
+        "-": 6
+      },
+      "flatDamageRange": [
+        2,
+        25
+      ],
+      "rollDamageVariants": [
+        "1d4",
+        "1d6",
+        "2d8",
+        "3d6",
+        "4d10+3",
+        "4d8"
+      ],
+      "hasCausedStatuses": 1,
+      "hasRecharge": 0
+    },
+    {
+      "name": "Storm Bringer",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.jO00LGH0j3HNTGve"
+      ],
+      "attackTypes": {
+        "castRanged": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        0,
+        0
+      ],
+      "rollDamageVariants": [],
+      "hasCausedStatuses": 0,
+      "hasRecharge": 1
+    },
+    {
+      "name": "Strike",
+      "count": 6,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.1MdGIIKX4t4kz9Ok",
+        "Compendium.vagabond.bestiary.Actor.6LjwOPsMtm36DT2g",
+        "Compendium.vagabond.bestiary.Actor.MgwGpLpfzFgXxgEz",
+        "Compendium.vagabond.bestiary.Actor.hK1ium0CxnRa06ba",
+        "Compendium.vagabond.bestiary.Actor.x6LlT39h6rhvtCQi",
+        "Compendium.vagabond.bestiary.Actor.xx33Zy89J7w2Jbmf"
+      ],
+      "attackTypes": {
+        "melee": 6
+      },
+      "damageTypes": {
+        "-": 6
+      },
+      "flatDamageRange": [
+        4,
+        13
+      ],
+      "rollDamageVariants": [
+        "1d8",
+        "2d8",
+        "3d8"
+      ],
+      "hasCausedStatuses": 0,
+      "hasRecharge": 0
+    },
+    {
+      "name": "Stun",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.AJp7YGvfDGB2C1Yp"
+      ],
+      "attackTypes": {
+        "castRanged": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        0,
+        0
+      ],
+      "rollDamageVariants": [],
+      "hasCausedStatuses": 1,
+      "hasRecharge": 1
+    },
+    {
+      "name": "Sucker",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.nTDQhDi3B8l7kMUB"
+      ],
+      "attackTypes": {
+        "melee": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        0,
+        0
+      ],
+      "rollDamageVariants": [],
+      "hasCausedStatuses": 1,
+      "hasRecharge": 0
+    },
+    {
+      "name": "Symbol of Pain",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.tox2rxTF7WFaqSJk"
+      ],
+      "attackTypes": {
+        "castRanged": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        0,
+        0
+      ],
+      "rollDamageVariants": [],
+      "hasCausedStatuses": 0,
+      "hasRecharge": 1
+    },
+    {
+      "name": "Tail",
+      "count": 19,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.87OFFZOTxFeRldz8",
+        "Compendium.vagabond.bestiary.Actor.ATWC3zLqqZCvDLGF",
+        "Compendium.vagabond.bestiary.Actor.G2KnbYhwZ2xfT3wM",
+        "Compendium.vagabond.bestiary.Actor.Ht9KJUOiRr1qjSQ2",
+        "Compendium.vagabond.bestiary.Actor.MDeTATYPlrz4jjQb",
+        "Compendium.vagabond.bestiary.Actor.OtEJxfZ13jBJ1apz",
+        "Compendium.vagabond.bestiary.Actor.Uylf41QzuircJejb",
+        "Compendium.vagabond.bestiary.Actor.ZNYqDZ9n236roSBY",
+        "Compendium.vagabond.bestiary.Actor.cUT2qxNSbgNpwhOT",
+        "Compendium.vagabond.bestiary.Actor.eim4ggishfz85XVX",
+        "Compendium.vagabond.bestiary.Actor.fH1TAjmzFTDXdlHF",
+        "Compendium.vagabond.bestiary.Actor.gOWR3pPKIEMyriVy",
+        "Compendium.vagabond.bestiary.Actor.kFvtJftws2UsK1rE",
+        "Compendium.vagabond.bestiary.Actor.nZBfS7RH0A7N9v11",
+        "Compendium.vagabond.bestiary.Actor.peS6wk3Zv8WiS5Dd",
+        "Compendium.vagabond.bestiary.Actor.qi6QdSz3VDqGVx9X",
+        "Compendium.vagabond.bestiary.Actor.tox2rxTF7WFaqSJk",
+        "Compendium.vagabond.bestiary.Actor.trLqdRvjz70izXqj",
+        "Compendium.vagabond.bestiary.Actor.zwwV8fXQhYzPQfKp"
+      ],
+      "attackTypes": {
+        "melee": 19
+      },
+      "damageTypes": {
+        "-": 19
+      },
+      "flatDamageRange": [
+        3,
+        22
+      ],
+      "rollDamageVariants": [
+        "1d10",
+        "1d12",
+        "1d6",
+        "1d8",
+        "2d4",
+        "3d8",
+        "5d8"
+      ],
+      "hasCausedStatuses": 19,
+      "hasRecharge": 0
+    },
+    {
+      "name": "Tail Spike",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.FHY3U8iRqDufmcZT"
+      ],
+      "attackTypes": {
+        "ranged": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        3,
+        3
+      ],
+      "rollDamageVariants": [
+        "1d6"
+      ],
+      "hasCausedStatuses": 0,
+      "hasRecharge": 0
+    },
+    {
+      "name": "Talon",
+      "count": 5,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.FdAlnzOqsprGIwwP",
+        "Compendium.vagabond.bestiary.Actor.S5JBdu7eIlAWclHE",
+        "Compendium.vagabond.bestiary.Actor.ousYRudW4JSmruXi",
+        "Compendium.vagabond.bestiary.Actor.rb5dVb8peFW4RUIT",
+        "Compendium.vagabond.bestiary.Actor.tzcSHcrAb3ht8Xu2"
+      ],
+      "attackTypes": {
+        "melee": 5
+      },
+      "damageTypes": {
+        "-": 5
+      },
+      "flatDamageRange": [
+        1,
+        7
+      ],
+      "rollDamageVariants": [
+        "1d8",
+        "2d6"
+      ],
+      "hasCausedStatuses": 1,
+      "hasRecharge": 0
+    },
+    {
+      "name": "Teleport",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.hPna41WWprqcqawU"
+      ],
+      "attackTypes": {
+        "castClose": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        0,
+        0
+      ],
+      "rollDamageVariants": [],
+      "hasCausedStatuses": 0,
+      "hasRecharge": 1
+    },
+    {
+      "name": "Temporal Lock",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.0yQoEPuPUHUKwEAv"
+      ],
+      "attackTypes": {
+        "castRanged": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        0,
+        0
+      ],
+      "rollDamageVariants": [],
+      "hasCausedStatuses": 1,
+      "hasRecharge": 1
+    },
+    {
+      "name": "Tendril",
+      "count": 3,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.LWsvMezQ9BvCYFfJ",
+        "Compendium.vagabond.bestiary.Actor.iHkYA8Y2dGZ5bOXb",
+        "Compendium.vagabond.bestiary.Actor.kcqeeuQ2oDfyKaak"
+      ],
+      "attackTypes": {
+        "melee": 3
+      },
+      "damageTypes": {
+        "-": 3
+      },
+      "flatDamageRange": [
+        0,
+        9
+      ],
+      "rollDamageVariants": [
+        "2d4",
+        "2d8"
+      ],
+      "hasCausedStatuses": 2,
+      "hasRecharge": 0
+    },
+    {
+      "name": "Tentacle",
+      "count": 10,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.Dl66ByoWtgTfWJ7C",
+        "Compendium.vagabond.bestiary.Actor.GAMXQgxdOS165gB8",
+        "Compendium.vagabond.bestiary.Actor.JdG9XdEO8Gk3vwpV",
+        "Compendium.vagabond.bestiary.Actor.QP5xEKlWLoRQhS3t",
+        "Compendium.vagabond.bestiary.Actor.T2fW1gvdOsDS4D5J",
+        "Compendium.vagabond.bestiary.Actor.WgRHBofac5k3IUet",
+        "Compendium.vagabond.bestiary.Actor.XJXb7O120A5ewg1N",
+        "Compendium.vagabond.bestiary.Actor.hpvz01W4mhKZDyrq",
+        "Compendium.vagabond.bestiary.Actor.mzHfFclIaG0WIeUi",
+        "Compendium.vagabond.bestiary.Actor.uDjwEv1gpStc0WzJ"
+      ],
+      "attackTypes": {
+        "melee": 10
+      },
+      "damageTypes": {
+        "-": 10
+      },
+      "flatDamageRange": [
+        0,
+        13
+      ],
+      "rollDamageVariants": [
+        "1d4",
+        "1d8",
+        "2d4",
+        "3d8",
+        "d4"
+      ],
+      "hasCausedStatuses": 7,
+      "hasRecharge": 0
+    },
+    {
+      "name": "Tentacle (Restraining)",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.hpvz01W4mhKZDyrq"
+      ],
+      "attackTypes": {
+        "melee": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        7,
+        7
+      ],
+      "rollDamageVariants": [
+        "2d6"
+      ],
+      "hasCausedStatuses": 1,
+      "hasRecharge": 0
+    },
+    {
+      "name": "Terror Glare",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.317tiGBZWk0gxSVp"
+      ],
+      "attackTypes": {
+        "castRanged": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        0,
+        0
+      ],
+      "rollDamageVariants": [],
+      "hasCausedStatuses": 1,
+      "hasRecharge": 1
+    },
+    {
+      "name": "Tongue",
+      "count": 3,
+      "monsters": [
+        "Compendium.vagabond-character-enhancer.vce-beasts.Actor.o7OJb0cb96O8p9Ip",
+        "Compendium.vagabond.bestiary.Actor.QP5xEKlWLoRQhS3t",
+        "Compendium.vagabond.bestiary.Actor.j9pfmlTLheG41ABq"
+      ],
+      "attackTypes": {
+        "melee": 3
+      },
+      "damageTypes": {
+        "-": 3
+      },
+      "flatDamageRange": [
+        0,
+        0
+      ],
+      "rollDamageVariants": [],
+      "hasCausedStatuses": 3,
+      "hasRecharge": 0
+    },
+    {
+      "name": "Trample",
+      "count": 2,
+      "monsters": [
+        "Compendium.vagabond-character-enhancer.vce-beasts.Actor.TITBvQ5rSTFtkWxg",
+        "Compendium.vagabond.bestiary.Actor.dEVG8wVR7MfyZgv9"
+      ],
+      "attackTypes": {
+        "melee": 2
+      },
+      "damageTypes": {
+        "-": 2
+      },
+      "flatDamageRange": [
+        18,
+        18
+      ],
+      "rollDamageVariants": [
+        "4d8"
+      ],
+      "hasCausedStatuses": 0,
+      "hasRecharge": 2
+    },
+    {
+      "name": "Trident",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.jO00LGH0j3HNTGve"
+      ],
+      "attackTypes": {
+        "melee": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        3,
+        3
+      ],
+      "rollDamageVariants": [
+        "1d6"
+      ],
+      "hasCausedStatuses": 0,
+      "hasRecharge": 0
+    },
+    {
+      "name": "Turn Undead",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.humanlike.Actor.AemomWxuMN4xtRCO"
+      ],
+      "attackTypes": {
+        "castRanged": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        0,
+        0
+      ],
+      "rollDamageVariants": [],
+      "hasCausedStatuses": 1,
+      "hasRecharge": 1
+    },
+    {
+      "name": "Tusk",
+      "count": 5,
+      "monsters": [
+        "Compendium.vagabond-character-enhancer.vce-beasts.Actor.TITBvQ5rSTFtkWxg",
+        "Compendium.vagabond.bestiary.Actor.9C6nnuhCslXCKstl",
+        "Compendium.vagabond.bestiary.Actor.dEVG8wVR7MfyZgv9",
+        "Compendium.vagabond.bestiary.Actor.k3EwC9SOab0RkAOM",
+        "Compendium.vagabond.bestiary.Actor.uHLuS9QzxsZiqviW"
+      ],
+      "attackTypes": {
+        "melee": 5
+      },
+      "damageTypes": {
+        "-": 5
+      },
+      "flatDamageRange": [
+        5,
+        7
+      ],
+      "rollDamageVariants": [
+        "2d4",
+        "2d6"
+      ],
+      "hasCausedStatuses": 0,
+      "hasRecharge": 0
+    },
+    {
+      "name": "Venom Spit",
+      "count": 2,
+      "monsters": [
+        "Compendium.vagabond-character-enhancer.vce-beasts.Actor.39jRavnXM36LTREo",
+        "Compendium.vagabond.bestiary.Actor.XPOst99o80XqI6KY"
+      ],
+      "attackTypes": {
+        "ranged": 2
+      },
+      "damageTypes": {
+        "-": 2
+      },
+      "flatDamageRange": [
+        0,
+        0
+      ],
+      "rollDamageVariants": [],
+      "hasCausedStatuses": 2,
+      "hasRecharge": 2
+    },
+    {
+      "name": "Vine",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.EjmMNTTsfwFpGdKW"
+      ],
+      "attackTypes": {
+        "melee": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        4,
+        4
+      ],
+      "rollDamageVariants": [
+        "1d8"
+      ],
+      "hasCausedStatuses": 1,
+      "hasRecharge": 0
+    },
+    {
+      "name": "Viscera Sling",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.IK2zXCOyRBKU8rS2"
+      ],
+      "attackTypes": {
+        "ranged": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        3,
+        3
+      ],
+      "rollDamageVariants": [
+        "1d6"
+      ],
+      "hasCausedStatuses": 1,
+      "hasRecharge": 0
+    },
+    {
+      "name": "Wail",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.6l3L0a8gHCSRGPlQ"
+      ],
+      "attackTypes": {
+        "castClose": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        0,
+        0
+      ],
+      "rollDamageVariants": [],
+      "hasCausedStatuses": 1,
+      "hasRecharge": 1
+    },
+    {
+      "name": "Wall of Fire",
+      "count": 2,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.WPWcwr72e6bVPaAx",
+        "Compendium.vagabond.bestiary.Actor.tox2rxTF7WFaqSJk"
+      ],
+      "attackTypes": {
+        "castRanged": 2
+      },
+      "damageTypes": {
+        "-": 2
+      },
+      "flatDamageRange": [
+        0,
+        7
+      ],
+      "rollDamageVariants": [
+        "2d6"
+      ],
+      "hasCausedStatuses": 2,
+      "hasRecharge": 2
+    },
+    {
+      "name": "Weapon",
+      "count": 21,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.0PP2iH12NZJB7VoH",
+        "Compendium.vagabond.bestiary.Actor.8JzYAkpSslsI0HpO",
+        "Compendium.vagabond.bestiary.Actor.FTyGaeKSe3Hhi2aw",
+        "Compendium.vagabond.bestiary.Actor.IWiL8vs9JwuriDcX",
+        "Compendium.vagabond.bestiary.Actor.IcbNlle1cmGen0Kk",
+        "Compendium.vagabond.bestiary.Actor.gJlZhYArQK0sg2er",
+        "Compendium.vagabond.bestiary.Actor.gt8W22bMxmlzXVXi",
+        "Compendium.vagabond.bestiary.Actor.niDTL17izgqngzej",
+        "Compendium.vagabond.bestiary.Actor.rCrUMFfwgaBaii4d",
+        "Compendium.vagabond.bestiary.Actor.wvsqs13wZtUTrU69",
+        "Compendium.vagabond.bestiary.Actor.yn22rgWJrAqwqAV0",
+        "Compendium.vagabond.bestiary.Actor.zGwkpzRePCVK8HQE",
+        "Compendium.vagabond.humanlike.Actor.1mTDoi8ei7OS5F7K",
+        "Compendium.vagabond.humanlike.Actor.3NH0htaYJBRV1kxt",
+        "Compendium.vagabond.humanlike.Actor.5ZhZQtVVIopbiWQY",
+        "Compendium.vagabond.humanlike.Actor.9ExaW25RRMJOI5Du",
+        "Compendium.vagabond.humanlike.Actor.K45kmnZ6IcAREhIa",
+        "Compendium.vagabond.humanlike.Actor.LSTCLWY5BPRYAsYH",
+        "Compendium.vagabond.humanlike.Actor.hFAYCTxu7vKNz9mn",
+        "Compendium.vagabond.humanlike.Actor.uC2MIW37zSOIb8O5",
+        "Compendium.vagabond.humanlike.Actor.ubcEWtTMU56G0K4f"
+      ],
+      "attackTypes": {
+        "melee": 21
+      },
+      "damageTypes": {
+        "-": 21
+      },
+      "flatDamageRange": [
+        3,
+        7
+      ],
+      "rollDamageVariants": [
+        "1d6",
+        "1d8",
+        "2d6",
+        "d6",
+        "d8+1"
+      ],
+      "hasCausedStatuses": 0,
+      "hasRecharge": 0
+    },
+    {
+      "name": "Web",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.ZhhuGoH4rFRiiaPp"
+      ],
+      "attackTypes": {
+        "ranged": 1
+      },
+      "damageTypes": {
+        "-": 1
+      },
+      "flatDamageRange": [
+        0,
+        0
+      ],
+      "rollDamageVariants": [],
+      "hasCausedStatuses": 1,
+      "hasRecharge": 1
+    },
+    {
+      "name": "Web Shot",
+      "count": 2,
+      "monsters": [
+        "Compendium.vagabond-character-enhancer.vce-beasts.Actor.YkAYCqP2eY06I0gl",
+        "Compendium.vagabond.bestiary.Actor.KYnkN1KyQ0P1HXgJ"
+      ],
+      "attackTypes": {
+        "ranged": 2
+      },
+      "damageTypes": {
+        "-": 2
+      },
+      "flatDamageRange": [
+        0,
+        0
+      ],
+      "rollDamageVariants": [],
+      "hasCausedStatuses": 2,
+      "hasRecharge": 2
+    },
+    {
+      "name": "Whorl",
+      "count": 1,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.yw0kCRbsAd5SyI2D"
+      ],
+      "attackTypes": {
+        "melee": 1
+      },
+      "damageTypes": {
+        "poison": 1
+      },
+      "flatDamageRange": [
+        2,
+        2
+      ],
+      "rollDamageVariants": [
+        "1d4"
+      ],
+      "hasCausedStatuses": 1,
+      "hasRecharge": 0
+    },
+    {
+      "name": "Zap",
+      "count": 3,
+      "monsters": [
+        "Compendium.vagabond.bestiary.Actor.01WK986PiOP0uUDE",
+        "Compendium.vagabond.humanlike.Actor.SuDEcZVOA7NgqkXa",
+        "Compendium.vagabond.humanlike.Actor.ibWhCUOSu77wCpLM"
+      ],
+      "attackTypes": {
+        "castRanged": 3
+      },
+      "damageTypes": {
+        "shock": 1,
+        "-": 2
+      },
+      "flatDamageRange": [
+        3,
+        7
+      ],
+      "rollDamageVariants": [
+        "1d6",
+        "2d6"
+      ],
+      "hasCausedStatuses": 3,
+      "hasRecharge": 1
+    }
+  ]
+}
