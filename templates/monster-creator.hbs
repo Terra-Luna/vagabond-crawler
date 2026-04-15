@@ -141,6 +141,50 @@
     </div>
   </details>
 
+  {{!-- Token Vision (collapsible) --}}
+  <details class="mc-section mc-collapsible" data-collapse="vision">
+    <summary>
+      <span class="mc-collapse-title">Token Vision</span>
+      <span class="mc-collapse-summary">
+        <span class="mc-collapse-preview">{{visionSummary}}</span>
+      </span>
+    </summary>
+    <div class="mc-row">
+      <label class="mc-cb-row mc-vision-enable">
+        <input type="checkbox" data-vision-field="visionEnabled" {{#if data.visionEnabled}}checked{{/if}} />
+        <span>Vision enabled</span>
+      </label>
+    </div>
+    <div class="mc-row">
+      <div class="mc-field">
+        <label>Range (ft)</label>
+        <input type="number" min="0" step="5" data-vision-field="visionRange" value="{{data.visionRange}}" {{#if data.visionInfinite}}disabled{{/if}} />
+      </div>
+      <div class="mc-field" style="flex: 0 0 auto;">
+        <label>&nbsp;</label>
+        <label class="mc-cb-row">
+          <input type="checkbox" data-vision-field="visionInfinite" {{#if data.visionInfinite}}checked{{/if}} />
+          <span>Infinite (∞)</span>
+        </label>
+      </div>
+      <div class="mc-field">
+        <label>Angle (°)</label>
+        <input type="number" min="1" max="360" step="10" data-vision-field="visionAngle" value="{{data.visionAngle}}" />
+      </div>
+      <div class="mc-field mc-wide">
+        <label>Mode</label>
+        <select data-vision-field="visionMode">
+          {{#each visionModeOptions}}<option value="{{value}}" {{#if selected}}selected{{/if}}>{{label}}</option>{{/each}}
+        </select>
+      </div>
+    </div>
+    <div class="mc-row">
+      <button type="button" class="mc-btn mc-btn-soft" data-action="autoVisionFromSenses" title="Fill vision settings from the Senses text in Stats (Darksight → Darkvision 60ft, Blindsight → 30ft, Seismicsense → Tremorsense 30ft, etc.)">
+        <i class="fas fa-magic"></i> Auto-populate from Senses
+      </button>
+    </div>
+  </details>
+
   {{!-- Damage Immunities (collapsible) --}}
   <details class="mc-section mc-collapsible" data-collapse="immunities">
     <summary>

@@ -3786,3 +3786,14 @@ body.theme-light .vcb-phase-badge {
   opacity: 0.4;
   cursor: not-allowed;
 }
+
+/* ── Token Vision ────────────────────────────────────────────────────────── */
+
+#vagabond-crawler-monster-creator .mc-vision-enable {
+  font-size: 0.9em;
+  color: var(--vcb-text, #BDC1C6);
+  padding: 2px 0;
+}
+#vagabond-crawler-monster-creator [data-vision-field]:disabled {
+  opacity: 0.4;
+}

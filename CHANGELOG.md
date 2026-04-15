@@ -1,5 +1,32 @@
 # Changelog
 
+## v1.8.10
+
+### New Features — Monster Creator Token Vision
+
+New collapsible **Token Vision** section in the Monster Creator. Controls the saved actor's `prototypeToken.sight` so placed tokens get the right vision settings without manual editing.
+
+- **Vision Enabled** checkbox
+- **Range** number input + "Infinite (∞)" checkbox (saves as `null` when infinite — Foundry renders this as ∞ in the token HUD)
+- **Angle** (degrees, default 360)
+- **Mode** — Basic Vision / Darkvision / Tremorsense / Monochromatic / Light Amplification / Blindness
+- **Auto-populate from Senses** button — reads the narrative Senses field and fills the vision fields heuristically. Also runs automatically on bestiary load so compendium monsters inherit sensible vision settings the first time around (the compendium's own `prototypeToken.sight` is `enabled: false, range: 0, mode: basic` for every monster — this audit finding is what motivated the feature).
+
+Heuristic:
+
+| Senses text | → | Enabled | Mode | Range |
+|---|---|---|---|---|
+| (empty) | | false | basic | 0 |
+| Darksight / Darkvision | | true | darkvision | 60 (or explicit "X ft") |
+| Allsight / All-Sight / Truesight | | true | basic | ∞ |
+| Blindsight | | true | basic | 30 |
+| Blindsense / Echolocation | | true | basic | 15 |
+| Seismicsense / Tremorsense | | true | tremorsense | 30 |
+
+If the Senses text includes an explicit range like "Darksight 60'" or "Seismicsense 120 feet" the number is picked up instead of the default.
+
+Verified round-trip: loading Goblin Mage (Darksight) → auto-sets Darkvision 60ft, 360°. Saving creates a world actor whose `prototypeToken.sight` matches, and tokens placed from it inherit vision correctly.
+
 ## v1.8.9
 
 ### New Features — Monster Creator Phase 5

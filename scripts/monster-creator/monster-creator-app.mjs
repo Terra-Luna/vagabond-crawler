@@ -49,6 +49,31 @@ const SPEED_MODES = ["climb", "cling", "fly", "phase", "swim"];
 function _capitalize(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
 function _labelFor(s, map) { return map[s] ?? _capitalize(s); }
 
+/**
+ * Parse a free-form Vagabond `senses` string into Foundry token-sight settings.
+ * Returns `null` when the string doesn't match any known sense — leaving the
+ * caller to keep whatever the user had previously set. Range `null` means
+ * infinite (displayed as ∞ in Foundry's token HUD).
+ *
+ * Used when loading from bestiary so a monster with "Darksight" auto-gets
+ * Darkvision + 60ft range, etc. Can be disabled per-field if the user wants
+ * to tweak manually.
+ */
+function _visionFromSenses(sensesText) {
+  const str = String(sensesText ?? "").trim();
+  if (!str) return { enabled: false, range: 0, mode: "basic" };
+  for (const rule of VISION_MODE_BY_SENSE) {
+    if (rule.keyword.test(str)) {
+      // Prefer an explicit range number in the text if the author gave one
+      // (e.g. "Darksight 60'", "Blindsight 60 feet", "Seismicsense (Far)").
+      const explicit = str.match(/(\d+)\s*(?:ft|feet|'|")/i);
+      const range = explicit ? Number(explicit[1]) : rule.range;
+      return { enabled: true, range, mode: rule.mode };
+    }
+  }
+  return null; // unknown — don't auto-configure
+}
+
 function _identitySummary(d) {
   const parts = [
     (d.name ?? "").trim() || "(unnamed)",
@@ -57,6 +82,13 @@ function _identitySummary(d) {
     _capitalize(d.zone  || ""),
   ].filter(Boolean);
   return parts.join(" · ");
+}
+
+function _visionSummary(d) {
+  if (!d.visionEnabled) return "disabled";
+  const modeLabel = VISION_MODE_OPTIONS.find((o) => o.value === d.visionMode)?.label ?? d.visionMode;
+  const rangeLabel = d.visionInfinite ? "∞" : `${d.visionRange || 0}ft`;
+  return `${modeLabel} · ${rangeLabel}`;
 }
 
 function _statsSummary(d) {
@@ -90,6 +122,30 @@ function _summarize(arr, labelMap = {}) {
   const preview = labels.slice(0, 4).join(", ") + (labels.length > 4 ? `, +${labels.length - 4} more` : "");
   return { hasAny: true, count: list.length, preview };
 }
+
+// Vagabond sense keyword → Foundry token sight config
+// Keep keys in precedence order: the first match wins so "Allsight" beats
+// "Blindsight" when both happen to appear in the same senses string.
+const VISION_MODE_BY_SENSE = [
+  { keyword: /\ball[\s-]?sight\b/i, range: null,  mode: "basic"      },   // null = infinite
+  { keyword: /\bdark[\s-]?sight\b/i, range: 60,    mode: "darkvision" },
+  { keyword: /\bdarkvision\b/i,      range: 60,    mode: "darkvision" },
+  { keyword: /\btruesight\b/i,       range: null,  mode: "basic"      },
+  { keyword: /\bseismicsense\b/i,    range: 30,    mode: "tremorsense" },
+  { keyword: /\btremorsense\b/i,     range: 30,    mode: "tremorsense" },
+  { keyword: /\bblindsight\b/i,      range: 30,    mode: "basic"      },
+  { keyword: /\bblindsense\b/i,      range: 15,    mode: "basic"      },
+  { keyword: /\becholocation\b/i,    range: 15,    mode: "basic"      },
+];
+
+const VISION_MODE_OPTIONS = [
+  { value: "basic",              label: "Basic Vision"      },
+  { value: "darkvision",         label: "Darkvision"        },
+  { value: "tremorsense",        label: "Tremorsense"       },
+  { value: "monochromatic",      label: "Monochromatic"     },
+  { value: "lightAmplification", label: "Light Amplification" },
+  { value: "blindness",          label: "Blindness"         },
+];
 
 const SIZE_TO_TOKEN = {
   small:    { w: 1, h: 1 },
@@ -195,6 +251,13 @@ function _blankMonster() {
     abilities:        [],
     portraitImg:      DEFAULT_PORTRAIT,
     tokenImg:         DEFAULT_PORTRAIT,
+    // Token vision — matches Foundry v13 prototypeToken.sight shape.
+    // `range` is Number | null; null displays as ∞.
+    visionEnabled:    false,
+    visionRange:      0,
+    visionInfinite:   false,
+    visionAngle:      360,
+    visionMode:       "basic",
   };
 }
 
@@ -244,6 +307,39 @@ function _fromCompendiumActor(actor) {
     portraitImg:      actor.img || DEFAULT_PORTRAIT,
     // prototypeToken.texture.src may be a wildcard path like ".../*". Keep as-is.
     tokenImg:         actor.prototypeToken?.texture?.src || actor.img || DEFAULT_PORTRAIT,
+    ..._visionFromCompendiumSource(actor, s),
+  };
+}
+
+/**
+ * Pull vision settings from a compendium actor. If `prototypeToken.sight`
+ * is the bestiary default (disabled, range 0, basic) — which is true for
+ * every monster in vagabond.bestiary — synthesize settings from the
+ * senses text so a Darksight monster gets Darkvision automatically.
+ * Otherwise honor whatever the actor has explicitly configured.
+ */
+function _visionFromCompendiumSource(actor, systemData) {
+  const sight = actor.prototypeToken?.sight ?? {};
+  const isDefaultish =
+    !sight.enabled && (sight.range ?? 0) === 0 && (sight.visionMode ?? "basic") === "basic";
+  if (isDefaultish) {
+    const derived = _visionFromSenses(systemData?.senses);
+    if (derived) {
+      return {
+        visionEnabled:   derived.enabled,
+        visionRange:     derived.range ?? 0,
+        visionInfinite:  derived.range === null,
+        visionAngle:     360,
+        visionMode:      derived.mode,
+      };
+    }
+  }
+  return {
+    visionEnabled:   !!sight.enabled,
+    visionRange:     typeof sight.range === "number" ? sight.range : 0,
+    visionInfinite:  sight.range === null,
+    visionAngle:     Number(sight.angle ?? 360),
+    visionMode:      sight.visionMode ?? "basic",
   };
 }
 
@@ -495,6 +591,17 @@ function _buildActorData(data) {
         tint:     "#ffffff",
       },
       bar1: { attribute: "health" },
+      sight: {
+        enabled:    !!data.visionEnabled,
+        range:      data.visionInfinite ? null : Number(data.visionRange) || 0,
+        angle:      Number(data.visionAngle) || 360,
+        visionMode: data.visionMode || "basic",
+        color:      null,
+        attenuation:0.1,
+        brightness: 0,
+        saturation: 0,
+        contrast:   0,
+      },
     },
   };
 }
@@ -747,6 +854,10 @@ class MonsterCreatorApp extends HandlebarsApplicationMixin(ApplicationV2) {
         }),
       mutationSelectedCount: this._selectedMutations.size,
       mutationPreview: _mutationPreview(this._data, this._selectedMutations),
+
+      // Token vision
+      visionModeOptions: VISION_MODE_OPTIONS.map((o) => ({ ...o, selected: o.value === this._data.visionMode })),
+      visionSummary: _visionSummary(this._data),
     };
   }
 
@@ -961,6 +1072,31 @@ class MonsterCreatorApp extends HandlebarsApplicationMixin(ApplicationV2) {
     el.querySelector('[data-action="applyMutations"]')?.addEventListener("click", () => this._applyMutations(), { signal });
     el.querySelector('[data-action="clearMutations"]')?.addEventListener("click", () => this._clearMutationSelection(), { signal });
 
+    // ── Token vision fields ─────────────────────────────────────────────
+    // When the Infinite checkbox toggles we re-render so the number input's
+    // disabled state matches. All other vision fields update in-place and
+    // refresh only the collapsed-header summary.
+    el.querySelectorAll("[data-vision-field]").forEach((input) => {
+      const onChange = (ev) => {
+        const name = ev.currentTarget.dataset.visionField;
+        let value;
+        if (input.type === "checkbox")  value = ev.currentTarget.checked;
+        else if (input.type === "number") value = Number(ev.currentTarget.value);
+        else                              value = ev.currentTarget.value;
+        this._data[name] = value;
+        if (name === "visionInfinite") {
+          this.render();
+        } else {
+          this._refreshVisionSummary();
+        }
+      };
+      input.addEventListener("change", onChange, { signal });
+      if (input.tagName !== "SELECT" && input.type !== "checkbox") {
+        input.addEventListener("input", onChange, { signal });
+      }
+    });
+    el.querySelector('[data-action="autoVisionFromSenses"]')?.addEventListener("click", () => this._autoVisionFromSenses(), { signal });
+
     el.querySelector('[data-action="reset"]') ?.addEventListener("click", () => this._reset(),  { signal });
     el.querySelector('[data-action="cancel"]')?.addEventListener("click", () => this.close(),   { signal });
     el.querySelector('[data-action="save"]')  ?.addEventListener("click", () => this._save(),   { signal });
@@ -1026,6 +1162,29 @@ class MonsterCreatorApp extends HandlebarsApplicationMixin(ApplicationV2) {
   }
 
   /** Live-update the Abilities collapsed-header summary. */
+  _refreshVisionSummary() {
+    const el = this.element?.querySelector('[data-collapse="vision"] > summary .mc-collapse-preview');
+    if (!el) return;
+    el.textContent = _visionSummary(this._data);
+  }
+
+  /** Apply the senses → vision heuristic on demand. Doesn't touch fields
+   *  the user has already customized beyond defaults. */
+  _autoVisionFromSenses() {
+    const derived = _visionFromSenses(this._data.senses);
+    if (!derived) {
+      ui.notifications.warn("No known sense keyword in the Senses field.");
+      return;
+    }
+    this._data.visionEnabled  = derived.enabled;
+    this._data.visionMode     = derived.mode;
+    this._data.visionRange    = derived.range === null ? 0 : derived.range;
+    this._data.visionInfinite = derived.range === null;
+    this._data.visionAngle    = this._data.visionAngle || 360;
+    this.render();
+    ui.notifications.info(`Token vision set from Senses: ${_visionSummary(this._data)}`);
+  }
+
   _refreshAbilitiesSummary() {
     const el = this.element?.querySelector('[data-collapse="abilities"] > summary .mc-collapse-summary');
     if (!el) return;
