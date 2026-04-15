@@ -25,6 +25,7 @@ import { CountdownRoller }  from "./countdown-roller.mjs";
 import { ScrollForge }      from "./scroll-forge.mjs";
 import { MerchantShop }     from "./merchant-shop.mjs";
 import { PartyInventory }  from "./party-inventory.mjs";
+import { MonsterCreator }  from "./monster-creator/monster-creator-app.mjs";
 
 export const MODULE_ID = "vagabond-crawler";
 
@@ -175,6 +176,7 @@ Hooks.once("ready", async () => {
     scrollForge: ScrollForge,
     merchantShop: MerchantShop,
     partyInventory: PartyInventory,
+    monsterCreator: MonsterCreator,
     debugCombat: () => {
       const combat = game.combat;
       if (!combat) return "No active combat";
@@ -225,6 +227,7 @@ Hooks.once("ready", async () => {
   // Item drops, loot drops, relic forge
   ItemDrops.init();
   LootDrops.init();
+  MonsterCreator.init();
   RelicForge.init();
   RelicEffects.init();
   LootManager.init();

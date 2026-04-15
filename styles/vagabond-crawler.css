@@ -3108,3 +3108,584 @@ body.theme-light .vcb-phase-badge {
   color: var(--vcb-text, #BDC1C6);
   min-width: auto !important;
 }
+
+/* ── Monster Creator (ApplicationV2) ─────────────────────────────────────── */
+
+#vagabond-crawler-monster-creator .mc-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 4px;
+}
+#vagabond-crawler-monster-creator .mc-section {
+  background: var(--vcb-bg-card, #1f2324);
+  border: 1px solid var(--vcb-border, #706d65);
+  border-radius: 6px;
+  padding: 8px 10px;
+}
+#vagabond-crawler-monster-creator .mc-section h3 {
+  margin: 0 0 6px;
+  font-size: 0.95em;
+  color: var(--vcb-accent, #DED656);
+  border-bottom: 1px solid var(--vcb-border, #706d65);
+  padding-bottom: 3px;
+}
+#vagabond-crawler-monster-creator .mc-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 4px;
+}
+#vagabond-crawler-monster-creator .mc-row:last-child { margin-bottom: 0; }
+#vagabond-crawler-monster-creator .mc-field {
+  flex: 1 1 120px;
+  min-width: 110px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+#vagabond-crawler-monster-creator .mc-field.mc-wide { flex: 2 1 220px; }
+#vagabond-crawler-monster-creator .mc-field label {
+  font-size: 0.8em;
+  color: var(--vcb-text-dim, #c2bea9);
+}
+#vagabond-crawler-monster-creator .mc-field .mc-hint {
+  color: var(--vcb-text-faint, #706d65);
+  font-weight: normal;
+  font-size: 0.85em;
+}
+#vagabond-crawler-monster-creator .mc-field code {
+  background: rgba(0,0,0,0.25);
+  padding: 0 4px;
+  border-radius: 2px;
+}
+#vagabond-crawler-monster-creator input,
+#vagabond-crawler-monster-creator select,
+#vagabond-crawler-monster-creator textarea {
+  width: 100%;
+  padding: 4px 6px;
+  font-size: 0.9em;
+  background: var(--vcb-input-bg, #051a2f);
+  border: 1px solid var(--vcb-border-light, #c5c3b832);
+  border-radius: 4px;
+  color: var(--vcb-text, #BDC1C6);
+}
+#vagabond-crawler-monster-creator textarea { resize: vertical; min-height: 48px; }
+
+#vagabond-crawler-monster-creator .mc-load-row {
+  display: flex;
+  gap: 6px;
+}
+#vagabond-crawler-monster-creator .mc-load-row select { flex: 1; }
+#vagabond-crawler-monster-creator .mc-load-hint {
+  margin-top: 6px;
+  font-size: 0.8em;
+  color: var(--vcb-text-faint, #706d65);
+}
+
+#vagabond-crawler-monster-creator .mc-img-field { flex: 0 0 110px; }
+#vagabond-crawler-monster-creator .mc-img-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+#vagabond-crawler-monster-creator .mc-img-preview {
+  width: 36px;
+  height: 36px;
+  object-fit: cover;
+  border-radius: 4px;
+  border: 1px solid var(--vcb-border-light, #c5c3b832);
+  background: var(--vcb-bg-card, #1f2324);
+}
+
+#vagabond-crawler-monster-creator .mc-btn {
+  padding: 4px 10px;
+  border: 1px solid var(--vcb-border-light, #c5c3b832);
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.85em;
+  background: var(--vcb-input-bg, #051a2f);
+  color: var(--vcb-text, #BDC1C6);
+}
+#vagabond-crawler-monster-creator .mc-btn:hover {
+  background: var(--vcb-input-hover, #2c3e50);
+  border-color: var(--vcb-accent, #DED656);
+}
+#vagabond-crawler-monster-creator .mc-btn-primary {
+  background: var(--vcb-tl-bg1, #2c3e50);
+  color: var(--vcb-accent, #DED656);
+  border-color: var(--vcb-accent, #DED656);
+  font-weight: bold;
+}
+#vagabond-crawler-monster-creator .mc-btn-primary:hover {
+  background: var(--vcb-input-hover, #2c3e50);
+  filter: brightness(1.1);
+}
+#vagabond-crawler-monster-creator .mc-btn-soft {
+  padding: 4px 8px;
+}
+
+#vagabond-crawler-monster-creator .mc-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 2px 0;
+  border-top: 1px solid var(--vcb-border, #706d65);
+}
+#vagabond-crawler-monster-creator .mc-preview-line {
+  color: var(--vcb-text-dim, #c2bea9);
+  font-size: 0.9em;
+}
+#vagabond-crawler-monster-creator .mc-footer-actions {
+  display: flex;
+  gap: 6px;
+}
+
+#vagabond-crawler-monster-creator .mc-load-header {
+  display: flex;
+  gap: 6px;
+  align-items: stretch;
+}
+#vagabond-crawler-monster-creator .mc-browse-toggle {
+  flex: 1;
+  justify-content: flex-start;
+  text-align: left;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+#vagabond-crawler-monster-creator .mc-browse-toggle .fa-caret-up,
+#vagabond-crawler-monster-creator .mc-browse-toggle .fa-caret-down {
+  margin-left: auto;
+}
+#vagabond-crawler-monster-creator .mc-bestiary-panel {
+  margin-top: 6px;
+  border: 1px solid var(--vcb-border, #706d65);
+  border-radius: 4px;
+  padding: 6px;
+  background: rgba(0, 0, 0, 0.15);
+}
+#vagabond-crawler-monster-creator .mc-bestiary-filters {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  gap: 4px;
+  margin-bottom: 6px;
+}
+#vagabond-crawler-monster-creator .mc-bestiary-count {
+  font-size: 0.8em;
+  color: var(--vcb-text-faint, #706d65);
+  margin-bottom: 4px;
+}
+#vagabond-crawler-monster-creator .mc-bestiary-list {
+  max-height: 240px;
+  overflow-y: auto;
+  border: 1px solid var(--vcb-border-light, #c5c3b832);
+  border-radius: 3px;
+  background: rgba(0, 0, 0, 0.2);
+}
+#vagabond-crawler-monster-creator .mc-bestiary-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 8px;
+  cursor: pointer;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+}
+#vagabond-crawler-monster-creator .mc-bestiary-item:last-child { border-bottom: none; }
+#vagabond-crawler-monster-creator .mc-bestiary-item:hover {
+  background: rgba(222, 214, 86, 0.1);
+}
+#vagabond-crawler-monster-creator .mc-bestiary-tl {
+  background: rgba(222, 214, 86, 0.15);
+  color: var(--vcb-accent, #DED656);
+  padding: 1px 6px;
+  border-radius: 3px;
+  font-size: 0.78em;
+  font-weight: bold;
+  min-width: 30px;
+  text-align: center;
+}
+#vagabond-crawler-monster-creator .mc-bestiary-name {
+  flex: 1;
+  color: var(--vcb-accent, #DED656);
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+#vagabond-crawler-monster-creator .mc-bestiary-meta {
+  color: var(--vcb-text-faint, #706d65);
+  font-size: 0.8em;
+}
+#vagabond-crawler-monster-creator .mc-bestiary-empty {
+  padding: 12px;
+  text-align: center;
+  color: var(--vcb-text-faint, #706d65);
+  font-style: italic;
+}
+
+#vagabond-crawler-monster-creator .mc-subsection {
+  margin-top: 8px;
+}
+#vagabond-crawler-monster-creator .mc-subhead {
+  display: block;
+  font-size: 0.8em;
+  color: var(--vcb-text-dim, #c2bea9);
+  margin-bottom: 4px;
+}
+#vagabond-crawler-monster-creator .mc-speedmode-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 4px 8px;
+}
+#vagabond-crawler-monster-creator .mc-speedmode-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 26px;
+  cursor: pointer;
+}
+#vagabond-crawler-monster-creator .mc-speedmode-row input[type="checkbox"] {
+  width: auto; margin: 0;
+}
+#vagabond-crawler-monster-creator .mc-speedmode-row .mc-speedmode-label {
+  flex: 0 0 50px;
+  font-size: 0.85em;
+  color: var(--vcb-text-dim, #c2bea9);
+}
+#vagabond-crawler-monster-creator .mc-speedmode-num {
+  width: 60px !important;
+  margin: 0 !important;
+  padding: 2px 4px !important;
+  font-size: 0.85em;
+}
+#vagabond-crawler-monster-creator .mc-speedmode-num:disabled {
+  opacity: 0.35;
+}
+#vagabond-crawler-monster-creator .mc-speedmode-row .mc-hint {
+  font-size: 0.78em;
+  color: var(--vcb-text-faint, #706d65);
+}
+#vagabond-crawler-monster-creator .mc-cb-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 2px 8px;
+}
+#vagabond-crawler-monster-creator .mc-cb-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  padding: 2px 0;
+  font-size: 0.85em;
+}
+#vagabond-crawler-monster-creator .mc-cb-row input[type="checkbox"] {
+  width: auto; margin: 0;
+}
+
+#vagabond-crawler-monster-creator .mc-collapsible {
+  padding: 0;
+}
+#vagabond-crawler-monster-creator .mc-collapsible > summary {
+  list-style: none;
+  cursor: pointer;
+  padding: 8px 10px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  user-select: none;
+}
+#vagabond-crawler-monster-creator .mc-collapsible > summary::-webkit-details-marker { display: none; }
+#vagabond-crawler-monster-creator .mc-collapsible > summary::before {
+  content: "▶";
+  font-size: 0.75em;
+  color: var(--vcb-accent, #DED656);
+  transition: transform 0.15s;
+  flex: 0 0 auto;
+}
+#vagabond-crawler-monster-creator .mc-collapsible[open] > summary::before {
+  transform: rotate(90deg);
+}
+#vagabond-crawler-monster-creator .mc-collapse-title {
+  font-size: 0.95em;
+  color: var(--vcb-accent, #DED656);
+  font-weight: 500;
+  flex: 0 0 auto;
+}
+#vagabond-crawler-monster-creator .mc-collapse-summary {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex: 1 1 auto;
+  min-width: 0;
+  color: var(--vcb-text-dim, #c2bea9);
+  font-size: 0.8em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+#vagabond-crawler-monster-creator .mc-collapse-preview {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+#vagabond-crawler-monster-creator .mc-collapse-preview.mc-empty {
+  font-style: italic;
+  color: var(--vcb-text-faint, #706d65);
+}
+#vagabond-crawler-monster-creator .mc-pill {
+  background: rgba(222, 214, 86, 0.15);
+  color: var(--vcb-accent, #DED656);
+  padding: 0 6px;
+  border-radius: 10px;
+  font-weight: bold;
+  font-size: 0.8em;
+  min-width: 20px;
+  text-align: center;
+  flex: 0 0 auto;
+}
+#vagabond-crawler-monster-creator .mc-collapsible > .mc-cb-grid {
+  padding: 4px 10px 10px;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+#vagabond-crawler-monster-creator .mc-top-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+#vagabond-crawler-monster-creator .mc-top-actions .mc-load-hint {
+  margin-top: 0;
+  flex: 1 1 auto;
+  text-align: right;
+}
+/* When the collapsible is the Bestiary one, its internal grid + list need the
+   same content padding we give the checkbox grids. */
+#vagabond-crawler-monster-creator .mc-collapsible > .mc-bestiary-panel {
+  padding: 0 10px 10px;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+#vagabond-crawler-monster-creator .mc-collapsible > .mc-row,
+#vagabond-crawler-monster-creator .mc-collapsible > .mc-subsection,
+#vagabond-crawler-monster-creator .mc-collapsible > textarea {
+  padding-left: 10px;
+  padding-right: 10px;
+}
+#vagabond-crawler-monster-creator .mc-collapsible > .mc-row:first-of-type {
+  padding-top: 6px;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+#vagabond-crawler-monster-creator .mc-collapsible > textarea {
+  margin: 6px 10px 10px;
+  width: calc(100% - 20px);
+}
+#vagabond-crawler-monster-creator .mc-collapsible > .mc-row:last-of-type,
+#vagabond-crawler-monster-creator .mc-collapsible > .mc-subsection:last-of-type {
+  padding-bottom: 8px;
+}
+
+/* ── Actions editor ─────────────────────────────────────────────────────── */
+
+#vagabond-crawler-monster-creator .mc-template-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px;
+  margin-bottom: 6px;
+}
+#vagabond-crawler-monster-creator .mc-tab-btn {
+  padding: 3px 8px;
+  border: 1px solid var(--vcb-border-light, #c5c3b832);
+  border-radius: 3px;
+  background: var(--vcb-input-bg, #051a2f);
+  color: var(--vcb-text-dim, #c2bea9);
+  font-size: 0.78em;
+  cursor: pointer;
+}
+#vagabond-crawler-monster-creator .mc-tab-btn:hover { border-color: var(--vcb-accent, #DED656); }
+#vagabond-crawler-monster-creator .mc-tab-btn.mc-tab-active {
+  border-color: var(--vcb-accent, #DED656);
+  background: rgba(222, 214, 86, 0.15);
+  color: var(--vcb-accent, #DED656);
+}
+
+#vagabond-crawler-monster-creator .mc-template-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 4px;
+  max-height: 240px;
+  overflow-y: auto;
+  padding: 2px;
+}
+#vagabond-crawler-monster-creator .mc-template-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+#vagabond-crawler-monster-creator .mc-template-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 6px 8px;
+  border: 1px solid var(--vcb-border-light, #c5c3b832);
+  border-radius: 4px;
+  background: var(--vcb-input-bg, #051a2f);
+  color: var(--vcb-text, #BDC1C6);
+  cursor: pointer;
+  gap: 2px;
+  min-height: 40px;
+  text-align: left;
+}
+#vagabond-crawler-monster-creator .mc-template-btn:hover {
+  border-color: var(--vcb-accent, #DED656);
+  background: rgba(222, 214, 86, 0.08);
+}
+#vagabond-crawler-monster-creator .mc-template-btn strong {
+  color: var(--vcb-accent, #DED656);
+  font-size: 0.88em;
+}
+#vagabond-crawler-monster-creator .mc-template-btn .mc-hint {
+  font-size: 0.72em;
+}
+#vagabond-crawler-monster-creator .mc-template-tier {
+  width: 100% !important;
+  margin-top: 2px !important;
+  padding: 2px 4px !important;
+  font-size: 0.78em;
+}
+
+#vagabond-crawler-monster-creator .mc-action-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+#vagabond-crawler-monster-creator .mc-action-row {
+  border: 1px solid var(--vcb-border-light, #c5c3b832);
+  border-radius: 4px;
+  padding: 6px;
+  background: rgba(0, 0, 0, 0.15);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+#vagabond-crawler-monster-creator .mc-action-head,
+#vagabond-crawler-monster-creator .mc-action-damage,
+#vagabond-crawler-monster-creator .mc-action-meta {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+#vagabond-crawler-monster-creator .mc-action-head { gap: 6px; }
+#vagabond-crawler-monster-creator .mc-action-name { flex: 2 1 140px; margin: 0; }
+#vagabond-crawler-monster-creator .mc-action-type { flex: 0 0 110px; margin: 0; }
+#vagabond-crawler-monster-creator .mc-action-roll { flex: 1 1 70px; margin: 0; }
+#vagabond-crawler-monster-creator .mc-action-flat { flex: 0 0 50px; margin: 0; }
+#vagabond-crawler-monster-creator .mc-action-dtype { flex: 1 1 90px; margin: 0; }
+#vagabond-crawler-monster-creator .mc-action-recharge { flex: 0 0 60px; margin: 0; }
+#vagabond-crawler-monster-creator .mc-action-note,
+#vagabond-crawler-monster-creator .mc-action-extra { flex: 1; margin: 0; }
+#vagabond-crawler-monster-creator .mc-action-delete {
+  flex: 0 0 auto;
+  padding: 4px 8px;
+  background: rgba(157, 0, 0, 0.25);
+  border: 1px solid rgba(157, 0, 0, 0.5);
+  color: var(--vcb-danger-text, #ff8b9f);
+  border-radius: 3px;
+  cursor: pointer;
+}
+#vagabond-crawler-monster-creator .mc-action-delete:hover { background: rgba(157, 0, 0, 0.5); }
+
+#vagabond-crawler-monster-creator .mc-action-empty {
+  padding: 10px;
+  text-align: center;
+  color: var(--vcb-text-faint, #706d65);
+  font-style: italic;
+  font-size: 0.85em;
+}
+
+/* ── Scrollable body + pinned footer ─────────────────────────────────────── */
+
+#vagabond-crawler-monster-creator .mc-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  gap: 0;
+  padding: 0;
+}
+#vagabond-crawler-monster-creator .mc-scrollable {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  padding: 4px 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-height: 0;
+}
+#vagabond-crawler-monster-creator .mc-footer {
+  flex: 0 0 auto;
+  padding: 8px 10px;
+  border-top: 1px solid var(--vcb-border, #706d65);
+  background: var(--vcb-bg-card, #1f2324);
+}
+
+/* ── Ability badges ──────────────────────────────────────────────────────── */
+
+#vagabond-crawler-monster-creator .mc-ability-header {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+#vagabond-crawler-monster-creator .mc-ability-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 0 5px;
+  border-radius: 3px;
+  font-size: 0.72em;
+  font-weight: bold;
+  flex: 0 0 auto;
+}
+#vagabond-crawler-monster-creator .mc-badge-implemented {
+  background: rgba(38, 203, 12, 0.18);
+  color: #26cb0c;
+  border: 1px solid rgba(38, 203, 12, 0.35);
+}
+#vagabond-crawler-monster-creator .mc-badge-unimplemented {
+  background: rgba(231, 87, 10, 0.18);
+  color: #e7570a;
+  border: 1px solid rgba(231, 87, 10, 0.35);
+}
+#vagabond-crawler-monster-creator .mc-badge-flavor {
+  background: rgba(112, 109, 101, 0.2);
+  color: var(--vcb-text-faint, #9a9588);
+  border: 1px solid rgba(112, 109, 101, 0.4);
+}
+
+/* ── Abilities list ──────────────────────────────────────────────────────── */
+
+#vagabond-crawler-monster-creator .mc-ability-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+#vagabond-crawler-monster-creator .mc-ability-row {
+  border: 1px solid var(--vcb-border-light, #c5c3b832);
+  border-radius: 4px;
+  padding: 6px;
+  background: rgba(0, 0, 0, 0.15);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+#vagabond-crawler-monster-creator .mc-ability-head {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+#vagabond-crawler-monster-creator .mc-ability-head .mc-action-name { flex: 1; }
+#vagabond-crawler-monster-creator .mc-ability-desc {
+  margin: 0;
+  min-height: 32px;
+  font-size: 0.85em;
+}

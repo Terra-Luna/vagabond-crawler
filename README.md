@@ -2,7 +2,7 @@
 
 ![Foundry v13](https://img.shields.io/badge/foundry-v13-green?style=for-the-badge)
 ![System](https://img.shields.io/badge/system-vagabond-blue?style=for-the-badge)
-![Version](https://img.shields.io/badge/version-1.8.6-orange?style=for-the-badge)
+![Version](https://img.shields.io/badge/version-1.8.7-orange?style=for-the-badge)
 
 A comprehensive dungeon crawl management module for the **Vagabond RPG** system in Foundry VTT. Everything you need to run a crawl — turn tracking, movement enforcement, random encounters, light management, morale, combat integration, crafting, loot, and more — all from a unified interface.
 
@@ -220,6 +220,7 @@ Combined recovery dialog.
 - **Encounter Check** — Quick d6 roll against configurable threshold
 - **Encounter Roller** — Build Table, Browse NPCs, Roll Tables, and Mutate tabs
 - **Monster Mutator** — 64 mutations with stat recalculation and custom names
+- **Monster Creator** — (right-click the Encounter bar button → "Monster Creator") Dedicated ApplicationV2 window for authoring NPCs from scratch or from a bestiary template. Load-from-bestiary filter panel, collapsible sections for identity / stats / movement / damage immunities / weaknesses / status immunities / actions / abilities / description, curated Quick-Pick action templates with power tiers, curated Quick-Pick ability templates with **automation status badges** (shows green ✓ when the chosen name triggers live automation in `npc-abilities.mjs`). Saves as a world actor; compendium is never touched.
 - **Loot Generator** — Full roll-chain tracing with compendium item creation and "Give to Player" chat buttons
 
 ---

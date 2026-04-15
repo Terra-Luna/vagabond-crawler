@@ -30,7 +30,7 @@ import { distanceFt } from "./combat-helpers.mjs";
  * PASSIVE ABILITIES TABLE
  * ──────────────────────────────────────────────────────────────────────────── */
 
-const PASSIVE_ABILITIES = {
+export const PASSIVE_ABILITIES = {
   "Magic Ward I":   { type: "manaSurcharge", surcharge: 1, label: "Magic Ward I" },
   "Magic Ward II":  { type: "manaSurcharge", surcharge: 2, label: "Magic Ward II" },
   "Magic Ward III": { type: "manaSurcharge", surcharge: 3, label: "Magic Ward III" },

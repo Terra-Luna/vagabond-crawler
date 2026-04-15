@@ -1,0 +1,361 @@
+<div class="mc-container">
+
+  <div class="mc-scrollable">
+  {{!-- Action buttons row (Reset is outside the Load collapsible so it's always reachable) --}}
+  <div class="mc-top-actions">
+    <button type="button" data-action="reset" class="mc-btn mc-btn-soft" title="Start fresh"><i class="fas fa-undo"></i> Reset</button>
+    {{#if sourceName}}<div class="mc-load-hint">Based on: <strong>{{sourceName}}</strong> <span class="mc-hint">(compendium is not modified)</span></div>{{/if}}
+  </div>
+
+  {{!-- Load from bestiary (collapsible, with filter+list) --}}
+  <details class="mc-section mc-collapsible" data-collapse="bestiary" {{#if bestiaryOpen}}open{{/if}}>
+    <summary data-action="toggleBestiary">
+      <span class="mc-collapse-title"><i class="fas fa-book-open"></i> Load from Bestiary</span>
+      <span class="mc-collapse-summary">
+        <span class="mc-hint">{{bestiaryTotal}} monsters</span>
+      </span>
+    </summary>
+    <div class="mc-bestiary-panel">
+      <div class="mc-bestiary-filters">
+        <input type="text" class="mc-filter-search" data-action="filterSearch" value="{{filters.search}}" placeholder="Search name…" />
+        <select data-action="filterType">
+          <option value="">All Types</option>
+          {{#each beingTypeFilterOpts}}<option value="{{value}}" {{#if selected}}selected{{/if}}>{{label}}</option>{{/each}}
+        </select>
+        <select data-action="filterTL">
+          <option value="">All TL</option>
+          {{#each tlFilterOpts}}<option value="{{value}}" {{#if selected}}selected{{/if}}>{{label}}</option>{{/each}}
+        </select>
+        <select data-action="filterSource">
+          <option value="">All Sources</option>
+          {{#each sourceFilterOpts}}<option value="{{value}}" {{#if selected}}selected{{/if}}>{{label}}</option>{{/each}}
+        </select>
+      </div>
+      <div class="mc-bestiary-count">Showing {{bestiaryShown}} of {{bestiaryTotal}}</div>
+      <div class="mc-bestiary-list">
+        {{#each filtered}}
+        <div class="mc-bestiary-item" data-uuid="{{uuid}}">
+          <span class="mc-bestiary-tl">{{tl}}</span>
+          <span class="mc-bestiary-name">{{name}}</span>
+          <span class="mc-bestiary-meta">{{beingType}}</span>
+        </div>
+        {{else}}
+        <div class="mc-bestiary-empty">No monsters match these filters.</div>
+        {{/each}}
+      </div>
+    </div>
+  </details>
+
+  {{!-- Identity + Images (collapsible) --}}
+  <details class="mc-section mc-collapsible" data-collapse="identity" {{#if openIdentity}}open{{/if}}>
+    <summary>
+      <span class="mc-collapse-title">Identity</span>
+      <span class="mc-collapse-summary"><span class="mc-collapse-preview">{{identitySummary}}</span></span>
+    </summary>
+    <div class="mc-row">
+      <div class="mc-field mc-wide">
+        <label>Name</label>
+        <input name="name" value="{{data.name}}" placeholder="Monster name…" />
+      </div>
+      <div class="mc-field mc-img-field">
+        <label>Portrait</label>
+        <div class="mc-img-row">
+          <img class="mc-img-preview" src="{{data.portraitImg}}" />
+          <button type="button" data-action="pickPortrait" class="mc-btn mc-btn-soft"><i class="fas fa-image"></i></button>
+        </div>
+      </div>
+      <div class="mc-field mc-img-field">
+        <label>Token</label>
+        <div class="mc-img-row">
+          <img class="mc-img-preview" src="{{data.tokenImg}}" />
+          <button type="button" data-action="pickToken" class="mc-btn mc-btn-soft"><i class="fas fa-user-astronaut"></i></button>
+        </div>
+      </div>
+    </div>
+    <div class="mc-row">
+      <div class="mc-field">
+        <label>Being Type</label>
+        <select name="beingType">
+          {{#each beingTypes}}<option value="{{value}}" {{#if selected}}selected{{/if}}>{{label}}</option>{{/each}}
+        </select>
+      </div>
+      <div class="mc-field">
+        <label>Size</label>
+        <select name="size">
+          {{#each sizes}}<option value="{{value}}" {{#if selected}}selected{{/if}}>{{label}}</option>{{/each}}
+        </select>
+      </div>
+      <div class="mc-field">
+        <label>Zone</label>
+        <select name="zone">
+          {{#each zones}}<option value="{{value}}" {{#if selected}}selected{{/if}}>{{label}}</option>{{/each}}
+        </select>
+      </div>
+    </div>
+  </details>
+
+  {{!-- Stats (collapsible) --}}
+  <details class="mc-section mc-collapsible" data-collapse="stats" {{#if openStats}}open{{/if}}>
+    <summary>
+      <span class="mc-collapse-title">Stats</span>
+      <span class="mc-collapse-summary"><span class="mc-collapse-preview">{{statsSummary}}</span></span>
+    </summary>
+    <div class="mc-row">
+      <div class="mc-field"><label>HD</label><input type="number" name="hd" min="1" max="30" value="{{data.hd}}" /></div>
+      <div class="mc-field"><label>Armor</label><input type="number" name="armor" min="0" max="10" value="{{data.armor}}" /></div>
+      <div class="mc-field mc-wide">
+        <label>Armor Description</label>
+        <input name="armorDescription" value="{{data.armorDescription}}" placeholder="as Leather, as (+1) Plate" />
+      </div>
+      <div class="mc-field"><label>Morale</label><input type="number" name="morale" min="2" max="12" value="{{data.morale}}" /></div>
+    </div>
+    <div class="mc-row">
+      <div class="mc-field"><label>Speed (walk)</label><input type="number" name="speed" min="0" step="5" value="{{data.speed}}" /></div>
+      <div class="mc-field"><label>Appearing</label><input name="appearing" value="{{data.appearing}}" placeholder="1, 2d6" /></div>
+      <div class="mc-field mc-wide">
+        <label>Senses</label>
+        <input name="senses" value="{{data.senses}}" placeholder="Darksight 60', Blindsight" />
+      </div>
+    </div>
+    <div class="mc-subsection">
+      <label class="mc-subhead">Other Movement Modes</label>
+      <div class="mc-speedmode-grid">
+        {{#each speedModesGrid}}
+        <label class="mc-speedmode-row">
+          <input type="checkbox" data-speedmode="{{value}}" {{#if checked}}checked{{/if}} />
+          <span class="mc-speedmode-label">{{label}}</span>
+          <input type="number" class="mc-speedmode-num" data-speedspeed="{{value}}"
+                 min="0" step="5" value="{{speed}}" {{#unless checked}}disabled{{/unless}} />
+          <span class="mc-hint">ft</span>
+        </label>
+        {{/each}}
+      </div>
+    </div>
+  </details>
+
+  {{!-- Damage Immunities (collapsible) --}}
+  <details class="mc-section mc-collapsible" data-collapse="immunities">
+    <summary>
+      <span class="mc-collapse-title">Damage Immunities</span>
+      <span class="mc-collapse-summary">
+        {{#if immunitiesSummary.hasAny}}
+          <span class="mc-pill">{{immunitiesSummary.count}}</span>
+          <span class="mc-collapse-preview">{{immunitiesSummary.preview}}</span>
+        {{else}}
+          <span class="mc-collapse-preview mc-empty">none</span>
+        {{/if}}
+      </span>
+    </summary>
+    <div class="mc-cb-grid">
+      {{#each immunitiesGrid}}
+      <label class="mc-cb-row"><input type="checkbox" data-immune="{{value}}" {{#if checked}}checked{{/if}} /><span>{{label}}</span></label>
+      {{/each}}
+    </div>
+  </details>
+
+  {{!-- Damage Weaknesses (collapsible) --}}
+  <details class="mc-section mc-collapsible" data-collapse="weaknesses">
+    <summary>
+      <span class="mc-collapse-title">Damage Weaknesses</span>
+      <span class="mc-collapse-summary">
+        {{#if weaknessesSummary.hasAny}}
+          <span class="mc-pill">{{weaknessesSummary.count}}</span>
+          <span class="mc-collapse-preview">{{weaknessesSummary.preview}}</span>
+        {{else}}
+          <span class="mc-collapse-preview mc-empty">none</span>
+        {{/if}}
+      </span>
+    </summary>
+    <div class="mc-cb-grid">
+      {{#each weaknessesGrid}}
+      <label class="mc-cb-row"><input type="checkbox" data-weak="{{value}}" {{#if checked}}checked{{/if}} /><span>{{label}}</span></label>
+      {{/each}}
+    </div>
+  </details>
+
+  {{!-- Status Immunities (collapsible) --}}
+  <details class="mc-section mc-collapsible" data-collapse="statusImmunities">
+    <summary>
+      <span class="mc-collapse-title">Status Immunities</span>
+      <span class="mc-collapse-summary">
+        {{#if statusImmunitiesSummary.hasAny}}
+          <span class="mc-pill">{{statusImmunitiesSummary.count}}</span>
+          <span class="mc-collapse-preview">{{statusImmunitiesSummary.preview}}</span>
+        {{else}}
+          <span class="mc-collapse-preview mc-empty">none</span>
+        {{/if}}
+      </span>
+    </summary>
+    <div class="mc-cb-grid">
+      {{#each statusImmunitiesGrid}}
+      <label class="mc-cb-row"><input type="checkbox" data-statusimmune="{{value}}" {{#if checked}}checked{{/if}} /><span>{{label}}</span></label>
+      {{/each}}
+    </div>
+  </details>
+
+  {{!-- Actions (collapsible) --}}
+  <details class="mc-section mc-collapsible" data-collapse="actions">
+    <summary>
+      <span class="mc-collapse-title">Actions</span>
+      <span class="mc-collapse-summary">
+        {{#if actionsSummary.count}}
+          <span class="mc-pill">{{actionsSummary.count}}</span>
+          <span class="mc-collapse-preview">{{actionsSummary.preview}}</span>
+        {{else}}
+          <span class="mc-collapse-preview mc-empty">none</span>
+        {{/if}}
+      </span>
+    </summary>
+
+    <div class="mc-subsection">
+      <label class="mc-subhead">Quick Picks</label>
+      <div class="mc-template-tabs">
+        {{#each actionTabs}}
+        <button type="button" class="mc-tab-btn {{#if active}}mc-tab-active{{/if}}" data-action-tab="{{key}}">{{label}}</button>
+        {{/each}}
+      </div>
+      <div class="mc-template-grid">
+        {{#each quickPickTemplates}}
+        <div class="mc-template-card" data-template="{{name}}">
+          <button type="button" class="mc-template-btn" data-action="addTemplate" data-template-name="{{name}}">
+            <strong>{{name}}</strong>
+            <span class="mc-hint">{{categoryLabel}} · {{previewDamage}}</span>
+          </button>
+          {{#if hasTiers}}
+          <select class="mc-template-tier" data-template-tier-for="{{name}}" title="Power tier / variant">
+            {{#each tiers}}<option value="{{label}}">{{label}}</option>{{/each}}
+          </select>
+          {{/if}}
+        </div>
+        {{/each}}
+      </div>
+    </div>
+
+    <div class="mc-subsection">
+      <label class="mc-subhead">Current Actions</label>
+      {{#if actionRows.length}}
+      <div class="mc-action-list">
+        {{#each actionRows}}
+        <div class="mc-action-row" data-action-index="{{index}}">
+          <div class="mc-action-head">
+            <input class="mc-action-name"  data-action-field="name"       value="{{name}}" placeholder="Name" />
+            <select class="mc-action-type" data-action-field="attackType">
+              {{#each attackTypeOptions}}<option value="{{value}}" {{#if selected}}selected{{/if}}>{{label}}</option>{{/each}}
+            </select>
+            <button type="button" class="mc-action-delete" data-action="deleteAction" title="Remove"><i class="fas fa-times"></i></button>
+          </div>
+          <div class="mc-action-damage">
+            <input class="mc-action-roll" data-action-field="rollDamage" value="{{rollDamage}}" placeholder="2d6" />
+            <span class="mc-hint">+</span>
+            <input class="mc-action-flat" data-action-field="flatDamage" value="{{flatDamage}}" placeholder="flat" />
+            <select class="mc-action-dtype" data-action-field="damageType">
+              {{#each damageTypeOptions}}<option value="{{value}}" {{#if selected}}selected{{/if}}>{{label}}</option>{{/each}}
+            </select>
+            <input class="mc-action-recharge" data-action-field="recharge" value="{{recharge}}" placeholder="Cd4" />
+          </div>
+          <div class="mc-action-meta">
+            <input class="mc-action-note" data-action-field="note"       value="{{note}}"      placeholder="Melee Attack / Cast, Remote | Endure" />
+            <input class="mc-action-extra" data-action-field="extraInfo" value="{{extraInfo}}" placeholder="and extra effect / Frightened (Cd4) / etc." />
+          </div>
+        </div>
+        {{/each}}
+      </div>
+      {{else}}
+      <div class="mc-action-empty">No actions yet. Click a template above to add one.</div>
+      {{/if}}
+    </div>
+  </details>
+
+  {{!-- Abilities (collapsible) --}}
+  <details class="mc-section mc-collapsible" data-collapse="abilities">
+    <summary>
+      <span class="mc-collapse-title">Abilities</span>
+      <span class="mc-collapse-summary">
+        {{#if abilitiesSummary.count}}
+          <span class="mc-pill">{{abilitiesSummary.count}}</span>
+          <span class="mc-collapse-preview">{{abilitiesSummary.preview}}</span>
+        {{else}}
+          <span class="mc-collapse-preview mc-empty">none</span>
+        {{/if}}
+      </span>
+    </summary>
+
+    <div class="mc-subsection">
+      <label class="mc-subhead">Quick Picks <span class="mc-hint">(badge shows if automation fires when added)</span></label>
+      <div class="mc-template-grid mc-ability-grid">
+        {{#each abilityTemplates}}
+        <div class="mc-template-card">
+          <button type="button" class="mc-template-btn" data-action="addAbilityTemplate" data-template-name="{{name}}">
+            <span class="mc-ability-header">
+              <strong>{{name}}</strong>
+              {{#if automationBadge}}
+              <span class="mc-ability-badge mc-badge-{{automationBadge.status}}" title="{{automationBadge.label}}">{{automationBadge.icon}}</span>
+              {{/if}}
+            </span>
+            <span class="mc-hint">{{representativeShort}}</span>
+          </button>
+          {{#if tiers}}
+          <select class="mc-template-tier" data-ability-tier-for="{{name}}" title="Tier">
+            {{#each tiers}}<option value="{{label}}">{{label}}</option>{{/each}}
+          </select>
+          {{/if}}
+          {{#if variants}}
+          <select class="mc-template-tier" data-ability-tier-for="{{name}}" title="Variant">
+            {{#each variants}}<option value="{{label}}">{{label}}</option>{{/each}}
+          </select>
+          {{/if}}
+        </div>
+        {{/each}}
+      </div>
+    </div>
+
+    <div class="mc-subsection">
+      <label class="mc-subhead">Current Abilities</label>
+      {{#if abilityRows.length}}
+      <div class="mc-ability-list">
+        {{#each abilityRows}}
+        <div class="mc-ability-row" data-ability-index="{{index}}">
+          <div class="mc-ability-head">
+            <input class="mc-action-name" data-ability-field="name" value="{{name}}" placeholder="Ability name" />
+            {{#if badge}}
+            <span class="mc-ability-badge mc-badge-{{badge.status}}" title="{{badge.label}}">{{badge.icon}} {{badge.label}}</span>
+            {{/if}}
+            <button type="button" class="mc-action-delete" data-action="deleteAbility" title="Remove"><i class="fas fa-times"></i></button>
+          </div>
+          <textarea class="mc-ability-desc" data-ability-field="description" rows="2" placeholder="Description">{{description}}</textarea>
+        </div>
+        {{/each}}
+      </div>
+      {{else}}
+      <div class="mc-action-empty">No abilities yet. Click a template above.</div>
+      {{/if}}
+    </div>
+  </details>
+
+  {{!-- Description (collapsible) --}}
+  <details class="mc-section mc-collapsible" data-collapse="description">
+    <summary>
+      <span class="mc-collapse-title">Description</span>
+      <span class="mc-collapse-summary">
+        {{#if descriptionPreview}}
+          <span class="mc-collapse-preview">{{descriptionPreview}}</span>
+        {{else}}
+          <span class="mc-collapse-preview mc-empty">no description</span>
+        {{/if}}
+      </span>
+    </summary>
+    <textarea name="description" rows="3" placeholder="Optional lore / flavor…">{{data.description}}</textarea>
+  </details>
+
+  </div> {{!-- /mc-scrollable --}}
+
+  {{!-- Preview + Actions (pinned to bottom; stays visible while mc-scrollable scrolls) --}}
+  <div class="mc-footer">
+    <div class="mc-preview-line">HP {{preview.hp}} · TL {{preview.tl}} · DPR {{#if actionsSummary.count}}{{preview.dpr}}{{else}}— (no actions){{/if}}</div>
+    <div class="mc-footer-actions">
+      <button type="button" data-action="cancel" class="mc-btn mc-btn-soft">Cancel</button>
+      <button type="button" data-action="save" class="mc-btn mc-btn-primary"><i class="fas fa-save"></i> Create World Actor</button>
+    </div>
+  </div>
+
+</div>

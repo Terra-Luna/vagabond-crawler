@@ -1,5 +1,39 @@
 # Changelog
 
+## v1.8.7
+
+### New Features
+
+#### Monster Creator (Phases 1-3)
+New GM tool for authoring NPC monsters: a dedicated ApplicationV2 window accessible from the **Encounter bar's right-click menu → Monster Creator**. Produces a valid Vagabond `npc` actor in the world — the compendium is never touched.
+
+**Form layout** — every section is a collapsible `<details>` element with a live summary in the header. On fresh start Identity + Stats are open; after loading from bestiary everything collapses so the full monster fits in a 720-tall window.
+
+- **Load from Bestiary** — collapsible filter panel with search, being-type, TL-range (0-1, 1-3, 3-5, 5-8, 8+), and source (Bestiary / Humanlike / VCE). Click any of the 328+ rows to pre-fill the form.
+- **Identity** — name, being type, size, zone, Portrait picker, Token picker (separate images so sheet vs token can differ).
+- **Stats** — HD, armor, armor description, morale, walk speed, appearing, senses, and a **Movement Modes** grid for climb / cling / fly / phase / swim with per-mode speed inputs.
+- **Damage Immunities / Weaknesses / Status Immunities** — three collapsible checkbox grids (15 / 17 / 19 options). Each collapsed header shows a count pill + the first four selected values.
+- **Actions editor** — 20 curated Quick-Pick templates grouped by attack type (Melee / Ranged / Cast Close / Cast Ranged). Tiered templates (Claw has Light / Medium / Heavy; Bite has Small / Medium / Heavy / Boss; Breath Attack has Small / Medium / Heavy) get a tier dropdown inside the card. Per-action edit surface for name, attack type, damage roll, flat bonus, damage type, recharge, note, extra info. Delete button per row. Live DPR fed to the footer preview.
+- **Abilities editor** — 20 curated Quick-Pick templates with **automation status badges**: green ✓ Automated when the ability name matches `scripts/npc-abilities.mjs PASSIVE_ABILITIES`, orange ⚠ Not automated for known-mechanical abilities without automation, gray 📖 Flavor for narrative-only entries. Tiered (Magic Ward I–VI, Terror I–III, Regenerate I–III) and variant (Pack: Instincts / Tactics / Hunter) pickers built in. Badges update live as you rename abilities — automation-match drives the badge so users immediately see whether their chosen name will trigger existing automation.
+- **Description** (collapsible textarea).
+- **Footer** — live `HP · TL · DPR` preview + Cancel + Create World Actor buttons. Pinned to the bottom; the form body scrolls.
+
+**Smart authoring UX:**
+- Arrow-key number inputs work naturally — field edits update state and summaries in place without full re-renders, so focus stays on the input.
+- Live summary preview updates on every edit: Identity shows `"Lich · Undead · Medium · Frontline"`, Stats shows `"HD 11 · Armor 4 · 20ft · + fly · Morale 8"`, Actions/Abilities show counts + first few values.
+- Picking Quick-Pick tiers generates the canonical compendium names (`"Magic Ward III"`, `"Pack Hunter"`) so automation fires on the resulting world actor with zero manual reconciliation.
+
+**Templates extracted from the standalone HTML Monster Creator tool** (`F:\Vagabond\vagabond-monster-creator.html`) — 60+ action templates collapsed into 20 curated entries with power tiers, ability tiers (Magic Ward I–VI instead of four separate entries, etc.), and variant selectors.
+
+**Files added:**
+- `scripts/monster-creator/monster-creator-app.mjs` — ApplicationV2 class
+- `scripts/monster-creator/action-templates.mjs` — 20 curated action Quick Picks
+- `scripts/monster-creator/ability-templates.mjs` — 20 curated ability Quick Picks
+- `templates/monster-creator.hbs` — form template
+
+### Changes
+- `scripts/npc-abilities.mjs` now exports `PASSIVE_ABILITIES` so the Monster Creator can read the live automation table for its badges. No behavior change for existing users.
+
 ## v1.8.6
 
 ### New Features
