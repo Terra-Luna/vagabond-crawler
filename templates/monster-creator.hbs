@@ -71,6 +71,14 @@
           <button type="button" data-action="pickToken" class="mc-btn mc-btn-soft"><i class="fas fa-user-astronaut"></i></button>
         </div>
       </div>
+      {{#if tokenizerAvailable}}
+      <div class="mc-field mc-img-field">
+        <label>&nbsp;</label>
+        <button type="button" data-action="tokenize" class="mc-btn mc-btn-soft" title="Use Tokenizer to generate a portrait + token from an upload or URL (both will be updated on save)">
+          <i class="fas fa-wand-magic-sparkles"></i> Tokenize…
+        </button>
+      </div>
+      {{/if}}
     </div>
     <div class="mc-row">
       <div class="mc-field">

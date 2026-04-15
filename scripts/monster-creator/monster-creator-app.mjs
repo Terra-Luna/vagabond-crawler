@@ -595,6 +595,8 @@ class MonsterCreatorApp extends HandlebarsApplicationMixin(ApplicationV2) {
   async _prepareContext() {
     const bestiary = await _getBestiaryList();
     const filtered = _filterBestiary(bestiary, this._filters);
+    const tokenizer = game.modules.get("vtta-tokenizer");
+    const tokenizerAvailable = !!tokenizer?.active && !!tokenizer?.api?.launch;
     const markSelected = (list, current) =>
       list.map((v) => ({ value: v, label: v, selected: v === current }));
     const beingTypeFilterOpts = markSelected(BEING_TYPES, this._filters.beingType);
@@ -614,6 +616,7 @@ class MonsterCreatorApp extends HandlebarsApplicationMixin(ApplicationV2) {
         : null,
       bestiary,
       filtered,
+      tokenizerAvailable,
       bestiaryOpen: this._bestiaryOpen,
       filters: this._filters,
       beingTypeFilterOpts,
@@ -767,6 +770,7 @@ class MonsterCreatorApp extends HandlebarsApplicationMixin(ApplicationV2) {
 
     el.querySelector('[data-action="pickPortrait"]')?.addEventListener("click", () => this._pickImage("portraitImg"), { signal });
     el.querySelector('[data-action="pickToken"]')   ?.addEventListener("click", () => this._pickImage("tokenImg"),    { signal });
+    el.querySelector('[data-action="tokenize"]')    ?.addEventListener("click", () => this._launchTokenizer(),        { signal });
 
     // Bestiary browser — native <details> toggle. Sync state so subsequent
     // renders (filter/load) remember the open/closed state chosen by the user.
@@ -1043,6 +1047,40 @@ class MonsterCreatorApp extends HandlebarsApplicationMixin(ApplicationV2) {
       el.innerHTML = `<span class="mc-pill">${count}</span><span class="mc-collapse-preview">${foundry.utils.escapeHTML(preview)}</span>`;
     } else {
       el.innerHTML = `<span class="mc-collapse-preview mc-empty">none</span>`;
+    }
+  }
+
+  /** Launch the vtta-tokenizer module with the current portrait/token as
+   *  starting points. Its callback fires with `{ avatarFilename, tokenFilename }`
+   *  holding the uploaded Foundry paths — write those back to form state. */
+  async _launchTokenizer() {
+    const api = game.modules.get("vtta-tokenizer")?.api;
+    if (!api?.launch) {
+      ui.notifications.warn("Tokenizer module isn't active.");
+      return;
+    }
+    const name = this._data.name?.trim() || "Monster";
+    const options = {
+      type:            "npc",
+      name,
+      avatarFilename:  this._data.portraitImg && this._data.portraitImg !== DEFAULT_PORTRAIT ? this._data.portraitImg : "",
+      tokenFilename:   this._data.tokenImg    && this._data.tokenImg    !== DEFAULT_PORTRAIT ? this._data.tokenImg    : "",
+      isWildCard:      false,
+    };
+    try {
+      api.launch(options, (result) => {
+        if (!result) return;
+        let updated = false;
+        if (result.avatarFilename) { this._data.portraitImg = result.avatarFilename; updated = true; }
+        if (result.tokenFilename)  { this._data.tokenImg    = result.tokenFilename;  updated = true; }
+        if (updated) {
+          ui.notifications.info("Tokenizer: portrait + token updated.");
+          this.render();
+        }
+      });
+    } catch (err) {
+      console.error(`${MODULE_ID} | Tokenizer launch failed`, err);
+      ui.notifications.error("Failed to open Tokenizer — see console.");
     }
   }
 

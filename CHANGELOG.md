@@ -1,5 +1,15 @@
 # Changelog
 
+## v1.8.9
+
+### New Features — Monster Creator Phase 5
+
+#### Tokenizer integration
+- When the `vtta-tokenizer` module is installed + active, a new **"Tokenize…"** button appears in the Monster Creator's Identity section next to the Portrait and Token pickers.
+- Clicking it launches Tokenizer with the current portrait/token as starting points (plus the current monster name), lets the user crop / stack / upload, and writes **both the portrait and token paths** back to the form on save.
+- If Tokenizer isn't active, the button is hidden — no error, no visual noise. Standard file-picker fallbacks remain fully functional.
+- Integration is single-button because Tokenizer itself generates both images in one pass; two separate buttons would be confusing.
+
 ## v1.8.8
 
 ### New Features — Monster Creator Phase 4
