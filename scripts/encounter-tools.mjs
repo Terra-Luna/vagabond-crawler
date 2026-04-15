@@ -15,6 +15,7 @@ import { confirmDialog } from "./dialog-helpers.mjs";
 import { ICONS } from "./icons.mjs";
 import { MUTATIONS, MUTATION_CATEGORIES, getMutation, getBoons, getBanes, getConflict } from "./mutation-data.mjs";
 import { getStatSummary, applyMutations, generateMutatedName, generatePrompt, createMutatedActor, calculateHP, calculateDPR, calculateTL } from "./monster-mutator.mjs";
+import { MonsterCreator } from "./monster-creator/monster-creator-app.mjs";
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -538,6 +539,31 @@ class EncounterRollerApp extends HandlebarsApplicationMixin(ApplicationV2) {
       } catch (e) {
         console.error(`${MODULE_ID} | Mutation failed:`, e);
         ui.notifications.error("Failed to create mutated monster.");
+      }
+    }, { signal });
+
+    // Edit in Creator — bake the current mutation selection into a cloned
+    // actor-shape object and hand off to the Monster Creator for further
+    // editing. No world actor is created by this path; the user does that
+    // from the Creator's own Save button.
+    el.querySelector(".mutate-edit-creator-btn")?.addEventListener("click", async () => {
+      if (!this._mutateBaseUuid || !this._mutateBaseData) {
+        ui.notifications.warn("Pick a base monster first.");
+        return;
+      }
+      try {
+        const mutated = foundry.utils.deepClone(this._mutateBaseData);
+        const { prefixes, suffixes } = applyMutations(mutated, [...this._mutateSelected]);
+        // Apply custom name, or the generated mutated name, or keep the base name
+        if (this._mutateCustomName?.trim()) {
+          mutated.name = this._mutateCustomName.trim();
+        } else if (prefixes.length || suffixes.length) {
+          mutated.name = generateMutatedName(mutated.name, prefixes, suffixes);
+        }
+        MonsterCreator.openWithData(mutated);
+      } catch (e) {
+        console.error(`${MODULE_ID} | Edit-in-Creator handoff failed:`, e);
+        ui.notifications.error("Failed to open Monster Creator with mutations.");
       }
     }, { signal });
 

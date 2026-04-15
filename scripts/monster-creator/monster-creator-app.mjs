@@ -20,7 +20,8 @@
  */
 
 import { MODULE_ID } from "../vagabond-crawler.mjs";
-import { calculateHP, calculateTL, calculateDPR } from "../monster-mutator.mjs";
+import { calculateHP, calculateTL, calculateDPR, applyMutations, generateMutatedName, getStatSummary } from "../monster-mutator.mjs";
+import { MUTATIONS, getMutation, getConflict, getBoons, getBanes } from "../mutation-data.mjs";
 import { PASSIVE_ABILITIES } from "../npc-abilities.mjs";
 import { ACTION_QUICK_PICKS,  materializeAction  } from "./action-templates.mjs";
 import { ABILITY_QUICK_PICKS, materializeAbility } from "./ability-templates.mjs";
@@ -116,6 +117,19 @@ const ACTION_TABS = [
   { key: "castRanged", label: "Cast (Ranged)" },
 ];
 
+/** Map MUTATION_CATEGORIES keys into high-level tabs (matches the HTML tool). */
+const MUTATION_TAB_BUCKETS = {
+  form:    new Set(["hp", "armor", "speed", "size", "morale", "senses", "movement", "immunities", "weaknesses", "statusImmunities"]),
+  attack:  new Set(["dpr"]),
+  special: new Set(["abilities"]),
+};
+const MUTATION_TABS = [
+  { key: "all",     label: "All" },
+  { key: "form",    label: "Form" },
+  { key: "attack",  label: "Attack" },
+  { key: "special", label: "Special" },
+];
+
 const BESTIARY_PACKS = ["vagabond.bestiary", "vagabond.humanlike"];
 
 const DEFAULT_PORTRAIT = "systems/vagabond/assets/ui/default-npc.svg";
@@ -135,6 +149,23 @@ export const MonsterCreator = {
       return;
     }
     if (!this._app) this._app = new MonsterCreatorApp();
+    this._app.render(true);
+  },
+
+  /**
+   * Open the Creator pre-filled with a raw actor data object (as returned
+   * by `actor.toObject()` or the output of `applyMutations(clone, ...)`).
+   * The Creator treats this as "loaded content" — all sections collapse;
+   * the user expands to tweak. Used by the Mutate tab's "Edit in Creator"
+   * handoff so mutations are baked in as starting stats.
+   */
+  openWithData(actorObject) {
+    if (!game.user.isGM) {
+      ui.notifications.warn("Only the GM can open the Monster Creator.");
+      return;
+    }
+    if (!this._app) this._app = new MonsterCreatorApp();
+    this._app._loadFromActorShape(actorObject);
     this._app.render(true);
   },
 };
@@ -241,6 +272,105 @@ function _damageDisplay(rollDamage, flatDamage, damageType) {
   let out = parts.join(" ");
   if (damageType && damageType !== "-") out += ` ${damageType}`;
   return out;
+}
+
+/**
+ * Convert the Creator's form-state `_data` into the actor-shape object that
+ * `applyMutations` / `getStatSummary` / `calculateHP` expect (i.e. the raw
+ * shape of a compendium `actor.toObject()`).
+ *
+ * Used when previewing/applying mutations so we can use the canonical
+ * mutation logic without reimplementing it.
+ */
+function _dataToActorShape(data) {
+  return {
+    name: data.name,
+    system: {
+      hd:               data.hd,
+      cr:               data.hd,
+      size:             data.size,
+      beingType:        data.beingType,
+      speed:            data.speed,
+      speedTypes:       [...data.speedTypes],
+      speedValues:      { ...data.speedValues },
+      morale:           data.morale,
+      senses:           data.senses,
+      armor:            data.armor,
+      armorDescription: data.armorDescription,
+      immunities:       [...data.immunities],
+      weaknesses:       [...data.weaknesses],
+      statusImmunities: [...data.statusImmunities],
+      zone:             data.zone,
+      health:           { value: Math.round(calculateHP(data.hd, data.size) ?? 0), max: Math.round(calculateHP(data.hd, data.size) ?? 0), bonus: [] },
+      actions:   data.actions.map((a) => ({ ...a })),
+      abilities: data.abilities.map((a) => ({ ...a })),
+    },
+  };
+}
+
+/** Reverse — copy a mutated actor-shape object back into Creator form state. */
+function _actorShapeToData(actorObj, prevData) {
+  const s = actorObj.system;
+  return {
+    name:             actorObj.name ?? prevData.name,
+    beingType:        s.beingType ?? prevData.beingType,
+    size:             s.size ?? prevData.size,
+    zone:             s.zone ?? prevData.zone,
+    hd:               Number(s.hd ?? prevData.hd),
+    armor:            Number(s.armor ?? prevData.armor),
+    armorDescription: s.armorDescription ?? prevData.armorDescription,
+    speed:            Number(s.speed ?? prevData.speed),
+    speedTypes:       Array.isArray(s.speedTypes) ? [...s.speedTypes] : [...prevData.speedTypes],
+    speedValues:      { ...(s.speedValues ?? prevData.speedValues) },
+    morale:           Number(s.morale ?? prevData.morale),
+    appearing:        prevData.appearing,
+    senses:           s.senses ?? prevData.senses,
+    description:      prevData.description,
+    immunities:       Array.isArray(s.immunities)       ? [...s.immunities]       : [...prevData.immunities],
+    weaknesses:       Array.isArray(s.weaknesses)       ? [...s.weaknesses]       : [...prevData.weaknesses],
+    statusImmunities: Array.isArray(s.statusImmunities) ? [...s.statusImmunities] : [...prevData.statusImmunities],
+    actions:          Array.isArray(s.actions)   ? s.actions.map((a) => ({ ...a }))   : [],
+    abilities:        Array.isArray(s.abilities) ? s.abilities.map((a) => ({ ...a })) : [],
+    portraitImg:      prevData.portraitImg,
+    tokenImg:         prevData.tokenImg,
+  };
+}
+
+/** Compute a live preview of selected mutations applied to the current form.
+ *  Returns before/after stat summaries + prefixes/suffixes. */
+function _mutationPreview(data, selectedIds) {
+  const baseShape  = _dataToActorShape(data);
+  const baseSys    = baseShape.system;
+  const basePreview = {
+    hp:    Math.round(calculateHP(data.hd, data.size) ?? 0),
+    armor: data.armor,
+    speed: data.speed,
+    abilityCount: data.abilities.length,
+    actionCount:  data.actions.length,
+  };
+  basePreview.tl = Math.round((calculateTL(basePreview.hp, basePreview.armor, calculateDPR(baseSys.actions) ?? 0) ?? 0) * 10) / 10;
+
+  if (!selectedIds.size) return { base: basePreview, mutated: null, prefixes: [], suffixes: [] };
+
+  const clone = foundry.utils.deepClone(baseShape);
+  const { prefixes, suffixes } = applyMutations(clone, [...selectedIds]);
+  const mSys = clone.system;
+  const mutated = {
+    hp:    Math.round(calculateHP(mSys.hd, mSys.size) ?? 0),
+    armor: mSys.armor,
+    speed: mSys.speed,
+    abilityCount: (mSys.abilities ?? []).length,
+    actionCount:  (mSys.actions ?? []).length,
+  };
+  mutated.tl = Math.round((calculateTL(mutated.hp, mutated.armor, calculateDPR(mSys.actions) ?? 0) ?? 0) * 10) / 10;
+  return { base: basePreview, mutated, prefixes, suffixes };
+}
+
+function _mutationTabFor(mutationCategory) {
+  for (const [bucket, cats] of Object.entries(MUTATION_TAB_BUCKETS)) {
+    if (cats.has(mutationCategory)) return bucket;
+  }
+  return "form";
 }
 
 function _abilitiesSummary(abilities) {
@@ -446,7 +576,9 @@ class MonsterCreatorApp extends HandlebarsApplicationMixin(ApplicationV2) {
     this._sourceUuid = null;
     this._renderAbort = null;
     this._bestiaryOpen = false;
-    this._actionsTab = "all"; // which Quick Picks category is active
+    this._actionsTab   = "all"; // which Action Quick-Picks tab is active
+    this._mutationsTab = "all"; // which Mutation tab is active
+    this._selectedMutations = new Set(); // staged mutation IDs (not applied yet)
     // Fresh start vs loaded-from-bestiary affects which sections are open
     // by default on next render. Set to false after a successful load so
     // the long "Stats" / "Identity" sections don't add to the page height
@@ -587,6 +719,31 @@ class MonsterCreatorApp extends HandlebarsApplicationMixin(ApplicationV2) {
         description: a.description ?? "",
         badge: _abilityBadge(a.name),
       })),
+
+      // Mutations panel
+      mutationTabs: MUTATION_TABS.map((t) => ({ ...t, active: t.key === this._mutationsTab })),
+      mutationCards: MUTATIONS
+        .filter((m) => this._mutationsTab === "all" || _mutationTabFor(m.category) === this._mutationsTab)
+        .map((m) => {
+          const selected = this._selectedMutations.has(m.id);
+          // Only detect conflicts against OTHER selected mutations, not self
+          const otherSelected = selected ? new Set([...this._selectedMutations].filter((id) => id !== m.id)) : this._selectedMutations;
+          const conflict = getConflict(m.id, [...otherSelected]);
+          return {
+            id:          m.id,
+            name:        m.name,
+            category:    m.category,
+            type:        m.type,                        // "boon" | "bane"
+            tlDelta:     m.tlDelta,
+            tlDeltaStr:  (m.tlDelta > 0 ? "+" : "") + m.tlDelta,
+            description: m.description,
+            selected,
+            conflict,                                    // conflict id, or null
+            disabled:    !!conflict && !selected,        // can't check if a conflicting one is already picked
+          };
+        }),
+      mutationSelectedCount: this._selectedMutations.size,
+      mutationPreview: _mutationPreview(this._data, this._selectedMutations),
     };
   }
 
@@ -784,6 +941,22 @@ class MonsterCreatorApp extends HandlebarsApplicationMixin(ApplicationV2) {
       }, { signal });
     });
 
+    // ── Mutations panel ─────────────────────────────────────────────────
+    el.querySelectorAll("[data-mutation-tab]").forEach((btn) => {
+      btn.addEventListener("click", (ev) => {
+        this._mutationsTab = ev.currentTarget.dataset.mutationTab;
+        this.render();
+      }, { signal });
+    });
+    el.querySelectorAll("[data-mutation-id]").forEach((cb) => {
+      cb.addEventListener("change", (ev) => {
+        this._toggleMutation(ev.currentTarget.dataset.mutationId, ev.currentTarget.checked);
+      }, { signal });
+    });
+    el.querySelector('[data-action="rollRandomMutation"]')?.addEventListener("click", () => this._rollRandomMutation(), { signal });
+    el.querySelector('[data-action="applyMutations"]')?.addEventListener("click", () => this._applyMutations(), { signal });
+    el.querySelector('[data-action="clearMutations"]')?.addEventListener("click", () => this._clearMutationSelection(), { signal });
+
     el.querySelector('[data-action="reset"]') ?.addEventListener("click", () => this._reset(),  { signal });
     el.querySelector('[data-action="cancel"]')?.addEventListener("click", () => this.close(),   { signal });
     el.querySelector('[data-action="save"]')  ?.addEventListener("click", () => this._save(),   { signal });
@@ -918,6 +1091,15 @@ class MonsterCreatorApp extends HandlebarsApplicationMixin(ApplicationV2) {
     });
   }
 
+  /** Load raw actor-shape data (not a Document) into the form.
+   *  Used by MonsterCreator.openWithData() for the Mutate-tab handoff. */
+  _loadFromActorShape(actorObject) {
+    this._data = _fromCompendiumActor(actorObject);
+    this._sourceUuid = null;
+    this._isFreshStart = false;
+    this._bestiaryOpen = false;
+  }
+
   async _loadFromBestiary(uuid) {
     try {
       const actor = await fromUuid(uuid);
@@ -954,6 +1136,73 @@ class MonsterCreatorApp extends HandlebarsApplicationMixin(ApplicationV2) {
     this._data = _blankMonster();
     this._sourceUuid = null;
     this._isFreshStart = true;
+    this._selectedMutations.clear();
+    this.render();
+  }
+
+  /** Toggle a mutation checkbox. */
+  _toggleMutation(id, checked) {
+    if (checked) {
+      // Block if the click would create a conflict
+      if (getConflict(id, [...this._selectedMutations])) return;
+      this._selectedMutations.add(id);
+    } else {
+      this._selectedMutations.delete(id);
+    }
+    this.render();
+  }
+
+  /** Pick one random untouched boon + its suggested bane (or a random bane).
+   *  Matches the HTML Monster Creator's "Roll Random" action. */
+  _rollRandomMutation() {
+    const boons = getBoons().filter((b) => !this._selectedMutations.has(b.id) && !getConflict(b.id, [...this._selectedMutations]));
+    if (!boons.length) { ui.notifications.warn("No eligible boons left to roll."); return; }
+    const boon = boons[Math.floor(Math.random() * boons.length)];
+    this._selectedMutations.add(boon.id);
+
+    // Suggested bane first; fall back to any eligible bane
+    const suggestedBane = boon.suggestedBane ? getMutation(boon.suggestedBane) : null;
+    let bane = suggestedBane;
+    if (!bane || this._selectedMutations.has(bane.id) || getConflict(bane.id, [...this._selectedMutations])) {
+      const banes = getBanes().filter((b) => !this._selectedMutations.has(b.id) && !getConflict(b.id, [...this._selectedMutations]));
+      bane = banes[Math.floor(Math.random() * banes.length)] ?? null;
+    }
+    if (bane) this._selectedMutations.add(bane.id);
+    this.render();
+  }
+
+  /** Bake all selected mutations into `this._data`, clear the selection,
+   *  and update the form. The user can then refine or stack another round. */
+  _applyMutations() {
+    if (!this._selectedMutations.size) {
+      ui.notifications.warn("No mutations selected.");
+      return;
+    }
+    const shape = _dataToActorShape(this._data);
+    const { prefixes, suffixes } = applyMutations(shape, [...this._selectedMutations]);
+
+    // Preserve current name if the user has set one non-default; otherwise
+    // apply the mutation-generated name for flavor.
+    // Dedupe: skip any prefix/suffix that's already present in the current
+    // name so stacking the same mutation family twice doesn't double-prepend.
+    const baseName = this._data.name?.trim() || shape.name || "";
+    const hasWord = (word) => new RegExp(`\\b${word.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\b`, "i").test(baseName);
+    const newPrefixes = prefixes.filter((p) => !hasWord(p));
+    const newSuffixes = suffixes.filter((s) => !hasWord(s));
+    const newName  = newPrefixes.length || newSuffixes.length
+      ? generateMutatedName(baseName, newPrefixes, newSuffixes)
+      : baseName;
+
+    this._data = _actorShapeToData(shape, this._data);
+    this._data.name = newName;
+    this._selectedMutations.clear();
+    ui.notifications.info(`Applied ${[...prefixes, ...suffixes].length} mutation(s) to form.`);
+    this.render();
+  }
+
+  _clearMutationSelection() {
+    if (!this._selectedMutations.size) return;
+    this._selectedMutations.clear();
     this.render();
   }
 

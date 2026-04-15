@@ -3689,3 +3689,100 @@ body.theme-light .vcb-phase-badge {
   min-height: 32px;
   font-size: 0.85em;
 }
+
+/* ── Mutations panel ─────────────────────────────────────────────────────── */
+
+#vagabond-crawler-monster-creator .mc-mut-actions {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+#vagabond-crawler-monster-creator .mc-mut-preview {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 4px 12px;
+  padding: 6px 8px;
+  border: 1px solid var(--vcb-border-light, #c5c3b832);
+  border-radius: 4px;
+  background: rgba(38, 203, 12, 0.06);
+  font-size: 0.85em;
+  color: var(--vcb-text-dim, #c2bea9);
+}
+#vagabond-crawler-monster-creator .mc-mut-preview .mc-mut-delta {
+  color: #26cb0c;
+}
+
+#vagabond-crawler-monster-creator .mc-mut-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 4px;
+  max-height: 300px;
+  overflow-y: auto;
+  padding: 2px;
+}
+#vagabond-crawler-monster-creator .mc-mut-card {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 6px;
+  border: 1px solid var(--vcb-border-light, #c5c3b832);
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.15);
+  cursor: pointer;
+  font-size: 0.82em;
+}
+#vagabond-crawler-monster-creator .mc-mut-card:hover {
+  border-color: var(--vcb-accent, #DED656);
+  background: rgba(222, 214, 86, 0.05);
+}
+#vagabond-crawler-monster-creator .mc-mut-card input[type="checkbox"] { width: auto; margin: 0; flex: 0 0 auto; }
+#vagabond-crawler-monster-creator .mc-mut-card .mc-mut-name {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--vcb-text, #BDC1C6);
+}
+#vagabond-crawler-monster-creator .mc-mut-card .mc-mut-badge {
+  flex: 0 0 auto;
+  padding: 0 4px;
+  border-radius: 3px;
+  font-size: 0.7em;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+#vagabond-crawler-monster-creator .mc-mut-card .mc-mut-boon-badge {
+  background: rgba(38, 203, 12, 0.18);
+  color: #26cb0c;
+  border: 1px solid rgba(38, 203, 12, 0.35);
+}
+#vagabond-crawler-monster-creator .mc-mut-card .mc-mut-bane-badge {
+  background: rgba(231, 87, 10, 0.18);
+  color: #e7570a;
+  border: 1px solid rgba(231, 87, 10, 0.35);
+}
+#vagabond-crawler-monster-creator .mc-mut-card .mc-mut-tl {
+  flex: 0 0 auto;
+  font-size: 0.78em;
+  color: var(--vcb-text-faint, #9a9588);
+  font-weight: 500;
+}
+
+#vagabond-crawler-monster-creator .mc-mut-card.mc-mut-selected {
+  border-color: var(--vcb-accent, #DED656);
+  background: rgba(222, 214, 86, 0.12);
+}
+#vagabond-crawler-monster-creator .mc-mut-card.mc-mut-disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+#vagabond-crawler-monster-creator .mc-mut-card.mc-mut-disabled:hover {
+  border-color: var(--vcb-border-light, #c5c3b832);
+  background: rgba(0, 0, 0, 0.15);
+}
+#vagabond-crawler-monster-creator .mc-btn[disabled] {
+  opacity: 0.4;
+  cursor: not-allowed;
+}

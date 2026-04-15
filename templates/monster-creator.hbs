@@ -332,6 +332,69 @@
     </div>
   </details>
 
+  {{!-- Mutations (collapsible) --}}
+  <details class="mc-section mc-collapsible" data-collapse="mutations">
+    <summary>
+      <span class="mc-collapse-title">Mutations</span>
+      <span class="mc-collapse-summary">
+        {{#if mutationSelectedCount}}
+          <span class="mc-pill">{{mutationSelectedCount}}</span>
+          <span class="mc-collapse-preview">
+            HP {{mutationPreview.base.hp}}→{{mutationPreview.mutated.hp}} · Armor {{mutationPreview.base.armor}}→{{mutationPreview.mutated.armor}} · TL {{mutationPreview.base.tl}}→{{mutationPreview.mutated.tl}}
+          </span>
+        {{else}}
+          <span class="mc-collapse-preview mc-empty">none selected</span>
+        {{/if}}
+      </span>
+    </summary>
+
+    <div class="mc-subsection">
+      <div class="mc-mut-actions">
+        <button type="button" class="mc-btn mc-btn-soft" data-action="rollRandomMutation" title="Roll one random boon + suggested bane">
+          <i class="fas fa-dice-d20"></i> Roll Random
+        </button>
+        <button type="button" class="mc-btn mc-btn-primary" data-action="applyMutations" {{#unless mutationSelectedCount}}disabled{{/unless}}>
+          <i class="fas fa-bolt"></i> Apply Selected
+        </button>
+        <button type="button" class="mc-btn mc-btn-soft" data-action="clearMutations" {{#unless mutationSelectedCount}}disabled{{/unless}}>Clear</button>
+      </div>
+    </div>
+
+    {{#if mutationSelectedCount}}
+    <div class="mc-subsection">
+      <label class="mc-subhead">Preview</label>
+      <div class="mc-mut-preview">
+        <div>HP <strong>{{mutationPreview.base.hp}}</strong> → <strong class="mc-mut-delta">{{mutationPreview.mutated.hp}}</strong></div>
+        <div>Armor <strong>{{mutationPreview.base.armor}}</strong> → <strong class="mc-mut-delta">{{mutationPreview.mutated.armor}}</strong></div>
+        <div>Speed <strong>{{mutationPreview.base.speed}}</strong> → <strong class="mc-mut-delta">{{mutationPreview.mutated.speed}}</strong></div>
+        <div>TL <strong>{{mutationPreview.base.tl}}</strong> → <strong class="mc-mut-delta">{{mutationPreview.mutated.tl}}</strong></div>
+        <div>Abilities <strong>{{mutationPreview.base.abilityCount}}</strong> → <strong class="mc-mut-delta">{{mutationPreview.mutated.abilityCount}}</strong></div>
+        <div>Actions <strong>{{mutationPreview.base.actionCount}}</strong> → <strong class="mc-mut-delta">{{mutationPreview.mutated.actionCount}}</strong></div>
+      </div>
+    </div>
+    {{/if}}
+
+    <div class="mc-subsection">
+      <label class="mc-subhead">Mutation Browser</label>
+      <div class="mc-template-tabs">
+        {{#each mutationTabs}}
+        <button type="button" class="mc-tab-btn {{#if active}}mc-tab-active{{/if}}" data-mutation-tab="{{key}}">{{label}}</button>
+        {{/each}}
+      </div>
+      <div class="mc-mut-grid">
+        {{#each mutationCards}}
+        <label class="mc-mut-card mc-mut-{{type}} {{#if selected}}mc-mut-selected{{/if}} {{#if disabled}}mc-mut-disabled{{/if}}"
+               title="{{description}}{{#if conflict}} — conflicts with another selected mutation{{/if}}">
+          <input type="checkbox" data-mutation-id="{{id}}" {{#if selected}}checked{{/if}} {{#if disabled}}disabled{{/if}} />
+          <span class="mc-mut-name">{{name}}</span>
+          <span class="mc-mut-badge mc-mut-{{type}}-badge">{{type}}</span>
+          <span class="mc-mut-tl">{{tlDeltaStr}}</span>
+        </label>
+        {{/each}}
+      </div>
+    </div>
+  </details>
+
   {{!-- Description (collapsible) --}}
   <details class="mc-section mc-collapsible" data-collapse="description">
     <summary>

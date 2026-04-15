@@ -1,5 +1,28 @@
 # Changelog
 
+## v1.8.8
+
+### New Features — Monster Creator Phase 4
+
+#### Mutations Panel inside the Creator
+- New collapsible "Mutations" section with a full browser of all 64 mutations from `mutation-data.mjs`, grouped by high-level tab: **All / Form / Attack / Special**
+- Per-mutation card shows name, `boon`/`bane` badge, and TL delta
+- **Conflict detection** — picking one mutation from a conflict family (e.g. `hp-bloated`) disables the conflicting siblings (e.g. `hp-massive`) with a grayed-out card so the user can't create invalid combinations
+- **Roll Random** — picks one eligible boon plus its suggested bane (falls back to any eligible bane)
+- **Live preview** — while mutations are selected, shows `HP 13→22 · Armor 2→2 · TL 2.1→2.3` delta in the collapsed header and a detailed 6-row breakdown (HP, armor, speed, TL, ability count, action count) inside the expanded panel
+- **Apply Selected** — bakes the chosen mutations into the current form, clears the selection, and generates the mutated name (e.g. "Bloated Ironhide Goblin, Warrior"). Prefix/suffix dedupe ensures stacking the same mutation family twice doesn't produce "Bloated Bloated Goblin, Warrior"
+- Stackable — apply multiple rounds of mutations sequentially, each building on the previous state
+
+#### Edit-in-Creator handoff from the Encounter Roller's Mutate tab
+- New **"Edit in Creator"** button in the existing Mutate tab alongside "Create Monster"
+- Clicking it clones the selected base monster, applies the chosen mutations (including any prefix/suffix name changes), and opens the Monster Creator pre-filled with the resulting stats
+- No world actor is created at this point — the user reviews and saves from the Creator's own footer. Lets the GM mutate-then-refine in a single workflow.
+
+### Implementation Notes
+- Mutations panel reuses `applyMutations` + `generateMutatedName` from `monster-mutator.mjs` as the canonical mutation logic
+- `_dataToActorShape` / `_actorShapeToData` helpers convert between the Creator's form state and the raw actor-shape objects the mutation logic expects, so the Creator stays decoupled from actor documents
+- `MonsterCreator.openWithData(actorObject)` entry point added for external callers that want to seed the Creator with a pre-computed actor shape (used by the Edit-in-Creator handoff)
+
 ## v1.8.7
 
 ### New Features
