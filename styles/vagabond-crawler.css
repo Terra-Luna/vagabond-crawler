@@ -19,8 +19,11 @@
   /* ── Borders / lines ───────────────────────────────────────────────────── */
   --vcb-border:      #3a3d44;
 
-  /* ── Accent ────────────────────────────────────────────────────────────── */
-  --vcb-accent:      #ffffff;
+  /* ── Accent ──────────────────────────────────────────────────────────────
+   * Gold tabletop palette — gives the dark theme an actual brand color
+   * instead of bright white. Ramp goes accent (primary) → dim (hover/dim
+   * backgrounds) → dark (pressed state / on-gold text). */
+  --vcb-accent:      #c9a54a;
   --vcb-accent-dim:  #94913c;
   --vcb-accent-dark: #7a7030;
 
@@ -988,7 +991,15 @@ body.theme-light .vcb-phase-badge {
   border-radius: var(--vcb-radius); color: var(--vcb-text-dim); cursor: pointer;
   font-family: var(--vcb-font); font-size: 15px;
 }
-.tab-btn.active { background: linear-gradient(135deg, var(--vcb-accent-dim) 0%, var(--vcb-accent-dark) 100%); border-color: var(--vcb-accent); color: var(--vcb-accent); box-shadow: inset 0 1px 3px var(--vcb-shadow-sm); }
+.tab-btn.active {
+  background: linear-gradient(135deg, var(--vcb-accent-dim) 0%, var(--vcb-accent-dark) 100%);
+  border-color: var(--vcb-accent);
+  /* Dark text on the gold gradient — was gold-on-gold before the --vcb-accent
+   * change; the active tab now uses near-black for ~10:1 contrast. */
+  color: #1a1511;
+  font-weight: 600;
+  box-shadow: inset 0 1px 3px var(--vcb-shadow-sm);
+}
 .tab-btn:hover { border-color: var(--vcb-accent-dim); color: var(--vcb-text); }
 
 .encounter-controls-row { display: flex; gap: 10px; margin-bottom: 8px; align-items: flex-end; }
@@ -1779,6 +1790,20 @@ body.theme-light .vcb-phase-badge {
   min-width: 0;
   overflow-y: auto;
   max-height: 100%;
+}
+
+/* Browse NPCs table: stretch to fill remaining vertical space in the tab
+ * so the long list of monsters actually uses the window height.
+ * `.loot-npc-panel` is the Browse tab's row container (filter column +
+ * list column); we make the inside list column stretch. */
+.vagabond-encounter-roller .loot-npc-panel {
+  min-height: 0;
+  height: calc(100% - 8px);
+  align-items: stretch;
+}
+.vagabond-encounter-roller .browse-list-fill {
+  flex: 1 1 auto;
+  min-height: 480px;
 }
 
 .loot-npc-table {
@@ -3145,6 +3170,63 @@ body.theme-light .vcb-phase-badge {
   gap: 2px;
 }
 #vagabond-crawler-monster-creator .mc-field.mc-wide { flex: 2 1 220px; }
+/* Narrow field for numeric inputs like HD / Armor / Morale / Speed — keeps
+ * text fields next to them from inheriting a big flex-basis and leaving
+ * wasted space after the short number. */
+#vagabond-crawler-monster-creator .mc-field.mc-num  { flex: 0 0 72px; min-width: 56px; }
+#vagabond-crawler-monster-creator .mc-field.mc-num input[type="number"] { text-align: right; }
+/* Hide the native spinner — we render our own bigger buttons via JS. */
+#vagabond-crawler-monster-creator input[type="number"] {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+#vagabond-crawler-monster-creator input[type="number"]::-webkit-inner-spin-button,
+#vagabond-crawler-monster-creator input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Custom number stepper (JS wraps each numeric input in this) */
+#vagabond-crawler-monster-creator .mc-num-wrap {
+  display: inline-flex;
+  align-items: stretch;
+  gap: 0;
+  width: 100%;
+}
+#vagabond-crawler-monster-creator .mc-num-wrap > input[type="number"] {
+  flex: 1 1 auto;
+  border-right: none !important;
+  border-top-right-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
+  width: auto !important;
+  min-width: 0;
+}
+#vagabond-crawler-monster-creator .mc-num-stack {
+  display: flex;
+  flex-direction: column;
+  width: 18px;
+  flex: 0 0 18px;
+}
+#vagabond-crawler-monster-creator .mc-num-btn {
+  flex: 1 1 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  font-size: 0.65em;
+  line-height: 1;
+  background: var(--vcb-input-bg, #051a2f);
+  color: var(--vcb-text-dim, #c2bea9);
+  border: 1px solid var(--vcb-border-light, #c5c3b832);
+  border-left: none;
+  border-radius: 0;
+  cursor: pointer;
+  user-select: none;
+}
+#vagabond-crawler-monster-creator .mc-num-btn-up    { border-top-right-radius: 4px; border-bottom: none; }
+#vagabond-crawler-monster-creator .mc-num-btn-down  { border-bottom-right-radius: 4px; }
+#vagabond-crawler-monster-creator .mc-num-btn:hover { background: rgba(255, 255, 255, 0.08); color: var(--vcb-text, #e7e1d4); }
+#vagabond-crawler-monster-creator .mc-num-btn:active { background: var(--vcb-accent, #b08d3a); color: #1a1511; }
 #vagabond-crawler-monster-creator .mc-field label {
   font-size: 0.8em;
   color: var(--vcb-text-dim, #c2bea9);
@@ -3171,6 +3253,91 @@ body.theme-light .vcb-phase-badge {
   color: var(--vcb-text, #BDC1C6);
 }
 #vagabond-crawler-monster-creator textarea { resize: vertical; min-height: 48px; }
+
+/* ── Container-aware responsive adaptation ─────────────────────────────────
+ * The Creator and the Encounter Roller are both resizable Foundry windows;
+ * the user can shrink them. These `@container` queries kick in when the
+ * parent width drops below comfortable thresholds, collapsing 2-col grids
+ * to 1-col and narrowing the template popup to fit. */
+#vagabond-crawler-monster-creator,
+.vagabond-encounter-roller {
+  container-type: inline-size;
+}
+@container (inline-size < 520px) {
+  #vagabond-crawler-monster-creator .mc-action-grid {
+    grid-template-columns: 1fr;
+  }
+  #vagabond-crawler-monster-creator .mc-action-grid > label {
+    text-align: left;
+    padding-right: 0;
+    font-weight: 600;
+  }
+  #vagabond-crawler-monster-creator .mc-template-popup {
+    width: min(420px, calc(100cqw - 40px));
+  }
+  #vagabond-crawler-monster-creator .mc-template-popup-btn {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+  }
+  #vagabond-crawler-monster-creator .mc-template-popup-btn strong {
+    flex: 0 0 auto;
+  }
+  #vagabond-crawler-monster-creator .mc-rider-row {
+    flex-wrap: wrap;
+  }
+}
+
+/* Touch-input adaptation — bumps every interactive control to at least
+ * 32px height when the user is on a coarse pointer (touchscreen laptop,
+ * tablet Foundry client). Preserves the dense desktop default for mouse. */
+@media (pointer: coarse) {
+  #vagabond-crawler-monster-creator .mc-btn,
+  #vagabond-crawler-monster-creator .mc-filter-btn,
+  #vagabond-crawler-monster-creator .mc-ability-add-btn,
+  #vagabond-crawler-monster-creator .mc-action-delete,
+  #vagabond-crawler-monster-creator .mc-rider-delete,
+  #vagabond-crawler-monster-creator input,
+  #vagabond-crawler-monster-creator select,
+  .vagabond-encounter-roller .tab-btn {
+    min-height: 32px;
+    padding-top: 6px;
+    padding-bottom: 6px;
+  }
+  #vagabond-crawler-monster-creator .mc-num-btn {
+    min-width: 28px;
+  }
+  #vagabond-crawler-monster-creator .mc-num-stack {
+    width: 28px;
+    flex-basis: 28px;
+  }
+  #vagabond-crawler-monster-creator input[type="checkbox"] {
+    min-width: 20px;
+    min-height: 20px;
+  }
+}
+
+/* ── A11y: focus ring + sr-only (Monster Creator scope) ─────────────────────
+ * Every interactive element inside the Creator gets a consistent, visible
+ * focus ring when reached by keyboard. `:focus-visible` keeps mouse clicks
+ * quiet (no ring on click) but lights up keyboard tabbing. */
+#vagabond-crawler-monster-creator :focus-visible,
+.vagabond-encounter-roller :focus-visible {
+  outline: 2px solid var(--vcb-accent, #c9a54a);
+  outline-offset: 2px;
+  border-color: var(--vcb-accent, #c9a54a);
+}
+/* Screen-reader-only helper — visually hidden but available to AT. */
+.mc-sr-only,
+.vcb-sr-only {
+  position: absolute !important;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
 
 #vagabond-crawler-monster-creator .mc-load-row {
   display: flex;
@@ -3366,6 +3533,86 @@ body.theme-light .vcb-phase-badge {
   font-size: 0.78em;
   color: var(--vcb-text-faint, #706d65);
 }
+
+/* ── Mini collapsibles (Senses, Other Movement Modes) ──────────────────── */
+#vagabond-crawler-monster-creator .mc-mini-collapsible {
+  margin-top: 8px;
+  border: 1px solid var(--vcb-border-light, #c5c3b832);
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.12);
+}
+#vagabond-crawler-monster-creator .mc-mini-collapsible > summary {
+  list-style: none;
+  cursor: pointer;
+  padding: 6px 10px;
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+#vagabond-crawler-monster-creator .mc-mini-collapsible > summary::-webkit-details-marker { display: none; }
+#vagabond-crawler-monster-creator .mc-mini-collapsible > summary::before {
+  content: "▸";
+  width: 10px;
+  color: var(--vcb-text-faint, #706d65);
+  transition: transform 0.12s;
+}
+#vagabond-crawler-monster-creator .mc-mini-collapsible[open] > summary::before {
+  transform: rotate(90deg);
+}
+#vagabond-crawler-monster-creator .mc-mini-collapsible > summary .mc-subhead {
+  margin: 0;
+}
+#vagabond-crawler-monster-creator .mc-mini-collapsible > summary .mc-collapse-preview {
+  color: var(--vcb-text-faint, #706d65);
+  font-size: 0.85em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex: 1 1 auto;
+}
+#vagabond-crawler-monster-creator .mc-mini-collapsible > :not(summary) {
+  padding: 4px 10px 8px 10px;
+}
+
+/* Token Vision subgroup inside Senses */
+#vagabond-crawler-monster-creator .mc-vision-subgroup {
+  margin-top: 6px;
+  padding-top: 6px;
+  border-top: 1px dashed rgba(197, 195, 184, 0.12);
+}
+#vagabond-crawler-monster-creator .mc-vision-enable {
+  margin-bottom: 4px;
+  font-size: 0.85em;
+}
+
+/* ── Senses grid (boolean checkboxes, tightly packed) ────────────────────
+ * Simplified from the speed-mode pattern: no range inputs, no ∞ hints —
+ * just checkbox + label laid out in a compact wrap row. `flex-wrap` gives
+ * columns that snap to label width (~110px) instead of the 180px grid
+ * cell, which removes the wasted space between short labels. */
+#vagabond-crawler-monster-creator .mc-senses-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px 14px;
+}
+#vagabond-crawler-monster-creator .mc-sense-row {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  min-height: 22px;
+  cursor: pointer;
+  flex: 0 0 auto;
+}
+#vagabond-crawler-monster-creator .mc-sense-row input[type="checkbox"] { width: auto; margin: 0; }
+#vagabond-crawler-monster-creator .mc-sense-row .mc-sense-label {
+  font-size: 0.85em;
+  color: var(--vcb-text-dim, #c2bea9);
+  white-space: nowrap;
+}
+#vagabond-crawler-monster-creator .mc-senses-other {
+  margin-top: 6px;
+}
+
 #vagabond-crawler-monster-creator .mc-cb-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
@@ -3595,6 +3842,100 @@ body.theme-light .vcb-phase-badge {
 }
 #vagabond-crawler-monster-creator .mc-action-delete:hover { background: rgba(157, 0, 0, 0.5); }
 
+/* ── Actions toolbar + template picker popup ─────────────────────────────── */
+
+#vagabond-crawler-monster-creator .mc-action-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+#vagabond-crawler-monster-creator .mc-template-picker {
+  position: relative;
+}
+#vagabond-crawler-monster-creator .mc-template-popup {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 20;
+  margin-top: 4px;
+  width: max-content;
+  min-width: 220px;
+  max-width: calc(100vw - 40px);
+  max-height: 480px;
+  overflow-y: auto;
+  padding: 6px;
+  background: var(--vcb-bg-card, #1f2324);
+  border: 1px solid var(--vcb-border, #635c49);
+  border-radius: 4px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.55);
+}
+#vagabond-crawler-monster-creator .mc-template-popup-open { display: block; }
+#vagabond-crawler-monster-creator .mc-template-group + .mc-template-group {
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(197, 195, 184, 0.12);
+}
+#vagabond-crawler-monster-creator .mc-template-group-label {
+  font-size: 0.78em;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--vcb-text-faint, #706d65);
+  margin-bottom: 4px;
+}
+#vagabond-crawler-monster-creator .mc-template-popup-row {
+  display: flex;
+  align-items: stretch;
+  gap: 4px;
+  margin-bottom: 1px;
+}
+#vagabond-crawler-monster-creator .mc-template-popup-btn {
+  flex: 1;
+  display: flex;
+  flex-direction: row;
+  align-items: baseline;
+  gap: 8px;
+  /* Compact padding — rows were ~40px tall due to vertical whitespace.
+   * Drops to ~24px with 2px vertical + Eskapade x-height. */
+  padding: 2px 8px;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid var(--vcb-border-light, #c5c3b832);
+  border-radius: 3px;
+  color: var(--vcb-text, #e7e1d4);
+  cursor: pointer;
+  text-align: left;
+  min-width: 0;
+  line-height: 1.3;
+}
+#vagabond-crawler-monster-creator .mc-template-popup-btn strong {
+  /* Size to content; no fixed width — "Bite" and "Pseudopod" get exactly the
+   * room they need, no trailing whitespace. */
+  flex: 0 0 auto;
+  white-space: nowrap;
+  font-size: 0.92em;
+}
+#vagabond-crawler-monster-creator .mc-template-popup-btn .mc-hint {
+  flex: 0 0 auto;
+  white-space: nowrap;
+  font-size: 0.85em;
+  color: var(--vcb-text-faint, #9a9588);
+  font-weight: normal;
+}
+#vagabond-crawler-monster-creator .mc-template-popup-btn:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: var(--vcb-accent, #b08d3a);
+}
+#vagabond-crawler-monster-creator .mc-template-popup-row .mc-template-tier {
+  /* Override the generic .mc-template-tier rule (width: 100% !important)
+   * which was collapsing the name button next to the tier select. */
+  flex: 0 0 auto;
+  width: 170px !important;
+  max-width: 170px !important;
+  margin: 0 !important;
+  font-size: 0.82em;
+}
+
 /* ── Per-action collapsible card (Monster Creator Actions editor) ───────── */
 
 #vagabond-crawler-monster-creator .mc-action-card {
@@ -3637,28 +3978,39 @@ body.theme-light .vcb-phase-badge {
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-#vagabond-crawler-monster-creator .mc-action-card > .mc-action-head,
-#vagabond-crawler-monster-creator .mc-action-card > .mc-action-weapon,
-#vagabond-crawler-monster-creator .mc-action-card > .mc-action-damage,
-#vagabond-crawler-monster-creator .mc-action-card > .mc-action-meta,
+#vagabond-crawler-monster-creator .mc-action-card > .mc-action-grid,
 #vagabond-crawler-monster-creator .mc-action-card > .mc-rider-block {
   padding: 4px 8px 6px 20px;
 }
-#vagabond-crawler-monster-creator .mc-action-card > .mc-action-head  { padding-top: 6px; }
+#vagabond-crawler-monster-creator .mc-action-card > .mc-action-grid { padding-top: 6px; }
 #vagabond-crawler-monster-creator .mc-action-card > .mc-rider-block:last-child { padding-bottom: 8px; }
 
-#vagabond-crawler-monster-creator .mc-action-weapon {
+/* Two-column label/input grid inside the expanded action card */
+#vagabond-crawler-monster-creator .mc-action-grid {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 4px 10px;
+  align-items: center;
+}
+#vagabond-crawler-monster-creator .mc-action-grid > label {
+  font-size: 0.82em;
+  color: var(--vcb-text-dim, #c2bea9);
+  text-align: right;
+  padding-right: 2px;
+}
+#vagabond-crawler-monster-creator .mc-action-grid > input,
+#vagabond-crawler-monster-creator .mc-action-grid > select {
+  margin: 0;
+}
+/* The damage row packs multiple fields inline on the right side of its label. */
+#vagabond-crawler-monster-creator .mc-action-dmgrow {
   display: flex;
   align-items: center;
-  gap: 6px;
-  flex-wrap: wrap;
+  gap: 4px;
 }
-#vagabond-crawler-monster-creator .mc-action-weapon .mc-subhead { flex: 0 0 70px; margin: 0; }
-#vagabond-crawler-monster-creator .mc-action-weapon-sel {
-  flex: 1 1 180px;
-  margin: 0;
-  min-width: 140px;
-}
+#vagabond-crawler-monster-creator .mc-action-dmgrow .mc-action-roll  { flex: 1 1 70px; }
+#vagabond-crawler-monster-creator .mc-action-dmgrow .mc-action-flat  { flex: 0 0 60px; }
+#vagabond-crawler-monster-creator .mc-action-dmgrow .mc-action-dtype { flex: 1 1 100px; }
 
 /* Rider blocks (On-Hit / Crit On-Hit effects) */
 #vagabond-crawler-monster-creator .mc-rider-block {
@@ -3739,12 +4091,42 @@ body.theme-light .vcb-phase-badge {
 
 /* ── Scrollable body + pinned footer ─────────────────────────────────────── */
 
+/* When the Creator is embedded in the Encounter Roller tabpanel, we need a
+ * bounded height chain (form → tabpanel → panel host → mc-container) so the
+ * inner `.mc-scrollable` can overflow. These rules plug that chain. */
+.vagabond-encounter-roller {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+}
+.vagabond-encounter-roller > #encounter-tabpanel {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+.vagabond-encounter-roller #vagabond-crawler-monster-creator.encounter-mc-panel,
+.vagabond-encounter-roller .encounter-mc-panel {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
 #vagabond-crawler-monster-creator .mc-container {
   display: flex;
   flex-direction: column;
   height: 100%;
+  flex: 1 1 auto;
+  min-height: 0;
   gap: 0;
   padding: 0;
+  /* Bump base font 25% so every `em`-based child (labels, hints, buttons,
+   * summaries) scales up proportionally. The Roller's form sets 13px; this
+   * lifts the Creator panel to ~16px base while leaving the Roller's own
+   * tabs / encounter results alone. */
+  font-size: 1.25em;
 }
 #vagabond-crawler-monster-creator .mc-scrollable {
   flex: 1 1 auto;
@@ -3794,6 +4176,112 @@ body.theme-light .vcb-phase-badge {
   background: rgba(112, 109, 101, 0.2);
   color: var(--vcb-text-faint, #9a9588);
   border: 1px solid rgba(112, 109, 101, 0.4);
+}
+
+/* ── Abilities browse list (search + filter + info-per-line) ─────────────── */
+
+#vagabond-crawler-monster-creator .mc-ability-browse-head {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 6px;
+}
+#vagabond-crawler-monster-creator .mc-ability-search {
+  flex: 1 1 160px;
+  margin: 0;
+}
+#vagabond-crawler-monster-creator .mc-ability-filters {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+#vagabond-crawler-monster-creator .mc-filter-btn {
+  padding: 3px 8px;
+  font-size: 0.8em;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid var(--vcb-border-light, #c5c3b832);
+  color: var(--vcb-text, #e7e1d4);
+  border-radius: 3px;
+  cursor: pointer;
+}
+#vagabond-crawler-monster-creator .mc-filter-btn:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+#vagabond-crawler-monster-creator .mc-filter-btn.mc-filter-active {
+  background: var(--vcb-accent, #b08d3a);
+  border-color: var(--vcb-accent, #b08d3a);
+  color: #1a1511;
+}
+#vagabond-crawler-monster-creator .mc-filter-btn .mc-hint {
+  opacity: 0.7;
+}
+
+#vagabond-crawler-monster-creator .mc-ability-browse-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  max-height: 420px;
+  overflow-y: auto;
+  padding-right: 2px;
+}
+#vagabond-crawler-monster-creator .mc-ability-browse-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 6px;
+  border: 1px solid rgba(197, 195, 184, 0.1);
+  border-radius: 3px;
+  background: rgba(0, 0, 0, 0.12);
+}
+#vagabond-crawler-monster-creator .mc-ability-browse-row:hover {
+  background: rgba(255, 255, 255, 0.04);
+}
+#vagabond-crawler-monster-creator .mc-ability-browse-icon {
+  flex: 0 0 24px;
+  text-align: center;
+  font-size: 0.85em;
+  line-height: 1;
+  padding: 2px 0;
+  border-radius: 3px;
+  font-weight: bold;
+}
+#vagabond-crawler-monster-creator .mc-ability-browse-body {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+#vagabond-crawler-monster-creator .mc-ability-browse-title {
+  font-weight: 600;
+  font-size: 0.9em;
+  color: var(--vcb-text, #e7e1d4);
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+#vagabond-crawler-monster-creator .mc-ability-usage {
+  font-size: 0.72em;
+  font-weight: normal;
+  color: var(--vcb-text-faint, #706d65);
+  background: rgba(197, 195, 184, 0.08);
+  border: 1px solid rgba(197, 195, 184, 0.18);
+  border-radius: 10px;
+  padding: 0 6px;
+}
+#vagabond-crawler-monster-creator .mc-ability-browse-desc {
+  font-size: 0.8em;
+  color: var(--vcb-text-faint, #9a9588);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+#vagabond-crawler-monster-creator .mc-ability-browse-row .mc-template-tier {
+  flex: 0 0 70px;
+  margin: 0;
+  font-size: 0.82em;
+}
+#vagabond-crawler-monster-creator .mc-ability-add-btn {
+  flex: 0 0 auto;
+  padding: 3px 10px;
 }
 
 /* ── Abilities list ──────────────────────────────────────────────────────── */

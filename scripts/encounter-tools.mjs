@@ -13,11 +13,22 @@
 import { MODULE_ID } from "./vagabond-crawler.mjs";
 import { confirmDialog } from "./dialog-helpers.mjs";
 import { ICONS } from "./icons.mjs";
-import { MUTATIONS, MUTATION_CATEGORIES, getMutation, getBoons, getBanes, getConflict } from "./mutation-data.mjs";
-import { getStatSummary, applyMutations, generateMutatedName, generatePrompt, createMutatedActor, calculateHP, calculateDPR, calculateTL } from "./monster-mutator.mjs";
 import { MonsterCreator } from "./monster-creator/monster-creator-app.mjs";
+import { calculateHP, calculateDPR } from "./monster-mutator.mjs";
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
+
+/** Parse a die formula like "d6" or "2d6" into { count, faces, min, max,
+ *  slotCount }. For `2d6` the reachable sums are 2..12 so slotCount is 11
+ *  and the first slot's displayed number is min (2), not 1.
+ *  Fallback is d6 on any malformed input so callers always get a table. */
+function parseDieFormula(formula) {
+  const m = String(formula ?? "").match(/^(\d*)d(\d+)$/i);
+  if (!m) return { count: 1, faces: 6, min: 1, max: 6, slotCount: 6 };
+  const count = Math.max(1, Number(m[1] || "1"));
+  const faces = Math.max(2, Number(m[2]));
+  return { count, faces, min: count, max: count * faces, slotCount: count * faces - count + 1 };
+}
 
 function rollDistance() {
   const v = Math.floor(Math.random() * 6) + 1;
@@ -117,12 +128,6 @@ class EncounterRollerApp extends HandlebarsApplicationMixin(ApplicationV2) {
     this._browseSortCol   = "name";
     this._browseSortAsc   = true;
     this._browseCache     = {};
-    // Mutate tab state
-    this._mutateSource    = "vagabond.bestiary";
-    this._mutateBaseUuid  = "";
-    this._mutateBaseData  = null;
-    this._mutateSelected  = new Set();
-    this._mutateCustomName = "";
   }
 
   async _prepareContext() {
@@ -164,83 +169,29 @@ class EncounterRollerApp extends HandlebarsApplicationMixin(ApplicationV2) {
       ctx.browseNpcs = npcs;
     }
 
-    // ── Mutate tab ──
-    if (ctx.isMutateMode) {
-      const sources = [
-        { id: "vagabond.bestiary", label: "Bestiary", active: this._mutateSource === "vagabond.bestiary" },
-        { id: "vagabond.humanlike", label: "Humanlike", active: this._mutateSource === "vagabond.humanlike" },
-        { id: "world", label: "World NPCs", active: this._mutateSource === "world" },
-      ];
-      ctx.mutateSources = sources;
-
-      // Load monster list (reuse browse cache)
-      const monsters = await this._getBrowseNPCs(this._mutateSource);
-      monsters.sort((a, b) => a.name.localeCompare(b.name));
-      ctx.mutateMonsters = monsters.map(m => ({
-        ...m,
-        selected: m.uuid === this._mutateBaseUuid,
-      }));
-
-      // If a base monster is selected, prepare mutation data
-      if (this._mutateBaseUuid && this._mutateBaseData) {
-        const baseSystem = this._mutateBaseData.system;
-        const baseSummary = getStatSummary(baseSystem);
-        ctx.mutateBase = baseSummary;
-
-        // Calculate mutated stats
-        const mutatedData = foundry.utils.deepClone(this._mutateBaseData);
-        const { appliedMutations, prefixes, suffixes, tlDelta } = applyMutations(mutatedData, [...this._mutateSelected]);
-        const mutatedSystem = mutatedData.system;
-        const mutatedSummary = getStatSummary(mutatedSystem);
-        ctx.mutateNew = mutatedSummary;
-
-        const hasMutations = this._mutateSelected.size > 0;
-        ctx.mutateDelta = hasMutations;
-        ctx.mutateDeltaPositive = (mutatedSummary.tl - baseSummary.tl) >= 0;
-        const delta = mutatedSummary.tl - baseSummary.tl;
-        ctx.mutateDeltaDisplay = (delta >= 0 ? "+" : "") + delta.toFixed(2);
-
-        // Name
-        const genName = generateMutatedName(this._mutateBaseData.name, prefixes, suffixes);
-        ctx.mutateGeneratedName = this._mutateCustomName || genName;
-
-        // Prompt
-        ctx.mutatePrompt = generatePrompt(this._mutateBaseData.name, mutatedSystem, [...this._mutateSelected]);
-
-        // Boons & Banes
-        ctx.mutateBoons = getBoons().map(m => ({
-          ...m,
-          checked: this._mutateSelected.has(m.id),
-          isOnFormula: m.tlDelta !== 0,
-          tlDisplay: m.tlDelta !== 0 ? `${m.tlDelta > 0 ? "+" : ""}${m.tlDelta.toFixed(1)}` : "off",
-        }));
-        ctx.mutateBanes = getBanes().map(m => ({
-          ...m,
-          checked: this._mutateSelected.has(m.id),
-          isOnFormula: m.tlDelta !== 0,
-          tlDisplay: m.tlDelta !== 0 ? `${m.tlDelta.toFixed(1)}` : "off",
-        }));
-      }
-    }
+    // ── Monster Creator tab ──
+    // No context data to build here — the tab's <div id="…">  empty placeholder
+    // is filled in `_onRender` by calling MonsterCreator.mountPanel, which
+    // renders the full Creator UI into the placeholder.
 
     return ctx;
   }
 
   getData() {
-    const dieSize = parseInt(this._dieType.replace("d", ""));
-    while (this._slots.length < dieSize)  this._slots.push(null);
-    while (this._slots.length > dieSize)  this._slots.pop();
+    const { min: dieMin, slotCount } = parseDieFormula(this._dieType);
+    while (this._slots.length < slotCount) this._slots.push(null);
+    while (this._slots.length > slotCount) this._slots.pop();
 
     return {
       isBuildMode: this._mode === "build",
       isBrowseMode: this._mode === "browse",
       isExistingMode: this._mode === "existing",
-      isMutateMode:   this._mode === "mutate",
-      dieTypes: ["d4","d6","d8","d10","d12"].map(d => ({ value: d, selected: d === this._dieType })),
+      isMonsterCreatorMode: this._mode === "monsterCreator",
+      dieTypes: ["d4","d6","2d6","d8","2d8","d10","d12"].map(d => ({ value: d, selected: d === this._dieType })),
       tableName: this._tableName,
       slots: this._slots.map((s, i) => ({
         index:     i,
-        number:    i + 1,
+        number:    i + dieMin, // starts at 1 for d6, at 2 for 2d6, etc.
         name:      s?.name      ?? "",
         appearing: s?.appearing ?? "",
         uuid:      s?.uuid      ?? "",
@@ -276,7 +227,14 @@ class EncounterRollerApp extends HandlebarsApplicationMixin(ApplicationV2) {
 
     // Tabs
     on(".tab-btn", "click", ev => {
-      this._mode = ev.currentTarget.dataset.mode;
+      const newMode = ev.currentTarget.dataset.mode;
+      // Switching AWAY from the Monster Creator tab tears the panel down so
+      // its DOM doesn't linger (and its handler subscriptions don't pile up
+      // across re-mounts).
+      if (this._mode === "monsterCreator" && newMode !== "monsterCreator") {
+        MonsterCreator.unmountPanel();
+      }
+      this._mode = newMode;
       this.render();
     });
 
@@ -460,119 +418,18 @@ class EncounterRollerApp extends HandlebarsApplicationMixin(ApplicationV2) {
       if (imgCell) imgCell.addEventListener("dblclick", handler, { signal });
     });
 
-    // ── Mutate tab ──
-
-    // Source selector
-    const mutSrcSelect = el.querySelector(".mutate-source-select");
-    if (mutSrcSelect) {
-      mutSrcSelect.addEventListener("change", () => {
-        this._mutateSource = mutSrcSelect.value;
-        this._mutateBaseUuid = "";
-        this._mutateBaseData = null;
-        this._mutateSelected.clear();
-        this._mutateCustomName = "";
-        this.render();
-      }, { signal });
+    // ── Monster Creator tab ──
+    // When this tab is active, mount the full Monster Creator UI into the
+    // placeholder <div>. The Creator lives as its own instance (panel mode)
+    // so its state persists across Roller re-renders as long as we don't
+    // remount unnecessarily. Unmount is handled by the tab switch below.
+    if (this._mode === "monsterCreator") {
+      const container = el.querySelector("#vagabond-crawler-monster-creator");
+      if (container && !container.dataset.mounted) {
+        container.dataset.mounted = "1";
+        MonsterCreator.mountPanel(container);
+      }
     }
-
-    // Monster selector
-    const mutMonSelect = el.querySelector(".mutate-monster-select");
-    if (mutMonSelect) {
-      mutMonSelect.addEventListener("change", async () => {
-        this._mutateBaseUuid = mutMonSelect.value;
-        this._mutateSelected.clear();
-        this._mutateCustomName = "";
-        if (this._mutateBaseUuid) {
-          const actor = await fromUuid(this._mutateBaseUuid);
-          if (actor) this._mutateBaseData = actor.toObject();
-        } else {
-          this._mutateBaseData = null;
-        }
-        this.render();
-      }, { signal });
-    }
-
-    // Mutation checkboxes (with conflict detection)
-    on(".mutate-check", "change", (ev) => {
-      const id = ev.currentTarget.dataset.mutationId;
-      if (ev.currentTarget.checked) {
-        const conflict = getConflict(id, this._mutateSelected);
-        if (conflict) {
-          ui.notifications.warn(`Cannot combine with "${conflict}" — contradictory mutations.`);
-          ev.currentTarget.checked = false;
-          return;
-        }
-        this._mutateSelected.add(id);
-      } else {
-        this._mutateSelected.delete(id);
-      }
-      this.render();
-    });
-
-    // Custom name
-    const mutNameInput = el.querySelector(".mutate-custom-name");
-    if (mutNameInput) {
-      mutNameInput.addEventListener("change", () => {
-        this._mutateCustomName = mutNameInput.value.trim();
-      }, { signal });
-    }
-
-    // Copy prompt
-    el.querySelector(".mutate-copy-prompt")?.addEventListener("click", async () => {
-      const textarea = el.querySelector(".mutate-prompt-text");
-      if (textarea) {
-        await navigator.clipboard.writeText(textarea.value);
-        ui.notifications.info("AI art prompt copied to clipboard!");
-      }
-    }, { signal });
-
-    // Create Monster
-    el.querySelector(".mutate-create-btn")?.addEventListener("click", async () => {
-      if (!this._mutateBaseUuid) return;
-      try {
-        const actor = await createMutatedActor(
-          this._mutateBaseUuid,
-          [...this._mutateSelected],
-          this._mutateCustomName || null
-        );
-        ui.notifications.info(`Created: ${actor.name}`);
-      } catch (e) {
-        console.error(`${MODULE_ID} | Mutation failed:`, e);
-        ui.notifications.error("Failed to create mutated monster.");
-      }
-    }, { signal });
-
-    // Edit in Creator — bake the current mutation selection into a cloned
-    // actor-shape object and hand off to the Monster Creator for further
-    // editing. No world actor is created by this path; the user does that
-    // from the Creator's own Save button.
-    el.querySelector(".mutate-edit-creator-btn")?.addEventListener("click", async () => {
-      if (!this._mutateBaseUuid || !this._mutateBaseData) {
-        ui.notifications.warn("Pick a base monster first.");
-        return;
-      }
-      try {
-        const mutated = foundry.utils.deepClone(this._mutateBaseData);
-        const { prefixes, suffixes } = applyMutations(mutated, [...this._mutateSelected]);
-        // Apply custom name, or the generated mutated name, or keep the base name
-        if (this._mutateCustomName?.trim()) {
-          mutated.name = this._mutateCustomName.trim();
-        } else if (prefixes.length || suffixes.length) {
-          mutated.name = generateMutatedName(mutated.name, prefixes, suffixes);
-        }
-        MonsterCreator.openWithData(mutated);
-      } catch (e) {
-        console.error(`${MODULE_ID} | Edit-in-Creator handoff failed:`, e);
-        ui.notifications.error("Failed to open Monster Creator with mutations.");
-      }
-    }, { signal });
-
-    // Reset
-    el.querySelector(".mutate-reset-btn")?.addEventListener("click", () => {
-      this._mutateSelected.clear();
-      this._mutateCustomName = "";
-      this.render();
-    }, { signal });
   }
 
   // ── Roll methods ────────────────────────────────────────────────────────────
@@ -581,8 +438,9 @@ class EncounterRollerApp extends HandlebarsApplicationMixin(ApplicationV2) {
     const filled = this._slots.map((s, i) => s ? i : null).filter(i => i !== null);
     if (!filled.length) { ui.notifications.warn("No monsters in the table."); return; }
 
-    const roll  = await new Roll(`1${this._dieType}`).evaluate();
-    const idx   = roll.total - 1;
+    const { min } = parseDieFormula(this._dieType);
+    const roll  = await new Roll(this._dieType).evaluate();
+    const idx   = roll.total - min; // slot 0 corresponds to the minimum possible roll
     // Pick closest filled slot
     const chosen = this._slots[idx]
       ?? this._slots[filled.reduce((p, c) => Math.abs(c - idx) < Math.abs(p - idx) ? c : p)];
@@ -682,9 +540,9 @@ class EncounterRollerApp extends HandlebarsApplicationMixin(ApplicationV2) {
       if (!ok) return;
     }
 
-    const dieSize = parseInt(this._dieType.replace("d", ""));
+    const { min: dieMin, slotCount } = parseDieFormula(this._dieType);
     const results = [];
-    for (let i = 0; i < dieSize; i++) {
+    for (let i = 0; i < slotCount; i++) {
       const s = this._slots[i];
       const appearing = s?.appearing?.trim() || "1";
 
@@ -698,10 +556,11 @@ class EncounterRollerApp extends HandlebarsApplicationMixin(ApplicationV2) {
         } catch (e) { console.warn(`${MODULE_ID} | Failed to resolve actor UUID ${s.uuid}:`, e); }
       }
 
+      const slotRoll = i + dieMin; // 2d6 → slots are 2..12
       results.push({
         type:         s ? CONST.TABLE_RESULT_TYPES.DOCUMENT : CONST.TABLE_RESULT_TYPES.TEXT,
         weight:       1,
-        range:        [i + 1, i + 1],
+        range:        [slotRoll, slotRoll],
         name:         s?.name ?? "(Empty)",
         img,
         documentUuid: s?.uuid ?? null,
@@ -716,7 +575,7 @@ class EncounterRollerApp extends HandlebarsApplicationMixin(ApplicationV2) {
       // Update in-place to avoid losing the table if creation fails
       await existing.deleteEmbeddedDocuments("TableResult", existing.results.map(r => r.id));
       await existing.update({
-        formula: `1${this._dieType}`,
+        formula: this._dieType,
         flags: { [MODULE_ID]: { isEncounterTable: true } },
       });
       await existing.createEmbeddedDocuments("TableResult", results);
@@ -987,14 +846,19 @@ class EncounterRollerApp extends HandlebarsApplicationMixin(ApplicationV2) {
   // ── Browse NPCs ──────────────────────────────────────────────────────────────
 
   async _getBrowseNPCs(sourceId) {
-    const mapActor = (a, uuid) => ({
-      id: a.id || a._id, name: a.name, img: a.img,
-      uuid: uuid || a.uuid,
-      beingType: a.system?.beingType || "—",
-      threatLevel: a.system?.threatLevel ?? 0,
-      threatLevelDisplay: a.system?.threatLevelFormatted ?? a.system?.threatLevel ?? "—",
-      appearing: a.system?.appearing || a.system?.appearingFormatted || "1",
-    });
+    const mapActor = (a, uuid) => {
+      const s = a.system ?? {};
+      return {
+        id: a.id || a._id, name: a.name, img: a.img,
+        uuid: uuid || a.uuid,
+        beingType: s.beingType || "—",
+        threatLevel: s.threatLevel ?? 0,
+        threatLevelDisplay: s.threatLevelFormatted ?? s.threatLevel ?? "—",
+        appearing: s.appearing || s.appearingFormatted || "1",
+        hp:  calculateHP(s.hd ?? 1, s.size ?? "medium"),
+        dpr: calculateDPR(s.actions ?? []),
+      };
+    };
 
     if (sourceId === "world") {
       return game.actors.filter(a => a.type === "npc").map(a => mapActor(a, a.uuid));
@@ -1012,19 +876,23 @@ class EncounterRollerApp extends HandlebarsApplicationMixin(ApplicationV2) {
         .filter(Boolean);
     }
 
-    // Compendium
+    // Compendium. We fetch full documents (not just the index) because HP
+    // needs size + hd and DPR needs the actions array — neither lives in the
+    // index. First load is ~2-3s for 300 monsters but we cache so it's one-time.
     if (!this._browseCache[sourceId]) {
       const pack = game.packs.get(sourceId);
       if (!pack) return [];
-      const index = await pack.getIndex({ fields: ["img", "system.beingType", "system.threatLevel", "system.threatLevelFormatted", "system.appearing"] });
-      this._browseCache[sourceId] = index.map(entry => ({
-        id: entry._id, name: entry.name,
-        img: entry.img || "icons/svg/mystery-man.svg",
-        uuid: `Compendium.${sourceId}.Actor.${entry._id}`,
-        beingType: entry.system?.beingType || "—",
-        threatLevel: entry.system?.threatLevel ?? 0,
-        threatLevelDisplay: entry.system?.threatLevelFormatted ?? entry.system?.threatLevel ?? "—",
-        appearing: entry.system?.appearing || "1",
+      const docs = await pack.getDocuments();
+      this._browseCache[sourceId] = docs.map((d) => ({
+        id: d.id, name: d.name,
+        img: d.img || "icons/svg/mystery-man.svg",
+        uuid: d.uuid,
+        beingType: d.system?.beingType || "—",
+        threatLevel: d.system?.threatLevel ?? 0,
+        threatLevelDisplay: d.system?.threatLevelFormatted ?? d.system?.threatLevel ?? "—",
+        appearing: d.system?.appearing || "1",
+        hp:  calculateHP(d.system?.hd ?? 1, d.system?.size ?? "medium"),
+        dpr: calculateDPR(d.system?.actions ?? []),
       }));
     }
     return [...this._browseCache[sourceId]];

@@ -24,6 +24,57 @@ import { calculateHP, calculateTL, calculateDPR, applyMutations, generateMutated
 import { MUTATIONS, getMutation, getConflict, getBoons, getBanes } from "../mutation-data.mjs";
 import { PASSIVE_ABILITIES } from "../npc-abilities.mjs";
 import { STATUS_IDS, STATUS_LABELS } from "../audit/status-vocabulary.mjs";
+
+/** Lazy-loaded dataset of every unique ability across the compendium,
+ *  sourced from the committed audit files (`docs/audit/abilities.json` +
+ *  `monsters.json`). Loaded once per session, then reused.
+ *
+ *  Shape returned:
+ *  {
+ *    abilities: [{ name, representativeText, automationStatus, monsterNames: [string] }],
+ *    monsterNameByUuid: Map<uuid, name>,
+ *    loaded: boolean,
+ *  }
+ */
+let _auditAbilitiesCache = null;
+async function _getAuditAbilities() {
+  if (_auditAbilitiesCache) return _auditAbilitiesCache;
+  _auditAbilitiesCache = { abilities: [], monsterNameByUuid: new Map(), loaded: false };
+  try {
+    const base = "modules/vagabond-crawler/docs/audit";
+    const [monstersResp, abilitiesResp] = await Promise.all([
+      fetch(`${base}/monsters.json`),
+      fetch(`${base}/abilities.json`),
+    ]);
+    if (!monstersResp.ok || !abilitiesResp.ok) return _auditAbilitiesCache;
+    const monstersJson  = await monstersResp.json();
+    const abilitiesJson = await abilitiesResp.json();
+    const byUuid = new Map();
+    for (const m of (monstersJson.monsters ?? [])) byUuid.set(m.uuid, m.name);
+    _auditAbilitiesCache = {
+      monsterNameByUuid: byUuid,
+      abilities: (abilitiesJson.abilities ?? []).map((a) => ({
+        name:               a.name,
+        representativeText: a.representativeText ?? "",
+        automationStatus:   a.automationStatus ?? "unknown",
+        monsterNames:       (a.monsters ?? [])
+          .map((uuid) => byUuid.get(uuid) ?? null)
+          .filter(Boolean)
+          .sort(),
+      })),
+      loaded: true,
+    };
+  } catch (err) {
+    console.warn("[vagabond-crawler] audit abilities load failed:", err);
+  }
+  return _auditAbilitiesCache;
+}
+
+/** Status ids that show up in `get_available_conditions` but aren't actually
+ *  part of the Vagabond rules — contributed by third-party modules (Patrol).
+ *  Filtered out of the rider status dropdown so they stop polluting it. */
+const NON_VAGABOND_STATUS_IDS = new Set(["patrolundetectable"]);
+const RIDER_STATUS_IDS = STATUS_IDS.filter((id) => !NON_VAGABOND_STATUS_IDS.has(id));
 import { ACTION_QUICK_PICKS,  materializeAction  } from "./action-templates.mjs";
 import { ABILITY_QUICK_PICKS, materializeAbility } from "./ability-templates.mjs";
 
@@ -85,6 +136,21 @@ function _identitySummary(d) {
   return parts.join(" · ");
 }
 
+/** Short one-line preview of selected senses for the collapsed mini-section
+ *  summary line. Includes the compiled string so users see exactly what the
+ *  actor will save. */
+function _sensesMiniPreview(d) {
+  const s = d.senses ?? "";
+  return s.trim() || "none";
+}
+
+/** Short one-line preview of non-walk movement modes. */
+function _movementMiniPreview(d) {
+  const types = Array.isArray(d.speedTypes) ? d.speedTypes : [];
+  if (!types.length) return "walk only";
+  return types.map((t) => String(t).trim()).filter(Boolean).join(", ");
+}
+
 function _visionSummary(d) {
   if (!d.visionEnabled) return "disabled";
   const modeLabel = VISION_MODE_OPTIONS.find((o) => o.value === d.visionMode)?.label ?? d.visionMode;
@@ -124,6 +190,63 @@ function _summarize(arr, labelMap = {}) {
   return { hasAny: true, count: list.length, preview };
 }
 
+/**
+ * Canonical Vagabond senses for the Stats section checkbox grid.
+ * `key` is the checkbox data-key (used in UI state).
+ * `match` is a regex tested against the stored senses string to pre-check
+ *   boxes when we load a monster with a free-form senses field.
+ * `writeName` is the canonical spelling used when compiling back to text.
+ * `supportsRange` is false for boolean-only senses (e.g. Allsight → infinite).
+ */
+const SENSE_DEFS = [
+  { key: "darksight",    label: "Darksight",    match: /\bdark[\s-]?sight\b|\bdarkvision\b/i, writeName: "Darksight",    defaultRange: 60, supportsRange: true  },
+  { key: "blindsight",   label: "Blindsight",   match: /\bblindsight\b/i,                      writeName: "Blindsight",   defaultRange: 30, supportsRange: true  },
+  { key: "seismicsense", label: "Seismicsense", match: /\bseismicsense\b|\btremorsense\b/i,    writeName: "Seismicsense", defaultRange: 30, supportsRange: true  },
+  { key: "allsight",     label: "Allsight",     match: /\ball[\s-]?sight\b|\btruesight\b/i,    writeName: "Allsight",     defaultRange: 0,  supportsRange: false, infinite: true },
+  { key: "lightsight",   label: "Lightsight",   match: /\blight[\s-]?sight\b/i,                writeName: "Lightsight",   defaultRange: 30, supportsRange: true  },
+  { key: "blindsense",   label: "Blindsense",   match: /\bblindsense\b/i,                      writeName: "Blindsense",   defaultRange: 15, supportsRange: true  },
+  { key: "echolocation", label: "Echolocation", match: /\becholocation\b/i,                    writeName: "Echolocation", defaultRange: 15, supportsRange: true  },
+];
+
+/** Parse a free-form senses string into { struct, other }. The struct maps
+ *  `key → { checked }`. Senses are boolean — either on (infinite range) or
+ *  off. Any explicit "60'" / "30 ft" in the source is discarded because the
+ *  UI no longer exposes a range field; saving recompiles to just the name.
+ *  `other` holds whatever couldn't be matched so custom phrasings survive. */
+function _parseSensesString(text) {
+  const str = String(text ?? "").trim();
+  const struct = {};
+  for (const def of SENSE_DEFS) struct[def.key] = { checked: false };
+  if (!str) return { struct, other: "" };
+
+  const segments = str.split(/\s*,\s*/).filter(Boolean);
+  const leftovers = [];
+  for (const seg of segments) {
+    let matched = false;
+    for (const def of SENSE_DEFS) {
+      if (!def.match.test(seg)) continue;
+      struct[def.key].checked = true;
+      matched = true;
+      break;
+    }
+    if (!matched) leftovers.push(seg);
+  }
+  return { struct, other: leftovers.join(", ") };
+}
+
+/** Compile a sensesStruct + other string back into the canonical free-form
+ *  senses string. Each checked sense writes just its name (infinite range
+ *  implied per the simplified UI). */
+function _compileSensesString(struct, other) {
+  const parts = [];
+  for (const def of SENSE_DEFS) {
+    if (struct?.[def.key]?.checked) parts.push(def.writeName);
+  }
+  const extra = String(other ?? "").trim();
+  if (extra) parts.push(extra);
+  return parts.join(", ");
+}
+
 // Vagabond sense keyword → Foundry token sight config
 // Keep keys in precedence order: the first match wins so "Allsight" beats
 // "Blindsight" when both happen to appear in the same senses string.
@@ -146,6 +269,36 @@ const VISION_MODE_OPTIONS = [
   { value: "monochromatic",      label: "Monochromatic"     },
   { value: "lightAmplification", label: "Light Amplification" },
   { value: "blindness",          label: "Blindness"         },
+];
+
+/** Canonical Armor Descriptors from the Vagabond Core Rulebook §6 Bestiary,
+ *  table ^armor-descriptors-table. `mitigation` is the armor value the
+ *  description implies (Unarmored=0, Leather=1, etc.), used by the template
+ *  so the dropdown can preview each option's armor value. "None" / "All
+ *  attacks hit" are special non-numeric cases. */
+const ARMOR_DESCRIPTORS = [
+  { value: "None",                        mitigation: "-" },
+  { value: "All attacks hit",             mitigation: "-" },
+  { value: "as Unarmored",                mitigation: 0  },
+  { value: "as Unarmored plus Shield",    mitigation: 1  },
+  { value: "as Leather",                  mitigation: 1  },
+  { value: "as Leather plus Shield",      mitigation: 2  },
+  { value: "as Hide",                     mitigation: 1  },
+  { value: "as Hide plus Shield",         mitigation: 2  },
+  { value: "as Chain",                    mitigation: 2  },
+  { value: "as Chain plus Shield",        mitigation: 3  },
+  { value: "as Scale",                    mitigation: 2  },
+  { value: "as Scale plus Shield",        mitigation: 3  },
+  { value: "as Plate",                    mitigation: 3  },
+  { value: "as Plate plus Shield",        mitigation: 4  },
+  { value: "as Splint",                   mitigation: 3  },
+  { value: "as Splint plus Shield",       mitigation: 4  },
+  { value: "as (+1) Plate",               mitigation: 4  },
+  { value: "as (+1) Plate plus Shield",   mitigation: 5  },
+  { value: "as (+2) Plate",               mitigation: 5  },
+  { value: "as (+2) Plate plus Shield",   mitigation: 6  },
+  { value: "as (+3) Plate",               mitigation: 6  },
+  { value: "as (+3) Plate plus Shield",   mitigation: 7  },
 ];
 
 const SIZE_TO_TOKEN = {
@@ -206,6 +359,9 @@ export const MonsterCreator = {
 
   init() {
     console.log(`${MODULE_ID} | Monster Creator initialized.`);
+    // Pre-warm the audit abilities cache so the first click on the
+    // Abilities tab doesn't stall on a cold fetch.
+    _getAuditAbilities().catch(() => { /* best-effort; cache already safe */ });
   },
 
   open() {
@@ -233,6 +389,35 @@ export const MonsterCreator = {
     this._app._loadFromActorShape(actorObject);
     this._app.render(true);
   },
+
+  /**
+   * Mount a panel-mode Monster Creator into a DOM element. Used by the
+   * Encounter Roller's Monster Creator tab so the full Creator UI renders
+   * inside the tab pane instead of opening a separate window.
+   *
+   * Keeps its own instance (`_panelApp`) independent of the standalone
+   * window (`_app`) so state in one doesn't leak into the other. Returns
+   * the panel-app so callers can drive it (e.g. close/reset).
+   */
+  async mountPanel(container) {
+    if (!container) return null;
+    if (!this._panelApp) {
+      this._panelApp = new MonsterCreatorApp();
+      this._panelApp._isPanel = true;
+    }
+    await this._panelApp.mountInto(container);
+    return this._panelApp;
+  },
+
+  /** Tear down the embedded panel — called when the Encounter Roller closes
+   *  or switches off the Monster Creator tab. Clears handlers, drops state. */
+  unmountPanel() {
+    if (!this._panelApp) return;
+    this._panelApp._panelRoot?.replaceChildren();
+    this._panelApp._renderAbort?.abort();
+    this._panelApp._renderAbort = null;
+    this._panelApp._panelRoot = null;
+  },
 };
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
@@ -252,6 +437,8 @@ function _blankMonster() {
     morale:           7,
     appearing:        "1",
     senses:           "",
+    sensesStruct:     _parseSensesString("").struct,
+    sensesOther:      "",
     description:      "",
     immunities:       [],
     weaknesses:       [],
@@ -262,7 +449,11 @@ function _blankMonster() {
     tokenImg:         DEFAULT_PORTRAIT,
     // Token vision — matches Foundry v13 prototypeToken.sight shape.
     // `range` is Number | null; null displays as ∞.
-    visionEnabled:    false,
+    // Rules:
+    //   - Mode "basic" always implies range 0 (no bonus sight), overriding input.
+    //   - Blank / empty range on any non-basic mode = infinite (∞).
+    //   - We no longer expose an Angle control; the saved value stays 360.
+    visionEnabled:    true,   // on by default for new monsters
     visionRange:      0,
     visionInfinite:   false,
     visionAngle:      360,
@@ -312,6 +503,7 @@ function _fromCompendiumActor(actor) {
     morale:           Number(s.morale ?? 7),
     appearing:        s.appearing ?? "1",
     senses:           s.senses ?? "",
+    ...(() => { const p = _parseSensesString(s.senses ?? ""); return { sensesStruct: p.struct, sensesOther: p.other }; })(),
     description:      s.description ?? "",
     immunities:       Array.isArray(s.immunities)       ? [...s.immunities]       : [],
     weaknesses:       Array.isArray(s.weaknesses)       ? [...s.weaknesses]       : [],
@@ -353,13 +545,23 @@ function _visionFromCompendiumSource(actor, systemData) {
     const derived = _visionFromSenses(systemData?.senses);
     if (derived) {
       return {
-        visionEnabled:   derived.enabled,
+        visionEnabled:   true,  // always on when loading from bestiary
         visionRange:     derived.range ?? 0,
         visionInfinite:  derived.range === null,
         visionAngle:     360,
         visionMode:      derived.mode,
       };
     }
+    // No senses keywords + defaultish prototypeToken → give the monster
+    // Basic Vision (range 0) enabled by default. The GM can always turn
+    // it off in the Creator UI.
+    return {
+      visionEnabled:   true,
+      visionRange:     0,
+      visionInfinite:  false,
+      visionAngle:     360,
+      visionMode:      "basic",
+    };
   }
   return {
     visionEnabled:   !!sight.enabled,
@@ -448,6 +650,7 @@ function _actorShapeToData(actorObj, prevData) {
     morale:           Number(s.morale ?? prevData.morale),
     appearing:        prevData.appearing,
     senses:           s.senses ?? prevData.senses,
+    ...(() => { const p = _parseSensesString(s.senses ?? prevData.senses ?? ""); return { sensesStruct: p.struct, sensesOther: p.other }; })(),
     description:      prevData.description,
     immunities:       Array.isArray(s.immunities)       ? [...s.immunities]       : [...prevData.immunities],
     weaknesses:       Array.isArray(s.weaknesses)       ? [...s.weaknesses]       : [...prevData.weaknesses],
@@ -745,11 +948,14 @@ class MonsterCreatorApp extends HandlebarsApplicationMixin(ApplicationV2) {
     this._renderAbort = null;
     this._actionsTab   = "all"; // which Action Quick-Picks tab is active
     this._mutationsTab = "all"; // which Mutation tab is active
+    this._templatePickerOpen = false; // is the Actions "From Template" popup open?
+    this._abilityQuery = "";         // live search box text for abilities
+    this._abilityFilter = "all";     // "all" | "implemented" | "unimplemented" | "flavor"
     this._selectedMutations = new Set(); // staged mutation IDs (not applied yet)
     // Open/closed state for every <details data-collapse="…"> section.
     // Persisted across re-renders so editing inside an open section doesn't
     // collapse it. Keyed by the section's data-collapse attribute.
-    this._sectionOpen = { identity: true, stats: true };
+    this._sectionOpen = { identity: true, stats: true, senses: false, movement: false };
     // Per-action expanded state (action rows are also <details>). Keyed by
     // index — when a user clicks an action row to expand it, that index is
     // remembered so full re-renders don't collapse it. Cleared on reset/load.
@@ -765,6 +971,55 @@ class MonsterCreatorApp extends HandlebarsApplicationMixin(ApplicationV2) {
       tlRange:   "",    // "" | "0-1" | "1-3" | "3-5" | "5-8" | "8+"
       source:    "",    // "" | "vagabond.bestiary" | "vagabond.humanlike"
     };
+    // Panel-mount plumbing. When `_panelRoot` is set, the Creator renders
+    // into that DOM element instead of opening a standalone ApplicationV2
+    // window. `_isPanel` is a stable flag we use to decide whether to skip
+    // the ApplicationV2 lifecycle in `render()`.
+    this._isPanel = false;
+    this._panelRoot = null;
+  }
+
+  /** When embedded (panel mode), return the mounted container. Otherwise
+   *  fall through to ApplicationV2's normal `element` getter. */
+  get element() {
+    if (this._isPanel && this._panelRoot) return this._panelRoot;
+    return super.element;
+  }
+
+  /** Render override — in panel mode, bypass ApplicationV2 and re-render the
+   *  template into the mounted container. Otherwise use the normal window
+   *  render. This is what makes `this.render()` calls inside the Creator's
+   *  own event handlers work uniformly whether the Creator is a window or
+   *  a tab panel. */
+  async render(options) {
+    if (this._isPanel && this._panelRoot) return this._renderPanel();
+    return super.render(options);
+  }
+
+  /** Build the template HTML from `_prepareContext` and inject into the
+   *  mounted container, then re-bind all the event handlers. */
+  async _renderPanel() {
+    const context = await this._prepareContext();
+    const tplPath = MonsterCreatorApp.PARTS.form.template;
+    const renderTemplate = foundry.applications?.handlebars?.renderTemplate
+                        ?? globalThis.renderTemplate;
+    const html = await renderTemplate(tplPath, context);
+    this._panelRoot.innerHTML = html;
+    this._onRender(context, { parts: ["form"] });
+  }
+
+  /** Mount the Creator's UI into an external container element. The element
+   *  must have id "vagabond-crawler-monster-creator" so the existing CSS
+   *  selectors keep matching. */
+  async mountInto(container) {
+    this._isPanel = true;
+    // Ensure the container has the right id for CSS scoping. If the caller
+    // passed a generic element we patch the id in place — if there's already
+    // an id (e.g. from a previous mount) we leave it.
+    if (!container.id) container.id = "vagabond-crawler-monster-creator";
+    container.classList.add("vagabond-crawler", "monster-creator");
+    this._panelRoot = container;
+    await this._renderPanel();
   }
 
   async _prepareContext() {
@@ -786,6 +1041,21 @@ class MonsterCreatorApp extends HandlebarsApplicationMixin(ApplicationV2) {
       beingTypes:  markSelected(BEING_TYPES, this._data.beingType),
       sizes:       markSelected(SIZES,       this._data.size),
       zones:       markSelected(ZONES,       this._data.zone),
+      armorDescriptors: (() => {
+        const current = this._data.armorDescription ?? "";
+        const canonical = ARMOR_DESCRIPTORS.map((d) => ({
+          value:    d.value,
+          label:    d.mitigation === "-" ? d.value : `${d.value} (${d.mitigation})`,
+          selected: d.value === current,
+        }));
+        // If the saved description doesn't match any canonical entry, keep
+        // it as a one-off option so the user doesn't silently lose custom
+        // text on first render.
+        if (current && !canonical.some((c) => c.selected)) {
+          canonical.unshift({ value: current, label: `${current} (custom)`, selected: true });
+        }
+        return canonical;
+      })(),
       sourceName:  this._sourceUuid
         ? bestiary.find((b) => b.uuid === this._sourceUuid)?.name
         : null,
@@ -815,6 +1085,11 @@ class MonsterCreatorApp extends HandlebarsApplicationMixin(ApplicationV2) {
         }
         return { value: m, label: _capitalize(m), checked, speed };
       }),
+      sensesGrid: SENSE_DEFS.map((def) => ({
+        key:     def.key,
+        label:   def.label,
+        checked: !!this._data.sensesStruct?.[def.key]?.checked,
+      })),
       immunitiesGrid: DAMAGE_TYPES.map((t) => ({
         value: t, label: _capitalize(t),
         checked: this._data.immunities.includes(t),
@@ -847,22 +1122,27 @@ class MonsterCreatorApp extends HandlebarsApplicationMixin(ApplicationV2) {
 
       // Actions section
       actionsSummary:     _actionsSummary(this._data.actions),
-      actionTabs:         ACTION_TABS.map((t) => ({ ...t, active: t.key === this._actionsTab })),
-      quickPickTemplates: ACTION_QUICK_PICKS
-        .filter((p) => this._actionsTab === "all" || p.category === this._actionsTab)
-        .map((p) => ({
-          name:       p.name,
-          category:   p.category,
-          categoryLabel: ATTACK_TYPES.find((t) => t.value === p.category)?.label ?? p.category,
-          // Preview damage (first tier or defaults)
-          previewDamage: _damageDisplay(
-            (p.tiers?.[0]?.rollDamage ?? p.defaults?.rollDamage ?? ""),
-            (p.tiers?.[0]?.flatDamage ?? p.defaults?.flatDamage ?? ""),
-            (p.tiers?.[0]?.damageType ?? p.defaults?.damageType ?? "-"),
-          ),
-          tiers: p.tiers?.map((t) => ({ label: t.label })) ?? null,
-          hasTiers: !!p.tiers?.length,
-        })),
+      templatePickerOpen: !!this._templatePickerOpen,
+      // Templates are grouped by category for the popup — one section per
+      // attack type, in a consistent display order. Empty groups are filtered out.
+      quickPickGroups: ACTION_TABS.filter((t) => t.key !== "all").map((tab) => ({
+        key:   tab.key,
+        label: tab.label,
+        items: ACTION_QUICK_PICKS
+          .filter((p) => p.category === tab.key)
+          .map((p) => ({
+            name: p.name,
+            // Single preview damage per template (the first tier's numbers
+            // by default). No tier picker — `materializeAction(template, null)`
+            // picks tier[0] automatically, so clicking a template always adds
+            // a sensible starter you can tweak in the expanded action card.
+            previewDamage: _damageDisplay(
+              (p.tiers?.[0]?.rollDamage ?? p.defaults?.rollDamage ?? ""),
+              (p.tiers?.[0]?.flatDamage ?? p.defaults?.flatDamage ?? ""),
+              (p.tiers?.[0]?.damageType ?? p.defaults?.damageType ?? "-"),
+            ),
+          })),
+      })).filter((g) => g.items.length > 0),
       actionRows: await Promise.all(this._data.actions.map(async (a, index) => {
         const weaponsList = await _getWeaponsList();
         const riderShape = (r) => ({
@@ -875,7 +1155,7 @@ class MonsterCreatorApp extends HandlebarsApplicationMixin(ApplicationV2) {
           requiresDamage: r.requiresDamage !== false,
           permanent: !(r.duration && r.duration.trim()),
           statusOptions: [{ value: "", label: "— Select Status —", selected: !r.statusId }]
-            .concat(STATUS_IDS.map((id) => ({
+            .concat(RIDER_STATUS_IDS.map((id) => ({
               value: id,
               label: STATUS_LABELS[id] ?? _capitalize(id),
               selected: id === r.statusId,
@@ -912,22 +1192,136 @@ class MonsterCreatorApp extends HandlebarsApplicationMixin(ApplicationV2) {
       })),
 
       // Abilities section
+      // Sourced from TWO datasets, merged by name:
+      //   1. ABILITY_QUICK_PICKS — the 20 curated entries with tiers/variants
+      //      and automation badges. Authoritative for picking how an ability
+      //      materializes into an actor (description, tier label).
+      //   2. Audit data (docs/audit/abilities.json) — every unique ability
+      //      name across the compendium, with representativeText and the
+      //      list of monsters that use it.
+      // A curated entry WINS when names match — so Magic Ward still has its
+      // tier picker — but unique audit-only names become plain rows with a
+      // "used by N monsters" hover.
       abilitiesSummary: _abilitiesSummary(this._data.abilities),
-      abilityTemplates: ABILITY_QUICK_PICKS.map((qp) => ({
-        name: qp.name,
-        description: qp.description ?? "",
-        automationStatus: qp.automationStatus,
-        automationBadge: _abilityBadge(qp.name) ?? (
-          qp.tiers ? _abilityBadge(`${qp.name} ${qp.tiers[0].label}`)
-                   : qp.variants ? _abilityBadge(`${qp.name} ${qp.variants[0].label}`) : null
-        ),
-        // Preview: first tier/variant description (first 70 chars) or the flat description
-        representativeShort: _descriptionPreview(
-          qp.description ?? qp.tiers?.[0]?.description ?? qp.variants?.[0]?.description ?? ""
-        ),
-        tiers:    qp.tiers    ? qp.tiers.map((t) => ({ label: t.label }))    : null,
-        variants: qp.variants ? qp.variants.map((v) => ({ label: v.label })) : null,
-      })),
+      abilityQuery: this._abilityQuery,
+      ...(await (async () => {
+        const audit = await _getAuditAbilities();
+        const curatedByName = new Map();
+        for (const qp of ABILITY_QUICK_PICKS) curatedByName.set(qp.name.toLowerCase(), qp);
+
+        // Merge: seed with curated, then add audit entries whose names aren't curated.
+        const mergedRows = [];
+        for (const qp of ABILITY_QUICK_PICKS) {
+          const auditEntry = audit.abilities.find((a) => a.name.toLowerCase() === qp.name.toLowerCase()
+                                                    || a.name.toLowerCase().startsWith(qp.name.toLowerCase() + " "));
+          const monsterNames = auditEntry?.monsterNames ?? [];
+          const monsterCount = (auditEntry?.monsterNames?.length) ?? 0;
+          const fullDescription = qp.description
+            ?? qp.tiers?.[0]?.description
+            ?? qp.variants?.[0]?.description
+            ?? auditEntry?.representativeText
+            ?? "";
+          mergedRows.push({
+            source:             "curated",
+            name:               qp.name,
+            description:        qp.description ?? "",
+            fullDescription,
+            automationStatus:   qp.automationStatus,
+            representativeText: auditEntry?.representativeText ?? "",
+            tiers:              qp.tiers    ? qp.tiers.map((t) => ({ label: t.label }))    : null,
+            variants:           qp.variants ? qp.variants.map((v) => ({ label: v.label })) : null,
+            monsterCount,
+            monsterNames,
+          });
+        }
+        for (const a of audit.abilities) {
+          const keyLower = a.name.toLowerCase();
+          // Skip any audit entry already covered by a curated family. We match
+          // exact names AND tiered variants (e.g. "Magic Ward III" belongs to "Magic Ward").
+          const coveredBy = [...curatedByName.keys()].find((k) =>
+            keyLower === k || keyLower.startsWith(k + " ")
+          );
+          if (coveredBy) continue;
+          mergedRows.push({
+            source:             "audit",
+            name:               a.name,
+            description:        a.representativeText,
+            fullDescription:    a.representativeText,
+            automationStatus:   a.automationStatus ?? "unimplemented",
+            representativeText: a.representativeText,
+            tiers:              null,
+            variants:           null,
+            monsterCount:       a.monsterNames.length,
+            monsterNames:       a.monsterNames,
+          });
+        }
+
+        // Compute filter counts across the full merged set (pre-search).
+        const counts = { all: 0, implemented: 0, unimplemented: 0, flavor: 0 };
+        for (const row of mergedRows) {
+          counts.all++;
+          const s = row.automationStatus ?? "unimplemented";
+          if (counts[s] !== undefined) counts[s]++;
+        }
+
+        const q = (this._abilityQuery ?? "").trim().toLowerCase();
+        const filterKey = this._abilityFilter ?? "all";
+
+        const filtered = mergedRows
+          .filter((row) => {
+            if (filterKey !== "all" && (row.automationStatus ?? "unimplemented") !== filterKey) return false;
+            if (!q) return true;
+            const hay = `${row.name} ${row.fullDescription}`.toLowerCase();
+            return hay.includes(q);
+          })
+          .map((row) => {
+            const badgeBase = _abilityBadge(row.name) ?? (
+              row.tiers ? _abilityBadge(`${row.name} ${row.tiers[0].label}`)
+                        : row.variants ? _abilityBadge(`${row.name} ${row.variants[0].label}`) : null
+            );
+            const resolvedBadge = badgeBase ?? {
+              status: (row.automationStatus ?? "unimplemented"),
+              icon:   (row.automationStatus === "flavor") ? "—" : (row.automationStatus === "implemented" ? "✓" : "⚠"),
+              label:  (row.automationStatus === "flavor") ? "Flavor / narrative"
+                    : (row.automationStatus === "implemented" ? "Automated" : "Not yet automated"),
+            };
+
+            // Compose the native `title` tooltip: the full description, then
+            // a line break, then "Used by N monsters: ..." (truncated).
+            const tooltipLines = [];
+            if (row.fullDescription) tooltipLines.push(row.fullDescription);
+            if (row.monsterCount) {
+              const shown = row.monsterNames.slice(0, 12).join(", ");
+              const more  = row.monsterCount > 12 ? `, +${row.monsterCount - 12} more` : "";
+              tooltipLines.push(`\nUsed by ${row.monsterCount} monster${row.monsterCount === 1 ? "" : "s"}: ${shown}${more}`);
+            } else if (row.source === "curated") {
+              tooltipLines.push("\n(Curated template — not currently found in any compendium actor)");
+            }
+
+            return {
+              name:                row.name,
+              description:         row.description,
+              automationStatus:    row.automationStatus,
+              automationBadge:     resolvedBadge,
+              representativeShort: _descriptionPreview(row.fullDescription),
+              fullTooltip:         tooltipLines.join("").trim(),
+              tiers:               row.tiers,
+              variants:            row.variants,
+              monsterCount:        row.monsterCount,
+              isCurated:           row.source === "curated",
+            };
+          });
+
+        return {
+          abilityFilters: [
+            { key: "all",           label: "All",           title: "All abilities",                       count: counts.all,           active: filterKey === "all" },
+            { key: "implemented",   label: "Automated",     title: "Automated at runtime by the module",  count: counts.implemented,   active: filterKey === "implemented" },
+            { key: "unimplemented", label: "Not Automated", title: "Text-only (not yet automated)",       count: counts.unimplemented, active: filterKey === "unimplemented" },
+            { key: "flavor",        label: "Flavor",        title: "Narrative flavor (no mechanics)",     count: counts.flavor,        active: filterKey === "flavor" },
+          ],
+          abilityTemplates: filtered,
+        };
+      })()),
       abilityRows: this._data.abilities.map((a, index) => ({
         index,
         name: a.name ?? "",
@@ -960,9 +1354,18 @@ class MonsterCreatorApp extends HandlebarsApplicationMixin(ApplicationV2) {
       mutationSelectedCount: this._selectedMutations.size,
       mutationPreview: _mutationPreview(this._data, this._selectedMutations),
 
-      // Token vision
+      // Token vision (basic = always range 0, input disabled; non-basic with
+      // blank value = infinite)
       visionModeOptions: VISION_MODE_OPTIONS.map((o) => ({ ...o, selected: o.value === this._data.visionMode })),
       visionSummary: _visionSummary(this._data),
+      visionRangeDisabled:    this._data.visionMode === "basic",
+      visionRangePlaceholder: this._data.visionMode === "basic" ? "0" : "blank = ∞",
+
+      // Short previews for the Senses + Movement mini-collapsibles. Stays
+      // text-only (no pill) since these sections always have a handful of
+      // items to summarize.
+      sensesPreview:   _sensesMiniPreview(this._data),
+      movementPreview: _movementMiniPreview(this._data),
     };
   }
 
@@ -1069,17 +1472,61 @@ class MonsterCreatorApp extends HandlebarsApplicationMixin(ApplicationV2) {
       }, { signal });
     });
 
-    // ── Actions editor ──────────────────────────────────────────────────
-
-    // Category tab click → switch filtered Quick Picks (needs re-render)
-    el.querySelectorAll("[data-action-tab]").forEach((btn) => {
-      btn.addEventListener("click", (ev) => {
-        this._actionsTab = ev.currentTarget.dataset.actionTab;
-        this.render();
+    // ── Senses grid ─────────────────────────────────────────────────────
+    // Each checkbox toggles sensesStruct[key].checked and enables/disables
+    // its partner range input. The range input updates sensesStruct[key].range.
+    // On every change we re-compile the human-readable string so _data.senses
+    // stays in sync — that's the field the Save path persists.
+    const syncSensesString = () => {
+      this._data.senses = _compileSensesString(this._data.sensesStruct, this._data.sensesOther);
+      this._refreshHeaderSummaries();
+    };
+    el.querySelectorAll("[data-sense]").forEach((cb) => {
+      cb.addEventListener("change", (ev) => {
+        const key = ev.currentTarget.dataset.sense;
+        const entry = this._data.sensesStruct[key] ?? (this._data.sensesStruct[key] = { checked: false });
+        entry.checked = ev.currentTarget.checked;
+        syncSensesString();
       }, { signal });
     });
+    el.querySelector("[data-senses-other]")?.addEventListener("input", (ev) => {
+      this._data.sensesOther = ev.currentTarget.value ?? "";
+      syncSensesString();
+    }, { signal });
 
-    // Quick Pick click → add a new action from template (+ optional tier)
+    // ── Actions editor ──────────────────────────────────────────────────
+
+    // [+ New Action] — append a blank action row and auto-open it.
+    el.querySelector('[data-action="newBlankAction"]')?.addEventListener("click", () => {
+      const fresh = _blankAction();
+      fresh.name = "New Action";
+      this._data.actions.push(fresh);
+      this._actionOpen.add(this._data.actions.length - 1);
+      this._templatePickerOpen = false;
+      this.render();
+    }, { signal });
+
+    // [+ From Template ▾] — toggle the popup.
+    el.querySelector('[data-action="toggleTemplatePicker"]')?.addEventListener("click", (ev) => {
+      ev.stopPropagation();
+      this._templatePickerOpen = !this._templatePickerOpen;
+      this.render();
+    }, { signal });
+
+    // Close the template popup when the user clicks anywhere outside it.
+    if (this._templatePickerOpen) {
+      const closeIfOutside = (ev) => {
+        const inside = ev.target.closest(".mc-template-picker");
+        if (inside) return;
+        this._templatePickerOpen = false;
+        document.removeEventListener("mousedown", closeIfOutside, true);
+        this.render();
+      };
+      document.addEventListener("mousedown", closeIfOutside, true);
+      signal.addEventListener("abort", () => document.removeEventListener("mousedown", closeIfOutside, true));
+    }
+
+    // Template popup: add action from template (+ optional tier)
     el.querySelectorAll('[data-action="addTemplate"]').forEach((btn) => {
       btn.addEventListener("click", (ev) => {
         const name = ev.currentTarget.dataset.templateName;
@@ -1089,6 +1536,8 @@ class MonsterCreatorApp extends HandlebarsApplicationMixin(ApplicationV2) {
         const tierLabel = tierSel?.value ?? null;
         const newAction = materializeAction(template, tierLabel);
         this._data.actions.push(newAction);
+        this._actionOpen.add(this._data.actions.length - 1);
+        this._templatePickerOpen = false;
         this.render();
       }, { signal });
     });
@@ -1203,8 +1652,15 @@ class MonsterCreatorApp extends HandlebarsApplicationMixin(ApplicationV2) {
     });
 
     // Rider field edit (status / saveType / duration / tick / damage type /
-    // permanent / requiresDamage). A few of these (permanent, tickEnabled)
-    // toggle UI visibility so they force a re-render; the rest update in-place.
+    // permanent / requiresDamage).
+    //
+    // Permanent/duration are two views of the same state: an empty duration
+    // IS permanent. The checkbox just flips it:
+    //   - check   → duration := "" (permanent)
+    //   - uncheck → duration := "d4" (a sane default the user can edit)
+    // The duration field is NEVER disabled — typing any value immediately
+    // makes the rider non-permanent. This is the fix for the prior bug where
+    // Permanent couldn't be unchecked and the duration field was locked.
     el.querySelectorAll("[data-rider-field]").forEach((input) => {
       const onEdit = (ev) => {
         const riderRow = ev.currentTarget.closest("[data-rider-list]");
@@ -1219,8 +1675,7 @@ class MonsterCreatorApp extends HandlebarsApplicationMixin(ApplicationV2) {
         if (!rider) return;
         const field = ev.currentTarget.dataset.riderField;
         if (field === "permanent") {
-          // Permanent is a derived flag: storing it empties duration
-          if (ev.currentTarget.checked) rider.duration = "";
+          rider.duration = ev.currentTarget.checked ? "" : "d4";
           this._actionOpen.add(actionIndex);
           this.render();
           return;
@@ -1232,6 +1687,12 @@ class MonsterCreatorApp extends HandlebarsApplicationMixin(ApplicationV2) {
           return;
         }
         rider[field] = ev.currentTarget.value;
+        // Duration typing can flip the Permanent state — refresh the checkbox
+        // without a full re-render so focus stays in the text field.
+        if (field === "duration") {
+          const permCb = riderRow.querySelector('[data-rider-field="permanent"]');
+          if (permCb) permCb.checked = !String(rider.duration).trim();
+        }
         this._refreshActionCardSummary(actionIndex);
       };
       input.addEventListener("change", onEdit, { signal });
@@ -1260,15 +1721,72 @@ class MonsterCreatorApp extends HandlebarsApplicationMixin(ApplicationV2) {
 
     // ── Abilities editor ────────────────────────────────────────────────
 
-    el.querySelectorAll('[data-action="addAbilityTemplate"]').forEach((btn) => {
+    // Live search box — filters the browse list IN-PLACE by toggling a
+    // `hidden` attribute on each row, avoiding a full Handlebars re-render
+    // per keystroke. Focus + caret stay intact naturally since the input is
+    // never re-created. The filter buttons' counts don't change with the
+    // search query (they reflect the automation-status split), so they
+    // don't need an update here.
+    const abilitySearch = el.querySelector("[data-ability-search]");
+    if (abilitySearch) {
+      abilitySearch.addEventListener("input", (ev) => {
+        this._abilityQuery = ev.currentTarget.value ?? "";
+        const q = this._abilityQuery.trim().toLowerCase();
+        const rows = el.querySelectorAll(".mc-ability-browse-row");
+        let shown = 0;
+        rows.forEach((row) => {
+          const title = row.querySelector(".mc-ability-browse-title")?.textContent ?? "";
+          const desc  = row.querySelector(".mc-ability-browse-desc")?.textContent  ?? "";
+          const hay   = `${title} ${desc}`.toLowerCase();
+          const match = !q || hay.includes(q);
+          row.toggleAttribute("hidden", !match);
+          if (match) shown++;
+        });
+        // Surface an empty-state node if nothing matches (reuse whatever
+        // empty-state node Handlebars rendered for the no-results case).
+        const list = el.querySelector(".mc-ability-browse-list");
+        let empty = list?.querySelector(".mc-ability-empty-dynamic");
+        if (!shown) {
+          if (!empty && list) {
+            empty = document.createElement("div");
+            empty.className = "mc-action-empty mc-ability-empty-dynamic";
+            empty.textContent = "No abilities match the current search.";
+            list.appendChild(empty);
+          }
+        } else if (empty) {
+          empty.remove();
+        }
+      }, { signal });
+    }
+    el.querySelectorAll("[data-ability-filter]").forEach((btn) => {
       btn.addEventListener("click", (ev) => {
+        this._abilityFilter = ev.currentTarget.dataset.abilityFilter || "all";
+        this.render();
+      }, { signal });
+    });
+
+    // Add an ability to the actor. Falls through to audit data when the
+    // picked name isn't in the curated Quick Picks, so every browse row is
+    // addable regardless of source.
+    el.querySelectorAll('[data-action="addAbilityTemplate"]').forEach((btn) => {
+      btn.addEventListener("click", async (ev) => {
         const name = ev.currentTarget.dataset.templateName;
         const template = ABILITY_QUICK_PICKS.find((q) => q.name === name);
-        if (!template) return;
-        const tierSel = el.querySelector(`[data-ability-tier-for="${name}"]`);
-        const selectedLabel = tierSel?.value ?? null;
-        const newAbility = materializeAbility(template, selectedLabel);
-        this._data.abilities.push(newAbility);
+        if (template) {
+          const tierSel = el.querySelector(`[data-ability-tier-for="${name}"]`);
+          const selectedLabel = tierSel?.value ?? null;
+          const newAbility = materializeAbility(template, selectedLabel);
+          this._data.abilities.push(newAbility);
+        } else {
+          // Audit-sourced — no tiers, no curated description. Copy the
+          // representative text from the audit dataset as the body.
+          const audit = await _getAuditAbilities();
+          const entry = audit.abilities.find((a) => a.name === name);
+          this._data.abilities.push({
+            name,
+            description: entry?.representativeText ?? "",
+          });
+        }
         this.render();
       }, { signal });
     });
@@ -1319,22 +1837,48 @@ class MonsterCreatorApp extends HandlebarsApplicationMixin(ApplicationV2) {
     el.querySelector('[data-action="clearMutations"]')?.addEventListener("click", () => this._clearMutationSelection(), { signal });
 
     // ── Token vision fields ─────────────────────────────────────────────
-    // When the Infinite checkbox toggles we re-render so the number input's
-    // disabled state matches. All other vision fields update in-place and
-    // refresh only the collapsed-header summary.
+    // Rules:
+    //   - Mode "basic"  → range forced to 0, Infinite off, input disabled.
+    //   - Mode non-basic + empty range → Infinite on.
+    //   - Mode non-basic + numeric range → Infinite off.
+    // Mode changes re-render so the range input's disabled state matches.
     el.querySelectorAll("[data-vision-field]").forEach((input) => {
       const onChange = (ev) => {
         const name = ev.currentTarget.dataset.visionField;
-        let value;
-        if (input.type === "checkbox")  value = ev.currentTarget.checked;
-        else if (input.type === "number") value = Number(ev.currentTarget.value);
-        else                              value = ev.currentTarget.value;
-        this._data[name] = value;
-        if (name === "visionInfinite") {
+        if (name === "visionMode") {
+          this._data.visionMode = ev.currentTarget.value;
+          if (this._data.visionMode === "basic") {
+            this._data.visionRange    = 0;
+            this._data.visionInfinite = false;
+          } else {
+            // Keep existing range/infinite as-is — they're still valid.
+          }
           this.render();
-        } else {
-          this._refreshVisionSummary();
+          return;
         }
+        if (name === "visionEnabled") {
+          this._data.visionEnabled = ev.currentTarget.checked;
+          this._refreshVisionSummary();
+          return;
+        }
+        if (name === "visionRange") {
+          const raw = ev.currentTarget.value;
+          if (this._data.visionMode === "basic") {
+            this._data.visionRange    = 0;
+            this._data.visionInfinite = false;
+          } else if (raw === "" || raw === null) {
+            // Blank on a non-basic mode means infinite (∞).
+            this._data.visionRange    = 0;
+            this._data.visionInfinite = true;
+          } else {
+            this._data.visionRange    = Number(raw) || 0;
+            this._data.visionInfinite = false;
+          }
+          this._refreshVisionSummary();
+          return;
+        }
+        // Ignore legacy fields (visionAngle / visionInfinite) that no longer
+        // have a UI control — they're handled implicitly by the rules above.
       };
       input.addEventListener("change", onChange, { signal });
       if (input.tagName !== "SELECT" && input.type !== "checkbox") {
@@ -1342,6 +1886,50 @@ class MonsterCreatorApp extends HandlebarsApplicationMixin(ApplicationV2) {
       }
     });
     el.querySelector('[data-action="autoVisionFromSenses"]')?.addEventListener("click", () => this._autoVisionFromSenses(), { signal });
+
+    // Wrap every number input with visible ▴/▾ stepper buttons. Uses the
+    // input's own `step` attribute (default 1) so Speed (step=5) steps by 5
+    // and HD/Armor/Morale (no step) step by 1 exactly as the user asked for.
+    // We do this after render (rather than in the template) so any future
+    // number input gets steppers for free without template changes.
+    el.querySelectorAll('input[type="number"]').forEach((input) => {
+      if (input.closest(".mc-num-wrap")) return; // already wrapped
+      const step = Number(input.step || input.getAttribute("step") || 1);
+      const wrap = document.createElement("span");
+      wrap.className = "mc-num-wrap";
+      input.parentNode.insertBefore(wrap, input);
+      wrap.appendChild(input);
+      const up   = document.createElement("button");
+      const down = document.createElement("button");
+      up.type   = down.type = "button";
+      up.className   = "mc-num-btn mc-num-btn-up";
+      down.className = "mc-num-btn mc-num-btn-down";
+      up.innerHTML   = `<span aria-hidden="true">▴</span>`;
+      down.innerHTML = `<span aria-hidden="true">▾</span>`;
+      const fieldLabel = input.closest(".mc-field")?.querySelector("label")?.textContent?.trim()
+                     ?? input.name
+                     ?? "value";
+      up.setAttribute(  "aria-label", `Increase ${fieldLabel} by ${step}`);
+      down.setAttribute("aria-label", `Decrease ${fieldLabel} by ${step}`);
+      up.title   = `+${step}`;
+      down.title = `−${step}`;
+      const nudge = (dir) => {
+        const min = Number(input.min || "-Infinity");
+        const max = Number(input.max ||  "Infinity");
+        const cur = Number(input.value || 0);
+        const next = Math.max(min, Math.min(max, cur + dir * step));
+        input.value = String(next);
+        input.dispatchEvent(new Event("input",  { bubbles: true }));
+        input.dispatchEvent(new Event("change", { bubbles: true }));
+      };
+      up  .addEventListener("click", (ev) => { ev.preventDefault(); nudge(+1); }, { signal });
+      down.addEventListener("click", (ev) => { ev.preventDefault(); nudge(-1); }, { signal });
+      const stack = document.createElement("span");
+      stack.className = "mc-num-stack";
+      stack.appendChild(up);
+      stack.appendChild(down);
+      wrap.appendChild(stack);
+    });
 
     el.querySelector('[data-action="reset"]') ?.addEventListener("click", () => this._reset(),  { signal });
     el.querySelector('[data-action="cancel"]')?.addEventListener("click", () => this.close(),   { signal });
@@ -1462,8 +2050,11 @@ class MonsterCreatorApp extends HandlebarsApplicationMixin(ApplicationV2) {
       if (action.recharge) bits.push(action.recharge);
       const onHitCount  = action.causedStatuses?.length ?? 0;
       const critCount   = action.critCausedStatuses?.length ?? 0;
-      if (onHitCount) bits.push(`${onHitCount}🪱`);
-      if (critCount)  bits.push(`${critCount}💥`);
+      // On-hit / crit-on-hit rider counts. Using inline labels instead of
+      // emoji keeps the summary crisp and monochrome with the rest of the
+      // card chrome (emoji render bright-multicolor on most platforms).
+      if (onHitCount) bits.push(`${onHitCount} on-hit`);
+      if (critCount)  bits.push(`${critCount} crit`);
       metaEl.textContent = bits.join(" · ");
     }
   }
@@ -1491,11 +2082,21 @@ class MonsterCreatorApp extends HandlebarsApplicationMixin(ApplicationV2) {
       return;
     }
     const name = this._data.name?.trim() || "Monster";
+    // Tokenizer tries to load its own fallback (hardcoded to
+    // `icons/mystery-man.png`, which 404s) whenever avatarFilename /
+    // tokenFilename is empty. Always pass a real, resolvable path —
+    // Foundry's built-in SVG works regardless of system. The user can
+    // still replace it from inside Tokenizer.
+    const FALLBACK = "icons/svg/mystery-man.svg";
+    const portrait = this._data.portraitImg && this._data.portraitImg !== DEFAULT_PORTRAIT
+                   ? this._data.portraitImg : FALLBACK;
+    const token    = this._data.tokenImg    && this._data.tokenImg    !== DEFAULT_PORTRAIT
+                   ? this._data.tokenImg    : FALLBACK;
     const options = {
       type:            "npc",
       name,
-      avatarFilename:  this._data.portraitImg && this._data.portraitImg !== DEFAULT_PORTRAIT ? this._data.portraitImg : "",
-      tokenFilename:   this._data.tokenImg    && this._data.tokenImg    !== DEFAULT_PORTRAIT ? this._data.tokenImg    : "",
+      avatarFilename:  portrait,
+      tokenFilename:   token,
       isWildCard:      false,
     };
     try {
@@ -1607,7 +2208,7 @@ class MonsterCreatorApp extends HandlebarsApplicationMixin(ApplicationV2) {
     this._data = _blankMonster();
     this._sourceUuid = null;
     this._isFreshStart = true;
-    this._sectionOpen = { identity: true, stats: true };
+    this._sectionOpen = { identity: true, stats: true, senses: false, movement: false };
     this._actionOpen.clear();
     this._selectedMutations.clear();
     this.render();

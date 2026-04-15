@@ -109,24 +109,81 @@
       <span class="mc-collapse-summary"><span class="mc-collapse-preview">{{statsSummary}}</span></span>
     </summary>
     <div class="mc-row">
-      <div class="mc-field"><label>HD</label><input type="number" name="hd" min="1" max="30" value="{{data.hd}}" /></div>
-      <div class="mc-field"><label>Armor</label><input type="number" name="armor" min="0" max="10" value="{{data.armor}}" /></div>
+      <div class="mc-field mc-num"><label for="mc-field-hd">HD</label><input id="mc-field-hd" type="number" name="hd" min="1" max="30" value="{{data.hd}}" /></div>
+      <div class="mc-field mc-num"><label for="mc-field-armor">Armor</label><input id="mc-field-armor" type="number" name="armor" min="0" max="10" value="{{data.armor}}" /></div>
       <div class="mc-field mc-wide">
-        <label>Armor Description</label>
-        <input name="armorDescription" value="{{data.armorDescription}}" placeholder="as Leather, as (+1) Plate" />
+        <label for="mc-field-armorDescription">Armor Description</label>
+        <select id="mc-field-armorDescription" name="armorDescription">
+          <option value="" {{#unless data.armorDescription}}selected{{/unless}}>— Pick armor type —</option>
+          {{#each armorDescriptors}}<option value="{{value}}" {{#if selected}}selected{{/if}}>{{label}}</option>{{/each}}
+        </select>
       </div>
-      <div class="mc-field"><label>Morale</label><input type="number" name="morale" min="2" max="12" value="{{data.morale}}" /></div>
+      <div class="mc-field mc-num"><label for="mc-field-morale">Morale</label><input id="mc-field-morale" type="number" name="morale" min="2" max="12" value="{{data.morale}}" /></div>
     </div>
     <div class="mc-row">
-      <div class="mc-field"><label>Speed (walk)</label><input type="number" name="speed" min="0" step="5" value="{{data.speed}}" /></div>
-      <div class="mc-field"><label>Appearing</label><input name="appearing" value="{{data.appearing}}" placeholder="1, 2d6" /></div>
-      <div class="mc-field mc-wide">
-        <label>Senses</label>
-        <input name="senses" value="{{data.senses}}" placeholder="Darksight 60', Blindsight" />
-      </div>
+      <div class="mc-field mc-num"><label for="mc-field-speed">Speed (walk)</label><input id="mc-field-speed" type="number" name="speed" min="0" step="5" value="{{data.speed}}" /></div>
+      <div class="mc-field mc-num"><label for="mc-field-appearing">Appearing</label><input id="mc-field-appearing" name="appearing" value="{{data.appearing}}" placeholder="1, 2d6" /></div>
     </div>
-    <div class="mc-subsection">
-      <label class="mc-subhead">Other Movement Modes</label>
+    {{!-- Senses (collapsible mini-section — Token Vision lives inside) --}}
+    <details class="mc-mini-collapsible" data-collapse="senses" {{#if sectionOpen.senses}}open{{/if}}>
+      <summary class="mc-mini-head">
+        <span class="mc-subhead">Senses</span>
+        <span class="mc-collapse-preview">{{sensesPreview}}</span>
+      </summary>
+      <div class="mc-senses-grid">
+        {{#each sensesGrid}}
+        <label class="mc-sense-row">
+          <input type="checkbox" data-sense="{{key}}" {{#if checked}}checked{{/if}} />
+          <span class="mc-sense-label">{{label}}</span>
+        </label>
+        {{/each}}
+      </div>
+      <div class="mc-row mc-senses-other">
+        <div class="mc-field mc-wide">
+          <label>Other / Custom</label>
+          <input type="text" data-senses-other value="{{data.sensesOther}}"
+                 placeholder="Additional senses (free text)" />
+        </div>
+      </div>
+
+      {{!-- Token Vision is now a small sub-group inside Senses. Angle is gone;
+           blank range on a non-basic mode means infinite. --}}
+      <div class="mc-vision-subgroup">
+        <label class="mc-cb-row mc-vision-enable">
+          <input type="checkbox" data-vision-field="visionEnabled" {{#if data.visionEnabled}}checked{{/if}} />
+          <span>Vision enabled</span>
+          <span class="mc-hint">— {{visionSummary}}</span>
+        </label>
+        <div class="mc-row">
+          <div class="mc-field mc-wide">
+            <label>Mode</label>
+            <select data-vision-field="visionMode">
+              {{#each visionModeOptions}}<option value="{{value}}" {{#if selected}}selected{{/if}}>{{label}}</option>{{/each}}
+            </select>
+          </div>
+          <div class="mc-field mc-num">
+            <label>Range (ft)</label>
+            <input type="number" min="0" step="5"
+                   data-vision-field="visionRange"
+                   value="{{data.visionRange}}"
+                   {{#if visionRangeDisabled}}disabled{{/if}}
+                   placeholder="{{visionRangePlaceholder}}" />
+          </div>
+          <div class="mc-field" style="flex: 0 0 auto;">
+            <button type="button" class="mc-btn mc-btn-soft" data-action="autoVisionFromSenses" title="Fill vision from the Senses checkboxes above">
+              <i class="fas fa-magic"></i> Auto
+            </button>
+          </div>
+        </div>
+      </div>
+    </details>
+
+    {{!-- Other Movement Modes (collapsible mini-section) --}}
+    <details class="mc-mini-collapsible" data-collapse="movement" {{#if sectionOpen.movement}}open{{/if}}>
+      <summary class="mc-mini-head">
+        <span class="mc-subhead">Other Movement Modes</span>
+        <span class="mc-collapse-preview">{{movementPreview}}</span>
+      </summary>
       <div class="mc-speedmode-grid">
         {{#each speedModesGrid}}
         <label class="mc-speedmode-row">
@@ -138,51 +195,7 @@
         </label>
         {{/each}}
       </div>
-    </div>
-  </details>
-
-  {{!-- Token Vision (collapsible) --}}
-  <details class="mc-section mc-collapsible" data-collapse="vision" {{#if sectionOpen.vision}}open{{/if}}>
-    <summary>
-      <span class="mc-collapse-title">Token Vision</span>
-      <span class="mc-collapse-summary">
-        <span class="mc-collapse-preview">{{visionSummary}}</span>
-      </span>
-    </summary>
-    <div class="mc-row">
-      <label class="mc-cb-row mc-vision-enable">
-        <input type="checkbox" data-vision-field="visionEnabled" {{#if data.visionEnabled}}checked{{/if}} />
-        <span>Vision enabled</span>
-      </label>
-    </div>
-    <div class="mc-row">
-      <div class="mc-field">
-        <label>Range (ft)</label>
-        <input type="number" min="0" step="5" data-vision-field="visionRange" value="{{data.visionRange}}" {{#if data.visionInfinite}}disabled{{/if}} />
-      </div>
-      <div class="mc-field" style="flex: 0 0 auto;">
-        <label>&nbsp;</label>
-        <label class="mc-cb-row">
-          <input type="checkbox" data-vision-field="visionInfinite" {{#if data.visionInfinite}}checked{{/if}} />
-          <span>Infinite (∞)</span>
-        </label>
-      </div>
-      <div class="mc-field">
-        <label>Angle (°)</label>
-        <input type="number" min="1" max="360" step="10" data-vision-field="visionAngle" value="{{data.visionAngle}}" />
-      </div>
-      <div class="mc-field mc-wide">
-        <label>Mode</label>
-        <select data-vision-field="visionMode">
-          {{#each visionModeOptions}}<option value="{{value}}" {{#if selected}}selected{{/if}}>{{label}}</option>{{/each}}
-        </select>
-      </div>
-    </div>
-    <div class="mc-row">
-      <button type="button" class="mc-btn mc-btn-soft" data-action="autoVisionFromSenses" title="Fill vision settings from the Senses text in Stats (Darksight → Darkvision 60ft, Blindsight → 30ft, Seismicsense → Tremorsense 30ft, etc.)">
-        <i class="fas fa-magic"></i> Auto-populate from Senses
-      </button>
-    </div>
+    </details>
   </details>
 
   {{!-- Damage Immunities (collapsible) --}}
@@ -259,74 +272,77 @@
       </span>
     </summary>
 
-    <div class="mc-subsection">
-      <label class="mc-subhead">Quick Picks</label>
-      <div class="mc-template-tabs">
-        {{#each actionTabs}}
-        <button type="button" class="mc-tab-btn {{#if active}}mc-tab-active{{/if}}" data-action-tab="{{key}}">{{label}}</button>
-        {{/each}}
-      </div>
-      <div class="mc-template-grid">
-        {{#each quickPickTemplates}}
-        <div class="mc-template-card" data-template="{{name}}">
-          <button type="button" class="mc-template-btn" data-action="addTemplate" data-template-name="{{name}}">
-            <strong>{{name}}</strong>
-            <span class="mc-hint">{{categoryLabel}} · {{previewDamage}}</span>
-          </button>
-          {{#if hasTiers}}
-          <select class="mc-template-tier" data-template-tier-for="{{name}}" title="Power tier / variant">
-            {{#each tiers}}<option value="{{label}}">{{label}}</option>{{/each}}
-          </select>
-          {{/if}}
+    {{!-- Toolbar: add a blank action OR pick from a template popup --}}
+    <div class="mc-action-toolbar">
+      <button type="button" class="mc-btn mc-btn-primary" data-action="newBlankAction">
+        <i class="fas fa-plus"></i> New Action
+      </button>
+      <div class="mc-template-picker">
+        <button type="button" class="mc-btn mc-btn-soft" data-action="toggleTemplatePicker">
+          <i class="fas fa-bolt"></i> From Template <i class="fas fa-caret-down"></i>
+        </button>
+        <div class="mc-template-popup{{#if templatePickerOpen}} mc-template-popup-open{{/if}}">
+          {{#each quickPickGroups}}
+          <div class="mc-template-group">
+            <div class="mc-template-group-label">{{label}}</div>
+            {{#each items}}
+            <div class="mc-template-popup-row">
+              <button type="button" class="mc-template-popup-btn" data-action="addTemplate" data-template-name="{{name}}">
+                <strong>{{name}}</strong>
+                <span class="mc-hint">{{previewDamage}}</span>
+              </button>
+            </div>
+            {{/each}}
+          </div>
+          {{/each}}
         </div>
-        {{/each}}
       </div>
     </div>
 
     <div class="mc-subsection">
-      <label class="mc-subhead">Current Actions</label>
       {{#if actionRows.length}}
       <div class="mc-action-list">
         {{#each actionRows}}
         <details class="mc-action-card" data-action-index="{{index}}" {{#if open}}open{{/if}}>
           <summary class="mc-action-summary">
             <span class="mc-action-summary-name">{{name}}</span>
-            <span class="mc-action-summary-meta">{{attackTypeLabel}} · {{summary}}{{#if recharge}} · {{recharge}}{{/if}}{{#if causedStatuses.length}} · {{causedStatuses.length}}🪱{{/if}}{{#if critCausedStatuses.length}} · {{critCausedStatuses.length}}💥{{/if}}</span>
-            <button type="button" class="mc-action-delete" data-action="deleteAction" title="Remove action"><i class="fas fa-times"></i></button>
+            <span class="mc-action-summary-meta">{{attackTypeLabel}} · {{summary}}{{#if recharge}} · {{recharge}}{{/if}}{{#if causedStatuses.length}} · {{causedStatuses.length}} on-hit{{/if}}{{#if critCausedStatuses.length}} · {{critCausedStatuses.length}} crit{{/if}}</span>
+            <button type="button" class="mc-action-delete" data-action="deleteAction" aria-label="Remove action {{name}}" title="Remove action"><i class="fas fa-times" aria-hidden="true"></i></button>
           </summary>
 
-          {{!-- Name + attack type --}}
-          <div class="mc-action-head">
-            <input class="mc-action-name"  data-action-field="name"       value="{{name}}" placeholder="Name" />
-            <select class="mc-action-type" data-action-field="attackType">
+          {{!-- Two-column label/input grid --}}
+          <div class="mc-action-grid">
+            <label>Name</label>
+            <input data-action-field="name" value="{{name}}" placeholder="Attack name" />
+
+            <label>Type</label>
+            <select data-action-field="attackType">
               {{#each attackTypeOptions}}<option value="{{value}}" {{#if selected}}selected{{/if}}>{{label}}</option>{{/each}}
             </select>
-          </div>
 
-          {{!-- Weapon picker --}}
-          <div class="mc-action-weapon">
-            <label class="mc-subhead">Weapon</label>
+            <label>Damage</label>
+            <div class="mc-action-dmgrow">
+              <input class="mc-action-roll"  data-action-field="rollDamage" value="{{rollDamage}}" placeholder="2d6" />
+              <span class="mc-hint">+</span>
+              <input class="mc-action-flat"  data-action-field="flatDamage" value="{{flatDamage}}" placeholder="flat" />
+              <select class="mc-action-dtype" data-action-field="damageType">
+                {{#each damageTypeOptions}}<option value="{{value}}" {{#if selected}}selected{{/if}}>{{label}}</option>{{/each}}
+              </select>
+            </div>
+
+            <label>Recharge</label>
+            <input data-action-field="recharge" value="{{recharge}}" placeholder="Cd4" />
+
+            <label>Weapon</label>
             <select class="mc-action-weapon-sel" data-action="setWeapon">
               {{#each weaponOptions}}<option value="{{value}}" {{#if selected}}selected{{/if}}>{{label}}</option>{{/each}}
             </select>
-            {{#if weaponId}}<span class="mc-hint">Linked — click a weapon to replace, or pick "— No weapon —" to unlink.</span>{{/if}}
-          </div>
 
-          {{!-- Damage + recharge --}}
-          <div class="mc-action-damage">
-            <input class="mc-action-roll"  data-action-field="rollDamage" value="{{rollDamage}}" placeholder="2d6" />
-            <span class="mc-hint">+</span>
-            <input class="mc-action-flat"  data-action-field="flatDamage" value="{{flatDamage}}" placeholder="flat" />
-            <select class="mc-action-dtype" data-action-field="damageType">
-              {{#each damageTypeOptions}}<option value="{{value}}" {{#if selected}}selected{{/if}}>{{label}}</option>{{/each}}
-            </select>
-            <input class="mc-action-recharge" data-action-field="recharge" value="{{recharge}}" placeholder="Cd4" />
-          </div>
+            <label>Note</label>
+            <input data-action-field="note" value="{{note}}" placeholder="Melee Attack / Cast, Remote | Endure" />
 
-          {{!-- Notes --}}
-          <div class="mc-action-meta">
-            <input class="mc-action-note"  data-action-field="note"       value="{{note}}"      placeholder="Melee Attack / Cast, Remote | Endure" />
-            <input class="mc-action-extra" data-action-field="extraInfo" value="{{extraInfo}}" placeholder="and Frightened (Cd4) / etc." />
+            <label>Extra</label>
+            <input data-action-field="extraInfo" value="{{extraInfo}}" placeholder="and Frightened (Cd4) / etc." />
           </div>
 
           {{!-- On-Hit Effects --}}
@@ -339,7 +355,7 @@
             <div class="mc-rider-row" data-rider-list="causedStatuses" data-rider-index="{{@index}}">
               <select data-rider-field="statusId">{{#each statusOptions}}<option value="{{value}}" {{#if selected}}selected{{/if}}>{{label}}</option>{{/each}}</select>
               <select data-rider-field="saveType">{{#each saveOptions}}<option value="{{value}}" {{#if selected}}selected{{/if}}>{{label}}</option>{{/each}}</select>
-              <input type="text" class="mc-rider-dur" data-rider-field="duration" value="{{duration}}" placeholder="d4 / d6" {{#if permanent}}disabled{{/if}} />
+              <input type="text" class="mc-rider-dur" data-rider-field="duration" value="{{duration}}" placeholder="d4 / d6" />
               <label class="mc-cb-row" title="Permanent — no duration"><input type="checkbox" data-rider-field="permanent" {{#if permanent}}checked{{/if}} /><span>Perm</span></label>
               <label class="mc-cb-row" title="Only applies when damage breaks armor"><input type="checkbox" data-rider-field="requiresDamage" {{#if requiresDamage}}checked{{/if}} /><span>If Hit</span></label>
               <label class="mc-cb-row" title="Tick damage (DoT)"><input type="checkbox" data-rider-field="tickDamageEnabled" {{#if tickDamageEnabled}}checked{{/if}} /><span>Tick</span></label>
@@ -347,7 +363,7 @@
               <input type="text" class="mc-rider-tick" data-rider-field="damageOnTick" value="{{damageOnTick}}" placeholder="1d4" />
               <select class="mc-rider-dtype" data-rider-field="damageType">{{#each damageTypeOptions}}<option value="{{value}}" {{#if selected}}selected{{/if}}>{{label}}</option>{{/each}}</select>
               {{/if}}
-              <button type="button" class="mc-rider-delete" data-action="deleteRider" data-rider-list="causedStatuses" title="Remove"><i class="fas fa-times"></i></button>
+              <button type="button" class="mc-rider-delete" data-action="deleteRider" data-rider-list="causedStatuses" aria-label="Remove on-hit effect" title="Remove"><i class="fas fa-times" aria-hidden="true"></i></button>
             </div>
             {{/each}}
           </div>
@@ -362,7 +378,7 @@
             <div class="mc-rider-row" data-rider-list="critCausedStatuses" data-rider-index="{{@index}}">
               <select data-rider-field="statusId">{{#each statusOptions}}<option value="{{value}}" {{#if selected}}selected{{/if}}>{{label}}</option>{{/each}}</select>
               <select data-rider-field="saveType">{{#each saveOptions}}<option value="{{value}}" {{#if selected}}selected{{/if}}>{{label}}</option>{{/each}}</select>
-              <input type="text" class="mc-rider-dur" data-rider-field="duration" value="{{duration}}" placeholder="d4 / d6" {{#if permanent}}disabled{{/if}} />
+              <input type="text" class="mc-rider-dur" data-rider-field="duration" value="{{duration}}" placeholder="d4 / d6" />
               <label class="mc-cb-row"><input type="checkbox" data-rider-field="permanent" {{#if permanent}}checked{{/if}} /><span>Perm</span></label>
               <label class="mc-cb-row"><input type="checkbox" data-rider-field="requiresDamage" {{#if requiresDamage}}checked{{/if}} /><span>If Hit</span></label>
               <label class="mc-cb-row"><input type="checkbox" data-rider-field="tickDamageEnabled" {{#if tickDamageEnabled}}checked{{/if}} /><span>Tick</span></label>
@@ -370,7 +386,7 @@
               <input type="text" class="mc-rider-tick" data-rider-field="damageOnTick" value="{{damageOnTick}}" placeholder="1d4" />
               <select class="mc-rider-dtype" data-rider-field="damageType">{{#each damageTypeOptions}}<option value="{{value}}" {{#if selected}}selected{{/if}}>{{label}}</option>{{/each}}</select>
               {{/if}}
-              <button type="button" class="mc-rider-delete" data-action="deleteRider" data-rider-list="critCausedStatuses" title="Remove"><i class="fas fa-times"></i></button>
+              <button type="button" class="mc-rider-delete" data-action="deleteRider" data-rider-list="critCausedStatuses" aria-label="Remove crit on-hit effect" title="Remove"><i class="fas fa-times" aria-hidden="true"></i></button>
             </div>
             {{/each}}
           </div>
@@ -378,7 +394,7 @@
         {{/each}}
       </div>
       {{else}}
-      <div class="mc-action-empty">No actions yet. Click a template above to add one.</div>
+      <div class="mc-action-empty">No actions yet. Click <strong>+ New Action</strong> or <strong>+ From Template</strong> to add one.</div>
       {{/if}}
     </div>
   </details>
@@ -398,19 +414,30 @@
     </summary>
 
     <div class="mc-subsection">
-      <label class="mc-subhead">Quick Picks <span class="mc-hint">(badge shows if automation fires when added)</span></label>
-      <div class="mc-template-grid mc-ability-grid">
-        {{#each abilityTemplates}}
-        <div class="mc-template-card">
-          <button type="button" class="mc-template-btn" data-action="addAbilityTemplate" data-template-name="{{name}}">
-            <span class="mc-ability-header">
-              <strong>{{name}}</strong>
-              {{#if automationBadge}}
-              <span class="mc-ability-badge mc-badge-{{automationBadge.status}}" title="{{automationBadge.label}}">{{automationBadge.icon}}</span>
-              {{/if}}
-            </span>
-            <span class="mc-hint">{{representativeShort}}</span>
+      <div class="mc-ability-browse-head">
+        <input type="text" class="mc-ability-search" data-ability-search
+               value="{{abilityQuery}}" placeholder="🔎 Search abilities…" />
+        <div class="mc-ability-filters">
+          {{#each abilityFilters}}
+          <button type="button" class="mc-filter-btn {{#if active}}mc-filter-active{{/if}}"
+                  data-ability-filter="{{key}}" title="{{title}}">
+            {{label}} <span class="mc-hint">({{count}})</span>
           </button>
+          {{/each}}
+        </div>
+      </div>
+
+      <div class="mc-ability-browse-list">
+        {{#each abilityTemplates}}
+        <div class="mc-ability-browse-row" title="{{fullTooltip}}">
+          <span class="mc-ability-browse-icon mc-badge-{{automationBadge.status}}" title="{{automationBadge.label}}">{{automationBadge.icon}}</span>
+          <div class="mc-ability-browse-body">
+            <div class="mc-ability-browse-title">
+              {{name}}
+              {{#if monsterCount}}<span class="mc-ability-usage" title="Used by {{monsterCount}} monster(s)">{{monsterCount}}</span>{{/if}}
+            </div>
+            <div class="mc-ability-browse-desc">{{representativeShort}}</div>
+          </div>
           {{#if tiers}}
           <select class="mc-template-tier" data-ability-tier-for="{{name}}" title="Tier">
             {{#each tiers}}<option value="{{label}}">{{label}}</option>{{/each}}
@@ -421,7 +448,14 @@
             {{#each variants}}<option value="{{label}}">{{label}}</option>{{/each}}
           </select>
           {{/if}}
+          <button type="button" class="mc-btn mc-btn-soft mc-ability-add-btn"
+                  data-action="addAbilityTemplate" data-template-name="{{name}}"
+                  aria-label="Add ability {{name}}" title="Add">
+            <i class="fas fa-plus" aria-hidden="true"></i>
+          </button>
         </div>
+        {{else}}
+        <div class="mc-action-empty">No abilities match the current search / filter.</div>
         {{/each}}
       </div>
     </div>
@@ -437,14 +471,14 @@
             {{#if badge}}
             <span class="mc-ability-badge mc-badge-{{badge.status}}" title="{{badge.label}}">{{badge.icon}} {{badge.label}}</span>
             {{/if}}
-            <button type="button" class="mc-action-delete" data-action="deleteAbility" title="Remove"><i class="fas fa-times"></i></button>
+            <button type="button" class="mc-action-delete" data-action="deleteAbility" aria-label="Remove ability {{name}}" title="Remove"><i class="fas fa-times" aria-hidden="true"></i></button>
           </div>
           <textarea class="mc-ability-desc" data-ability-field="description" rows="2" placeholder="Description">{{description}}</textarea>
         </div>
         {{/each}}
       </div>
       {{else}}
-      <div class="mc-action-empty">No abilities yet. Click a template above.</div>
+      <div class="mc-action-empty">No abilities yet. Pick one above and click <i class="fas fa-plus"></i>.</div>
       {{/if}}
     </div>
   </details>

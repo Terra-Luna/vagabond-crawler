@@ -1,5 +1,72 @@
 # Changelog
 
+## v1.9.0
+
+### Encounter Roller + Monster Creator — Consolidation
+
+Major restructure: the Mutate tab is gone, the Monster Creator now lives inside the Encounter Roller as a fourth tab (**Build Table · Browse NPCs · Roll Tables · Monster Creator**). One window, one workflow. The right-click "Monster Creator" entry on the Encounter button has been removed since the Roller tab is now the primary entry point.
+
+The Creator panel mounts its full UI inside the tab and shares the same instance across tab switches — state persists when you tab away and come back.
+
+### Monster Creator — Stats
+
+- **Armor Description** is now a dropdown with all 24 canonical Vagabond armor descriptors from the Core Rulebook (Unarmored → (+3) Plate plus Shield), each showing its armor value. Custom text from previously-saved actors is preserved as a one-off option.
+- **Senses** is now a tight checkbox grid — boolean on/off per sense, infinite range by default. Darksight, Blindsight, Seismicsense, Allsight, Lightsight, Blindsense, Echolocation, plus a free-text "Other / Custom" field.
+- **Token Vision** moved inside the Senses section. Vision Enabled is on by default. Mode (Basic / Darkvision / Tremorsense / Monochromatic / Light Amplification / Blindness) + Range only. Basic forces range 0; blank range on any non-basic mode = infinite (∞). Angle control removed.
+- **Numeric fields** (HD, Armor, Morale, Speed, Appearing) have visible ▴▾ stepper buttons that increment by the input's `step` attribute — 1 for HD/Armor/Morale, 5 for Speed.
+- **Tighter layout** — narrow flex-basis on numeric fields so Armor Description doesn't stretch to fill empty space.
+- **Senses + Other Movement Modes** are collapsible sub-sections inside Stats.
+- **Font size bumped 25%** inside the Monster Creator panel — everything reads more comfortably.
+
+### Monster Creator — Actions
+
+- **[+ New Action]** button creates a blank action from scratch and auto-expands it.
+- **[+ From Template ▾]** popup with all 20 curated templates, grouped by attack type (Melee / Ranged / Cast Close / Cast Ranged). Compact left-aligned rows: name + damage preview, no tier dropdowns. Materializes with sensible defaults that you tweak in the expanded card.
+- **Two-column action card grid** inside each `<details>` — Name · Type · Damage · Recharge · Weapon · Note · Extra all label-input aligned.
+- **Weapon picker** per action, sourced from `vagabond.weapons` (53 weapons). Auto-populates name, roll damage, damage type, attack type. Reversible — picking "— No weapon —" restores previous values from a snapshot.
+- **On-Hit Effects** (`causedStatuses`) + **Crit On-Hit Effects** (`critCausedStatuses`) editors. Status dropdown (Vagabond statuses only — Patrol's "Undetectable" filtered out), save type (Any / Reflex / Endure / Will / None), duration, Permanent toggle, If Hit (`requiresDamage`), Tick damage + damage type.
+- **Permanent toggle fixed**: checking clears duration; unchecking restores a `d4` default. Typing any duration value clears the Permanent checkbox automatically.
+- **Per-action card open state** persists across re-renders so editing doesn't collapse the card you're working on.
+
+### Monster Creator — Abilities
+
+Merged with the audit dataset (`docs/audit/abilities.json`) — **~180 unique abilities** across every compendium monster, plus the 20 curated Quick Picks with tiers.
+
+- **Search box** filters the list in-place (no re-render per keystroke).
+- **Filter tabs**: All · Automated ✓ · Not Automated ⚠ · Flavor — combine with search.
+- **Info-per-line** layout: badge + name + short description + tier picker (if applicable) + `[+ Add]`.
+- **"Used by N monsters" badge** per row. Hover for the full description and the list of monsters that use the ability.
+- **Audit-sourced abilities** are addable like curated ones; they materialize with the representative text from the audit dataset as the description.
+
+### Encounter Roller — Build Table
+
+- **2d6 and 2d8** added to the die-type selector alongside d4/d6/d8/d10/d12. Slot counts and indices auto-adjust to the formula's range (e.g. 2d6 → 11 slots numbered 2..12).
+
+### Encounter Roller — Browse NPCs
+
+- **Sortable HP and Average DPR columns** added next to TL. Click any header to sort asc/desc.
+- **Table fills the tab's vertical space** instead of leaving a large blank gap.
+
+### Accessibility
+
+- **Focus-visible ring** — every interactive surface shows a 2px gold outline when reached by keyboard (`:focus-visible` only, no ring on mouse click).
+- **Tab bar roles** — `role="tablist"` + `role="tab"` + `aria-selected` + `tabindex` on every Encounter Roller tab.
+- **Icon-only buttons** have `aria-label` attributes (stepper arrows, add-ability +, delete ×, remove-effect ×).
+- **Label/input association** via `for`/`id` on the Stats section's separate label/input pairs.
+- **Container queries + touch-target breakpoint** — at `< 520px` the 2-col action grid collapses to single-column; under `(pointer: coarse)` every interactive element is at least 32px tall.
+
+### Theming
+
+- **Dark-mode accent fixed** — was pure white (`#ffffff`, blank-canvas AI aesthetic). Now a tabletop gold (`#c9a54a`) that complements the rest of the ramp.
+- **Active tab contrast** — was gold text on gold gradient (unreadable). Now near-black (`#1a1511`) text on gold for ~10:1 contrast.
+
+### Bug fixes
+
+- **Tokenizer fallback image** — passing empty avatar/token filenames triggered Tokenizer's broken fallback path (`/icons/mystery-man.png`, 404). Now always passes a valid `icons/svg/mystery-man.svg` so the Tokenizer UI opens cleanly.
+- **Encounter Result panel** no longer appears at the bottom of the Monster Creator tab; it's scoped to the encounter-rolling tabs only.
+- **Embedded Monster Creator scroll** — the `.mc-scrollable` body correctly overflows inside the Roller tab now that the height chain is bounded (form → tabpanel → panel host → mc-container).
+- **`.mc-hint` color override** in the template popup — was inheriting the button's primary color, making damage previews unreadable.
+
 ## v1.8.12
 
 ### New Features — Monster Creator Action Editor Polish

@@ -21,7 +21,6 @@ import { LootGenerator }   from "./loot-generator.mjs";
 import { ScrollForge }     from "./scroll-forge.mjs";
 import { MerchantShop }    from "./merchant-shop.mjs";
 import { PartyInventory } from "./party-inventory.mjs";
-import { MonsterCreator } from "./monster-creator/monster-creator-app.mjs";
 
 const BAR_ID = "vagabond-crawler-bar";
 
@@ -340,10 +339,6 @@ export const CrawlBar = {
       ${tableName ? `<div class="vcb-clock-menu-item" data-enc="clearTable" style="color:#e74c3c;">
         ${ICONS.close} Clear Table
       </div>` : ""}
-      <div class="vcb-enc-menu-divider"></div>
-      <div class="vcb-clock-menu-item" data-enc="monsterCreator">
-        <i class="fas fa-wand-magic-sparkles"></i> Monster Creator
-      </div>
     `;
 
     _positionMenu(menu, ev);
@@ -379,11 +374,6 @@ export const CrawlBar = {
       ui.notifications.info("Encounter table cleared.");
     });
 
-    // Monster Creator
-    menu.querySelector('[data-enc="monsterCreator"]')?.addEventListener("click", () => {
-      this._dismissEncounterMenu();
-      MonsterCreator.open();
-    });
 
     _attachDismiss(this, menu, "_encMenu", "_encMenuDismiss");
   },
