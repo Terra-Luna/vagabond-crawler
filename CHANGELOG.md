@@ -1,5 +1,23 @@
 # Changelog
 
+## v1.9.1
+
+### Bug Fixes
+
+- **Rest & Breather dialog — Cancel fires Breather.** Clicking Cancel on the GM Rest menu was silently running the Breather action and posting a rest summary to chat. The dialog helper rewrites a `null` button value into the button's label-derived action (`"cancel"`), so our else-branch was catching it. Fix: match `"rest"` and `"breather"` explicitly, so Cancel / X / Escape all no-op.
+- **Merchant Shop — compendium browser cut off at 50 entries.** Adding from the `vagabond.gear` compendium silently truncated at "Brewing tools" because the browser hard-capped results at 50. Raised to 500, which comfortably covers every Vagabond compendium.
+- **Merchant Shop — search bar lost focus after each keystroke.** Typing into any of the three search inputs (Buy, Catalog, Compendium) triggered a full `this.render()` that rebuilt the DOM and killed the input's focus. New `renderKeepingFocus()` helper saves `selectionStart`, re-renders, then re-focuses the input and restores the caret position.
+- **Relic Forge — armor / weapon enchantments applied without equipping.** Forged effects used `transfer: true` which copies the effect onto the actor as soon as the item is owned, regardless of equipment state. A +1 Armor relic was granting its bonus while sitting in the backpack. Fix: effects are created with `disabled: !item.system.equipped` and tagged with an `equipGated` flag. A new `updateItem` hook re-syncs every equip-gated effect's `disabled` state when the item's `equipped` toggles — the bonus lights up on equip, goes dark on unequip. Verified against a real `vagabond.armor` item: `armorBonus` went `0 → 1 → 0` across equip/unequip cycles.
+
+### New Feature — Relic Forge Base Item Browser
+
+Drag-and-drop still works, but you can now also search-and-click. Beneath the drop zone (hidden once a base item is loaded) is a compact compendium browser:
+
+- Search input with live in-place filtering — no re-render per keystroke
+- Pulls from `vagabond.weapons`, `vagabond.armor`, and `vagabond.gear`
+- Each row shows icon · name · pack kind (Weapon / Armor / Gear)
+- Click any row to load it as the base item
+
 ## v1.9.0
 
 ### Encounter Roller + Monster Creator — Consolidation

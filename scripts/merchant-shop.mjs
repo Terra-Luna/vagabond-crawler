@@ -1238,8 +1238,12 @@ class MerchantShopApp extends HandlebarsApplicationMixin(ApplicationV2) {
       items = items.filter(e => e.name.toLowerCase().includes(f));
     }
 
-    // Limit to 50 for display perf
-    return items.slice(0, 50);
+    // Cap at 500 to keep DOM rendering snappy on very large packs; every
+    // real Vagabond pack is well under this. The earlier 50 cutoff was
+    // silently truncating vagabond.gear (100+ items) mid-way through the
+    // alphabet ("Brewing tools" was the visible last entry) — bumping this
+    // restores the full catalogue.
+    return items.slice(0, 500);
   }
 
   async _loadCatalog() {
@@ -1342,10 +1346,25 @@ class MerchantShopApp extends HandlebarsApplicationMixin(ApplicationV2) {
 
     // ── Buy tab ──
 
+    /** Re-render without losing text-input focus. ApplicationV2's render()
+     * rebuilds the DOM, so an input that triggered the render loses its
+     * `document.activeElement` status — every keystroke kicks the user out.
+     * We remember which input the keystroke came from + the caret position
+     * and re-apply them once the new DOM is in place. */
+    const renderKeepingFocus = (selector) => {
+      const cursor = document.activeElement?.selectionStart ?? null;
+      this.render().then(() => {
+        const next = this.element?.querySelector(selector);
+        if (!next) return;
+        next.focus();
+        try { if (cursor != null) next.setSelectionRange(cursor, cursor); } catch (_) {}
+      });
+    };
+
     // Search filter
     el.querySelector(".vcm-search-input")?.addEventListener("input", (ev) => {
       this._searchFilter = ev.currentTarget.value;
-      this.render();
+      renderKeepingFocus(".vcm-search-input");
     }, { signal });
 
     // Category filter
@@ -1367,7 +1386,7 @@ class MerchantShopApp extends HandlebarsApplicationMixin(ApplicationV2) {
 
     el.querySelector(".vcm-catalog-search")?.addEventListener("input", (ev) => {
       this._catalogSearch = ev.currentTarget.value;
-      this.render();
+      renderKeepingFocus(".vcm-catalog-search");
     }, { signal });
 
     el.querySelector(".vcm-catalog-pack")?.addEventListener("change", (ev) => {
@@ -1560,7 +1579,7 @@ class MerchantShopApp extends HandlebarsApplicationMixin(ApplicationV2) {
       // Compendium search
       el.querySelector(".vcm-comp-search")?.addEventListener("input", (ev) => {
         this._compendiumFilter = ev.currentTarget.value;
-        this.render();
+        renderKeepingFocus(".vcm-comp-search");
       }, { signal });
 
       // Add item from compendium

@@ -69,7 +69,38 @@ export const RelicEffects = {
       this._onActorUpdate(actor, changes, options, userId);
     });
 
+    // Equip-gating for relic Active Effects. Relic-forged items embed their
+    // effects with `transfer: true`, which would normally apply the bonuses
+    // to the actor as soon as the item is owned (regardless of equipped
+    // state). We compensate by toggling each effect's `disabled` flag
+    // whenever `system.equipped` changes on the owning item.
+    Hooks.on("updateItem", (item, changes, options, userId) => {
+      if (!game.user.isGM && userId !== game.user.id) return;
+      const equippedChanged = foundry.utils.hasProperty(changes, "system.equipped");
+      if (!equippedChanged) return;
+      this._syncRelicEffectsForItem(item).catch((e) => console.warn(`${MODULE_ID} | Failed to sync relic effects:`, e));
+    });
+
     console.log(`${MODULE_ID} | Relic Effects initialized.`);
+  },
+
+  /** Flip the `disabled` flag on every relic-forged effect embedded in this
+   *  item to match the item's current `system.equipped` state. Foundry
+   *  propagates the change to transferred copies on the parent actor, so
+   *  the bonus lights up when equipped and goes dark when unequipped. */
+  async _syncRelicEffectsForItem(item) {
+    if (!item?.effects?.size) return;
+    const shouldBeDisabled = !item.system?.equipped;
+    const updates = [];
+    for (const eff of item.effects) {
+      const isRelicGated = eff.flags?.[MODULE_ID]?.equipGated;
+      if (!isRelicGated) continue;
+      if (eff.disabled === shouldBeDisabled) continue; // already correct
+      updates.push({ _id: eff.id, disabled: shouldBeDisabled });
+    }
+    if (updates.length) {
+      await item.updateEmbeddedDocuments("ActiveEffect", updates);
+    }
   },
 
   /* -------------------------------------------- */

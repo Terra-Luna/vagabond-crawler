@@ -56,6 +56,9 @@ class RelicForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
     this._customPowers = [];
     this._categoryFilter = "all";
     this._compendiumCache = null;
+    // Base-item browser state (alternative to drag/drop).
+    this._browserQuery = "";
+    this._browserItemCache = null; // lazy-populated on first render
   }
 
   /* ---- Data for template ---- */
@@ -88,6 +91,9 @@ class RelicForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
         this._compendiumCache.spells.sort();
       }
     }
+
+    // Warm the browser cache (cheap after first render)
+    await this._loadBrowserItems();
 
     return this.getData();
   }
@@ -145,6 +151,19 @@ class RelicForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
       baseCostDisplay = this._itemData.system?.costDisplay || "-";
     }
 
+    // Base-item browser (alternative to drag/drop). Only build when no
+    // base is selected yet — the <unless baseItem> guard in the template
+    // hides the browser while an item is active.
+    let browserResults = [];
+    let browserEmptyMessage = "Loading…";
+    if (!this._item && this._browserItemCache) {
+      const q = (this._browserQuery ?? "").trim().toLowerCase();
+      browserResults = this._browserItemCache
+        .filter((it) => !q || it.name.toLowerCase().includes(q))
+        .slice(0, 200);
+      browserEmptyMessage = q ? `No items match "${this._browserQuery}".` : "No equipment found in compendium.";
+    }
+
     return {
       baseItem,
       baseCostDisplay,
@@ -156,7 +175,39 @@ class RelicForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
       canForge: this._item && (this._selectedPowers.size > 0 || this._customPowers.length > 0),
       previewName: this._computeName(),
       totalCostDisplay: this._computeCostDisplay(),
+      browserQuery: this._browserQuery,
+      browserResults,
+      browserEmptyMessage,
     };
+  }
+
+  /** Lazy-load every equipment / weapon entry from the standard Vagabond
+   *  packs so the browser has something to search against. One-shot cache
+   *  per app instance; sort alphabetically. */
+  async _loadBrowserItems() {
+    if (this._browserItemCache) return this._browserItemCache;
+    const out = [];
+    const packs = [
+      { id: "vagabond.weapons", kind: "Weapon" },
+      { id: "vagabond.armor",   kind: "Armor"  },
+      { id: "vagabond.gear",    kind: "Gear"   },
+    ];
+    for (const { id, kind } of packs) {
+      const pack = game.packs.get(id);
+      if (!pack) continue;
+      const index = await pack.getIndex();
+      for (const e of index) {
+        out.push({
+          uuid: `Compendium.${id}.Item.${e._id}`,
+          name: e.name,
+          img:  e.img || "icons/svg/item-bag.svg",
+          kind,
+        });
+      }
+    }
+    out.sort((a, b) => a.name.localeCompare(b.name));
+    this._browserItemCache = out;
+    return out;
   }
 
   /* ---- Name computation ---- */
@@ -254,6 +305,48 @@ class RelicForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
       this._categoryFilter = "all";
       this.render();
     }, { signal });
+
+    // Base-item browser — search input + click-to-select rows.
+    // Search filter uses in-place DOM toggling instead of re-rendering so
+    // the user's typing doesn't get interrupted by focus loss.
+    const browserSearch = el.querySelector(".forge-browser-search");
+    if (browserSearch) {
+      browserSearch.addEventListener("input", (ev) => {
+        this._browserQuery = ev.currentTarget.value ?? "";
+        const q = this._browserQuery.trim().toLowerCase();
+        const rows = el.querySelectorAll(".forge-browser-row");
+        let shown = 0;
+        rows.forEach((row) => {
+          const name = row.querySelector(".forge-browser-name")?.textContent ?? "";
+          const match = !q || name.toLowerCase().includes(q);
+          row.toggleAttribute("hidden", !match);
+          if (match) shown++;
+        });
+        const emptyNode = el.querySelector(".forge-browser-empty-dynamic");
+        const list = el.querySelector(".forge-browser-list");
+        if (!shown) {
+          if (!emptyNode && list) {
+            const e = document.createElement("div");
+            e.className = "forge-browser-empty forge-browser-empty-dynamic";
+            e.textContent = `No items match "${this._browserQuery}".`;
+            list.appendChild(e);
+          }
+        } else if (emptyNode) {
+          emptyNode.remove();
+        }
+      }, { signal });
+    }
+
+    on(".forge-browser-row", "click", async (ev) => {
+      const uuid = ev.currentTarget.dataset.uuid;
+      const item = await fromUuid(uuid);
+      if (!item || item.type !== "equipment") {
+        ui.notifications.warn("Only equipment items can be forged into relics.");
+        return;
+      }
+      this.loadItem(item);
+      this.render();
+    });
 
     // Category tabs
     on(".category-tab", "click", ev => {
@@ -394,9 +487,15 @@ class RelicForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
         name: `Relic: ${power.name}${input ? ` (${input})` : ""}`,
         icon: item.img || "icons/svg/item-bag.svg",
         changes,
-        disabled: false,
-        transfer: true,
-        flags: { [MODULE_ID]: moduleFlags },
+        // Gate the effect on the item's equipped state. transfer:true copies
+        // the effect onto the actor whenever the item is owned — without
+        // this guard, a relic-forged armor would grant its +1 to Armor even
+        // when sitting in the hero's backpack. We start disabled if the
+        // item isn't currently equipped; a hook (registered in init())
+        // flips disabled when the equipped flag toggles.
+        disabled: !item.system?.equipped,
+        transfer:  true,
+        flags: { [MODULE_ID]: { ...moduleFlags, equipGated: true } },
       });
     }
 

@@ -1600,6 +1600,72 @@ body.theme-light .vcb-phase-badge {
 .drop-prompt i { font-size: 1.5rem; margin-bottom: 4px; display: block; }
 .drop-prompt p { margin: 0; font-size: 0.9rem; }
 
+/* ── Relic Forge base-item browser ───────────────────────────────────────
+ * Compact search + list beneath the drop zone. Lets the GM pick a base
+ * item without dragging from a compendium window. */
+.forge-browser {
+  margin-top: 6px;
+  padding: 6px;
+  border: 1px solid var(--vcb-border-light, #c5c3b832);
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.18);
+}
+.forge-browser-search {
+  width: 100%;
+  padding: 4px 8px;
+  margin-bottom: 6px;
+  background: var(--vcb-input-bg, #051a2f);
+  border: 1px solid var(--vcb-border-light, #c5c3b832);
+  border-radius: 3px;
+  color: var(--vcb-text, #e7e1d4);
+  font-family: var(--vcb-font);
+  font-size: 0.9em;
+}
+.forge-browser-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  max-height: 220px;
+  overflow-y: auto;
+}
+.forge-browser-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 3px 6px;
+  border: 1px solid rgba(197, 195, 184, 0.08);
+  border-radius: 3px;
+  background: rgba(0, 0, 0, 0.15);
+  cursor: pointer;
+  font-size: 0.88em;
+}
+.forge-browser-row:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: var(--vcb-accent, #c9a54a);
+}
+.forge-browser-row img {
+  flex: 0 0 auto;
+  border-radius: 2px;
+}
+.forge-browser-name {
+  flex: 1 1 auto;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.forge-browser-meta {
+  flex: 0 0 auto;
+  font-size: 0.78em;
+  color: var(--vcb-text-faint, #706d65);
+}
+.forge-browser-empty {
+  padding: 8px;
+  text-align: center;
+  color: var(--vcb-text-faint, #706d65);
+  font-style: italic;
+  font-size: 0.85em;
+}
+
 .dropped-item {
   display: flex;
   align-items: center;

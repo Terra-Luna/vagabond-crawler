@@ -62,9 +62,12 @@ export const RestBreather = {
       width: 660,
     });
 
-    if (!choice) return;
-    if (choice === "rest")     await this._doRest(characters);
-    else                       await this._doBreather(characters);
+    // Explicit matches only — `waitDialog` turns `null` into the button's
+    // label-derived action ("cancel"), so an else-branch would fire on
+    // Cancel. Route only the two real choices; everything else (Cancel,
+    // closing the dialog via X / Escape) is a no-op.
+    if      (choice === "rest")     await this._doRest(characters);
+    else if (choice === "breather") await this._doBreather(characters);
   },
 
   async _doRest(characters) {

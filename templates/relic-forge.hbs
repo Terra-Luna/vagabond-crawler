@@ -65,17 +65,37 @@
                 <span class="item-cost">{{baseCostDisplay}}</span>
               </div>
             </div>
-            <button type="button" class="clear-btn" title="Remove">
-              <i class="fas fa-times"></i>
+            <button type="button" class="clear-btn" title="Remove" aria-label="Remove base item">
+              <i class="fas fa-times" aria-hidden="true"></i>
             </button>
           </div>
         {{else}}
           <div class="drop-prompt">
             <i class="fas fa-hand-pointer"></i>
-            <p>Drag &amp; drop an equipment item here</p>
+            <p>Drag &amp; drop an equipment item here, or pick from the list below.</p>
           </div>
         {{/if}}
       </div>
+
+      {{!-- Compendium browser — quick alternative to drag-drop. Search filters
+           against the weapon + equipment packs; click a row to load it as
+           the base item. --}}
+      {{#unless baseItem}}
+      <div class="forge-browser">
+        <input type="text" class="forge-browser-search" placeholder="🔎 Search weapons &amp; equipment…" value="{{browserQuery}}" />
+        <div class="forge-browser-list">
+          {{#each browserResults}}
+          <div class="forge-browser-row" data-uuid="{{uuid}}" title="Click to use as base">
+            <img src="{{img}}" alt="" width="24" height="24" />
+            <span class="forge-browser-name">{{name}}</span>
+            <span class="forge-browser-meta">{{kind}}</span>
+          </div>
+          {{else}}
+          <div class="forge-browser-empty">{{browserEmptyMessage}}</div>
+          {{/each}}
+        </div>
+      </div>
+      {{/unless}}
 
       {{!-- Custom Power Builder --}}
       <h3><i class="fas fa-wand-magic-sparkles"></i> Custom Power</h3>
