@@ -8,7 +8,7 @@
   </div>
 
   {{!-- Load from bestiary (collapsible, with filter+list) --}}
-  <details class="mc-section mc-collapsible" data-collapse="bestiary" {{#if bestiaryOpen}}open{{/if}}>
+  <details class="mc-section mc-collapsible" data-collapse="bestiary" {{#if sectionOpen.bestiary}}open{{/if}}>
     <summary data-action="toggleBestiary">
       <span class="mc-collapse-title"><i class="fas fa-book-open"></i> Load from Bestiary</span>
       <span class="mc-collapse-summary">
@@ -47,7 +47,7 @@
   </details>
 
   {{!-- Identity + Images (collapsible) --}}
-  <details class="mc-section mc-collapsible" data-collapse="identity" {{#if openIdentity}}open{{/if}}>
+  <details class="mc-section mc-collapsible" data-collapse="identity" {{#if sectionOpen.identity}}open{{/if}}>
     <summary>
       <span class="mc-collapse-title">Identity</span>
       <span class="mc-collapse-summary"><span class="mc-collapse-preview">{{identitySummary}}</span></span>
@@ -103,7 +103,7 @@
   </details>
 
   {{!-- Stats (collapsible) --}}
-  <details class="mc-section mc-collapsible" data-collapse="stats" {{#if openStats}}open{{/if}}>
+  <details class="mc-section mc-collapsible" data-collapse="stats" {{#if sectionOpen.stats}}open{{/if}}>
     <summary>
       <span class="mc-collapse-title">Stats</span>
       <span class="mc-collapse-summary"><span class="mc-collapse-preview">{{statsSummary}}</span></span>
@@ -142,7 +142,7 @@
   </details>
 
   {{!-- Token Vision (collapsible) --}}
-  <details class="mc-section mc-collapsible" data-collapse="vision">
+  <details class="mc-section mc-collapsible" data-collapse="vision" {{#if sectionOpen.vision}}open{{/if}}>
     <summary>
       <span class="mc-collapse-title">Token Vision</span>
       <span class="mc-collapse-summary">
@@ -186,7 +186,7 @@
   </details>
 
   {{!-- Damage Immunities (collapsible) --}}
-  <details class="mc-section mc-collapsible" data-collapse="immunities">
+  <details class="mc-section mc-collapsible" data-collapse="immunities" {{#if sectionOpen.immunities}}open{{/if}}>
     <summary>
       <span class="mc-collapse-title">Damage Immunities</span>
       <span class="mc-collapse-summary">
@@ -206,7 +206,7 @@
   </details>
 
   {{!-- Damage Weaknesses (collapsible) --}}
-  <details class="mc-section mc-collapsible" data-collapse="weaknesses">
+  <details class="mc-section mc-collapsible" data-collapse="weaknesses" {{#if sectionOpen.weaknesses}}open{{/if}}>
     <summary>
       <span class="mc-collapse-title">Damage Weaknesses</span>
       <span class="mc-collapse-summary">
@@ -226,7 +226,7 @@
   </details>
 
   {{!-- Status Immunities (collapsible) --}}
-  <details class="mc-section mc-collapsible" data-collapse="statusImmunities">
+  <details class="mc-section mc-collapsible" data-collapse="statusImmunities" {{#if sectionOpen.statusImmunities}}open{{/if}}>
     <summary>
       <span class="mc-collapse-title">Status Immunities</span>
       <span class="mc-collapse-summary">
@@ -246,7 +246,7 @@
   </details>
 
   {{!-- Actions (collapsible) --}}
-  <details class="mc-section mc-collapsible" data-collapse="actions">
+  <details class="mc-section mc-collapsible" data-collapse="actions" {{#if sectionOpen.actions}}open{{/if}}>
     <summary>
       <span class="mc-collapse-title">Actions</span>
       <span class="mc-collapse-summary">
@@ -319,7 +319,7 @@
   </details>
 
   {{!-- Abilities (collapsible) --}}
-  <details class="mc-section mc-collapsible" data-collapse="abilities">
+  <details class="mc-section mc-collapsible" data-collapse="abilities" {{#if sectionOpen.abilities}}open{{/if}}>
     <summary>
       <span class="mc-collapse-title">Abilities</span>
       <span class="mc-collapse-summary">
@@ -385,7 +385,7 @@
   </details>
 
   {{!-- Mutations (collapsible) --}}
-  <details class="mc-section mc-collapsible" data-collapse="mutations">
+  <details class="mc-section mc-collapsible" data-collapse="mutations" {{#if sectionOpen.mutations}}open{{/if}}>
     <summary>
       <span class="mc-collapse-title">Mutations</span>
       <span class="mc-collapse-summary">
@@ -448,7 +448,7 @@
   </details>
 
   {{!-- Description (collapsible) --}}
-  <details class="mc-section mc-collapsible" data-collapse="description">
+  <details class="mc-section mc-collapsible" data-collapse="description" {{#if sectionOpen.description}}open{{/if}}>
     <summary>
       <span class="mc-collapse-title">Description</span>
       <span class="mc-collapse-summary">

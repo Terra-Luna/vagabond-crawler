@@ -1,5 +1,13 @@
 # Changelog
 
+## v1.8.11
+
+### Bug Fixes
+- **Monster Creator collapsibles no longer auto-close on interaction** — Every `<details>` section in the Creator now persists its open/closed state across re-renders. Previously, any action that triggered a full re-render (adding an action Quick Pick, switching Quick Pick tabs, picking a mutation, toggling the Infinite vision checkbox) would reset every section back to the template default, collapsing whatever the user had open. Now sections only reset explicitly:
+  - **On fresh start**: Identity + Stats are open, everything else closed.
+  - **On Load from Bestiary** / **Edit-in-Creator handoff**: everything closed, compact summary view.
+  - Every other user interaction preserves exactly the sections the user had open.
+
 ## v1.8.10
 
 ### New Features — Monster Creator Token Vision

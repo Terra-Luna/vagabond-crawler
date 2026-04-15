@@ -682,10 +682,13 @@ class MonsterCreatorApp extends HandlebarsApplicationMixin(ApplicationV2) {
     this._data = _blankMonster();
     this._sourceUuid = null;
     this._renderAbort = null;
-    this._bestiaryOpen = false;
     this._actionsTab   = "all"; // which Action Quick-Picks tab is active
     this._mutationsTab = "all"; // which Mutation tab is active
     this._selectedMutations = new Set(); // staged mutation IDs (not applied yet)
+    // Open/closed state for every <details data-collapse="…"> section.
+    // Persisted across re-renders so editing inside an open section doesn't
+    // collapse it. Keyed by the section's data-collapse attribute.
+    this._sectionOpen = { identity: true, stats: true };
     // Fresh start vs loaded-from-bestiary affects which sections are open
     // by default on next render. Set to false after a successful load so
     // the long "Stats" / "Identity" sections don't add to the page height
@@ -724,7 +727,8 @@ class MonsterCreatorApp extends HandlebarsApplicationMixin(ApplicationV2) {
       bestiary,
       filtered,
       tokenizerAvailable,
-      bestiaryOpen: this._bestiaryOpen,
+      sectionOpen: this._sectionOpen,
+      bestiaryOpen: !!this._sectionOpen.bestiary,
       filters: this._filters,
       beingTypeFilterOpts,
       tlFilterOpts,
@@ -883,11 +887,15 @@ class MonsterCreatorApp extends HandlebarsApplicationMixin(ApplicationV2) {
     el.querySelector('[data-action="pickToken"]')   ?.addEventListener("click", () => this._pickImage("tokenImg"),    { signal });
     el.querySelector('[data-action="tokenize"]')    ?.addEventListener("click", () => this._launchTokenizer(),        { signal });
 
-    // Bestiary browser — native <details> toggle. Sync state so subsequent
-    // renders (filter/load) remember the open/closed state chosen by the user.
-    el.querySelector('[data-collapse="bestiary"]')?.addEventListener("toggle", (ev) => {
-      this._bestiaryOpen = ev.currentTarget.open;
-    }, { signal });
+    // Unified <details> toggle sync — persist every section's open/closed
+    // state across re-renders so editing inside an open section doesn't
+    // inadvertently collapse it. Keyed by data-collapse attribute.
+    el.querySelectorAll("details[data-collapse]").forEach((det) => {
+      det.addEventListener("toggle", (ev) => {
+        const key = ev.currentTarget.dataset.collapse;
+        if (key) this._sectionOpen[key] = ev.currentTarget.open;
+      }, { signal });
+    });
 
     el.querySelector('[data-action="filterType"]')?.addEventListener("change", (ev) => {
       this._filters.beingType = ev.currentTarget.value;
@@ -1294,7 +1302,7 @@ class MonsterCreatorApp extends HandlebarsApplicationMixin(ApplicationV2) {
     this._data = _fromCompendiumActor(actorObject);
     this._sourceUuid = null;
     this._isFreshStart = false;
-    this._bestiaryOpen = false;
+    this._sectionOpen = {};
   }
 
   async _loadFromBestiary(uuid) {
@@ -1304,7 +1312,7 @@ class MonsterCreatorApp extends HandlebarsApplicationMixin(ApplicationV2) {
       this._data = _fromCompendiumActor(actor);
       this._sourceUuid = uuid;
       this._isFreshStart = false;   // loaded content: collapse everything; user expands to edit
-      this._bestiaryOpen = false;   // auto-close the browser after picking
+      this._sectionOpen = {};       // close every section after a load
       ui.notifications.info(`Loaded "${actor.name}" from ${uuid.split(".")[1]}.`);
       this.render();
     } catch (err) {
@@ -1333,6 +1341,7 @@ class MonsterCreatorApp extends HandlebarsApplicationMixin(ApplicationV2) {
     this._data = _blankMonster();
     this._sourceUuid = null;
     this._isFreshStart = true;
+    this._sectionOpen = { identity: true, stats: true };
     this._selectedMutations.clear();
     this.render();
   }

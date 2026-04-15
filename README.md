@@ -2,7 +2,7 @@
 
 ![Foundry v13](https://img.shields.io/badge/foundry-v13-green?style=for-the-badge)
 ![System](https://img.shields.io/badge/system-vagabond-blue?style=for-the-badge)
-![Version](https://img.shields.io/badge/version-1.8.10-orange?style=for-the-badge)
+![Version](https://img.shields.io/badge/version-1.8.11-orange?style=for-the-badge)
 
 A comprehensive dungeon crawl management module for the **Vagabond RPG** system in Foundry VTT. Everything you need to run a crawl — turn tracking, movement enforcement, random encounters, light management, morale, combat integration, crafting, loot, and more — all from a unified interface.
 
