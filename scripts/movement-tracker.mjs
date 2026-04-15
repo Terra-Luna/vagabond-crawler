@@ -21,41 +21,40 @@ import { MODULE_ID }  from "./vagabond-crawler.mjs";
 import { CrawlState } from "./crawl-state.mjs";
 import { CrawlStrip } from "./crawl-strip.mjs";
 import { ICONS }      from "./icons.mjs";
+import { getEffectiveMovement } from "./combat-helpers.mjs";
 
 // ── Shared speed helpers ────────────────────────────────────────────────────
 
 /**
  * Visual movement budget for an actor.
- * Combat: base speed (normal move action).
- * Crawl:  exploration (crawl) speed.
- * This is what moveRemaining resets to each turn and what the strip displays.
+ * Combat: effective mode speed — honors tokenDoc.movementAction (GM override)
+ *   or falls back to the fastest available mode. This is what a Bat (walk 5 /
+ *   fly 30) gets for its turn when it's in the air.
+ * Crawl:  exploration (crawl) speed. Crawl phase doesn't care about flight
+ *   mode — exploration is a slow overland pace.
+ * Callers should pass tokenDoc when available so movementAction is respected.
  */
-function _getBaseSpeed(actor) {
+function _getBaseSpeed(actor, tokenDoc = null) {
   const sys = actor?.system;
   if (!sys) return 0;
-  // Character: system.speed = { base, crawl, ... }
-  // Party/NPC: system.speed = number, system.crawl = number
-  const s = sys.speed;
-  if (typeof s === "object") {
-    return CrawlState.paused ? (s.base ?? 0) : (s.crawl ?? 0);
+  if (CrawlState.paused) {
+    // Combat — use effective mode speed (fly, swim, etc.)
+    return getEffectiveMovement(actor, tokenDoc).speed;
   }
-  // Flat speed fields (party sheets)
-  return CrawlState.paused ? (s ?? 0) : (sys.crawl ?? 0);
+  // Crawl — exploration speed
+  const s = sys.speed;
+  if (typeof s === "object") return s.crawl ?? 0;
+  return sys.crawl ?? 0;
 }
 
 /**
  * Hard movement cap — the absolute maximum a token can move per turn.
- * Combat: 2× base speed (move + Rush action).
- * Crawl:  same as base speed (no Rush in crawl).
+ * Combat: 2× effective mode speed (move + Rush).
+ * Crawl:  same as crawl speed (no Rush in crawl).
  */
-function _getHardCap(actor) {
-  const sys = actor?.system;
-  if (!sys) return 0;
-  const s = sys.speed;
-  if (typeof s === "object") {
-    return CrawlState.paused ? ((s.base ?? 0) * 2) : (s.crawl ?? 0);
-  }
-  return CrawlState.paused ? ((s ?? 0) * 2) : (sys.crawl ?? 0);
+function _getHardCap(actor, tokenDoc = null) {
+  if (CrawlState.paused) return _getBaseSpeed(actor, tokenDoc) * 2;
+  return _getBaseSpeed(actor, tokenDoc);
 }
 
 /** Highest "Modify Movement Cost" multiplier along a segment (checks dest + midpoint). */
@@ -98,7 +97,7 @@ class VCSTokenRuler extends foundry.canvas.placeables.tokens.TokenRuler {
   get _moveRemaining() {
     const actor = this.token?.actor;
     if (!actor) return Infinity;
-    return actor.getFlag(MODULE_ID, "moveRemaining") ?? _getBaseSpeed(actor);
+    return actor.getFlag(MODULE_ID, "moveRemaining") ?? _getBaseSpeed(actor, this.token?.document);
   }
 
   get _isTracked() {
@@ -257,7 +256,7 @@ export const MovementTracker = {
             delete this._pendingDeduct?.[doc.id];
             if (distanceFt > 0) {
               const moveRemaining = actor.getFlag(MODULE_ID, "moveRemaining")
-                ?? _getBaseSpeed(actor);
+                ?? _getBaseSpeed(actor, doc);
               // Combat: allow negative (Rush territory).  Crawl: floor at 0.
               const raw = Math.round((moveRemaining - distanceFt) / 5) * 5;
               const newRemaining = CrawlState.paused ? raw : Math.max(0, raw);
@@ -284,12 +283,20 @@ export const MovementTracker = {
 
     Hooks.on("renderTokenHUD", (hud, html, data) => {
       if (!CrawlState.active) return;
-      // Show rollback in crawl Heroes phase OR during combat
-      if (!CrawlState.isHeroesPhase && !CrawlState.paused) return;
       const token = hud.object;
       if (!token.isOwner) return;  // GM or the owning player
       const member = CrawlState.members.find(m => m.tokenId === token.id);
-      if (!member || member.type !== "player") return;
+      if (!member) return;
+
+      // Phase gate: PC tokens in Heroes phase, NPC tokens in GM phase,
+      // both in combat. Keeps the HUD uncluttered during the other side's turn.
+      const inCombat    = CrawlState.paused;
+      const isPCMember  = member.type === "player";
+      const isNPCMember = member.type === "npc" || member.type === "gm";
+      const phaseOk = inCombat
+        || (isPCMember  &&  CrawlState.isHeroesPhase)
+        || (isNPCMember && !CrawlState.isHeroesPhase);
+      if (!phaseOk) return;
 
       const btn = document.createElement("div");
       btn.classList.add("control-icon");
@@ -348,7 +355,7 @@ export const MovementTracker = {
     if (!member) return;
 
     const inCombat      = CrawlState.paused;
-    const moveRemaining = actor.getFlag(MODULE_ID, "moveRemaining") ?? _getBaseSpeed(actor);
+    const moveRemaining = actor.getFlag(MODULE_ID, "moveRemaining") ?? _getBaseSpeed(actor, doc);
 
     // Crawl: enforce if setting enabled.  Combat: enforce if setting enabled.
     const enforce = inCombat
@@ -374,7 +381,7 @@ export const MovementTracker = {
     // and can go negative (down to -base), so the hard limit is:
     //   moveRemaining + baseSpeed  (= remaining Rush budget)
     // Crawl: hard stop at moveRemaining (no Rush).
-    const baseSpeed = _getBaseSpeed(actor);
+    const baseSpeed = _getBaseSpeed(actor, doc);
     const limit     = inCombat ? moveRemaining + baseSpeed : moveRemaining;
 
     if (segFt > limit) {
@@ -424,7 +431,7 @@ export const MovementTracker = {
 
     // Refund full turn movement (base speed — Rush is a choice, not a given)
     if (actor) {
-      const fullSpeed = Math.round(_getBaseSpeed(actor) / 5) * 5;
+      const fullSpeed = Math.round(_getBaseSpeed(actor, doc) / 5) * 5;
       await actor.setFlag(MODULE_ID, "moveRemaining", fullSpeed);
       CrawlStrip.updateMember(actor.id);
       ui.notifications.info(`${actor.name} rolled back to turn start — movement restored.`);
@@ -433,8 +440,8 @@ export const MovementTracker = {
 
   // ── Turn management ───────────────────────────────────────────────────────
 
-  async resetActor(actor) {
-    const speed = _getBaseSpeed(actor);
+  async resetActor(actor, tokenDoc = null) {
+    const speed = _getBaseSpeed(actor, tokenDoc);
     await actor.setFlag(MODULE_ID, "moveRemaining", Math.round(speed / 5) * 5);
   },
 
@@ -446,7 +453,7 @@ export const MovementTracker = {
         ? (canvas.tokens?.get(member.tokenId) ?? canvas.tokens?.placeables?.find(t => t.actor?.id === member.actorId))
         : null;
       const actor = token?.actor ?? game.actors.get(member.actorId);
-      if (actor) await this.resetActor(actor);
+      if (actor) await this.resetActor(actor, token?.document);
       // Snapshot turn-start position for each member's token
       if (token) {
         this._turnStartPos[token.id] = { x: token.document.x, y: token.document.y };

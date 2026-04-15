@@ -6,6 +6,7 @@ import { MODULE_ID }        from "./vagabond-crawler.mjs";
 import { CrawlState }       from "./crawl-state.mjs";
 import { buildTabStripHTML, bindNPCMenuEvents } from "./npc-action-menu.mjs";
 import { ICONS }            from "./icons.mjs";
+import { getEffectiveMovement, MOVEMENT_MODE_ICON } from "./combat-helpers.mjs";
 
 const STRIP_ID = "vagabond-crawler-strip";
 
@@ -132,13 +133,15 @@ export const CrawlStrip = {
       // For NPC tokens, read from the token's synthetic actor (unlinked tokens
       // store HP on the token, not the base actor)
       let actor = null;
+      let tokenDoc = null;
       if (m.tokenId) {
         const token = canvas.tokens?.get(m.tokenId);
         actor = token?.actor ?? (m.actorId ? game.actors.get(m.actorId) : null);
+        tokenDoc = token?.document ?? null;
       } else if (m.actorId) {
         actor = game.actors.get(m.actorId);
       }
-      const data  = actor ? this._extractData(actor, inCombat) : null;
+      const data  = actor ? this._extractData(actor, inCombat, tokenDoc) : null;
       const isCurrent  = !!m.tokenId && game.combat?.combatant?.tokenId === m.tokenId;
       const combatant  = combatantMap.get(m.tokenId);
       const isDefeated = combatant?.defeated ?? false;
@@ -166,16 +169,34 @@ export const CrawlStrip = {
       const luckClass = data?.luck === 0 ? "vcs-pill-empty" : "";
       const moveClass = data?.moveExhausted ? "vcs-pill-empty" : "";
 
-      const pills = (data && m.type !== "npc" && m.type !== "gm") ? `
+      // Pills:
+      //   - PCs: luck + movement (always)
+      //   - NPCs in combat: movement-only, hidden when hideHpBar is on
+      //     (follows the "Hide NPC Health Bar from Players" setting; GM always sees)
+      //   - GM-member cards and NPCs out of combat: no pill
+      // Movement pill icon reflects the active mode (walk/fly/swim/climb/phase/cling);
+      // resolved by getEffectiveMovement in _extractData and exposed on `data.movementMode`.
+      const moveIcon = data ? (ICONS[MOVEMENT_MODE_ICON[data.movementMode] ?? "walking"] ?? ICONS.walking) : ICONS.walking;
+      let pills = "";
+      if (data) {
+        if (m.type !== "npc" && m.type !== "gm") {
+          pills = `
         <div class="vcs-pills">
           <div class="vcs-pill ${luckClass}">${ICONS.shamrock}${data.luck}</div>
-          <div class="vcs-pill ${moveClass}">${ICONS.walking}${data.moveRemaining}/${data.activeSpeed}ft</div>
-        </div>` : "";
+          <div class="vcs-pill ${moveClass}">${moveIcon}${data.moveRemaining}/${data.activeSpeed}ft</div>
+        </div>`;
+        } else if (m.type === "npc" && inCombat && !hideHpBar) {
+          pills = `
+        <div class="vcs-pills">
+          <div class="vcs-pill ${moveClass}">${moveIcon}${data.moveRemaining}/${data.activeSpeed}ft</div>
+        </div>`;
+        }
+      }
 
-      // Active effects row — show icons for all non-disabled effects
+      // Active effects row — only status conditions (effects with a non-empty statuses set)
       let effectsRow = "";
       if (actor) {
-        const activeEffects = actor.effects.filter(e => !e.disabled);
+        const activeEffects = actor.effects.filter(e => !e.disabled && e.statuses?.size > 0);
         if (activeEffects.length) {
           const icons = activeEffects.map(e => {
             const icon = e.img || "icons/svg/aura.svg";
@@ -297,12 +318,20 @@ export const CrawlStrip = {
     });
   },
 
-  _extractData(actor, inCombat = false) {
+  _extractData(actor, inCombat = false, tokenDoc = null) {
     const s           = actor.system;
-    // Character: system.speed = { base, crawl }. Party: system.speed = number, system.crawl = number.
-    const combatSpeed = typeof s.speed === "object" ? (s.speed?.base ?? 0) : (s.speed ?? 0);
-    const crawlSpeed  = typeof s.speed === "object" ? (s.speed?.crawl ?? 0) : (s.crawl ?? 0);
-    const activeSpeed = inCombat ? combatSpeed : crawlSpeed;
+    // Combat: effective-mode speed (walk / fly / swim / climb / phase / cling).
+    //   Fastest available mode by default; GM override via tokenDoc.movementAction.
+    // Crawl: exploration speed (per-minute overland pace, no fly shenanigans).
+    let activeSpeed, movementMode;
+    if (inCombat) {
+      const eff   = getEffectiveMovement(actor, tokenDoc);
+      activeSpeed = eff.speed;
+      movementMode = eff.mode;
+    } else {
+      activeSpeed = typeof s.speed === "object" ? (s.speed?.crawl ?? 0) : (s.crawl ?? 0);
+      movementMode = "walk";
+    }
     const rawRemaining  = actor.getFlag(MODULE_ID, "moveRemaining") ?? activeSpeed;
     const moveRemaining = Math.round(rawRemaining / 5) * 5;
     return {
@@ -312,6 +341,7 @@ export const CrawlStrip = {
       luck:         s.currentLuck ?? 0,
       activeSpeed,
       moveRemaining,
+      movementMode,
       moveExhausted: moveRemaining <= 0,
     };
   },

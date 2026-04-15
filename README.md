@@ -2,7 +2,7 @@
 
 ![Foundry v13](https://img.shields.io/badge/foundry-v13-green?style=for-the-badge)
 ![System](https://img.shields.io/badge/system-vagabond-blue?style=for-the-badge)
-![Version](https://img.shields.io/badge/version-1.8.5-orange?style=for-the-badge)
+![Version](https://img.shields.io/badge/version-1.8.6-orange?style=for-the-badge)
 
 A comprehensive dungeon crawl management module for the **Vagabond RPG** system in Foundry VTT. Everything you need to run a crawl — turn tracking, movement enforcement, random encounters, light management, morale, combat integration, crafting, loot, and more — all from a unified interface.
 
@@ -33,6 +33,7 @@ A top-of-screen HUD bar showing all members at a glance.
 
 - **Portrait cards** for every hero and NPC with HP bar, status pills, and name
 - **Hero cards** show Luck, remaining movement, and HP
+- **NPC cards** show remaining movement during combat (mode-aware icon: walk / fly / swim / climb / phase / cling). Visibility follows the "Hide NPC Health Bar from Players" setting.
 - **Disposition-based sorting** — Friendly tokens show on Heroes side, Hostile on NPC side (supports summoned NPCs on the party side)
 - **Active/dim state** — Cards highlight when it's that faction's turn
 - **Current turn indicator** — Active combatant gets a chevron badge
@@ -80,10 +81,12 @@ Enforces Vagabond's movement rules on tracked tokens.
 - Color-coded ruler: green (normal), red (Rush)
 - Hard-blocks at 2x base speed
 - Separate "Enforce Combat Movement" setting
+- **Effective mode speed** — flying / swimming / climbing monsters use the speed for that mode, not just walk speed. A Bat with `walk 5 / fly 30` gets a 30ft combat budget; a Dragon with `walk 40 / fly 80` gets 80ft. GM can force a specific mode via the token HUD's `movementAction` (walk / fly / swim / climb / phase / cling); otherwise the fastest available mode is picked.
 
 **Rollback Movement:**
-- Available to both GM and players via Token HUD
-- Snaps token back to turn-start position and restores movement budget
+- Available for both PCs and NPCs via Token HUD
+- PCs see the button during Heroes phase or combat; GM sees it on NPC tokens during GM phase or combat
+- Snaps token back to turn-start position and refunds full movement budget (effective mode speed)
 - Players relay via socket to GM for execution
 
 ---

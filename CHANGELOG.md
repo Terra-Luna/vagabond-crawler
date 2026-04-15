@@ -1,5 +1,22 @@
 # Changelog
 
+## v1.8.6
+
+### New Features
+
+#### NPC Movement — speed tracker, mode-aware icons, rollback
+The movement system now treats NPCs as first-class citizens and understands monsters with multiple movement modes (fly, swim, climb, phase, cling).
+
+- **NPC movement pill on the crawl strip** — NPC cards display a movement budget pill during combat (e.g. `🕊 30/30ft` for a flying Bat). Follows the existing "Hide NPC Health Bar from Players" setting — when HP is hidden, movement is too. GMs always see it.
+- **Effective movement speed** — a new shared helper (`combat-helpers.mjs: getEffectiveMovement`) picks the fastest available movement mode per token, reading both formats of NPC speed data (`speedTypes: ["fly 80"]` inline, or `speedTypes: ["fly"]` + `speedValues.fly: 60`). A Bat (walk 5 / fly 30) now gets a 30ft budget, a Stolas Demon (walk 40 / fly 160) gets 160ft, a Hydra (walk 25 only) gets 25ft.
+- **GM movement-mode override** — GMs can set `token.document.movementAction` from the token HUD (walk / fly / swim / climb / phase / cling) to force a specific mode. The override wins over the fastest-mode default, so a Bat explicitly walking shows 5ft and a walk icon.
+- **Mode-aware pill icons** — walk (`🚶`), fly (`🕊`), swim (`🏊`), climb (`🤲`), phase (`👻`), cling (`🕷`). Pill updates live as `movementAction` changes.
+- **NPC rollback** — the movement rollback button now appears on NPC tokens in the token HUD for the GM during GM phase or combat (same UX as the existing PC rollback during Heroes phase / combat). Rolls the token back to its turn-start position and refunds the full movement budget.
+- **Tracker + display use the same effective speed** — previously the display and the enforcement would disagree for flyers. Now they agree: the ruler stops a flying Bat at 30ft, not 5ft.
+
+### Fixes
+- **Active effects row on the strip** — now shows only status-condition effects (effects with a non-empty `statuses` set), not every non-disabled effect. Hides passive buffs / module-managed helper effects from the icon strip, keeping the visual focus on conditions that matter tactically.
+
 ## v1.8.5
 
 ### New Features

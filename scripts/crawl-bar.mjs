@@ -588,11 +588,11 @@ export const CrawlBar = {
         actorId: token.actor.id,
         tokenId: token.id,
       });
-      // Reset movement to full crawl/combat speed so tokens start with correct budget
-      if (type === "player") {
-        await MovementTracker.resetActor(token.actor);
-        MovementTracker.snapshotPosition(token.id);
-      }
+      // Reset movement budget and snapshot current position as the rollback
+      // origin. Done for both PCs and NPCs so rollback works from the moment
+      // a token joins the roster (e.g. mid-combat reinforcements or summons).
+      await MovementTracker.resetActor(token.actor, token.document);
+      MovementTracker.snapshotPosition(token.id);
       added++;
     }
     if (added) {

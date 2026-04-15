@@ -49,6 +49,11 @@ export const ICONS = {
   // ── Strip ────────────────────────────────────────────────────────────────
   shamrock:    `<img class="vcb-icon-shamrock" src="${P}/shamrock.svg" alt="" />`,
   walking:     `<i class="fas fa-person-walking"></i>`,
+  flying:      `<i class="fas fa-dove"></i>`,
+  swimming:    `<i class="fas fa-person-swimming"></i>`,
+  climbing:    `<i class="fas fa-hands-holding"></i>`,
+  phasing:     `<i class="fas fa-ghost"></i>`,
+  clinging:    `<i class="fas fa-spider"></i>`,
   skull:       `<i class="fas fa-skull"></i>`,
   gmCrown:     `<i class="fas fa-crown vcs-gm-icon"></i>`,
   turnArrow:   `<i class="fas fa-chevron-right"></i>`,
