@@ -23,6 +23,7 @@ import { MODULE_ID } from "../vagabond-crawler.mjs";
 import { calculateHP, calculateTL, calculateDPR, applyMutations, generateMutatedName, getStatSummary } from "../monster-mutator.mjs";
 import { MUTATIONS, getMutation, getConflict, getBoons, getBanes } from "../mutation-data.mjs";
 import { PASSIVE_ABILITIES } from "../npc-abilities.mjs";
+import { STATUS_IDS, STATUS_LABELS } from "../audit/status-vocabulary.mjs";
 import { ACTION_QUICK_PICKS,  materializeAction  } from "./action-templates.mjs";
 import { ABILITY_QUICK_PICKS, materializeAbility } from "./ability-templates.mjs";
 
@@ -165,6 +166,14 @@ const ATTACK_TYPES = [
 
 const DAMAGE_TYPE_OPTIONS = ["-", ...["acid","fire","shock","poison","cold","blunt","piercing","slashing","physical","necrotic","psychic","magical","healing","recover","recharge"]];
 
+const SAVE_TYPES = [
+  { value: "any",    label: "Any"    },
+  { value: "reflex", label: "Reflex" },
+  { value: "endure", label: "Endure" },
+  { value: "will",   label: "Will"   },
+  { value: "none",   label: "None"   },
+];
+
 const ACTION_TABS = [
   { key: "all",        label: "All" },
   { key: "melee",      label: "Melee" },
@@ -268,7 +277,21 @@ function _blankAction() {
     attackType: "melee",
     flatDamage: "", rollDamage: "", damageType: "-",
     extraInfo: "",
+    weaponId: "", weaponPrevName: "", weaponPrevFlatDamage: "", weaponPrevRollDamage: "",
     causedStatuses: [], critCausedStatuses: [],
+  };
+}
+
+/** One On-Hit rider (causedStatuses or critCausedStatuses entry). */
+function _blankRider() {
+  return {
+    statusId:          "",   // "" until user picks; compendium uses "prone"/"burning"/etc.
+    saveType:          "any",
+    duration:          "",   // "" = permanent / no duration; "d4"/"d6"/"Cd4" otherwise
+    tickDamageEnabled: false,
+    damageOnTick:      "",
+    damageType:        "-",
+    requiresDamage:    true, // "If Hit" — status only lands if the attack actually dealt damage
   };
 }
 
@@ -298,6 +321,10 @@ function _fromCompendiumActor(actor) {
       attackType: a?.attackType ?? "melee",
       flatDamage: a?.flatDamage ?? "", rollDamage: a?.rollDamage ?? "", damageType: a?.damageType ?? "-",
       extraInfo: a?.extraInfo ?? "",
+      weaponId: a?.weaponId ?? "",
+      weaponPrevName: a?.weaponPrevName ?? "",
+      weaponPrevFlatDamage: a?.weaponPrevFlatDamage ?? "",
+      weaponPrevRollDamage: a?.weaponPrevRollDamage ?? "",
       causedStatuses: Array.isArray(a?.causedStatuses) ? a.causedStatuses.map((c) => ({ ...c })) : [],
       critCausedStatuses: Array.isArray(a?.critCausedStatuses) ? a.critCausedStatuses.map((c) => ({ ...c })) : [],
     })) : [],
@@ -555,6 +582,10 @@ function _buildActorData(data) {
         attackType: a.attackType,
         flatDamage: a.flatDamage, rollDamage: a.rollDamage, damageType: a.damageType || "-",
         extraInfo: a.extraInfo ?? "",
+        weaponId:             a.weaponId             ?? "",
+        weaponPrevName:       a.weaponPrevName       ?? "",
+        weaponPrevFlatDamage: a.weaponPrevFlatDamage ?? "",
+        weaponPrevRollDamage: a.weaponPrevRollDamage ?? "",
         causedStatuses:     Array.isArray(a.causedStatuses)     ? a.causedStatuses.map((c) => ({ ...c }))     : [],
         critCausedStatuses: Array.isArray(a.critCausedStatuses) ? a.critCausedStatuses.map((c) => ({ ...c })) : [],
       })),
@@ -609,6 +640,36 @@ function _buildActorData(data) {
 // ── Cached bestiary index for the load dropdown ───────────────────────────────
 
 let _bestiaryCache = null;
+
+let _weaponsCache = null;
+
+async function _getWeaponsList() {
+  if (_weaponsCache) return _weaponsCache;
+  const pack = game.packs.get("vagabond.weapons");
+  if (!pack) { _weaponsCache = []; return []; }
+  const docs = await pack.getDocuments();
+  _weaponsCache = docs
+    .filter((d) => d.type === "equipment" && d.system?.equipmentType === "weapon")
+    .map((w) => ({
+      id:             w.id,
+      uuid:           w.uuid,
+      name:           w.name,
+      damageOneHand:  w.system.damageOneHand ?? "",
+      damageTwoHands: w.system.damageTwoHands ?? "",
+      damageType:     w.system.damageType ?? "-",
+      weaponSkill:    w.system.weaponSkill ?? "melee",
+      grip:           w.system.grip ?? "1H",
+      range:          w.system.range ?? "close",
+    }))
+    .sort((a, b) => a.name.localeCompare(b.name));
+  return _weaponsCache;
+}
+
+/** Map a weapon's weaponSkill + range to the Creator's attackType enum. */
+function _weaponToAttackType(w) {
+  if (w.weaponSkill === "ranged") return "ranged";
+  return "melee";
+}
 
 async function _getBestiaryList() {
   if (_bestiaryCache) return _bestiaryCache;
@@ -689,6 +750,10 @@ class MonsterCreatorApp extends HandlebarsApplicationMixin(ApplicationV2) {
     // Persisted across re-renders so editing inside an open section doesn't
     // collapse it. Keyed by the section's data-collapse attribute.
     this._sectionOpen = { identity: true, stats: true };
+    // Per-action expanded state (action rows are also <details>). Keyed by
+    // index — when a user clicks an action row to expand it, that index is
+    // remembered so full re-renders don't collapse it. Cleared on reset/load.
+    this._actionOpen = new Set();
     // Fresh start vs loaded-from-bestiary affects which sections are open
     // by default on next render. Set to false after a successful load so
     // the long "Stats" / "Identity" sections don't add to the page height
@@ -798,16 +863,52 @@ class MonsterCreatorApp extends HandlebarsApplicationMixin(ApplicationV2) {
           tiers: p.tiers?.map((t) => ({ label: t.label })) ?? null,
           hasTiers: !!p.tiers?.length,
         })),
-      actionRows: this._data.actions.map((a, index) => ({
-        index,
-        name: a.name,
-        note: a.note,
-        recharge: a.recharge,
-        rollDamage: a.rollDamage,
-        flatDamage: a.flatDamage,
-        extraInfo: a.extraInfo ?? "",
-        attackTypeOptions: ATTACK_TYPES.map((t) => ({ ...t, selected: t.value === a.attackType })),
-        damageTypeOptions: DAMAGE_TYPE_OPTIONS.map((t) => ({ value: t, label: t === "-" ? "—" : _capitalize(t), selected: t === (a.damageType || "-") })),
+      actionRows: await Promise.all(this._data.actions.map(async (a, index) => {
+        const weaponsList = await _getWeaponsList();
+        const riderShape = (r) => ({
+          statusId: r.statusId ?? "",
+          saveType: r.saveType ?? "any",
+          duration: r.duration ?? "",
+          tickDamageEnabled: !!r.tickDamageEnabled,
+          damageOnTick: r.damageOnTick ?? "",
+          damageType: r.damageType ?? "-",
+          requiresDamage: r.requiresDamage !== false,
+          permanent: !(r.duration && r.duration.trim()),
+          statusOptions: [{ value: "", label: "— Select Status —", selected: !r.statusId }]
+            .concat(STATUS_IDS.map((id) => ({
+              value: id,
+              label: STATUS_LABELS[id] ?? _capitalize(id),
+              selected: id === r.statusId,
+            }))),
+          saveOptions: SAVE_TYPES.map((s) => ({ ...s, selected: s.value === (r.saveType ?? "any") })),
+          damageTypeOptions: DAMAGE_TYPE_OPTIONS.map((t) => ({
+            value: t, label: t === "-" ? "—" : _capitalize(t), selected: t === (r.damageType || "-"),
+          })),
+        });
+        return {
+          index,
+          open: this._actionOpen.has(index),
+          name: a.name,
+          note: a.note,
+          recharge: a.recharge,
+          rollDamage: a.rollDamage,
+          flatDamage: a.flatDamage,
+          damageType: a.damageType || "-",
+          extraInfo: a.extraInfo ?? "",
+          weaponId: a.weaponId ?? "",
+          summary: _damageDisplay(a.rollDamage, a.flatDamage, a.damageType),
+          attackTypeLabel: ATTACK_TYPES.find((t) => t.value === a.attackType)?.label ?? a.attackType,
+          attackTypeOptions: ATTACK_TYPES.map((t) => ({ ...t, selected: t.value === a.attackType })),
+          damageTypeOptions: DAMAGE_TYPE_OPTIONS.map((t) => ({ value: t, label: t === "-" ? "—" : _capitalize(t), selected: t === (a.damageType || "-") })),
+          weaponOptions: [{ value: "", label: "— No weapon —", selected: !a.weaponId }]
+            .concat(weaponsList.map((w) => ({
+              value: w.id,
+              label: w.damageOneHand ? `${w.name} (${w.damageOneHand})` : w.name,
+              selected: w.id === a.weaponId,
+            }))),
+          causedStatuses:     (a.causedStatuses     ?? []).map(riderShape),
+          critCausedStatuses: (a.critCausedStatuses ?? []).map(riderShape),
+        };
       })),
 
       // Abilities section
@@ -1003,19 +1104,156 @@ class MonsterCreatorApp extends HandlebarsApplicationMixin(ApplicationV2) {
         if (!action) return;
         action[field] = ev.currentTarget.value;
         this._refreshActionsSummary();
+        this._refreshActionCardSummary(index);
         this._refreshPreviewLine();
       };
       input.addEventListener("input", onEdit, { signal });
       input.addEventListener("change", onEdit, { signal });
     });
 
-    // Delete action row
+    // Delete action row (button lives inside the summary; stop the default
+    // toggle behavior so clicking the X doesn't also flip the details state)
     el.querySelectorAll('[data-action="deleteAction"]').forEach((btn) => {
       btn.addEventListener("click", (ev) => {
+        ev.preventDefault();
+        ev.stopPropagation();
         const row = ev.currentTarget.closest("[data-action-index]");
         const index = Number(row?.dataset.actionIndex);
         if (!Number.isFinite(index)) return;
         this._data.actions.splice(index, 1);
+        // Re-index _actionOpen: remove deleted key, shift higher keys down by 1
+        const nextOpen = new Set();
+        for (const k of this._actionOpen) {
+          if (k === index) continue;
+          nextOpen.add(k > index ? k - 1 : k);
+        }
+        this._actionOpen = nextOpen;
+        this.render();
+      }, { signal });
+    });
+
+    // Per-action <details> toggle → remember which cards are open so a
+    // re-render (e.g. adding a rider, picking a weapon) doesn't collapse them.
+    el.querySelectorAll(".mc-action-card").forEach((card) => {
+      card.addEventListener("toggle", (ev) => {
+        const index = Number(card.dataset.actionIndex);
+        if (!Number.isFinite(index)) return;
+        if (card.open) this._actionOpen.add(index);
+        else           this._actionOpen.delete(index);
+      }, { signal });
+    });
+
+    // Weapon picker — populate name / rollDamage / damageType from the
+    // selected weapon. Reversible: pick "— No weapon —" to restore the
+    // previous (pre-link) values, so an accidental pick doesn't destroy
+    // the existing damage formula.
+    el.querySelectorAll('[data-action="setWeapon"]').forEach((sel) => {
+      sel.addEventListener("change", async (ev) => {
+        const row = ev.currentTarget.closest("[data-action-index]");
+        const index = Number(row?.dataset.actionIndex);
+        if (!Number.isFinite(index)) return;
+        const action = this._data.actions[index];
+        if (!action) return;
+        const weaponId = ev.currentTarget.value;
+        if (weaponId) {
+          const weapons = await _getWeaponsList();
+          const w = weapons.find((x) => x.id === weaponId);
+          if (!w) return;
+          // Snapshot old values so an "unlink" restores them
+          if (!action.weaponId) {
+            action.weaponPrevName       = action.name ?? "";
+            action.weaponPrevFlatDamage = action.flatDamage ?? "";
+            action.weaponPrevRollDamage = action.rollDamage ?? "";
+          }
+          action.weaponId    = weaponId;
+          action.name        = w.name;
+          action.rollDamage  = w.damageOneHand ?? action.rollDamage;
+          action.flatDamage  = "";
+          action.damageType  = (w.damageType && w.damageType !== "-") ? w.damageType : action.damageType;
+          action.attackType  = (w.weaponSkill === "ranged" || w.range === "far") ? "ranged" : "melee";
+        } else {
+          // Unlink — restore previous values
+          action.weaponId    = "";
+          if (action.weaponPrevName      !== undefined) action.name       = action.weaponPrevName;
+          if (action.weaponPrevRollDamage !== undefined) action.rollDamage = action.weaponPrevRollDamage;
+          if (action.weaponPrevFlatDamage !== undefined) action.flatDamage = action.weaponPrevFlatDamage;
+          action.weaponPrevName = "";
+          action.weaponPrevRollDamage = "";
+          action.weaponPrevFlatDamage = "";
+        }
+        this.render();
+      }, { signal });
+    });
+
+    // Add rider (on-hit or crit-on-hit). Keep the card open across re-render.
+    el.querySelectorAll('[data-action="addOnHitEffect"],[data-action="addCritEffect"]').forEach((btn) => {
+      btn.addEventListener("click", (ev) => {
+        const row = ev.currentTarget.closest("[data-action-index]");
+        const index = Number(row?.dataset.actionIndex);
+        if (!Number.isFinite(index)) return;
+        const action = this._data.actions[index];
+        if (!action) return;
+        const listKey = ev.currentTarget.dataset.action === "addCritEffect"
+          ? "critCausedStatuses" : "causedStatuses";
+        if (!Array.isArray(action[listKey])) action[listKey] = [];
+        action[listKey].push(_blankRider());
+        this._actionOpen.add(index);
+        this.render();
+      }, { signal });
+    });
+
+    // Rider field edit (status / saveType / duration / tick / damage type /
+    // permanent / requiresDamage). A few of these (permanent, tickEnabled)
+    // toggle UI visibility so they force a re-render; the rest update in-place.
+    el.querySelectorAll("[data-rider-field]").forEach((input) => {
+      const onEdit = (ev) => {
+        const riderRow = ev.currentTarget.closest("[data-rider-list]");
+        const card = ev.currentTarget.closest("[data-action-index]");
+        if (!riderRow || !card) return;
+        const actionIndex = Number(card.dataset.actionIndex);
+        const listKey = riderRow.dataset.riderList;
+        const riderIndex = Number(riderRow.dataset.riderIndex);
+        const action = this._data.actions[actionIndex];
+        const list = action?.[listKey];
+        const rider = list?.[riderIndex];
+        if (!rider) return;
+        const field = ev.currentTarget.dataset.riderField;
+        if (field === "permanent") {
+          // Permanent is a derived flag: storing it empties duration
+          if (ev.currentTarget.checked) rider.duration = "";
+          this._actionOpen.add(actionIndex);
+          this.render();
+          return;
+        }
+        if (field === "tickDamageEnabled" || field === "requiresDamage") {
+          rider[field] = ev.currentTarget.checked;
+          this._actionOpen.add(actionIndex);
+          this.render();
+          return;
+        }
+        rider[field] = ev.currentTarget.value;
+        this._refreshActionCardSummary(actionIndex);
+      };
+      input.addEventListener("change", onEdit, { signal });
+      if (input.tagName !== "SELECT" && input.type !== "checkbox") {
+        input.addEventListener("input", onEdit, { signal });
+      }
+    });
+
+    // Delete one rider from its action
+    el.querySelectorAll('[data-action="deleteRider"]').forEach((btn) => {
+      btn.addEventListener("click", (ev) => {
+        const riderRow = ev.currentTarget.closest("[data-rider-list]");
+        const card = ev.currentTarget.closest("[data-action-index]");
+        if (!riderRow || !card) return;
+        const actionIndex = Number(card.dataset.actionIndex);
+        const listKey = riderRow.dataset.riderList;
+        const riderIndex = Number(riderRow.dataset.riderIndex);
+        const action = this._data.actions[actionIndex];
+        const list = action?.[listKey];
+        if (!Array.isArray(list)) return;
+        list.splice(riderIndex, 1);
+        this._actionOpen.add(actionIndex);
         this.render();
       }, { signal });
     });
@@ -1204,6 +1442,32 @@ class MonsterCreatorApp extends HandlebarsApplicationMixin(ApplicationV2) {
     }
   }
 
+  /** Live-update a single action card's <summary> line (the one inside the
+   *  card's <details>) without re-rendering. Keeps focus in the edited input
+   *  and keeps every other card's open/closed state intact. */
+  _refreshActionCardSummary(index) {
+    const el = this.element;
+    if (!el) return;
+    const card = el.querySelector(`.mc-action-card[data-action-index="${index}"]`);
+    if (!card) return;
+    const action = this._data.actions?.[index];
+    if (!action) return;
+    const nameEl = card.querySelector(".mc-action-summary-name");
+    const metaEl = card.querySelector(".mc-action-summary-meta");
+    if (nameEl) nameEl.textContent = action.name || "(unnamed)";
+    if (metaEl) {
+      const attackLabel = ATTACK_TYPES.find((t) => t.value === action.attackType)?.label ?? action.attackType;
+      const dmg = _damageDisplay(action.rollDamage, action.flatDamage, action.damageType);
+      const bits = [attackLabel, dmg];
+      if (action.recharge) bits.push(action.recharge);
+      const onHitCount  = action.causedStatuses?.length ?? 0;
+      const critCount   = action.critCausedStatuses?.length ?? 0;
+      if (onHitCount) bits.push(`${onHitCount}🪱`);
+      if (critCount)  bits.push(`${critCount}💥`);
+      metaEl.textContent = bits.join(" · ");
+    }
+  }
+
   /** Live-update the Actions collapsed-header summary (count + preview)
    *  without re-rendering. Preserves the open/closed state of the section. */
   _refreshActionsSummary() {
@@ -1303,6 +1567,7 @@ class MonsterCreatorApp extends HandlebarsApplicationMixin(ApplicationV2) {
     this._sourceUuid = null;
     this._isFreshStart = false;
     this._sectionOpen = {};
+    this._actionOpen.clear();
   }
 
   async _loadFromBestiary(uuid) {
@@ -1313,6 +1578,7 @@ class MonsterCreatorApp extends HandlebarsApplicationMixin(ApplicationV2) {
       this._sourceUuid = uuid;
       this._isFreshStart = false;   // loaded content: collapse everything; user expands to edit
       this._sectionOpen = {};       // close every section after a load
+      this._actionOpen.clear();
       ui.notifications.info(`Loaded "${actor.name}" from ${uuid.split(".")[1]}.`);
       this.render();
     } catch (err) {
@@ -1342,6 +1608,7 @@ class MonsterCreatorApp extends HandlebarsApplicationMixin(ApplicationV2) {
     this._sourceUuid = null;
     this._isFreshStart = true;
     this._sectionOpen = { identity: true, stats: true };
+    this._actionOpen.clear();
     this._selectedMutations.clear();
     this.render();
   }

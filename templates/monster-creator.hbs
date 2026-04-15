@@ -288,28 +288,93 @@
       {{#if actionRows.length}}
       <div class="mc-action-list">
         {{#each actionRows}}
-        <div class="mc-action-row" data-action-index="{{index}}">
+        <details class="mc-action-card" data-action-index="{{index}}" {{#if open}}open{{/if}}>
+          <summary class="mc-action-summary">
+            <span class="mc-action-summary-name">{{name}}</span>
+            <span class="mc-action-summary-meta">{{attackTypeLabel}} · {{summary}}{{#if recharge}} · {{recharge}}{{/if}}{{#if causedStatuses.length}} · {{causedStatuses.length}}🪱{{/if}}{{#if critCausedStatuses.length}} · {{critCausedStatuses.length}}💥{{/if}}</span>
+            <button type="button" class="mc-action-delete" data-action="deleteAction" title="Remove action"><i class="fas fa-times"></i></button>
+          </summary>
+
+          {{!-- Name + attack type --}}
           <div class="mc-action-head">
             <input class="mc-action-name"  data-action-field="name"       value="{{name}}" placeholder="Name" />
             <select class="mc-action-type" data-action-field="attackType">
               {{#each attackTypeOptions}}<option value="{{value}}" {{#if selected}}selected{{/if}}>{{label}}</option>{{/each}}
             </select>
-            <button type="button" class="mc-action-delete" data-action="deleteAction" title="Remove"><i class="fas fa-times"></i></button>
           </div>
+
+          {{!-- Weapon picker --}}
+          <div class="mc-action-weapon">
+            <label class="mc-subhead">Weapon</label>
+            <select class="mc-action-weapon-sel" data-action="setWeapon">
+              {{#each weaponOptions}}<option value="{{value}}" {{#if selected}}selected{{/if}}>{{label}}</option>{{/each}}
+            </select>
+            {{#if weaponId}}<span class="mc-hint">Linked — click a weapon to replace, or pick "— No weapon —" to unlink.</span>{{/if}}
+          </div>
+
+          {{!-- Damage + recharge --}}
           <div class="mc-action-damage">
-            <input class="mc-action-roll" data-action-field="rollDamage" value="{{rollDamage}}" placeholder="2d6" />
+            <input class="mc-action-roll"  data-action-field="rollDamage" value="{{rollDamage}}" placeholder="2d6" />
             <span class="mc-hint">+</span>
-            <input class="mc-action-flat" data-action-field="flatDamage" value="{{flatDamage}}" placeholder="flat" />
+            <input class="mc-action-flat"  data-action-field="flatDamage" value="{{flatDamage}}" placeholder="flat" />
             <select class="mc-action-dtype" data-action-field="damageType">
               {{#each damageTypeOptions}}<option value="{{value}}" {{#if selected}}selected{{/if}}>{{label}}</option>{{/each}}
             </select>
             <input class="mc-action-recharge" data-action-field="recharge" value="{{recharge}}" placeholder="Cd4" />
           </div>
+
+          {{!-- Notes --}}
           <div class="mc-action-meta">
-            <input class="mc-action-note" data-action-field="note"       value="{{note}}"      placeholder="Melee Attack / Cast, Remote | Endure" />
-            <input class="mc-action-extra" data-action-field="extraInfo" value="{{extraInfo}}" placeholder="and extra effect / Frightened (Cd4) / etc." />
+            <input class="mc-action-note"  data-action-field="note"       value="{{note}}"      placeholder="Melee Attack / Cast, Remote | Endure" />
+            <input class="mc-action-extra" data-action-field="extraInfo" value="{{extraInfo}}" placeholder="and Frightened (Cd4) / etc." />
           </div>
-        </div>
+
+          {{!-- On-Hit Effects --}}
+          <div class="mc-rider-block">
+            <div class="mc-rider-head">
+              <label class="mc-subhead">On-Hit Effects</label>
+              <button type="button" class="mc-btn mc-btn-soft mc-rider-add" data-action="addOnHitEffect"><i class="fas fa-plus"></i> Add</button>
+            </div>
+            {{#each causedStatuses}}
+            <div class="mc-rider-row" data-rider-list="causedStatuses" data-rider-index="{{@index}}">
+              <select data-rider-field="statusId">{{#each statusOptions}}<option value="{{value}}" {{#if selected}}selected{{/if}}>{{label}}</option>{{/each}}</select>
+              <select data-rider-field="saveType">{{#each saveOptions}}<option value="{{value}}" {{#if selected}}selected{{/if}}>{{label}}</option>{{/each}}</select>
+              <input type="text" class="mc-rider-dur" data-rider-field="duration" value="{{duration}}" placeholder="d4 / d6" {{#if permanent}}disabled{{/if}} />
+              <label class="mc-cb-row" title="Permanent — no duration"><input type="checkbox" data-rider-field="permanent" {{#if permanent}}checked{{/if}} /><span>Perm</span></label>
+              <label class="mc-cb-row" title="Only applies when damage breaks armor"><input type="checkbox" data-rider-field="requiresDamage" {{#if requiresDamage}}checked{{/if}} /><span>If Hit</span></label>
+              <label class="mc-cb-row" title="Tick damage (DoT)"><input type="checkbox" data-rider-field="tickDamageEnabled" {{#if tickDamageEnabled}}checked{{/if}} /><span>Tick</span></label>
+              {{#if tickDamageEnabled}}
+              <input type="text" class="mc-rider-tick" data-rider-field="damageOnTick" value="{{damageOnTick}}" placeholder="1d4" />
+              <select class="mc-rider-dtype" data-rider-field="damageType">{{#each damageTypeOptions}}<option value="{{value}}" {{#if selected}}selected{{/if}}>{{label}}</option>{{/each}}</select>
+              {{/if}}
+              <button type="button" class="mc-rider-delete" data-action="deleteRider" data-rider-list="causedStatuses" title="Remove"><i class="fas fa-times"></i></button>
+            </div>
+            {{/each}}
+          </div>
+
+          {{!-- Crit On-Hit Effects --}}
+          <div class="mc-rider-block">
+            <div class="mc-rider-head">
+              <label class="mc-subhead">Crit On-Hit Effects</label>
+              <button type="button" class="mc-btn mc-btn-soft mc-rider-add" data-action="addCritEffect"><i class="fas fa-plus"></i> Add</button>
+            </div>
+            {{#each critCausedStatuses}}
+            <div class="mc-rider-row" data-rider-list="critCausedStatuses" data-rider-index="{{@index}}">
+              <select data-rider-field="statusId">{{#each statusOptions}}<option value="{{value}}" {{#if selected}}selected{{/if}}>{{label}}</option>{{/each}}</select>
+              <select data-rider-field="saveType">{{#each saveOptions}}<option value="{{value}}" {{#if selected}}selected{{/if}}>{{label}}</option>{{/each}}</select>
+              <input type="text" class="mc-rider-dur" data-rider-field="duration" value="{{duration}}" placeholder="d4 / d6" {{#if permanent}}disabled{{/if}} />
+              <label class="mc-cb-row"><input type="checkbox" data-rider-field="permanent" {{#if permanent}}checked{{/if}} /><span>Perm</span></label>
+              <label class="mc-cb-row"><input type="checkbox" data-rider-field="requiresDamage" {{#if requiresDamage}}checked{{/if}} /><span>If Hit</span></label>
+              <label class="mc-cb-row"><input type="checkbox" data-rider-field="tickDamageEnabled" {{#if tickDamageEnabled}}checked{{/if}} /><span>Tick</span></label>
+              {{#if tickDamageEnabled}}
+              <input type="text" class="mc-rider-tick" data-rider-field="damageOnTick" value="{{damageOnTick}}" placeholder="1d4" />
+              <select class="mc-rider-dtype" data-rider-field="damageType">{{#each damageTypeOptions}}<option value="{{value}}" {{#if selected}}selected{{/if}}>{{label}}</option>{{/each}}</select>
+              {{/if}}
+              <button type="button" class="mc-rider-delete" data-action="deleteRider" data-rider-list="critCausedStatuses" title="Remove"><i class="fas fa-times"></i></button>
+            </div>
+            {{/each}}
+          </div>
+        </details>
         {{/each}}
       </div>
       {{else}}

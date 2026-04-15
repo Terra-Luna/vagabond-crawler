@@ -3595,6 +3595,140 @@ body.theme-light .vcb-phase-badge {
 }
 #vagabond-crawler-monster-creator .mc-action-delete:hover { background: rgba(157, 0, 0, 0.5); }
 
+/* ── Per-action collapsible card (Monster Creator Actions editor) ───────── */
+
+#vagabond-crawler-monster-creator .mc-action-card {
+  border: 1px solid var(--vcb-border-light, #c5c3b832);
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.15);
+}
+#vagabond-crawler-monster-creator .mc-action-card[open] {
+  background: rgba(0, 0, 0, 0.22);
+}
+#vagabond-crawler-monster-creator .mc-action-summary {
+  list-style: none;
+  cursor: pointer;
+  padding: 6px 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  user-select: none;
+}
+#vagabond-crawler-monster-creator .mc-action-summary::-webkit-details-marker { display: none; }
+#vagabond-crawler-monster-creator .mc-action-summary::before {
+  content: "▸";
+  width: 10px;
+  color: var(--vcb-text-faint, #706d65);
+  transition: transform 0.12s;
+}
+#vagabond-crawler-monster-creator .mc-action-card[open] .mc-action-summary::before {
+  transform: rotate(90deg);
+}
+#vagabond-crawler-monster-creator .mc-action-summary-name {
+  font-weight: 600;
+  color: var(--vcb-text, #e7e1d4);
+  flex: 0 1 auto;
+}
+#vagabond-crawler-monster-creator .mc-action-summary-meta {
+  color: var(--vcb-text-faint, #706d65);
+  font-size: 0.85em;
+  flex: 1 1 auto;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+#vagabond-crawler-monster-creator .mc-action-card > .mc-action-head,
+#vagabond-crawler-monster-creator .mc-action-card > .mc-action-weapon,
+#vagabond-crawler-monster-creator .mc-action-card > .mc-action-damage,
+#vagabond-crawler-monster-creator .mc-action-card > .mc-action-meta,
+#vagabond-crawler-monster-creator .mc-action-card > .mc-rider-block {
+  padding: 4px 8px 6px 20px;
+}
+#vagabond-crawler-monster-creator .mc-action-card > .mc-action-head  { padding-top: 6px; }
+#vagabond-crawler-monster-creator .mc-action-card > .mc-rider-block:last-child { padding-bottom: 8px; }
+
+#vagabond-crawler-monster-creator .mc-action-weapon {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+#vagabond-crawler-monster-creator .mc-action-weapon .mc-subhead { flex: 0 0 70px; margin: 0; }
+#vagabond-crawler-monster-creator .mc-action-weapon-sel {
+  flex: 1 1 180px;
+  margin: 0;
+  min-width: 140px;
+}
+
+/* Rider blocks (On-Hit / Crit On-Hit effects) */
+#vagabond-crawler-monster-creator .mc-rider-block {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  border-top: 1px dashed rgba(197, 195, 184, 0.12);
+  margin-top: 2px;
+}
+#vagabond-crawler-monster-creator .mc-rider-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+#vagabond-crawler-monster-creator .mc-rider-head .mc-subhead {
+  margin: 0;
+  font-size: 0.82em;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--vcb-text-faint, #706d65);
+}
+#vagabond-crawler-monster-creator .mc-rider-add {
+  padding: 2px 8px;
+  font-size: 0.8em;
+}
+#vagabond-crawler-monster-creator .mc-rider-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-wrap: wrap;
+  padding: 4px 6px;
+  border: 1px solid rgba(197, 195, 184, 0.1);
+  border-radius: 3px;
+  background: rgba(0, 0, 0, 0.15);
+}
+#vagabond-crawler-monster-creator .mc-rider-row > select,
+#vagabond-crawler-monster-creator .mc-rider-row > input {
+  margin: 0;
+  min-width: 0;
+}
+#vagabond-crawler-monster-creator .mc-rider-row > select[data-rider-field="statusId"] { flex: 1 1 130px; }
+#vagabond-crawler-monster-creator .mc-rider-row > select[data-rider-field="saveType"] { flex: 0 0 90px; }
+#vagabond-crawler-monster-creator .mc-rider-row .mc-rider-dur   { flex: 0 0 70px; }
+#vagabond-crawler-monster-creator .mc-rider-row .mc-rider-tick  { flex: 0 0 70px; }
+#vagabond-crawler-monster-creator .mc-rider-row .mc-rider-dtype { flex: 1 1 90px; }
+#vagabond-crawler-monster-creator .mc-rider-row .mc-cb-row {
+  flex: 0 0 auto;
+  gap: 3px;
+  font-size: 0.78em;
+  white-space: nowrap;
+}
+#vagabond-crawler-monster-creator .mc-rider-delete {
+  flex: 0 0 auto;
+  padding: 2px 6px;
+  margin-left: auto;
+  background: rgba(157, 0, 0, 0.2);
+  border: 1px solid rgba(157, 0, 0, 0.45);
+  color: var(--vcb-danger-text, #ff8b9f);
+  border-radius: 3px;
+  cursor: pointer;
+}
+#vagabond-crawler-monster-creator .mc-rider-delete:hover { background: rgba(157, 0, 0, 0.45); }
+
+/* Delete-X inside the action summary shouldn't swallow the toggle visually */
+#vagabond-crawler-monster-creator .mc-action-summary .mc-action-delete {
+  margin-left: auto;
+  flex: 0 0 auto;
+}
+
 #vagabond-crawler-monster-creator .mc-action-empty {
   padding: 10px;
   text-align: center;

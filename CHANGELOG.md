@@ -1,5 +1,21 @@
 # Changelog
 
+## v1.8.12
+
+### New Features — Monster Creator Action Editor Polish
+
+Added the three features that were missing from the Monster Creator's Actions editor compared to the native Vagabond NPC character sheet:
+
+- **Weapon picker dropdown** — each action card has a Weapon selector populated from the `vagabond.weapons` compendium (53 weapons). Picking a weapon auto-populates the action's name, roll damage (from `damageOneHand`), damage type, and attack type (melee/ranged inferred from `weaponSkill` / `range`). The original name and damage are snapshotted; picking "— No weapon —" restores them so an accidental link doesn't destroy the existing formula. `weaponId` and the previous-value snapshot persist through save/reload so a reopened actor keeps the linked weapon selected.
+- **On-Hit Effects editor** (`causedStatuses`) — per-action rider rows with Status (full Vagabond status vocabulary), Save type (Any / Reflex / Endure / Will / None), Duration (free-form; e.g. `d4`, `Cd6`), and checkboxes for **Permanent** (clears duration), **If Hit** (`requiresDamage`), and **Tick** (enables `damageOnTick` + damage-type fields for DoT effects).
+- **Crit On-Hit Effects editor** (`critCausedStatuses`) — same shape as on-hit, for rider effects that only apply on a crit.
+
+### UX
+
+- **Per-action collapsible cards** — each action is now its own `<details>` card with a summary line (name · attack type · damage · recharge · rider counts `🪱` / `💥`). The card's open state is tracked per-index and preserved across re-renders, so adding a rider or picking a weapon doesn't collapse the card you're editing.
+- **Live summary updates** — typing in an action's name/damage/recharge fields updates the collapsed summary line in-place without re-rendering (preserves focus and the caret position for arrow-key numeric edits).
+- **Rider round-trip** — loading a compendium monster preserves its existing `causedStatuses` and `critCausedStatuses` arrays verbatim. Saving writes them back in the same shape the native NPC sheet reads. Verified against the Lich's "4 - Death Touch" (Paralyzed / Endure / d6) and "5 - Fear" (Frightened / Any / d4).
+
 ## v1.8.11
 
 ### Bug Fixes
