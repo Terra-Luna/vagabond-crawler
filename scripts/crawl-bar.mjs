@@ -464,8 +464,8 @@ export const CrawlBar = {
       <div class="vcb-clock-menu-item" data-fl="lootManager">
         <i class="fas fa-treasure-chest"></i> Open Loot Manager
       </div>
-      <div class="vcb-clock-menu-item" data-fl="lootLog">
-        <i class="fas fa-scroll"></i> Loot Log
+      <div class="vcb-clock-menu-item" data-fl="sessionRecap">
+        <i class="fas fa-clipboard-list"></i> Session Recap
       </div>
       <div class="vcb-clock-menu-item" data-fl="lootGenerator">
         <i class="fas fa-dice-d20"></i> Loot Generator
@@ -515,10 +515,10 @@ export const CrawlBar = {
       LootManager.open();
     });
 
-    // Loot Log
-    menu.querySelector('[data-fl="lootLog"]')?.addEventListener("click", () => {
+    // Session Recap
+    menu.querySelector('[data-fl="sessionRecap"]')?.addEventListener("click", () => {
       this._dismissForgeLootMenu();
-      LootTracker.open();
+      SessionRecap.open();
     });
 
     // Loot Generator
