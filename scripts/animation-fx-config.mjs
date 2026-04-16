@@ -129,10 +129,43 @@ export class AnimationFxConfigApp extends HandlebarsApplicationMixin(Application
     const key = target.dataset.key;
     const preset = this._workingConfig[this._activeTab]?.[key];
     if (!preset) return;
-    const tok = canvas.tokens.controlled[0];
-    if (!tok) { ui.notifications.warn("Select a token first."); return; }
+    const source = canvas.tokens.controlled[0];
+    if (!source) { ui.notifications.warn("Select a token first."); return; }
     const outcome = event.shiftKey ? "miss" : "hit";
-    await game.vagabondCrawler.animationFx._play(preset, tok, [tok], outcome);
+
+    // For projectile and cone presets we need a distinct target so that
+    // stretchTo / _computeConeAngle have a real direction to work with.
+    // Passing the source as its own target produces zero-distance math
+    // that throws in Sequencer.
+    let previewTargets;
+    const needsDirection = preset.type === "projectile" || preset.type === "cone";
+    if (needsDirection) {
+      const controlled = canvas.tokens.controlled;
+      if (controlled.length >= 2) {
+        // Use the second controlled token as target
+        previewTargets = [controlled[1]];
+      } else {
+        const userTarget = game.user.targets.first();
+        if (userTarget && userTarget !== source) {
+          previewTargets = [userTarget];
+        } else {
+          // Synthetic offset: ~400px east of the source centre.
+          // _playOne / _computeConeAngle accept plain {x,y,w,h} objects.
+          previewTargets = [{
+            x: source.x + (source.w ?? 0) + 400,
+            y: source.y,
+            w: 1,
+            h: source.h ?? 1,
+            id: "_preview_offset",
+          }];
+        }
+      }
+    } else {
+      // onToken preset — playing on source is fine for preview
+      previewTargets = [source];
+    }
+
+    await game.vagabondCrawler.animationFx._play(preset, source, previewTargets, outcome);
   }
 
   static async #onPickFile(event, target) {

@@ -250,6 +250,15 @@ export const AnimationFx = {
   async _playSound(block) {
     if (!block?.sound) return;
     if (!game.settings.get(MODULE_ID, "animationFxSoundEnabled")) return;
+    // If the sound references another module's assets, silently skip when that
+    // module is not installed/active (e.g. psfx on machines without it).
+    if (block.sound.startsWith("modules/")) {
+      const moduleId = block.sound.split("/")[1];
+      if (moduleId && !game.modules.get(moduleId)?.active) {
+        console.debug(`[vagabond-crawler] skipping sound — module "${moduleId}" not active`);
+        return;
+      }
+    }
     const volume = (block.soundVolume ?? 0.6) * this._getMasterVolume();
     try {
       await foundry.audio.AudioHelper.play({ src: block.sound, volume, autoplay: true, loop: false });
