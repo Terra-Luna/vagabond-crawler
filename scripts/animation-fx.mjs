@@ -39,9 +39,47 @@ export const AnimationFx = {
   },
 
   async init() {
+    // Register the chat message hook immediately.
     const hookId = Hooks.on("createChatMessage", (msg, opts, userId) => this._onChatMessage(msg, opts, userId));
     this._hookIds.push(hookId);
     this._ready = true;
+    // Defer the npcAction wrap to a macrotask so it runs after npc-abilities.mjs
+    // finishes its own async wrap chain (which uses multiple await-import steps).
+    // 100ms is enough for all pending microtask chains to complete.
+    setTimeout(() => this._wrapNpcAction(), 100);
+  },
+
+  async _wrapNpcAction() {
+    let VCC;
+    try {
+      ({ VagabondChatCard: VCC } = await import("../../../systems/vagabond/module/helpers/chat-card.mjs"));
+    } catch (err) {
+      console.warn(`${MODULE_ID} | AnimationFx: could not import VagabondChatCard — actionIndex wrap skipped`, err);
+      return;
+    }
+    if (!VCC || typeof VCC.npcAction !== "function") return;
+    // Avoid double-wrapping
+    if (VCC.npcAction.__vcAnimFxWrapped) return;
+
+    const original = VCC.npcAction.bind(VCC);
+    const wrapped = async function (actor, action, actionIndex, targets, ...rest) {
+      // Stash actionIndex on the next preCreateChatMessage that matches this actor
+      const preHook = Hooks.on("preCreateChatMessage", (msg, data, opts, userId) => {
+        const flags = foundry.utils.getProperty(data, "flags.vagabond") ?? {};
+        if (flags.actorId === actor?.id && typeof flags.actionIndex !== "number") {
+          msg.updateSource({ "flags.vagabond.actionIndex": actionIndex });
+        }
+        Hooks.off("preCreateChatMessage", preHook);
+      });
+      try {
+        return await original(actor, action, actionIndex, targets, ...rest);
+      } finally {
+        Hooks.off("preCreateChatMessage", preHook);
+      }
+    };
+    wrapped.__vcAnimFxWrapped = true;
+    VCC.npcAction = wrapped;
+    console.log(`${MODULE_ID} | AnimationFx: wrapped VagabondChatCard.npcAction (actionIndex flag)`);
   },
 
   getConfig() {
