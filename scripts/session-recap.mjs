@@ -238,11 +238,55 @@ export const SessionRecap = {
     }
   },
 
+  // ── Roll Stats Hooks ──────────────────────────────────────
+
+  _initRollHooks() {
+    if (!game.user.isGM) return;
+
+    Hooks.on("createChatMessage", (message) => {
+      if (!message.rolls?.length) return;
+
+      const actorId = message.speaker?.actor;
+      if (!actorId) return;
+      const actor = game.actors.get(actorId);
+      if (!actor?.hasPlayerOwner) return;
+
+      const roll = message.rolls[0];
+      const d20Die = roll.dice?.find(d => d.faces === 20);
+      const naturalResult = d20Die?.results?.[0]?.result;
+      if (naturalResult == null) return;
+
+      const isNat20 = naturalResult === 20;
+      const isNat1 = naturalResult === 1;
+      const name = actor.name;
+
+      this.updatePlayerStat(actorId, name, "rolls.total", 1);
+      this.updatePlayerStat(actorId, name, "rolls.sum", naturalResult);
+
+      const content = message.content ?? "";
+      const isAttack = /\bHIT\b/.test(content) || /\bMISS\b/.test(content);
+      const isSave = /\bPASS\b/.test(content) || /\bFAIL\b/.test(content);
+
+      if (isAttack) {
+        const isHit = /\bHIT\b/.test(content);
+        this.updatePlayerStat(actorId, name, isHit ? "attacks.hits" : "attacks.misses", 1);
+        if (isNat20) this.updatePlayerStat(actorId, name, "attacks.nat20s", 1);
+        if (isNat1) this.updatePlayerStat(actorId, name, "attacks.nat1s", 1);
+      } else if (isSave) {
+        const isPassed = /\bPASS\b/.test(content);
+        this.updatePlayerStat(actorId, name, isPassed ? "saves.passes" : "saves.fails", 1);
+        if (isNat20) this.updatePlayerStat(actorId, name, "saves.nat20s", 1);
+        if (isNat1) this.updatePlayerStat(actorId, name, "saves.nat1s", 1);
+      }
+    });
+  },
+
   // ── Init ───────────────────────────────────────────────────
 
   init() {
     this.migrateFromLootLog();
     this._initCombatHooks();
+    this._initRollHooks();
     console.log(`${MODULE_ID} | Session Recap initialized.`);
   },
 
