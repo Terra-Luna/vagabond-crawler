@@ -7,6 +7,7 @@
  */
 
 import { MODULE_ID } from "./vagabond-crawler.mjs";
+import { waitDialog } from "./dialog-helpers.mjs";
 
 const SETTING_KEY = "sessionRecap";
 
@@ -163,6 +164,7 @@ export const SessionRecap = {
 
     // ── Combat start ───────────────────────────────────────
     Hooks.on("combatStart", (combat) => {
+      if (this.getData().sessionState !== "active") return;
       const participants = [];
       for (const c of combat.combatants) {
         if (!c.actor || !c.token) continue;
@@ -179,6 +181,7 @@ export const SessionRecap = {
 
     // ── Combat end ─────────────────────────────────────────
     Hooks.on("deleteCombat", async (combat) => {
+      if (this.getData().sessionState !== "active") return;
       const active = this._activeCombats.get(combat.id);
       if (!active) return;
 
@@ -214,6 +217,7 @@ export const SessionRecap = {
     // ── Damage-log chat messages ───────────────────────────
     if (this._hasDamageLog) {
       Hooks.on("createChatMessage", (message) => {
+        if (this.getData().sessionState !== "active") return;
         const flags = message.flags?.["damage-log"];
         if (!flags?.changes?.length) return;
         if (!game.combat) return;
@@ -261,6 +265,7 @@ export const SessionRecap = {
     if (!game.user.isGM) return;
 
     Hooks.on("createChatMessage", (message) => {
+      if (this.getData().sessionState !== "active") return;
       if (!message.rolls?.length) return;
 
       const actorId = message.speaker?.actor;
@@ -546,12 +551,82 @@ export const SessionRecap = {
     await this._saveHistory(history);
   },
 
+  // ── Lifecycle Hooks ────────────────────────────────────────
+
+  _initLifecycleHooks() {
+    if (!game.user.isGM) return;
+
+    // ── Crawl Start popup ──────────────────────────────────
+    Hooks.on("vagabondCrawler.crawlStart", async () => {
+      const data = this.getData();
+      const isPaused = data.sessionState === "paused";
+
+      const buttons = [
+        { label: "Start New Session", icon: "fas fa-play", value: "start" },
+      ];
+      if (isPaused) {
+        buttons.push({ label: "Continue Session", icon: "fas fa-forward", value: "continue" });
+      }
+      buttons.push({ label: "No Tracking", icon: "fas fa-ban", value: "skip" });
+
+      const choice = await waitDialog({
+        title: "Session Tracking",
+        content: isPaused
+          ? "<p>A paused session exists. What would you like to do?</p>"
+          : "<p>Start tracking a new session?</p>",
+        buttons,
+        defaultButton: isPaused ? "continue" : "start",
+      });
+
+      if (choice === "start") {
+        await this.startSession();
+      } else if (choice === "continue") {
+        await this.continueSession();
+      }
+    });
+
+    // ── Crawl End popup ────────────────────────────────────
+    Hooks.on("vagabondCrawler.crawlEnd", async () => {
+      const data = this.getData();
+      if (data.sessionState !== "active" && data.sessionState !== "paused") return;
+
+      const hasData = data.loot.length > 0 || data.xp.length > 0
+        || data.combats.length > 0 || Object.keys(data.playerStats).length > 0;
+
+      const buttons = [
+        { label: "End & Save", icon: "fas fa-save", value: "save" },
+        { label: "Pause Session", icon: "fas fa-pause", value: "pause" },
+      ];
+      if (hasData) {
+        buttons.push({ label: "Discard", icon: "fas fa-trash", value: "discard" });
+      }
+
+      const choice = await waitDialog({
+        title: "Session Tracking",
+        content: "<p>The crawl is ending. What would you like to do with this session?</p>",
+        buttons,
+        defaultButton: "save",
+      });
+
+      if (choice === "save") {
+        await this.endAndSave();
+      } else if (choice === "pause") {
+        await this.pauseSession();
+      } else if (choice === "discard") {
+        await this.discardSession();
+      } else if (choice === null) {
+        await this.pauseSession();
+      }
+    });
+  },
+
   // ── Init ───────────────────────────────────────────────────
 
   init() {
     this.migrateFromLootLog();
     this._initCombatHooks();
     this._initRollHooks();
+    this._initLifecycleHooks();
     console.log(`${MODULE_ID} | Session Recap initialized.`);
   },
 

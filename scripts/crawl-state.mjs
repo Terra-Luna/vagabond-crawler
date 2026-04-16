@@ -107,6 +107,7 @@ export const CrawlState = {
     };
     await this._save();
     ui.notifications.info("Crawl mode started — Heroes phase.");
+    Hooks.callAll("vagabondCrawler.crawlStart");
   },
 
   async end() {
@@ -116,6 +117,7 @@ export const CrawlState = {
     };
     await this._save();
     ui.notifications.info("Crawl ended.");
+    Hooks.callAll("vagabondCrawler.crawlEnd");
   },
 
   async pause() {
