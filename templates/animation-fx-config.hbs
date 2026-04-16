@@ -24,7 +24,75 @@
         <label>Master volume <input type="number" name="settings.masterVolume" value="{{settings.masterVolume}}" min="0" max="1" step="0.05"/></label>
       </fieldset>
     {{else}}
-      <p class="vcfx-placeholder">Tab "{{activeTab}}" body implemented in Task 8.</p>
+      <div class="vcfx-preset-list">
+        {{#each (lookup config activeTab) as |preset key|}}
+          <fieldset class="vcfx-preset" data-preset-key="{{key}}">
+            <legend>{{preset.label}} {{#if (eq key '_default')}}<em>(default)</em>{{/if}}</legend>
+
+            <div class="vcfx-row">
+              <label>Label <input type="text" name="{{../activeTab}}.{{key}}.label" value="{{preset.label}}"/></label>
+              {{#unless (or (eq ../activeTab 'weaponSkillFallbacks') (eq ../activeTab 'alchemical') (eq ../activeTab 'gear'))}}
+                <label>Patterns <input type="text" name="{{../activeTab}}.{{key}}.patterns" value="{{preset.patterns}}"/></label>
+              {{/unless}}
+              <label>Type
+                <select name="{{../activeTab}}.{{key}}.type">
+                  <option value="onToken" {{#if (eq preset.type 'onToken')}}selected{{/if}}>On Token</option>
+                  <option value="projectile" {{#if (eq preset.type 'projectile')}}selected{{/if}}>Projectile</option>
+                  <option value="cone" {{#if (eq preset.type 'cone')}}selected{{/if}}>Cone</option>
+                </select>
+              </label>
+              <label>Target
+                <select name="{{../activeTab}}.{{key}}.target">
+                  <option value="target" {{#if (eq preset.target 'target')}}selected{{/if}}>Target</option>
+                  <option value="self" {{#if (eq preset.target 'self')}}selected{{/if}}>Self</option>
+                </select>
+              </label>
+              {{#if (eq ../activeTab 'gear')}}
+                <label><input type="checkbox" name="{{../activeTab}}.{{key}}.persist" {{#if preset.persist}}checked{{/if}}/> Persist</label>
+              {{/if}}
+            </div>
+
+            <div class="vcfx-block vcfx-hit">
+              <h4>Hit Animation</h4>
+              <div class="vcfx-row">
+                <input type="text" name="{{../activeTab}}.{{key}}.hit.file" value="{{preset.hit.file}}" placeholder="file path or jb2a.xxx"/>
+                <button type="button" data-action="pickFile" data-target="{{../activeTab}}.{{key}}.hit.file">&#128193;</button>
+                <label>Scale <input type="number" step="0.05" name="{{../activeTab}}.{{key}}.hit.scale" value="{{preset.hit.scale}}"/></label>
+                <label>Duration <input type="number" step="50" name="{{../activeTab}}.{{key}}.hit.duration" value="{{preset.hit.duration}}"/></label>
+                <label>Offset X <input type="number" name="{{../activeTab}}.{{key}}.hit.offsetX" value="{{preset.hit.offsetX}}"/></label>
+              </div>
+              <div class="vcfx-row">
+                <input type="text" name="{{../activeTab}}.{{key}}.hit.sound" value="{{preset.hit.sound}}" placeholder="path/to/hit.ogg"/>
+                <button type="button" data-action="pickSound" data-target="{{../activeTab}}.{{key}}.hit.sound">&#127925;</button>
+                <label>Volume <input type="number" step="0.05" min="0" max="1" name="{{../activeTab}}.{{key}}.hit.soundVolume" value="{{preset.hit.soundVolume}}"/></label>
+              </div>
+            </div>
+
+            <details class="vcfx-block vcfx-miss">
+              <summary>Miss Animation (optional)</summary>
+              <div class="vcfx-row">
+                <input type="text" name="{{../activeTab}}.{{key}}.miss.file" value="{{preset.miss.file}}" placeholder="file path"/>
+                <button type="button" data-action="pickFile" data-target="{{../activeTab}}.{{key}}.miss.file">&#128193;</button>
+                <label>Scale <input type="number" step="0.05" name="{{../activeTab}}.{{key}}.miss.scale" value="{{preset.miss.scale}}"/></label>
+                <label>Duration <input type="number" step="50" name="{{../activeTab}}.{{key}}.miss.duration" value="{{preset.miss.duration}}"/></label>
+              </div>
+              <div class="vcfx-row">
+                <input type="text" name="{{../activeTab}}.{{key}}.miss.sound" value="{{preset.miss.sound}}" placeholder="path/to/miss.ogg"/>
+                <button type="button" data-action="pickSound" data-target="{{../activeTab}}.{{key}}.miss.sound">&#127925;</button>
+                <label>Volume <input type="number" step="0.05" min="0" max="1" name="{{../activeTab}}.{{key}}.miss.soundVolume" value="{{preset.miss.soundVolume}}"/></label>
+              </div>
+            </details>
+
+            <div class="vcfx-row">
+              <button type="button" data-action="previewPreset" data-key="{{key}}">&#9654; Preview</button>
+              {{#unless (eq key '_default')}}
+                <button type="button" data-action="deletePreset" data-key="{{key}}">&#128465; Delete</button>
+              {{/unless}}
+            </div>
+          </fieldset>
+        {{/each}}
+        <button type="button" data-action="addPreset">+ Add Preset</button>
+      </div>
     {{/if}}
   </section>
 

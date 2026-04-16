@@ -152,9 +152,12 @@ Hooks.once("init", () => {
     },
   });
 
-  // Register eq Handlebars helper for template conditionals
+  // Register Handlebars helpers for template conditionals
   if (!Handlebars.helpers.eq) {
     Handlebars.registerHelper("eq", (a, b) => a === b);
+  }
+  if (!Handlebars.helpers.or) {
+    Handlebars.registerHelper("or", (...args) => args.slice(0, -1).some(x => !!x));
   }
 
   // Preload templates

@@ -47,12 +47,13 @@ export class AnimationFxConfigApp extends HandlebarsApplicationMixin(Application
   }
 
   static async #onSwitchTab(event, target) {
+    this._saveFormToWorking();
     this._activeTab = target.dataset.tab;
     this.render();
   }
 
   static async #onSubmit(event, form, formData) {
-    // Full form extraction happens in Task 8 per-tab. For now, save global settings only.
+    this._saveFormToWorking();
     const data = formData.object;
     if ("settings.triggerOn" in data) await game.settings.set(MODULE_ID, "animationFxTriggerOn", data["settings.triggerOn"]);
     if ("settings.enabled" in data) await game.settings.set(MODULE_ID, "animationFxEnabled", !!data["settings.enabled"]);
@@ -86,11 +87,105 @@ export class AnimationFxConfigApp extends HandlebarsApplicationMixin(Application
     }
   }
 
-  static async #onAddPreset(event, target) { /* Task 8 */ this.render(); }
-  static async #onDeletePreset(event, target) { /* Task 8 */ this.render(); }
-  static async #onPreviewPreset(event, target) { /* Task 8 */ }
-  static async #onPickFile(event, target) { /* Task 8 */ }
-  static async #onPickSound(event, target) { /* Task 8 */ }
+  static async #onAddPreset(event, target) {
+    const tab = this._activeTab;
+    if (tab === "settings") return;
+    const name = await foundry.applications.api.DialogV2.prompt({
+      window: { title: "New Preset Key" },
+      content: '<label>Key (lowercase, unique): <input name="key" type="text" required/></label>',
+      ok: { callback: (ev, btn, dialog) => dialog.querySelector('input[name=key]').value.trim().toLowerCase() },
+    });
+    if (!name) return;
+    if (this._workingConfig[tab][name]) {
+      ui.notifications.warn(`Preset "${name}" already exists in ${tab}.`);
+      return;
+    }
+    const smartType = this._smartType(name);
+    this._workingConfig[tab][name] = {
+      label: name.charAt(0).toUpperCase() + name.slice(1),
+      patterns: name,
+      type: smartType,
+      target: "target",
+      hit: { file: "", scale: 1, duration: 800 },
+    };
+    this.render();
+  }
+
+  static async #onDeletePreset(event, target) {
+    const key = target.dataset.key;
+    if (!key || key === "_default") return;
+    const confirmed = await foundry.applications.api.DialogV2.confirm({
+      window: { title: "Delete Preset" },
+      content: `<p>Delete preset <b>${key}</b>?</p>`,
+    });
+    if (!confirmed) return;
+    this._saveFormToWorking();
+    delete this._workingConfig[this._activeTab][key];
+    this.render();
+  }
+
+  static async #onPreviewPreset(event, target) {
+    this._saveFormToWorking();
+    const key = target.dataset.key;
+    const preset = this._workingConfig[this._activeTab]?.[key];
+    if (!preset) return;
+    const tok = canvas.tokens.controlled[0];
+    if (!tok) { ui.notifications.warn("Select a token first."); return; }
+    const outcome = event.shiftKey ? "miss" : "hit";
+    await game.vagabondCrawler.animationFx._play(preset, tok, [tok], outcome);
+  }
+
+  static async #onPickFile(event, target) {
+    const fieldName = target.dataset.target;
+    const input = this.element.querySelector(`[name="${fieldName}"]`);
+    const fp = new foundry.applications.apps.FilePicker.implementation({
+      type: "imagevideo",
+      current: input?.value ?? "",
+      callback: (path) => { if (input) input.value = path; },
+    });
+    fp.browse();
+  }
+
+  static async #onPickSound(event, target) {
+    const fieldName = target.dataset.target;
+    const input = this.element.querySelector(`[name="${fieldName}"]`);
+    const fp = new foundry.applications.apps.FilePicker.implementation({
+      type: "audio",
+      current: input?.value ?? "",
+      callback: (path) => { if (input) input.value = path; },
+    });
+    fp.browse();
+  }
+
+  /** Infer default animation type from a preset name. */
+  _smartType(name) {
+    if (/breath|cone|spray|exhale/i.test(name)) return "cone";
+    if (/arrow|bolt|shoot|throw|hurl|spit/i.test(name)) return "projectile";
+    return "onToken";
+  }
+
+  /** Read current form values into _workingConfig without a full re-render. */
+  _saveFormToWorking() {
+    const formEl = this.element instanceof HTMLFormElement
+      ? this.element
+      : this.element?.querySelector("form") ?? this.element;
+    if (!formEl) return;
+    const fd = new FormDataExtended(formEl);
+    const data = foundry.utils.expandObject(fd.object);
+    for (const tab of ["weapons", "weaponSkillFallbacks", "alchemical", "gear", "npcActions"]) {
+      if (data[tab]) {
+        for (const [key, preset] of Object.entries(data[tab])) {
+          if (!this._workingConfig[tab]) this._workingConfig[tab] = {};
+          if (!this._workingConfig[tab][key]) this._workingConfig[tab][key] = {};
+          foundry.utils.mergeObject(this._workingConfig[tab][key], preset);
+        }
+      }
+    }
+    // Persist settings fields too
+    if (data.settings) {
+      // will be written to game settings on submit; just update context
+    }
+  }
 
   _flashSaved() {
     const el = this.element.querySelector(".vcfx-save-flash");
