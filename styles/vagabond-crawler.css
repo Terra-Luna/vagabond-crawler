@@ -4787,3 +4787,79 @@ body.theme-light .vcb-phase-badge {
 }
 
 .sr-clear-btn:hover { background: rgba(192,57,43,0.4); }
+
+/* ── History tab ───────────────────────────────────────────────────────── */
+.sr-history-list { display: flex; flex-direction: column; gap: 4px; }
+
+.sr-history-entry {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  background: var(--vcb-bg-alt, #1f2226);
+  border: 1px solid var(--vcb-border, #3a3d44);
+  border-radius: 4px;
+}
+
+.sr-history-info {
+  flex: 1;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.sr-history-info:hover .sr-history-name { color: var(--vcb-accent, #c9a54a); }
+
+.sr-history-name {
+  font-weight: 700;
+  font-size: 0.95em;
+  transition: color 0.15s;
+}
+
+.sr-history-meta {
+  font-size: 0.8em;
+  color: var(--vcb-text-dim, #9aa0a6);
+}
+
+.sr-history-delete {
+  background: none;
+  border: none;
+  color: #888;
+  cursor: pointer;
+  padding: 4px 6px;
+  border-radius: 3px;
+  font-size: 0.85em;
+}
+
+.sr-history-delete:hover {
+  color: #e74c3c;
+  background: rgba(192,57,43,0.15);
+}
+
+/* ── Viewing banner ────────────────────────────────────────────────────── */
+.sr-viewing-banner {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  margin-bottom: 8px;
+  background: rgba(201, 165, 74, 0.15);
+  border: 1px solid rgba(201, 165, 74, 0.3);
+  border-radius: 4px;
+  font-size: 0.85em;
+  color: var(--vcb-accent, #c9a54a);
+}
+
+.sr-back-btn {
+  margin-left: auto;
+  padding: 3px 10px;
+  background: rgba(201, 165, 74, 0.2);
+  border: 1px solid rgba(201, 165, 74, 0.4);
+  color: var(--vcb-accent, #c9a54a);
+  border-radius: 3px;
+  cursor: pointer;
+  font-size: 0.85em;
+}
+
+.sr-back-btn:hover { background: rgba(201, 165, 74, 0.35); }
