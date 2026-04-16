@@ -55,6 +55,7 @@ export const AnimationFx = {
     // Register the chat message hook immediately.
     const hookId = Hooks.on("createChatMessage", (msg, opts, userId) => this._onChatMessage(msg, opts, userId));
     this._hookIds.push(hookId);
+    this._registerSheetButtons();
     this._ready = true;
     // Defer the npcAction wrap to a macrotask so it runs after npc-abilities.mjs
     // finishes its own async wrap chain (which uses multiple await-import steps).
@@ -344,6 +345,153 @@ export const AnimationFx = {
     } catch (e) {
       console.warn("[vagabond-crawler] animation play failed:", e);
     }
+  },
+
+  // ── Override dialogs ────────────────────────────────────────────────────────
+
+  async openOverrideDialog(target, kind, index = null) {
+    // target: Item (kind="item") or Actor (kind="action")
+    const currentOverride = kind === "item"
+      ? (target.getFlag(MODULE_ID, "animationOverride") ?? {})
+      : ((target.getFlag(MODULE_ID, "actionOverrides") ?? {})[index] ?? {});
+    const currentDisabled = kind === "item"
+      ? !!target.getFlag(MODULE_ID, "disabled")
+      : !!(currentOverride.disabled);
+
+    const dialogTitle = kind === "item"
+      ? `Animation FX Override: ${target.name}`
+      : `Action Override${index !== null ? ` (Action ${index})` : ""}`;
+
+    const content = `
+      <form style="display:flex;flex-direction:column;gap:0.4em;padding:0.5em 0">
+        <label style="display:flex;align-items:center;gap:0.4em">
+          <input type="checkbox" name="disabled" ${currentDisabled ? "checked" : ""}/>
+          Disable animation entirely
+        </label>
+        <hr style="margin:0.25em 0"/>
+        <label>Custom file
+          <input type="text" name="file" value="${currentOverride.hit?.file ?? ""}" placeholder="path/to/animation.webm" style="width:100%"/>
+        </label>
+        <label>Type
+          <select name="type">
+            <option value="onToken" ${(currentOverride.type ?? "onToken") === "onToken" ? "selected" : ""}>On Token</option>
+            <option value="projectile" ${currentOverride.type === "projectile" ? "selected" : ""}>Projectile</option>
+            <option value="cone" ${currentOverride.type === "cone" ? "selected" : ""}>Cone</option>
+          </select>
+        </label>
+        <label>Target
+          <select name="target">
+            <option value="target" ${(currentOverride.target ?? "target") === "target" ? "selected" : ""}>Target</option>
+            <option value="self" ${currentOverride.target === "self" ? "selected" : ""}>Self</option>
+          </select>
+        </label>
+        <label>Scale
+          <input type="number" step="0.05" name="scale" value="${currentOverride.hit?.scale ?? 1}"/>
+        </label>
+        <label>Duration (ms)
+          <input type="number" step="50" name="duration" value="${currentOverride.hit?.duration ?? 800}"/>
+        </label>
+      </form>`;
+
+    let result;
+    try {
+      result = await foundry.applications.api.DialogV2.prompt({
+        window: { title: dialogTitle },
+        content,
+        ok: {
+          label: "Save",
+          callback: (ev, btn, dialog) => {
+            const form = dialog.querySelector("form");
+            return new FormDataExtended(form).object;
+          },
+        },
+      });
+    } catch (e) {
+      // User cancelled
+      return;
+    }
+    if (!result) return;
+
+    if (kind === "item") {
+      await target.setFlag(MODULE_ID, "disabled", !!result.disabled);
+      if (result.file) {
+        const preset = {
+          label: `Custom (${target.name})`,
+          type: result.type,
+          target: result.target,
+          hit: { file: result.file, scale: Number(result.scale), duration: Number(result.duration) },
+        };
+        await target.setFlag(MODULE_ID, "animationOverride", preset);
+      } else {
+        await target.unsetFlag(MODULE_ID, "animationOverride");
+      }
+    } else {
+      const overrides = foundry.utils.deepClone(target.getFlag(MODULE_ID, "actionOverrides") ?? {});
+      if (result.disabled) {
+        overrides[index] = { disabled: true };
+      } else if (result.file) {
+        overrides[index] = {
+          label: `Custom action ${index}`,
+          type: result.type,
+          target: result.target,
+          hit: { file: result.file, scale: Number(result.scale), duration: Number(result.duration) },
+        };
+      } else {
+        delete overrides[index];
+      }
+      await target.setFlag(MODULE_ID, "actionOverrides", overrides);
+    }
+  },
+
+  _registerSheetButtons() {
+    // Item sheet header button — v13 fires getHeaderControls{ClassName} (callAll variant).
+    // The callback receives (app, controlsArray); push a control object onto the array.
+    const itemHeaderHook = (app, controls) => {
+      const item = app.document;
+      if (!item) return;
+      const eq = item.system?.equipmentType;
+      const eligible = eq === "weapon" || item.type === "alchemical" || item.type === "gear" || eq === "gear";
+      if (!eligible) return;
+      controls.push({
+        icon: "fas fa-film",
+        label: "Animation FX",
+        action: "vcfx-override",
+        visible: true,
+        onClick: () => this.openOverrideDialog(item, "item"),
+      });
+    };
+    // v13 fires getHeaderControlsVagabondItemSheet (the most-derived hook name).
+    // Parent-class variants (ItemSheetV2, ApplicationV2) also fire but we only need one.
+    Hooks.on("getHeaderControlsVagabondItemSheet", itemHeaderHook);
+
+    // NPC sheet action rows — inject ⚡ button next to each [data-action-index] row.
+    // v13 fires renderVagabondNPCSheet(sheet) where sheet.element is the HTMLElement.
+    const npcHook = (sheet) => {
+      const actor = sheet.actor ?? sheet.document;
+      if (!actor || actor.type !== "npc") return;
+      const el = sheet.element;
+      if (!el) return;
+      const rows = el.querySelectorAll("[data-action-index]");
+      rows.forEach(row => {
+        if (row.querySelector(".vcfx-action-override")) return;
+        const idx = Number(row.dataset.actionIndex);
+        if (Number.isNaN(idx)) return;
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "vcfx-action-override";
+        btn.title = "Animation FX override";
+        btn.innerHTML = "⚡";
+        btn.style.cssText = "margin-left:auto;padding:0 4px;font-size:0.9em;cursor:pointer;background:transparent;border:none;opacity:0.7;";
+        btn.addEventListener("click", (ev) => {
+          ev.preventDefault();
+          ev.stopPropagation();
+          this.openOverrideDialog(actor, "action", idx);
+        });
+        row.appendChild(btn);
+      });
+    };
+    Hooks.on("renderVagabondNPCSheet", npcHook);
+    Hooks.on("renderActorSheet", npcHook);  // fallback
   },
 
   // ── Config UI ───────────────────────────────────────────────────────────────
