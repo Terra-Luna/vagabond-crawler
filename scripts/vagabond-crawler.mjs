@@ -462,6 +462,14 @@ Hooks.once("ready", async () => {
 });
 
 
+// !recap chat command — opens session recap for any user
+Hooks.on("chatMessage", (chatLog, message) => {
+  if (message.trim().toLowerCase() === "!recap") {
+    SessionRecap.open();
+    return false;
+  }
+});
+
 Hooks.once("ready", () => {
   game.socket.on(`module.${MODULE_ID}`, async (data) => {
     if (data.action === "syncState") {

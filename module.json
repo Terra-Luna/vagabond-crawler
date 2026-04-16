@@ -28,6 +28,12 @@
         "id": "vagabond-extras",
         "type": "module"
       }
+    ],
+    "recommends": [
+      {
+        "id": "damage-log",
+        "type": "module"
+      }
     ]
   },
   "esmodules": [

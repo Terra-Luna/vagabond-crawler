@@ -21,6 +21,7 @@ import { LootGenerator }   from "./loot-generator.mjs";
 import { ScrollForge }     from "./scroll-forge.mjs";
 import { MerchantShop }    from "./merchant-shop.mjs";
 import { PartyInventory } from "./party-inventory.mjs";
+import { SessionRecap }   from "./session-recap.mjs";
 
 const BAR_ID = "vagabond-crawler-bar";
 
@@ -402,8 +403,8 @@ export const CrawlBar = {
         <button class="vcb-forge-tab" data-tool="lootManager">
           <i class="fas fa-treasure-chest"></i> Loot Manager
         </button>
-        <button class="vcb-forge-tab" data-tool="lootLog">
-          <i class="fas fa-clipboard-list"></i> Loot Log
+        <button class="vcb-forge-tab" data-tool="sessionRecap">
+          <i class="fas fa-clipboard-list"></i> Session Recap
         </button>
         <button class="vcb-forge-tab" data-tool="lootGenerator">
           <i class="fas fa-dice-d20"></i> Loot Generator
@@ -429,7 +430,7 @@ export const CrawlBar = {
     open("forge",         () => RelicForge.open());
     open("scrollForge",   () => ScrollForge.open());
     open("lootManager",   () => LootManager.open());
-    open("lootLog",       () => LootTracker.open());
+    open("sessionRecap",  () => SessionRecap.open());
     open("lootGenerator", () => LootGenerator.open());
     open("merchantShop",  () => MerchantShop.open());
     open("partyInventory",() => PartyInventory.open());
