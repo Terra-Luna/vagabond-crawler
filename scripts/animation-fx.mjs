@@ -39,7 +39,8 @@ export const AnimationFx = {
   },
 
   async init() {
-    // Hook registration comes in Task 4
+    const hookId = Hooks.on("createChatMessage", (msg, opts, userId) => this._onChatMessage(msg, opts, userId));
+    this._hookIds.push(hookId);
     this._ready = true;
   },
 
@@ -100,6 +101,59 @@ export const AnimationFx = {
       if (this._matchesPattern(action.name, preset.patterns)) return preset;
     }
     return config.npcActions?._default ?? null;
+  },
+
+  _getSourceToken(actor) {
+    if (!actor) return null;
+    const tokens = actor.getActiveTokens(true, true);
+    return tokens.find(t => t.parent?.id === canvas.scene?.id) ?? tokens[0] ?? null;
+  },
+
+  _getTargets(message) {
+    const stored = message.flags?.vagabond?.targetsAtRollTime;
+    if (Array.isArray(stored) && stored.length > 0) {
+      return stored.map(id => canvas.tokens.get(id)).filter(t => t);
+    }
+    return Array.from(game.user.targets).map(t => t.document) // ensure TokenDocument
+      .map(td => canvas.tokens.get(td.id)).filter(t => t);
+  },
+
+  _determineOutcome(message) {
+    const flag = message.flags?.vagabond?.rollOutcome;
+    if (flag === "hit" || flag === "miss") return flag;
+    const content = message.content ?? "";
+    if (/\bMISS\b/i.test(content) && !/\bHIT\b/i.test(content)) return "miss";
+    return "hit";
+  },
+
+  async _onChatMessage(message, options, userId) {
+    if (userId !== game.userId) return;
+    if (!game.settings.get("vagabond-crawler", "animationFxEnabled")) return;
+
+    const flags = message.flags?.vagabond;
+    if (!flags?.actorId) return;
+    const actor = game.actors.get(flags.actorId);
+    if (!actor) return;
+
+    let preset = null;
+    if (flags.itemId) {
+      const item = actor.items.get(flags.itemId);
+      if (!item) return;
+      preset = this._resolve({ item });
+    } else if (typeof flags.actionIndex === "number") {
+      preset = this._resolve({ actor, actionIndex: flags.actionIndex });
+    }
+    if (!preset) return;
+
+    const outcome = this._determineOutcome(message);
+    const triggerOn = game.settings.get("vagabond-crawler", "animationFxTriggerOn");
+    if (outcome === "miss" && triggerOn === "hit") return;
+
+    const sourceToken = this._getSourceToken(actor);
+    if (!sourceToken) return;
+    const targets = this._getTargets(message);
+
+    await this._play(preset, sourceToken, targets, outcome);
   },
 
   _resolve(source) {
