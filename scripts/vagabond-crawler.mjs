@@ -26,6 +26,7 @@ import { ScrollForge }      from "./scroll-forge.mjs";
 import { MerchantShop }     from "./merchant-shop.mjs";
 import { PartyInventory }  from "./party-inventory.mjs";
 import { MonsterCreator }  from "./monster-creator/monster-creator-app.mjs";
+import { XpCounterPatch }  from "./xp-counter-patch.mjs";
 
 export const MODULE_ID = "vagabond-crawler";
 
@@ -239,6 +240,9 @@ Hooks.once("ready", async () => {
 
   // Merchant shop
   MerchantShop.init();
+
+  // XP questionnaire counter patch (replaces checkboxes with numeric counters)
+  XpCounterPatch.init();
 
   // Start light tracker + real-time engine if enabled
   LightTracker.init();

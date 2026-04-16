@@ -4485,3 +4485,31 @@ body.theme-light .vcb-phase-badge {
 #vagabond-crawler-monster-creator [data-vision-field]:disabled {
   opacity: 0.4;
 }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   XP Counter Patch — numeric counter badges on the Level-Up questionnaire
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.vcb-xp-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 22px;
+  height: 22px;
+  padding: 0 5px;
+  border-radius: 4px;
+  background: var(--vcb-accent, #c9a54a);
+  color: #111;
+  font-weight: 700;
+  font-size: 0.85em;
+  line-height: 1;
+}
+
+.vcb-xp-subtotal {
+  margin-left: auto;
+  padding-left: 8px;
+  font-size: 0.8em;
+  font-weight: 600;
+  color: var(--vcb-accent, #c9a54a);
+  white-space: nowrap;
+}
