@@ -131,6 +131,118 @@ export const AnimationFx = {
     return null;
   },
 
+  // ── Playback helpers ────────────────────────────────────────────────────────
+
+  _getClientScale() {
+    return game.settings.get(MODULE_ID, "animationFxScale") ?? 1.0;
+  },
+
+  _getMasterVolume() {
+    return game.settings.get(MODULE_ID, "animationFxMasterVolume") ?? 0.8;
+  },
+
+  async _playSound(block) {
+    if (!block?.sound) return;
+    if (!game.settings.get(MODULE_ID, "animationFxSoundEnabled")) return;
+    const volume = (block.soundVolume ?? 0.6) * this._getMasterVolume();
+    try {
+      await foundry.audio.AudioHelper.play({ src: block.sound, volume, autoplay: true, loop: false });
+    } catch (e) {
+      console.warn("[vagabond-crawler] animation sound failed:", e);
+    }
+  },
+
+  _computeConeAngle(sourceToken, targets) {
+    const sx = sourceToken.x + (sourceToken.w / 2);
+    const sy = sourceToken.y + (sourceToken.h / 2);
+    let cx = 0, cy = 0;
+    for (const t of targets) {
+      cx += t.x + (t.w / 2);
+      cy += t.y + (t.h / 2);
+    }
+    cx /= targets.length;
+    cy /= targets.length;
+    return Math.toDegrees(Math.atan2(cy - sy, cx - sx));
+  },
+
+  async _play(preset, sourceToken, targets, outcome = "hit") {
+    if (!preset) return;
+    if (typeof Sequence === "undefined") return;
+    const block = preset[outcome];
+    if (!block?.file) return;
+
+    const globalScale = this._getClientScale();
+    const fadeIn = preset.fadeIn ?? 200;
+    const fadeOut = preset.fadeOut ?? 200;
+    const opacity = preset.opacity ?? 1.0;
+
+    // Persistent gear toggle
+    if (preset.persist && sourceToken) {
+      const effectName = `${MODULE_ID}-fx-${preset.label}-${sourceToken.id}`;
+      const existing = Sequencer.EffectManager.getEffects({ name: effectName });
+      if (existing.length > 0) {
+        await Sequencer.EffectManager.endEffects({ name: effectName });
+        return;
+      }
+      const seq = new Sequence(MODULE_ID);
+      seq.effect()
+        .file(block.file)
+        .atLocation(sourceToken)
+        .scaleToObject(block.scale * globalScale)
+        .fadeIn(fadeIn)
+        .fadeOut(fadeOut)
+        .opacity(opacity)
+        .persist()
+        .name(effectName);
+      await seq.play();
+      await this._playSound(block);
+      return;
+    }
+
+    // Non-persistent: iterate targets with stagger
+    const targetList = (targets && targets.length > 0) ? targets : [sourceToken];
+    for (let i = 0; i < targetList.length; i++) {
+      const target = targetList[i];
+      const delay = i * 150;
+      setTimeout(() => this._playOne(preset, block, sourceToken, target, targetList, globalScale, fadeIn, fadeOut, opacity), delay);
+    }
+    await this._playSound(block);
+  },
+
+  async _playOne(preset, block, sourceToken, target, allTargets, globalScale, fadeIn, fadeOut, opacity) {
+    const seq = new Sequence(MODULE_ID);
+    const effect = seq.effect().file(block.file);
+
+    if (preset.type === "projectile") {
+      effect.atLocation(sourceToken).stretchTo(target).fadeIn(100).fadeOut(100).opacity(opacity);
+    } else if (preset.type === "cone") {
+      const angle = this._computeConeAngle(sourceToken, allTargets);
+      effect
+        .atLocation(sourceToken)
+        .rotate(-angle)
+        .scale(block.scale * globalScale)
+        .anchor({ x: 0, y: 0.5 })
+        .duration(block.duration ?? 1500)
+        .fadeIn(fadeIn).fadeOut(fadeOut).opacity(opacity);
+    } else {
+      // onToken
+      const anchorToken = preset.target === "self" ? sourceToken : target;
+      effect
+        .atLocation(anchorToken)
+        .scaleToObject(block.scale * globalScale)
+        .fadeIn(fadeIn).fadeOut(fadeOut).duration(block.duration ?? 800).opacity(opacity);
+      if (typeof block.offsetX === "number") effect.spriteOffset({ x: block.offsetX });
+    }
+
+    try {
+      await seq.play();
+    } catch (e) {
+      console.warn("[vagabond-crawler] animation play failed:", e);
+    }
+  },
+
+  // ── Config UI ───────────────────────────────────────────────────────────────
+
   async open() {
     // AnimationFxConfigApp created in Task 8
     ui.notifications.info("Animation FX config UI not yet implemented.");
