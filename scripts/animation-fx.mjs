@@ -1,5 +1,5 @@
 // scripts/animation-fx.mjs
-import { DEFAULT_ANIMATION_FX_CONFIG } from "./animation-fx-defaults.mjs";
+import { DEFAULT_ANIMATION_FX_CONFIG, buildDefaultAnimationFxConfig } from "./animation-fx-defaults.mjs";
 
 const MODULE_ID = "vagabond-crawler";
 
@@ -45,8 +45,10 @@ export const AnimationFx = {
 
   getConfig() {
     const stored = game.settings.get(MODULE_ID, "animationFxConfig") ?? {};
+    // Use the live JB2A-aware defaults if available, else fall back to the empty stub.
+    const defaults = buildDefaultAnimationFxConfig() ?? foundry.utils.deepClone(DEFAULT_ANIMATION_FX_CONFIG);
     return foundry.utils.mergeObject(
-      foundry.utils.deepClone(DEFAULT_ANIMATION_FX_CONFIG),
+      foundry.utils.deepClone(defaults),
       stored,
       { inplace: false }
     );
