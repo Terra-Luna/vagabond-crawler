@@ -1,5 +1,6 @@
 // scripts/animation-fx.mjs
 import { DEFAULT_ANIMATION_FX_CONFIG, buildDefaultAnimationFxConfig } from "./animation-fx-defaults.mjs";
+import { AnimationFxConfigApp } from "./animation-fx-config.mjs";
 
 const MODULE_ID = "vagabond-crawler";
 
@@ -35,6 +36,18 @@ export const AnimationFx = {
     });
     game.settings.register(MODULE_ID, "animationFxMasterVolume", {
       scope: "client", config: false, type: Number, default: 0.8,
+    });
+    game.settings.registerMenu(MODULE_ID, "animationFxConfigMenu", {
+      name: "Animation FX Configuration",
+      label: "Configure",
+      hint: "Centrally configure weapon, NPC action, alchemical, and gear animations.",
+      icon: "fas fa-film",
+      type: class extends FormApplication {
+        constructor() { super(); game.vagabondCrawler?.animationFx?.open(); }
+        async _updateObject() {}
+        render() { this.close(); return this; }
+      },
+      restricted: true,
     });
   },
 
@@ -336,7 +349,6 @@ export const AnimationFx = {
   // ── Config UI ───────────────────────────────────────────────────────────────
 
   async open() {
-    // AnimationFxConfigApp created in Task 8
-    ui.notifications.info("Animation FX config UI not yet implemented.");
+    new AnimationFxConfigApp().render(true);
   },
 };

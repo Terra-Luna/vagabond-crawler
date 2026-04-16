@@ -1,0 +1,38 @@
+<div class="vcfx-config">
+  <nav class="vcfx-tabs">
+    <a data-action="switchTab" data-tab="weapons" class="{{#if (eq activeTab 'weapons')}}active{{/if}}">Weapons</a>
+    <a data-action="switchTab" data-tab="weaponSkillFallbacks" class="{{#if (eq activeTab 'weaponSkillFallbacks')}}active{{/if}}">Skill Fallbacks</a>
+    <a data-action="switchTab" data-tab="alchemical" class="{{#if (eq activeTab 'alchemical')}}active{{/if}}">Alchemical</a>
+    <a data-action="switchTab" data-tab="gear" class="{{#if (eq activeTab 'gear')}}active{{/if}}">Gear</a>
+    <a data-action="switchTab" data-tab="npcActions" class="{{#if (eq activeTab 'npcActions')}}active{{/if}}">NPC Actions</a>
+    <a data-action="switchTab" data-tab="settings" class="{{#if (eq activeTab 'settings')}}active{{/if}}">Settings</a>
+  </nav>
+
+  <section class="vcfx-body">
+    {{#if (eq activeTab 'settings')}}
+      <fieldset class="vcfx-settings">
+        <legend>Global Settings</legend>
+        <label><input type="checkbox" name="settings.enabled" {{#if settings.enabled}}checked{{/if}}/> Enable animations</label>
+        <label>Global scale <input type="number" name="settings.scale" value="{{settings.scale}}" min="0.25" max="3" step="0.05"/></label>
+        <label>Trigger on
+          <select name="settings.triggerOn">
+            <option value="always" {{#if (eq settings.triggerOn 'always')}}selected{{/if}}>Always</option>
+            <option value="hit" {{#if (eq settings.triggerOn 'hit')}}selected{{/if}}>On hit only</option>
+          </select>
+        </label>
+        <label><input type="checkbox" name="settings.soundEnabled" {{#if settings.soundEnabled}}checked{{/if}}/> Enable sound</label>
+        <label>Master volume <input type="number" name="settings.masterVolume" value="{{settings.masterVolume}}" min="0" max="1" step="0.05"/></label>
+      </fieldset>
+    {{else}}
+      <p class="vcfx-placeholder">Tab "{{activeTab}}" body implemented in Task 8.</p>
+    {{/if}}
+  </section>
+
+  <footer class="vcfx-actions">
+    <span class="vcfx-save-flash">Saved!</span>
+    <button type="button" data-action="resetTab">Reset Tab</button>
+    <button type="submit">Save</button>
+    <button type="button" data-action="saveAndClose">Save &amp; Close</button>
+    <button type="button" data-action="cancel">Cancel</button>
+  </footer>
+</div>

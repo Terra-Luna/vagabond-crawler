@@ -152,6 +152,16 @@ Hooks.once("init", () => {
     },
   });
 
+  // Register eq Handlebars helper for template conditionals
+  if (!Handlebars.helpers.eq) {
+    Handlebars.registerHelper("eq", (a, b) => a === b);
+  }
+
+  // Preload templates
+  foundry.applications.handlebars.loadTemplates([
+    "modules/vagabond-crawler/templates/animation-fx-config.hbs",
+  ]);
+
   console.log(`${MODULE_ID} | Initialized.`);
 });
 
