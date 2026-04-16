@@ -281,6 +281,190 @@ export const SessionRecap = {
     });
   },
 
+  // ── Export ─────────────────────────────────────────────────
+
+  _formatDuration(ms) {
+    if (!ms || ms < 0) return "0m";
+    const totalSeconds = Math.floor(ms / 1000);
+    const hours = Math.floor(totalSeconds / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const seconds = totalSeconds % 60;
+    if (hours > 0) return `${hours}h ${minutes}m`;
+    if (minutes > 0) return `${minutes}m ${seconds}s`;
+    return `${seconds}s`;
+  },
+
+  formatForDiscord() {
+    const data = this.getData();
+    const lines = [];
+
+    const duration = data.sessionStart
+      ? this._formatDuration(Date.now() - data.sessionStart)
+      : "N/A";
+    lines.push("# Session Recap");
+    lines.push(`**Duration:** ${duration}`);
+    lines.push("");
+
+    // ── Combat ─────────────────────────────────────────────
+    if (data.combats.length > 0) {
+      lines.push("## Combat");
+      data.combats.forEach((combat, idx) => {
+        const combatDuration = combat.startTime && combat.endTime
+          ? ` (${this._formatDuration(combat.endTime - combat.startTime)})`
+          : "";
+        lines.push(`**Encounter ${idx + 1}** — ${combat.rounds} rounds${combatDuration}`);
+
+        const enemyCounts = {};
+        for (const e of combat.enemies) {
+          if (!enemyCounts[e.name]) enemyCounts[e.name] = { total: 0, defeated: 0, killers: [] };
+          enemyCounts[e.name].total++;
+          if (e.defeated) {
+            enemyCounts[e.name].defeated++;
+            if (e.killedBy) enemyCounts[e.name].killers.push(e.killedBy);
+          }
+        }
+
+        const enemyList = Object.entries(enemyCounts)
+          .map(([name, c]) => `${name}${c.total > 1 ? ` x${c.total}` : ""}`)
+          .join(", ");
+        lines.push(`- Enemies: ${enemyList}`);
+
+        const defeatedParts = [];
+        for (const [name, c] of Object.entries(enemyCounts)) {
+          if (c.defeated === 0) continue;
+          const killerCounts = {};
+          c.killers.forEach(k => { killerCounts[k] = (killerCounts[k] || 0) + 1; });
+          const killerStr = Object.entries(killerCounts)
+            .map(([k, n]) => n > 1 ? `${k} x${n}` : k)
+            .join(", ");
+          const label = c.defeated > 1 ? `${name} x${c.defeated}` : name;
+          defeatedParts.push(killerStr ? `${label} (${killerStr})` : label);
+        }
+        if (defeatedParts.length > 0) {
+          lines.push(`- Defeated: ${defeatedParts.join(", ")}`);
+        }
+        lines.push("");
+      });
+    }
+
+    // ── Player Stats ───────────────────────────────────────
+    const statEntries = Object.entries(data.playerStats).filter(([, s]) => {
+      return s.attacks.hits + s.attacks.misses > 0
+        || s.saves.passes + s.saves.fails > 0
+        || s.damageDealt > 0 || s.damageTaken > 0 || s.kills > 0;
+    });
+
+    if (statEntries.length > 0) {
+      lines.push("## Player Stats");
+      for (const [, stats] of statEntries) {
+        lines.push(`### ${stats.name}`);
+
+        const totalAtk = stats.attacks.hits + stats.attacks.misses;
+        if (totalAtk > 0) {
+          const hitPct = Math.round((stats.attacks.hits / totalAtk) * 100);
+          let atkLine = `- **Attacks:** ${stats.attacks.hits}/${totalAtk} hit (${hitPct}%)`;
+          const atkParts = [];
+          if (stats.attacks.nat20s > 0) atkParts.push(`${stats.attacks.nat20s} nat 20${stats.attacks.nat20s > 1 ? "s" : ""}`);
+          if (stats.attacks.nat1s > 0) atkParts.push(`${stats.attacks.nat1s} nat 1${stats.attacks.nat1s > 1 ? "s" : ""}`);
+          if (atkParts.length > 0) atkLine += ` — ${atkParts.join(", ")}`;
+          lines.push(atkLine);
+        }
+
+        const totalSave = stats.saves.passes + stats.saves.fails;
+        if (totalSave > 0) {
+          let saveLine = `- **Saves:** ${stats.saves.passes}/${totalSave} passed`;
+          const saveParts = [];
+          if (stats.saves.nat20s > 0) saveParts.push(`${stats.saves.nat20s} nat 20${stats.saves.nat20s > 1 ? "s" : ""}`);
+          if (stats.saves.nat1s > 0) saveParts.push(`${stats.saves.nat1s} nat 1${stats.saves.nat1s > 1 ? "s" : ""}`);
+          if (saveParts.length > 0) saveLine += ` — ${saveParts.join(", ")}`;
+          lines.push(saveLine);
+        }
+
+        if (stats.rolls.total > 0) {
+          const avg = (stats.rolls.sum / stats.rolls.total).toFixed(1);
+          lines.push(`- **Avg d20:** ${avg}`);
+        }
+
+        if (stats.damageDealt > 0 || stats.damageTaken > 0) {
+          lines.push(`- **Damage:** ${stats.damageDealt} dealt / ${stats.damageTaken} taken`);
+        }
+
+        if (stats.kills > 0) {
+          lines.push(`- **Kills:** ${stats.kills}`);
+        }
+        lines.push("");
+      }
+    }
+
+    // ── Loot ───────────────────────────────────────────────
+    if (data.loot.length > 0) {
+      const byPlayer = {};
+      for (const entry of data.loot) {
+        if (!byPlayer[entry.player]) byPlayer[entry.player] = [];
+        byPlayer[entry.player].push(entry);
+      }
+
+      lines.push("## Loot");
+      for (const [player, entries] of Object.entries(byPlayer)) {
+        lines.push(`### ${player}`);
+
+        const currencyEntries = entries.filter(e => e.type === "currency");
+        const itemEntries = entries.filter(e => e.type === "item" || e.type === "pickup");
+
+        if (currencyEntries.length > 0) {
+          let totalGold = 0, totalSilver = 0, totalCopper = 0;
+          for (const e of currencyEntries) {
+            const gm = e.detail.match(/(\d+)\s*Gold/i);
+            const sm = e.detail.match(/(\d+)\s*Silver/i);
+            const cm = e.detail.match(/(\d+)\s*Copper/i);
+            if (gm) totalGold += parseInt(gm[1]);
+            if (sm) totalSilver += parseInt(sm[1]);
+            if (cm) totalCopper += parseInt(cm[1]);
+          }
+          const parts = [];
+          if (totalGold > 0) parts.push(`${totalGold}g`);
+          if (totalSilver > 0) parts.push(`${totalSilver}s`);
+          if (totalCopper > 0) parts.push(`${totalCopper}c`);
+          if (parts.length > 0) lines.push(`- **Currency:** ${parts.join(", ")}`);
+        }
+
+        if (itemEntries.length > 0) {
+          lines.push("- **Items:**");
+          for (const e of itemEntries) {
+            const source = e.source !== "Ground" ? ` *(from ${e.source})*` : " *(picked up)*";
+            lines.push(`  - ${e.detail}${source}`);
+          }
+        }
+        lines.push("");
+      }
+    }
+
+    // ── XP ─────────────────────────────────────────────────
+    if (data.xp.length > 0) {
+      const byPlayer = {};
+      for (const entry of data.xp) {
+        if (!byPlayer[entry.player]) byPlayer[entry.player] = { entries: [], total: 0 };
+        byPlayer[entry.player].entries.push(entry);
+        byPlayer[entry.player].total += entry.totalXp;
+      }
+
+      lines.push("## XP");
+      for (const [player, { entries, total }] of Object.entries(byPlayer)) {
+        lines.push(`### ${player}`);
+        for (const entry of entries) {
+          for (const q of entry.questions) {
+            lines.push(`- ${q.label} — x${q.count} = ${q.count * q.xp} XP`);
+          }
+        }
+        lines.push(`- **Total: ${total} XP**`);
+        lines.push("");
+      }
+    }
+
+    if (lines.length <= 3) return "No session activity recorded.";
+    return lines.join("\n");
+  },
+
   // ── Init ───────────────────────────────────────────────────
 
   init() {
