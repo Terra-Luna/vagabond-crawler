@@ -4891,9 +4891,9 @@ body.theme-light .vcb-phase-badge {
 .vcfx-hit { border-left-color: var(--vcfx-hit-accent); }
 .vcfx-miss { border-left-color: var(--vcfx-miss-accent); }
 .vcfx-miss summary { cursor: pointer; font-weight: 500; }
-.vcfx-actions { display: flex; justify-content: flex-end; gap: 0.4rem; padding: 0.5rem; border-top: 1px solid var(--vcb-border); }
-.vcfx-save-flash { width: 10px; height: 10px; border-radius: 50%; background: transparent; transition: background 0.3s; }
-.vcfx-save-flash.vcfx-flash { background: var(--vcfx-hit-accent); }
+.vcfx-actions { display: flex; align-items: center; gap: 0.4rem; padding: 0.5rem; border-top: 1px solid var(--vcb-border); }
+.vcfx-save-flash { margin-right: auto; color: var(--vcfx-hit-accent); font-size: 0.9em; font-weight: 500; opacity: 0; transition: opacity 0.3s ease; }
+.vcfx-save-flash.vcfx-flash { opacity: 1; }
 .vcfx-action-override { margin-left: 0.3rem; padding: 0 0.3rem; font-size: 0.9em; opacity: 0.7; }
 .vcfx-action-override:hover { opacity: 1; }
 .vcfx-placeholder { opacity: 0.6; font-style: italic; padding: 2rem; text-align: center; }
