@@ -11,6 +11,7 @@ import { MODULE_ID } from "./vagabond-crawler.mjs";
 const SETTING_KEY = "sessionRecap";
 
 const DEFAULT_DATA = {
+  sessionState: "inactive",
   sessionStart: null,
   loot: [],
   xp: [],
@@ -35,12 +36,27 @@ export const SessionRecap = {
       type: Object,
       default: foundry.utils.deepClone(DEFAULT_DATA),
     });
+    game.settings.register(MODULE_ID, "sessionHistory", {
+      scope: "world",
+      config: false,
+      type: Array,
+      default: [],
+    });
   },
 
   // ── Read / Write ───────────────────────────────────────────
 
   getData() {
     return game.settings.get(MODULE_ID, SETTING_KEY) ?? foundry.utils.deepClone(DEFAULT_DATA);
+  },
+
+  getHistory() {
+    return game.settings.get(MODULE_ID, "sessionHistory") ?? [];
+  },
+
+  async _saveHistory(history) {
+    await game.settings.set(MODULE_ID, "sessionHistory", history);
+    if (this._app?.rendered) this._app.render();
   },
 
   async _save(data) {
@@ -118,7 +134,8 @@ export const SessionRecap = {
 
   async clear() {
     const fresh = foundry.utils.deepClone(DEFAULT_DATA);
-    fresh.sessionStart = Date.now();
+    fresh.sessionState = "inactive";
+    fresh.sessionStart = null;
     await this._save(fresh);
   },
 
