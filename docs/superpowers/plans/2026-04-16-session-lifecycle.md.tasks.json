@@ -1,0 +1,12 @@
+{
+  "planPath": "docs/superpowers/plans/2026-04-16-session-lifecycle.md",
+  "tasks": [
+    { "id": 16, "subject": "Task 1: Add sessionState & History Setting", "status": "pending" },
+    { "id": 17, "subject": "Task 2: Session Lifecycle Methods", "status": "pending", "blockedBy": [16] },
+    { "id": 18, "subject": "Task 3: Crawl Start/End Popups", "status": "pending", "blockedBy": [17] },
+    { "id": 19, "subject": "Task 4: History Tab in SessionRecapApp", "status": "pending", "blockedBy": [17] },
+    { "id": 20, "subject": "Task 5: CSS for History & Viewing Banner", "status": "pending", "blockedBy": [19] },
+    { "id": 21, "subject": "Task 6: E2E Verification", "status": "pending", "blockedBy": [18, 19, 20] }
+  ],
+  "lastUpdated": "2026-04-16T00:00:00Z"
+}
