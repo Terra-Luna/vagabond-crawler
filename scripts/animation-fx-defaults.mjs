@@ -476,7 +476,7 @@ export function buildDefaultAnimationFxConfig() {
         type: "onToken",
         target: "target",
         hit: {
-          file: `${R}/Generic/Weapon_Attacks/Melee/Bite01_01_Regular_Red_800x600.webm`,
+          file: `${R}/Generic/Creature/Bite_01_Regular_Red_400x400.webm`,
           scale: 8,
           duration: 800,
         },
@@ -487,7 +487,7 @@ export function buildDefaultAnimationFxConfig() {
         type: "onToken",
         target: "target",
         hit: {
-          file: `${R}/Generic/Weapon_Attacks/Melee/Claw01_01_Regular_Red_800x600.webm`,
+          file: `${R}/Generic/Creature/Claw/CreatureAttackClaw_001_001_Red_800x600.webm`,
           scale: 8,
           duration: 800,
         },
