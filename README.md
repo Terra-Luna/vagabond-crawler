@@ -2,7 +2,7 @@
 
 ![Foundry v13](https://img.shields.io/badge/foundry-v13-green?style=for-the-badge)
 ![System](https://img.shields.io/badge/system-vagabond-blue?style=for-the-badge)
-![Version](https://img.shields.io/badge/version-1.9.1-orange?style=for-the-badge)
+![Version](https://img.shields.io/badge/version-1.10.0-orange?style=for-the-badge)
 
 A comprehensive dungeon crawl management module for the **Vagabond RPG** system in Foundry VTT. Everything you need to run a crawl — turn tracking, movement enforcement, random encounters, light management, morale, combat integration, crafting, loot, and more — all from a unified interface.
 
@@ -181,10 +181,36 @@ Left-click the "Forge & Loot" button on the crawl bar to open a tool picker:
 - **Relic Forge** — Enchant equipment with relic powers
 - **Scroll Forge** — Create consumable spell scrolls
 - **Loot Manager** — Assign loot tables to NPCs, configure drop chances
-- **Loot Log** — Session loot tracking with Discord export
+- **Session Recap** — Full session tracking with combat stats, loot, XP, and Discord export
 - **Loot Generator** — Roll on core loot tables (Levels 1-10) with compendium item creation
 
 Right-click for quick settings (loot drop toggle, drop chance slider, item drops toggle).
+
+---
+
+### Session Recap
+Tabbed window that tracks everything that happens during a session, broken down by player.
+
+- **Overview** — Session duration, total combats, enemies defeated, per-player kills/damage/XP
+- **Combat** — Per-encounter collapsible breakdowns (rounds, duration, enemy list with kill credits), player stats table (hit rate, nat 20s/1s, avg d20, saves, damage dealt/taken, kills)
+- **Loot** — Reverse-chronological loot log with source tracking
+- **XP** — Per-player XP awards with question breakdowns
+- **History** — View, export, and delete saved sessions from past crawls
+- **Copy for Discord** — One-click markdown export of any session
+- **`!recap` chat command** — Opens the window for any user
+- **Session lifecycle** — Crawl start/end popups to start, pause, save, or discard sessions
+- Auto-capture gated on active session state — no tracking unless you opt in
+- Damage and kill tracking requires the **Damage Log** module (recommended dependency)
+
+---
+
+### XP Counter Patch
+Enhances the base system's Level Up XP questionnaire with unlimited counters.
+
+- Left-click a question to increment (1, 2, 3, ...)
+- Right-click to decrement
+- Counter badge and per-question XP subtotals
+- Awards auto-logged to the Session Recap
 
 ---
 
@@ -270,6 +296,9 @@ Committed dataset of every NPC across the Vagabond compendium packs (plus `vagab
 ### Optional
 - **vagabond-character-enhancer** — Class feature automation
 - **Sequencer + JB2A** — Visual effects for spells, traps, and attacks
+
+### Recommended
+- **Damage Log** — Enables damage dealt/taken and kill tracking in Session Recap
 
 ---
 

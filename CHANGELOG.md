@@ -1,5 +1,43 @@
 # Changelog
 
+## v1.10.0
+
+### XP Counter Patch
+
+Monkey-patches the base system's Level Up dialog so the XP questionnaire uses unlimited numeric counters instead of simple on/off checkboxes.
+
+- **Left-click** a question to increment its count (1, 2, 3, ...)
+- **Right-click** to decrement (minimum 0)
+- Counter badge replaces checkbox; per-question subtotals shown when count > 1
+- XP awarded = count x XP per question
+- No changes to the base system files — purely a runtime patch
+
+### Session Recap
+
+New tabbed window that tracks combat stats, loot, XP, and roll stats across an entire session. Replaces the old Loot Log with a full session overview.
+
+- **Overview tab** — Session duration, total combats, enemies defeated, per-player summary (kills, damage dealt/taken, XP)
+- **Combat tab** — Per-encounter breakdown with collapsible sections (rounds, duration, enemy list with kill credit), per-player stats table (hit rate, nat 20s/1s, avg d20, saves, damage, kills). Damage and kill tracking requires the Damage Log module (recommended dependency).
+- **Loot tab** — Same reverse-chronological loot view as before, now embedded in the recap window
+- **XP tab** — Per-player XP award breakdown with question counts and totals
+- **History tab** — View, export, and delete saved sessions
+- **Copy for Discord** — Exports the full session recap as plain markdown
+- **`!recap` chat command** — Opens the recap window for any user (not just the GM)
+
+### Session Lifecycle
+
+Managed session lifecycle tied to crawl start/stop.
+
+- **Crawl start popup** — "Start New Session" / "Continue Session" (if paused) / "No Tracking"
+- **Crawl end popup** — "End & Save" / "Pause Session" / "Discard"
+- Sessions auto-named by date (e.g. `2026.04.16 Session`) with dedup suffix for multiple sessions per day
+- Unlimited saved session history — view any past session read-only with full Discord export
+- Auto-capture (combat, rolls, damage) only runs when a session is active
+
+### Loot Tracker Absorption
+
+The standalone Loot Log window has been replaced by the Session Recap's Loot tab. All existing loot logging API calls (`LootTracker.log`, `logClaim`, `logPickup`) continue to work — the LootTracker is now a thin facade over SessionRecap. Existing loot data is automatically migrated on first load.
+
 ## v1.9.1
 
 ### Bug Fixes
