@@ -13,10 +13,21 @@
     <button class="sr-tab {{#if (eq activeTab 'xp')}}active{{/if}}" data-action="changeTab" data-tab="xp">
       <i class="fas fa-star"></i> XP
     </button>
+    <button class="sr-tab {{#if (eq activeTab 'history')}}active{{/if}}" data-action="changeTab" data-tab="history">
+      <i class="fas fa-book"></i> History
+    </button>
   </nav>
 
   {{! Tab Content }}
   <div class="sr-tab-content">
+    {{#if isViewingHistory}}
+      <div class="sr-viewing-banner">
+        <i class="fas fa-eye"></i> Viewing: <strong>{{viewingSession.name}}</strong>
+        <button type="button" class="sr-back-btn" data-action="backToCurrent">
+          <i class="fas fa-arrow-left"></i> Back to Current
+        </button>
+      </div>
+    {{/if}}
 
     {{! ─── Overview ─── }}
     {{#if (eq activeTab 'overview')}}
@@ -181,6 +192,33 @@
       </section>
     {{/if}}
 
+    {{! ─── History ─── }}
+    {{#if (eq activeTab 'history')}}
+      <section class="sr-section">
+        {{#if hasHistory}}
+          <div class="sr-history-list">
+            {{#each historyEntries}}
+              <div class="sr-history-entry">
+                <div class="sr-history-info" data-action="viewSession" data-session-id="{{id}}">
+                  <span class="sr-history-name">{{name}}</span>
+                  <span class="sr-history-meta">
+                    {{duration}} — {{combatCount}} combats, {{enemiesDefeated}} defeated, {{lootCount}} loot
+                  </span>
+                </div>
+                {{#if ../isGM}}
+                  <button type="button" class="sr-history-delete" data-action="deleteSession" data-session-id="{{id}}">
+                    <i class="fas fa-trash"></i>
+                  </button>
+                {{/if}}
+              </div>
+            {{/each}}
+          </div>
+        {{else}}
+          <p class="sr-empty">No saved sessions yet.</p>
+        {{/if}}
+      </section>
+    {{/if}}
+
   </div>
 
   {{! Footer }}
@@ -189,9 +227,11 @@
       <i class="fab fa-discord"></i> Copy for Discord
     </button>
     {{#if isGM}}
-      <button type="button" class="sr-clear-btn">
-        <i class="fas fa-trash"></i> Clear Session
-      </button>
+      {{#unless isViewingHistory}}
+        <button type="button" class="sr-clear-btn">
+          <i class="fas fa-trash"></i> Clear Session
+        </button>
+      {{/unless}}
     {{/if}}
   </footer>
 </div>

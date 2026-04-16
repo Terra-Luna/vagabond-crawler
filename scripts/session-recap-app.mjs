@@ -18,6 +18,9 @@ export class SessionRecapApp extends HandlebarsApplicationMixin(ApplicationV2) {
     actions: {
       changeTab: SessionRecapApp._onChangeTab,
       toggleEncounter: SessionRecapApp._onToggleEncounter,
+      viewSession: SessionRecapApp._onViewSession,
+      backToCurrent: SessionRecapApp._onBackToCurrent,
+      deleteSession: SessionRecapApp._onDeleteSession,
     },
   };
 
@@ -32,15 +35,31 @@ export class SessionRecapApp extends HandlebarsApplicationMixin(ApplicationV2) {
     super(options);
     this.activeTab = "overview";
     this._expandedCombats = new Set();
+    this._viewingHistoryId = null;
   }
 
   async _prepareContext() {
-    const data = SessionRecap.getData();
+    let data;
+    let viewingSession = null;
+    if (this._viewingHistoryId) {
+      const history = SessionRecap.getHistory();
+      viewingSession = history.find(s => s.id === this._viewingHistoryId);
+      if (viewingSession) {
+        data = { ...viewingSession.data, sessionStart: viewingSession.startTime };
+      } else {
+        this._viewingHistoryId = null;
+        data = SessionRecap.getData();
+      }
+    } else {
+      data = SessionRecap.getData();
+    }
     const hasDamageLog = game.modules.get("damage-log")?.active ?? false;
 
-    const sessionDuration = data.sessionStart
-      ? SessionRecap._formatDuration(Date.now() - data.sessionStart)
-      : "No events yet";
+    const sessionDuration = viewingSession
+      ? SessionRecap._formatDuration(viewingSession.endTime - viewingSession.startTime)
+      : data.sessionStart
+        ? SessionRecap._formatDuration(Date.now() - data.sessionStart)
+        : "No events yet";
 
     // Player stats summary for overview
     const playerSummaries = Object.entries(data.playerStats).map(([actorId, s]) => ({
@@ -131,6 +150,19 @@ export class SessionRecapApp extends HandlebarsApplicationMixin(ApplicationV2) {
       hasLoot: lootEntries.length > 0,
       xpPlayers,
       hasXp: xpPlayers.length > 0,
+      // History
+      viewingSession: viewingSession ? { id: viewingSession.id, name: viewingSession.name } : null,
+      isViewingHistory: !!this._viewingHistoryId,
+      historyEntries: SessionRecap.getHistory().map(s => ({
+        id: s.id,
+        name: s.name,
+        duration: SessionRecap._formatDuration(s.endTime - s.startTime),
+        combatCount: s.data.combats.length,
+        enemiesDefeated: s.data.combats.reduce((sum, c) => sum + c.enemies.filter(e => e.defeated).length, 0),
+        lootCount: s.data.loot.length,
+      })),
+      hasHistory: SessionRecap.getHistory().length > 0,
+      sessionState: SessionRecap.getData().sessionState,
     };
   }
 
@@ -142,7 +174,14 @@ export class SessionRecapApp extends HandlebarsApplicationMixin(ApplicationV2) {
     const signal = this._renderAbort.signal;
 
     el.querySelector(".sr-copy-btn")?.addEventListener("click", async () => {
-      const text = SessionRecap.formatForDiscord();
+      let text;
+      if (this._viewingHistoryId) {
+        const session = SessionRecap.getHistory().find(s => s.id === this._viewingHistoryId);
+        if (session) {
+          text = SessionRecap.formatForDiscordFromData(session.data, session.startTime, session.endTime);
+        }
+      }
+      if (!text) text = SessionRecap.formatForDiscord();
       await navigator.clipboard.writeText(text);
       ui.notifications.info("Session recap copied to clipboard!");
     }, { signal });
@@ -173,5 +212,36 @@ export class SessionRecapApp extends HandlebarsApplicationMixin(ApplicationV2) {
       this._expandedCombats.add(idx);
     }
     this.render();
+  }
+
+  static _onViewSession(event, target) {
+    const id = target.dataset.sessionId;
+    if (!id) return;
+    this._viewingHistoryId = id;
+    this.activeTab = "overview";
+    this.render();
+  }
+
+  static _onBackToCurrent(event, target) {
+    this._viewingHistoryId = null;
+    this.activeTab = "overview";
+    this.render();
+  }
+
+  static async _onDeleteSession(event, target) {
+    const id = target.dataset.sessionId;
+    if (!id) return;
+    const ok = await Dialog.confirm({
+      title: "Delete Session",
+      content: "Delete this saved session? This cannot be undone.",
+    });
+    if (ok) {
+      await SessionRecap.deleteFromHistory(id);
+      if (this._viewingHistoryId === id) {
+        this._viewingHistoryId = null;
+        this.activeTab = "history";
+      }
+      this.render();
+    }
   }
 }

@@ -316,12 +316,11 @@ export const SessionRecap = {
     return `${seconds}s`;
   },
 
-  formatForDiscord() {
-    const data = this.getData();
+  formatForDiscordFromData(data, startTime, endTime) {
     const lines = [];
 
-    const duration = data.sessionStart
-      ? this._formatDuration(Date.now() - data.sessionStart)
+    const duration = startTime
+      ? this._formatDuration((endTime ?? Date.now()) - startTime)
       : "N/A";
     lines.push("# Session Recap");
     lines.push(`**Duration:** ${duration}`);
@@ -485,6 +484,11 @@ export const SessionRecap = {
 
     if (lines.length <= 3) return "No session activity recorded.";
     return lines.join("\n");
+  },
+
+  formatForDiscord() {
+    const data = this.getData();
+    return this.formatForDiscordFromData(data, data.sessionStart, Date.now());
   },
 
   // ── Session Lifecycle ──────────────────────────────────────
