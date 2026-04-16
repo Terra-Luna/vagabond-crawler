@@ -31,7 +31,7 @@ import { FeatureName } from "./feature-name.mjs";
 // Hooks.once("ready") → game.vagabondCrawler.featureName = FeatureName; FeatureName.init();
 ```
 
-Exceptions: `EncounterRollerApp`, `RelicForgeApp`, `LootManagerApp`, `LootTrackerApp`, `ScrollForgeApp`, `LootGeneratorApp` — these are `ApplicationV2` window classes using `HandlebarsApplicationMixin`.
+Exceptions: `EncounterRollerApp`, `RelicForgeApp`, `LootManagerApp`, `LootTrackerApp`, `ScrollForgeApp`, `LootGeneratorApp`, `AnimationFxConfigApp` — these are `ApplicationV2` window classes using `HandlebarsApplicationMixin`.
 
 ### State & Sync
 
@@ -50,7 +50,7 @@ Two patterns:
 - `_bindEvents()` — delegate via `[data-action]` attributes
 - Guard: `if (!this._el) return;` at top of render
 
-**2. ApplicationV2 windows** (encounter roller, relic forge, loot manager/tracker, scroll forge, merchant shop, party inventory):
+**2. ApplicationV2 windows** (encounter roller, relic forge, loot manager/tracker, scroll forge, merchant shop, party inventory, animation FX config):
 ```js
 class MyApp extends HandlebarsApplicationMixin(ApplicationV2) {
   static DEFAULT_OPTIONS = { id: "vagabond-crawler-my-app", window: { title: "..." }, position: { width: 700 } };
@@ -82,7 +82,10 @@ class MyApp extends HandlebarsApplicationMixin(ApplicationV2) {
 | `morale-checker.mjs` | Auto morale checks on death/half-defeated/solo-half-HP |
 | `rest-breather.mjs` | Recovery dialog — breather (ration + heal) and full rest |
 | `flanking-checker.mjs` | Auto-apply Vulnerable when 2+ allies adjacent to foe, mirrors outgoingSavesModifier to world actor for unlinked tokens |
-| `npc-abilities.mjs` | Passive hooks: Pack Instincts/Tactics (save hinder), Magic Ward I/II/III (cast penalty), item-sequencer cone patch, npcAction wrapper |
+| `npc-abilities.mjs` | Passive hooks: Pack Instincts/Tactics (save hinder), Magic Ward I/II/III (cast penalty), npcAction wrapper |
+| `animation-fx.mjs` | Animation FX subsystem — unified resolver + playback for weapons, alchemical, gear, NPC actions. Chat hook trigger. Per-item/per-action override flags. |
+| `animation-fx-config.mjs` | ApplicationV2 config window for Animation FX — 6 tabs (Weapons, Skill Fallbacks, Alchemical, Gear, NPC Actions, Settings) with hit/miss animation editor |
+| `animation-fx-defaults.mjs` | Default Animation FX preset data (JB2A-aware at runtime) |
 | `npc-action-menu.mjs` | Combat action dropdown + spell cast dialog with mana cost calc, CrawlerSpellDialog |
 | `combat-helpers.mjs` | Shared utilities for combat-related subsystems (plain module, not a singleton) |
 | `countdown-roller.mjs` | Auto-rolls countdown dice at round start, applies tick damage, cleans up on combat end |
