@@ -191,6 +191,9 @@ export const AnimationFx = {
     if (flags.itemId) {
       const item = actor.items.get(flags.itemId);
       if (!item) return;
+      // Weapon animations are played by the system's own Item FX pipeline
+      // (we sync the config there via syncToItems). Skip crawler playback.
+      if (item.system?.equipmentType === "weapon") return;
       preset = this._resolve({ item });
     } else if (typeof flags.actionIndex === "number") {
       preset = this._resolve({ actor, actionIndex: flags.actionIndex });
@@ -501,6 +504,89 @@ export const AnimationFx = {
     };
     Hooks.on("renderVagabondNPCSheet", npcHook);
     Hooks.on("renderActorSheet", npcHook);  // fallback
+  },
+
+  // ── Sync to Items ───────────────────────────────────────────────────────────
+
+  _presetToSystemFx(preset) {
+    if (!preset?.hit?.file) return null;
+    const animType = preset.type === "projectile" ? "ranged"
+                   : preset.type === "cone" ? "cone"
+                   : "melee";
+    return {
+      enabled: true,
+      animType,
+      hitFile: preset.hit.file,
+      hitScale: preset.hit.scale ?? 1,
+      hitOffsetX: preset.hit.offsetX ?? 0,
+      hitDuration: preset.hit.duration ?? 800,
+      hitSound: preset.hit.sound ?? "",
+      missFile: preset.miss?.file ?? "",
+      missScale: preset.miss?.scale ?? 1,
+      missDuration: preset.miss?.duration ?? 600,
+      missSound: preset.miss?.sound ?? "",
+      soundVolume: preset.hit.soundVolume ?? preset.miss?.soundVolume ?? 0.6,
+    };
+  },
+
+  async syncToItems({ confirm = true } = {}) {
+    if (!game.user.isGM) {
+      ui.notifications.warn("Only the GM can sync Animation FX to items.");
+      return null;
+    }
+    const worldActors = game.actors.filter(a => !a.pack);
+
+    // Count what WOULD be updated first
+    const targets = [];
+    for (const actor of worldActors) {
+      for (const item of actor.items) {
+        const et = item.system?.equipmentType;
+        if (et !== "weapon") continue;
+        const preset = this._resolve({ item });
+        if (!preset) continue;
+        const fx = this._presetToSystemFx(preset);
+        if (!fx) continue;
+        targets.push({ item, actor, preset, fx });
+      }
+    }
+
+    if (targets.length === 0) {
+      ui.notifications.info("No matching weapon items found to sync.");
+      return { updated: 0, actors: 0 };
+    }
+
+    if (confirm) {
+      const actorCount = new Set(targets.map(t => t.actor.id)).size;
+      const ok = await foundry.applications.api.DialogV2.confirm({
+        window: { title: "Sync Animation FX to Items" },
+        content: `<p>This will update <b>${targets.length}</b> weapon(s) across <b>${actorCount}</b> actor(s).</p>
+                  <p>Each weapon's <b>Item FX (Sequencer)</b> panel will be overwritten with the matching preset from the Animation FX config.</p>
+                  <p>Continue?</p>`,
+      });
+      if (!ok) return null;
+    }
+
+    // Batch updates per actor
+    const byActor = new Map();
+    for (const t of targets) {
+      if (!byActor.has(t.actor)) byActor.set(t.actor, []);
+      byActor.get(t.actor).push({ _id: t.item.id, "system.itemFx": t.fx });
+    }
+
+    let updated = 0;
+    let errored = 0;
+    for (const [actor, updates] of byActor) {
+      try {
+        await actor.updateEmbeddedDocuments("Item", updates);
+        updated += updates.length;
+      } catch (e) {
+        errored += updates.length;
+        console.error(`[vagabond-crawler] sync failed for actor ${actor.name}:`, e);
+      }
+    }
+
+    ui.notifications.info(`Animation FX synced: ${updated} weapon(s) across ${byActor.size} actor(s)${errored ? ` (${errored} failed)` : ""}.`);
+    return { updated, actors: byActor.size, errored };
   },
 
   // ── Config UI ───────────────────────────────────────────────────────────────

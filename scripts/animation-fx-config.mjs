@@ -19,6 +19,7 @@ export class AnimationFxConfigApp extends HandlebarsApplicationMixin(Application
       pickSound: AnimationFxConfigApp.#onPickSound,
       switchTab: AnimationFxConfigApp.#onSwitchTab,
       cancel: AnimationFxConfigApp.#onCancel,
+      syncToItems: AnimationFxConfigApp.#onSyncToItems,
     },
   };
 
@@ -225,5 +226,12 @@ export class AnimationFxConfigApp extends HandlebarsApplicationMixin(Application
     if (!el) return;
     el.classList.add("vcfx-flash");
     setTimeout(() => el.classList.remove("vcfx-flash"), 800);
+  }
+
+  static async #onSyncToItems(event, target) {
+    // Persist any in-flight edits first so the sync uses the current state
+    this._saveFormToWorking();
+    await game.settings.set(MODULE_ID, "animationFxConfig", this._workingConfig);
+    await game.vagabondCrawler.animationFx.syncToItems({ confirm: true });
   }
 }
