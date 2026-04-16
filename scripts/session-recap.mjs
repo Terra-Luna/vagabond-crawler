@@ -482,6 +482,70 @@ export const SessionRecap = {
     return lines.join("\n");
   },
 
+  // ── Session Lifecycle ──────────────────────────────────────
+
+  _generateSessionName(timestamp) {
+    const d = new Date(timestamp);
+    const base = `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, "0")}.${String(d.getDate()).padStart(2, "0")} Session`;
+    const history = this.getHistory();
+    const existing = history.filter(s => s.name.startsWith(base));
+    if (existing.length === 0) return base;
+    return `${base} ${existing.length + 1}`;
+  },
+
+  async startSession() {
+    const fresh = foundry.utils.deepClone(DEFAULT_DATA);
+    fresh.sessionState = "active";
+    fresh.sessionStart = Date.now();
+    await this._save(fresh);
+  },
+
+  async continueSession() {
+    const data = this.getData();
+    data.sessionState = "active";
+    await this._save(data);
+  },
+
+  async pauseSession() {
+    const data = this.getData();
+    data.sessionState = "paused";
+    await this._save(data);
+  },
+
+  async endAndSave() {
+    const data = this.getData();
+    const now = Date.now();
+    const history = this.getHistory();
+
+    const snapshot = {
+      id: `session-${now}`,
+      name: this._generateSessionName(data.sessionStart ?? now),
+      startTime: data.sessionStart ?? now,
+      endTime: now,
+      data: {
+        loot: data.loot,
+        xp: data.xp,
+        combats: data.combats,
+        playerStats: data.playerStats,
+      },
+    };
+
+    history.unshift(snapshot);
+    await this._saveHistory(history);
+    await this.clear();
+    ui.notifications.info(`Session saved: ${snapshot.name}`);
+  },
+
+  async discardSession() {
+    await this.clear();
+    ui.notifications.info("Session discarded.");
+  },
+
+  async deleteFromHistory(id) {
+    const history = this.getHistory().filter(s => s.id !== id);
+    await this._saveHistory(history);
+  },
+
   // ── Init ───────────────────────────────────────────────────
 
   init() {
