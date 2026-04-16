@@ -1,0 +1,75 @@
+{
+  "planPath": "docs/superpowers/plans/2026-04-16-session-recap.md",
+  "tasks": [
+    {
+      "id": 6,
+      "subject": "Task 1: SessionRecap Singleton — Data Layer",
+      "status": "pending",
+      "description": "**Goal:** Create core singleton managing sessionRecap world setting.\n\n**Files:**\n- Create: `scripts/session-recap.mjs`\n- Modify: `scripts/vagabond-crawler.mjs`\n\n```json:metadata\n{\"files\": [\"scripts/session-recap.mjs\", \"scripts/vagabond-crawler.mjs\"], \"verifyCommand\": \"game.vagabondCrawler.recap.getData()\", \"acceptanceCriteria\": [\"sessionRecap setting registered\", \"read/write methods work\", \"migration works\"]}\n```"
+    },
+    {
+      "id": 7,
+      "subject": "Task 2: Absorb LootTracker Internals",
+      "status": "pending",
+      "blockedBy": [6],
+      "description": "**Goal:** Redirect LootTracker storage to SessionRecap, delete LootTrackerApp.\n\n**Files:**\n- Modify: `scripts/loot-tracker.mjs`\n- Delete: `templates/loot-tracker.hbs`\n\n```json:metadata\n{\"files\": [\"scripts/loot-tracker.mjs\", \"templates/loot-tracker.hbs\"], \"verifyCommand\": \"game.vagabondCrawler.recap.getData().loot\", \"acceptanceCriteria\": [\"LootTracker facade works\", \"LootTrackerApp deleted\"]}\n```"
+    },
+    {
+      "id": 8,
+      "subject": "Task 3: Combat & Damage Capture Hooks",
+      "status": "pending",
+      "blockedBy": [6],
+      "description": "**Goal:** Register hooks for combat encounters, damage from damage-log, kill attribution.\n\n**Files:**\n- Modify: `scripts/session-recap.mjs`\n\n```json:metadata\n{\"files\": [\"scripts/session-recap.mjs\"], \"verifyCommand\": \"game.vagabondCrawler.recap.getData().combats\", \"acceptanceCriteria\": [\"combat hooks work\", \"damage tracking works\", \"kill attribution works\"]}\n```"
+    },
+    {
+      "id": 9,
+      "subject": "Task 4: Roll Stats Capture via Chat Messages",
+      "status": "pending",
+      "blockedBy": [6],
+      "description": "**Goal:** Capture attack/save roll stats from chat messages.\n\n**Files:**\n- Modify: `scripts/session-recap.mjs`\n\n```json:metadata\n{\"files\": [\"scripts/session-recap.mjs\"], \"verifyCommand\": \"game.vagabondCrawler.recap.getData().playerStats\", \"acceptanceCriteria\": [\"attack stats tracked\", \"save stats tracked\", \"avg d20 tracked\"]}\n```"
+    },
+    {
+      "id": 10,
+      "subject": "Task 5: XP Logging Integration",
+      "status": "pending",
+      "blockedBy": [6],
+      "description": "**Goal:** Wire XP counter patch to log awards to SessionRecap.\n\n**Files:**\n- Modify: `scripts/xp-counter-patch.mjs`\n\n```json:metadata\n{\"files\": [\"scripts/xp-counter-patch.mjs\"], \"verifyCommand\": \"game.vagabondCrawler.recap.getData().xp\", \"acceptanceCriteria\": [\"XP logged on award\", \"question snapshot correct\"]}\n```"
+    },
+    {
+      "id": 11,
+      "subject": "Task 6: Discord Markdown Export",
+      "status": "pending",
+      "blockedBy": [6],
+      "description": "**Goal:** Implement formatForDiscord() for full session recap markdown.\n\n**Files:**\n- Modify: `scripts/session-recap.mjs`\n\n```json:metadata\n{\"files\": [\"scripts/session-recap.mjs\"], \"verifyCommand\": \"game.vagabondCrawler.recap.formatForDiscord()\", \"acceptanceCriteria\": [\"all sections formatted\", \"empty sections omitted\"]}\n```"
+    },
+    {
+      "id": 12,
+      "subject": "Task 7: SessionRecapApp — Tabbed UI Window",
+      "status": "pending",
+      "blockedBy": [11],
+      "description": "**Goal:** Create tabbed ApplicationV2 window with Overview, Combat, Loot, XP tabs.\n\n**Files:**\n- Create: `scripts/session-recap-app.mjs`\n- Create: `templates/session-recap.hbs`\n- Modify: `scripts/session-recap.mjs`\n\n```json:metadata\n{\"files\": [\"scripts/session-recap-app.mjs\", \"templates/session-recap.hbs\", \"scripts/session-recap.mjs\"], \"verifyCommand\": \"game.vagabondCrawler.recap.open()\", \"acceptanceCriteria\": [\"4 tabs work\", \"footer buttons work\", \"window config correct\"]}\n```"
+    },
+    {
+      "id": 13,
+      "subject": "Task 8: CSS Styling",
+      "status": "pending",
+      "blockedBy": [12],
+      "description": "**Goal:** Add styles for session recap window.\n\n**Files:**\n- Modify: `styles/vagabond-crawler.css`\n\n```json:metadata\n{\"files\": [\"styles/vagabond-crawler.css\"], \"verifyCommand\": \"visual inspection\", \"acceptanceCriteria\": [\"styling matches module\", \"both themes work\"]}\n```"
+    },
+    {
+      "id": 14,
+      "subject": "Task 9: CrawlBar Integration, Chat Command & module.json",
+      "status": "pending",
+      "blockedBy": [7],
+      "description": "**Goal:** Replace loot tracker button, add !recap command, add damage-log recommends.\n\n**Files:**\n- Modify: `scripts/crawl-bar.mjs`\n- Modify: `scripts/vagabond-crawler.mjs`\n- Modify: `module.json`\n\n```json:metadata\n{\"files\": [\"scripts/crawl-bar.mjs\", \"scripts/vagabond-crawler.mjs\", \"module.json\"], \"verifyCommand\": \"!recap in chat\", \"acceptanceCriteria\": [\"CrawlBar button works\", \"chat command works\", \"module.json valid\"]}\n```"
+    },
+    {
+      "id": 15,
+      "subject": "Task 10: End-to-End Verification",
+      "status": "pending",
+      "blockedBy": [12, 13, 14],
+      "description": "**Goal:** Full E2E test of session recap flow.\n\n```json:metadata\n{\"files\": [], \"verifyCommand\": \"full E2E test\", \"acceptanceCriteria\": [\"all features work\", \"no console errors\"]}\n```"
+    }
+  ],
+  "lastUpdated": "2026-04-16T00:00:00Z"
+}
