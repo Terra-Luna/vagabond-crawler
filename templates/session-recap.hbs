@@ -1,0 +1,197 @@
+<div class="sr-wrapper">
+  {{! Tab Bar }}
+  <nav class="sr-tabs">
+    <button class="sr-tab {{#if (eq activeTab 'overview')}}active{{/if}}" data-action="changeTab" data-tab="overview">
+      <i class="fas fa-chart-pie"></i> Overview
+    </button>
+    <button class="sr-tab {{#if (eq activeTab 'combat')}}active{{/if}}" data-action="changeTab" data-tab="combat">
+      <i class="fas fa-swords"></i> Combat
+    </button>
+    <button class="sr-tab {{#if (eq activeTab 'loot')}}active{{/if}}" data-action="changeTab" data-tab="loot">
+      <i class="fas fa-treasure-chest"></i> Loot
+    </button>
+    <button class="sr-tab {{#if (eq activeTab 'xp')}}active{{/if}}" data-action="changeTab" data-tab="xp">
+      <i class="fas fa-star"></i> XP
+    </button>
+  </nav>
+
+  {{! Tab Content }}
+  <div class="sr-tab-content">
+
+    {{! ─── Overview ─── }}
+    {{#if (eq activeTab 'overview')}}
+      <section class="sr-section">
+        <div class="sr-overview-header">
+          <div class="sr-stat-card">
+            <span class="sr-stat-label">Session Duration</span>
+            <span class="sr-stat-value">{{sessionDuration}}</span>
+          </div>
+          <div class="sr-stat-card">
+            <span class="sr-stat-label">Combats</span>
+            <span class="sr-stat-value">{{totalCombats}}</span>
+          </div>
+          <div class="sr-stat-card">
+            <span class="sr-stat-label">Enemies Defeated</span>
+            <span class="sr-stat-value">{{totalEnemiesDefeated}}</span>
+          </div>
+        </div>
+
+        {{#if hasPlayerSummaries}}
+          <h4>Player Summary</h4>
+          <div class="sr-player-summaries">
+            {{#each playerSummaries}}
+              <div class="sr-player-row">
+                <span class="sr-player-name">{{name}}</span>
+                <span class="sr-player-stat"><i class="fas fa-skull"></i> {{kills}} kills</span>
+                <span class="sr-player-stat"><i class="fas fa-sword"></i> {{damageDealt}} dealt</span>
+                <span class="sr-player-stat"><i class="fas fa-heart-crack"></i> {{damageTaken}} taken</span>
+                <span class="sr-player-stat"><i class="fas fa-star"></i> {{totalXp}} XP</span>
+              </div>
+            {{/each}}
+          </div>
+        {{else}}
+          <p class="sr-empty">No activity recorded yet.</p>
+        {{/if}}
+      </section>
+    {{/if}}
+
+    {{! ─── Combat ─── }}
+    {{#if (eq activeTab 'combat')}}
+      <section class="sr-section">
+        {{#unless hasDamageLog}}
+          <div class="sr-notice">
+            <i class="fas fa-info-circle"></i>
+            Install the <strong>Damage Log</strong> module for damage and kill tracking.
+          </div>
+        {{/unless}}
+
+        {{#if hasCombats}}
+          {{#each combats}}
+            <div class="sr-encounter">
+              <div class="sr-encounter-header" data-action="toggleEncounter" data-index="{{index}}">
+                <i class="fas {{#if expanded}}fa-chevron-down{{else}}fa-chevron-right{{/if}}"></i>
+                <strong>{{label}}</strong> — {{rounds}} rounds{{#if duration}} ({{duration}}){{/if}}
+                <span class="sr-encounter-badge">{{totalDefeated}}/{{totalEnemies}} defeated</span>
+              </div>
+              {{#if expanded}}
+                <div class="sr-encounter-body">
+                  <div class="sr-enemy-list">
+                    {{#each enemies}}
+                      <span class="sr-enemy {{#if defeated}}defeated{{/if}}">
+                        {{name}}
+                        {{#if defeated}}
+                          <i class="fas fa-skull"></i>
+                          {{#if killedBy}}<em>({{killedBy}})</em>{{/if}}
+                        {{/if}}
+                      </span>
+                    {{/each}}
+                  </div>
+                </div>
+              {{/if}}
+            </div>
+          {{/each}}
+        {{else}}
+          <p class="sr-empty">No combats recorded.</p>
+        {{/if}}
+
+        {{#if hasPlayerStats}}
+          <h4>Roll &amp; Damage Stats</h4>
+          <table class="sr-stats-table">
+            <thead>
+              <tr>
+                <th>Player</th>
+                <th>Hit Rate</th>
+                <th>Nat 20</th>
+                <th>Nat 1</th>
+                <th>Avg d20</th>
+                <th>Saves</th>
+                <th>Dealt</th>
+                <th>Taken</th>
+                <th>Kills</th>
+              </tr>
+            </thead>
+            <tbody>
+              {{#each playerStatsTable}}
+                <tr>
+                  <td class="sr-cell-name">{{name}}</td>
+                  <td>{{hitRate}}</td>
+                  <td>{{nat20s}}</td>
+                  <td>{{nat1s}}</td>
+                  <td>{{avgD20}}</td>
+                  <td>{{saveRate}}</td>
+                  <td>{{damageDealt}}</td>
+                  <td>{{damageTaken}}</td>
+                  <td>{{kills}}</td>
+                </tr>
+              {{/each}}
+            </tbody>
+          </table>
+        {{/if}}
+      </section>
+    {{/if}}
+
+    {{! ─── Loot ─── }}
+    {{#if (eq activeTab 'loot')}}
+      <section class="sr-section">
+        {{#if hasLoot}}
+          <div class="sr-loot-list">
+            {{#each lootEntries}}
+              <div class="sr-loot-entry">
+                <span class="sr-loot-time">{{time}}</span>
+                <span class="sr-loot-icon">{{{iconHtml}}}</span>
+                <span class="sr-loot-player">{{player}}</span>
+                <span class="sr-loot-detail">{{detail}}</span>
+                <span class="sr-loot-source">{{source}}</span>
+              </div>
+            {{/each}}
+          </div>
+        {{else}}
+          <p class="sr-empty">No loot recorded.</p>
+        {{/if}}
+      </section>
+    {{/if}}
+
+    {{! ─── XP ─── }}
+    {{#if (eq activeTab 'xp')}}
+      <section class="sr-section">
+        {{#if hasXp}}
+          {{#each xpPlayers}}
+            <div class="sr-xp-player">
+              <h4>{{player}}</h4>
+              {{#each awards}}
+                <div class="sr-xp-award">
+                  <span class="sr-xp-time">{{time}}</span>
+                  <span class="sr-xp-total">+{{totalXp}} XP</span>
+                  <div class="sr-xp-questions">
+                    {{#each questions}}
+                      <div class="sr-xp-question">
+                        <span>{{label}}</span>
+                        <span class="sr-xp-count">x{{count}} = {{xpEarned}} XP</span>
+                      </div>
+                    {{/each}}
+                  </div>
+                </div>
+              {{/each}}
+              <div class="sr-xp-player-total">Total: {{total}} XP</div>
+            </div>
+          {{/each}}
+        {{else}}
+          <p class="sr-empty">No XP awarded yet.</p>
+        {{/if}}
+      </section>
+    {{/if}}
+
+  </div>
+
+  {{! Footer }}
+  <footer class="sr-footer">
+    <button type="button" class="sr-copy-btn">
+      <i class="fab fa-discord"></i> Copy for Discord
+    </button>
+    {{#if isGM}}
+      <button type="button" class="sr-clear-btn">
+        <i class="fas fa-trash"></i> Clear Session
+      </button>
+    {{/if}}
+  </footer>
+</div>
