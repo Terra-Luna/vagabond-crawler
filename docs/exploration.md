@@ -135,3 +135,5 @@ Per-source properties (dim/bright/color/animation) live in the **Light Sources C
 ### Trap Builder
 
 <!-- gif: docs/assets/trap-builder.png -->
+
+A macro-based trap authoring flow that rides Foundry v13's **Scene Regions** system. Open the builder from the GM control layer, sketch the trap zone on canvas, then fill in the config dialog: save type (Dex / Awareness / any Vagabond save), VFX (Sequencer + JB2A effect path), damage formula and type, status effects to apply on failure, countdown dice to spawn on the victim, tick damage, and resource drain (fatigue / mana / luck). The builder auto-creates a Scene Region with an **Execute Macro** behavior that fires on token-enter, so any token stepping in triggers the whole chain — save roll, damage, status, VFX — without the GM clicking. A **one-shot** checkbox disables the region behavior after the first trigger, turning a reusable trap into a single-fire trap. VFX integration uses Sequencer directly; JB2A asset paths slot into the VFX picker.
