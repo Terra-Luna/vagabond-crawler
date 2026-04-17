@@ -41,7 +41,7 @@ class RelicForgeApp extends HandlebarsApplicationMixin(ApplicationV2) {
   static DEFAULT_OPTIONS = {
     id:       "vagabond-crawler-relic-forge",
     window:   { title: "Relic Forge", resizable: true },
-    position: { width: 960, height: 780 },
+    position: { width: 820, height: 780 },
   };
 
   static PARTS = {

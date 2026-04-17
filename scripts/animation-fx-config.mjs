@@ -7,7 +7,7 @@ export class AnimationFxConfigApp extends HandlebarsApplicationMixin(Application
     id: "vagabond-crawler-animation-fx-config",
     tag: "form",
     window: { title: "Animation FX Configuration", resizable: true, contentClasses: ["vcfx-config"] },
-    position: { width: 900, height: 700 },
+    position: { width: 820, height: 700 },
     form: { handler: AnimationFxConfigApp.#onSubmit, submitOnChange: false, closeOnSubmit: false },
     actions: {
       saveAndClose: AnimationFxConfigApp.#onSaveAndClose,

@@ -72,7 +72,7 @@ class LootManagerApp extends HandlebarsApplicationMixin(ApplicationV2) {
   static DEFAULT_OPTIONS = {
     id: "vagabond-crawler-loot-manager",
     window: { title: "Loot Manager", resizable: true },
-    position: { width: 900, height: 580 },
+    position: { width: 820, height: 580 },
   };
 
   static PARTS = {

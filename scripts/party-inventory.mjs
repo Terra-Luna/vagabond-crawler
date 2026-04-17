@@ -36,7 +36,7 @@ class PartyInventoryApp extends HandlebarsApplicationMixin(ApplicationV2) {
     id: "vagabond-crawler-party-inventory",
     tag: "div",
     window: { title: "Party Inventory", resizable: true },
-    position: { width: 900, height: 620 },
+    position: { width: 820, height: 620 },
     classes: ["vagabond-crawler-party-inventory"],
   };
 

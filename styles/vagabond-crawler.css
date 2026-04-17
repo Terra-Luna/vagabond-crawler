@@ -507,7 +507,12 @@ body.theme-light .vcb-phase-badge {
   align-items: stretch;
   background: linear-gradient(180deg, var(--vcb-surface-2) 0%, var(--vcb-surface-1) 100%);
   width: max-content;
-  overflow: visible;
+  /* Cap at viewport and allow horizontal scroll when the party is wider
+   * than the screen (tablet portrait / 5+ member party). Scrollbar only
+   * appears when content overflows; no visual change on wide screens. */
+  max-width: 100vw;
+  overflow-x: auto;
+  overflow-y: visible;
   box-shadow: 0 2px 8px var(--vcb-shadow-md);
   border-bottom: 2px solid var(--vcb-accent-dim);
   border-radius: 0 0 var(--vcb-radius) var(--vcb-radius);
@@ -3452,8 +3457,25 @@ body.theme-light .vcb-phase-badge {
 
 /* Touch-input adaptation — bumps every interactive control to at least
  * 32px height when the user is on a coarse pointer (touchscreen laptop,
- * tablet Foundry client). Preserves the dense desktop default for mouse. */
+ * tablet Foundry client). Preserves the dense desktop default for mouse.
+ *
+ * Primary controls (Crawl Bar + Crawl Strip) get a 44px target — these
+ * are the most-used surfaces during a session and need reliable taps.
+ * Secondary controls (Monster Creator, Encounter Roller tabs) stay at
+ * 32px since they're less frequently used and benefit from density. */
 @media (pointer: coarse) {
+  /* Primary hot-path controls — 44px (WCAG 2.5.5) */
+  .vcb-btn,
+  .vcs-cbtn,
+  .vcs-ptab,
+  .vcs-atab,
+  .vlt-douse,
+  .vcb-clock-menu-item {
+    min-height: 44px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
+  /* Secondary / configuration controls — 32px (existing scope) */
   #vagabond-crawler-monster-creator .mc-btn,
   #vagabond-crawler-monster-creator .mc-filter-btn,
   #vagabond-crawler-monster-creator .mc-ability-add-btn,

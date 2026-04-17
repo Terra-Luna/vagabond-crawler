@@ -69,7 +69,7 @@ export class LightSourcesConfigApp extends HandlebarsApplicationMixin(Applicatio
     id: "vagabond-crawler-light-sources-config",
     tag: "form",
     window: { title: "Light Sources Configuration", resizable: true },
-    position: { width: 900, height: 700 },
+    position: { width: 820, height: 700 },
     form: {
       handler: LightSourcesConfigApp.#onSubmit,
       submitOnChange: false,
