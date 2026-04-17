@@ -188,10 +188,16 @@ Transactions route through the GM via socket (`shop:buy`, `shop:sell`, `shop:gam
 
 <!-- gif: docs/assets/inventory-system.png -->
 
+Sheet-level patches that make the Vagabond inventory behave the way Vagabond tables actually want it to. New items with a `quantity` field **auto-stack** with matching items (same name, same type) on creation, merging `quantity` and `baseCost` instead of producing duplicates — unless called with `skipStack: true` (lit torches, picked-up items, scrolls). **Quantity badges** render on items with `quantity > 1` in the inventory list. Slot counting adds an **extra slots** line: items with `baseSlots > 0` contribute `baseSlots × (quantity − 1)` to encumbrance, and zero-slot items **pool by `gearCategory`** — every 10 pooled units costs one slot. Spell scrolls pool under "Scrolls" regardless of which spell they cast. Items flagged `trueZeroSlot` skip pooling entirely (pocket dust, keepsakes). Ammunition, torches, and alchemical items all behave sensibly.
+
 ### Party Inventory
 
 <!-- gif: docs/assets/party-inventory.png -->
 
+A side-by-side inventory view for the whole party, launched from Forge & Loot or `game.vagabondCrawler.partyInventory.open()`. Each party member gets a column showing items, quantity, slot usage, and sell price. Drag an item from one column to another to transfer it (currency included, with the shared sell ratio from Merchant Shop applied if configured). GM-only — intended for post-session loot redistribution where the party needs to move a relic off the rogue (who's already at 12/12 slots) and onto the fighter. Reads live actor data, so edits from any sheet show up on next render. Supports unlinked party tokens too.
+
 ### Item Drops
 
 <!-- gif: docs/assets/item-drops.png -->
+
+Drag any inventory item onto the canvas to create a pickup-able item token. Other characters walk up and click **Pick Up** on the token HUD to transfer the item into their inventory. Drops create the pickup actor with **Owner permission for all players** so the flow works without GM relay. On pickup, the recreated item uses `skipStack: true` so lit torches, partially-filled oil flasks, and configured relics keep their state rather than merging with generic stacks. Light sources are excluded from this flow — torches, candles, and lanterns go through the [Light Tracker](exploration.md#light-tracker) drop/pickup path instead. Toggle via the **Item Drops** setting (on by default).
