@@ -1,5 +1,80 @@
 # Changelog
 
+## v1.11.0
+
+Community contributor release — first external PR lands, major design pass across the whole module, and the documentation is now release-ready.
+
+### Merchant Shop Enhancements
+
+Sell-back inventory sync bug fixed, and merchant configurations can now be saved as named presets. Thanks to [@Terra-Luna](https://github.com/Terra-Luna) for the contribution (PR #1).
+
+- **Sell-back inventory sync** — when a player sold an item back to the merchant, the merchant's inventory was not restocking. Fixed: `_restockMerchantInventory` now re-adds the item to the shop's inventory (compendium mode) or the NPC's item collection (actor mode), with duplicate-detection on UUID or name+type.
+- **Merchant preset save / load / delete** — save the current shop configuration (name, mode, inventory, buy multiplier, sell ratio, gamble options) as a named preset. Load it later from the dropdown. Delete presets you no longer need. Presets persist in the `savedShopConfigs` world setting.
+- **Buy multiplier** — the sell ratio used to be the only configurable ratio. Now there's a separate buy multiplier (10–500%, default 100) alongside it. The underlying `shopSellRatio` setting refactored from a scalar to `{ sellRatio, buyMultiplier }` so presets capture both. Existing world data is preserved; fresh installs get the composite shape.
+- **Full-inventory socket broadcast on sales** — non-GM clients now receive the entire post-transaction inventory rather than a single-item stock delta, eliminating stale-state rendering when multiple transactions fire in rapid succession.
+- **Defensive deep-clone pass** — seven settings-read sites across the merchant app now wrap `game.settings.get(...)` in `foundry.utils.deepClone()` before mutating, following the CLAUDE.md pattern. Prevents in-memory cache corruption if a subsequent `set()` fails.
+
+### Session Recap Visual Overhaul
+
+The Overview tab was an anti-pattern: a SaaS-style dashboard of three stat cards (Session Duration / Combats / Enemies Defeated) that read like a Linear sprint view rather than a dungeon-crawl debrief. Replaced with a BG3-style chapter-framed session summary.
+
+- **Chapter header** — status kicker ("IN PROGRESS" / "ARCHIVED") → large session title (auto-generated `2026.04.17 Session` for live, preserved name for history) → muted stat strip (duration · combats · defeated, middot-separated) → gradient gold rule. Reads as a session record, not a KPI widget.
+- **Party record cards** — Player Summary rows were a flex-row of icon+number chips; now each player is a compact record card with their name as a heading and four labeled stats (Kills, Dealt, Taken, XP) in a grid. Auto-wraps at narrow widths via `grid-template-columns: repeat(auto-fill, minmax(220px, 1fr))`.
+- **Typographic hierarchy** — section titles (`.sr-section-title`) now carry an ornamental gold-dim bar prefix instead of dashboard-style uppercase letter-spacing. The `.sr-stats-table` column headers switched from uppercase+muted-gray to bold+accent-gold with an accent border-bottom — grimoire-style column markers rather than SaaS subtext.
+- **Specificity fix** — the legacy `.sr-section h4 { text-transform: uppercase; ... }` base rule was silently overriding class-based styling due to higher specificity. Removed; all section headings are now class-based with explicit, predictable cascade.
+- **`!recap` command** — chat command was already wired; session-recap module now picks up `sessionDisplayName`, `sessionStatusLabel`, and a pre-composed `sessionStats` array in the template context for cleaner render logic.
+
+### Merchant Shop UI Cleanup
+
+The Manage tab had a five-color button row (blue Load / red Delete / green Open / red Close / purple Save) — a classic rainbow-UI anti-pattern that didn't match the rest of the module's muted gold-on-charcoal palette.
+
+- **Unified Manage-tab buttons** — all five buttons (Open Shop / Close Shop / Save / Load / Delete) now adopt the neutral `.vcb-btn` aesthetic used throughout the Crawl Bar. Icons + labels carry the semantic meaning. Delete keeps a subtle red border+text on hover as the only color callout (destructive-action convention).
+- **Buy / Sell / Apply buttons** — were ghost-outline style (~15% opacity fill, thin border, colored text) and read as tags rather than primary CTAs. Now solid gradient fills matching `.forge-btn`: Buy green, Sell gold, Apply green. Dark text with subtle shadow, uppercase+letter-spacing CTA chrome, hover glow, 1px press transform.
+- **Save button width fix** — the Save button in the broadcast row was rendering narrower than Open/Close because `.vcm-save-config-btn` lacked `flex: 1`. Now sized consistently.
+
+### Accessibility Pass
+
+Addresses WCAG AA compliance gaps and five P1 findings from a design audit.
+
+- **Contrast fix** — `--vcb-text-muted` changed from `#666` (3.9:1 on `--vcb-bg`) to `#767676` (4.5:1). Meets WCAG AA for normal-weight text across ~30 usages throughout the module.
+- **Reduced motion** — added global `@media (prefers-reduced-motion: reduce)` guard collapsing all transitions and animations to 0.01ms for users with vestibular sensitivity. Honors OS-level accessibility preferences.
+- **Keyboard access to combat actions** — the NPC action panel (weapons / spells / actions / abilities) previously used plain `<div>`s with click handlers. Now native `<button>` elements, keyboard-accessible by default, with a CSS reset to preserve the existing visual styling.
+- **Hover-only buttons reachable** — the Activate-turn and Remove-member buttons on Crawl Strip cards were `display: none` / `color: transparent` until mouse hover, unreachable via keyboard. Remove now visible at 18% opacity by default; Activate shows on `:focus-within` of its card wrap.
+- **Focus-visible rings** — previously scoped only to Monster Creator and Encounter Roller; now applies to every module surface (Crawl Bar, Crawl Strip, Light Tracker, Spell Dialog, action panels, every `vagabond-crawler-*` ApplicationV2 window).
+
+### Responsive & Touch Support
+
+Tablet-companion play (iPad + Foundry web client at 1024×768) is a real slice of the Foundry user base. Three P1 findings addressed.
+
+- **44px touch targets on primary controls** — the existing `@media (pointer: coarse)` block now covers `.vcb-btn`, `.vcs-cbtn`, `.vcs-ptab`, `.vcs-atab`, `.vlt-douse`, `.vcb-clock-menu-item` with a 44px minimum height (WCAG 2.5.5 / Apple HIG). Mouse users see no change.
+- **CrawlStrip overflow handling** — a 5+ member party at ~900px was overflowing a 768px viewport with right-edge cards unreachable. `.vcs-inner` now has `max-width: 100vw` and `overflow-x: auto`; scrollbar appears only when content overflows.
+- **Window default widths** — five ApplicationV2 windows (Animation FX Config, Light Sources Config, Loot Manager, Party Inventory, Relic Forge) defaulted to 900–960px, eating most of a 1024px viewport. Reduced to 820px. All five are `resizable: true`; wider screens can drag larger; Foundry preserves saved per-user positions.
+
+### Theme System Expansion
+
+The Relic Forge, Merchant Shop, Loot Manager, Party Inventory, and Monster Mutator sections were built with hardcoded hex values (~130 raw hex + ~60 raw rgba) bypassing the CSS custom property system entirely. Light theme was effectively broken across all five sections.
+
+- **Tokenized 4 major sections** — ~260 hex references replaced with `var(--vcb-*)` calls. Matching light-theme overrides added for everything that needed them.
+- **6 alias tokens** — `--vcb-text-primary`, `-secondary`, `-faint`, `--vcb-border-light`, `--vcb-bg-card`, `--vcb-input-hover`, `--vcb-tl-bg1` were referenced throughout the code as `var(token, #fallback)` but never actually defined. Now defined as aliases pointing at existing theme-aware tokens so the fallback never fires.
+- **13 new semantic tokens** — `--vcb-action-buy` / `-buy-dim` / `-sell` / `-sell-dim` / `-save` / `-load` / `-ext-discord` / `-price-gold` / `-price-gold-hi` / `-forge-bg-1` / `-forge-bg-2` / `-mutator-bg` / `-bg-deep`, each with dark and light theme values.
+- **HP gradient light-mode overrides** — `--vcb-hp-ok` / `-mid` / `-low` / `-critical` previously had no `body.theme-light` counterparts (only `--vcb-hp-dead` did). Added deeper-saturated variants for light theme.
+- **Design context file** — new `.impeccable.md` at the repo root captures the five design principles (legibility over mood, phase semantics are sacred, atmosphere in the chrome, dark-is-the-pilot, WCAG AA + reduced motion), the BG3 / Pathfinder / Darkest Dungeon reference corpus, and anti-reference patterns. Plugin skills read this automatically. CLAUDE.md gets a summary section pointing at it.
+
+### Performance
+
+- **`transition: all` → explicit property lists** — 10 rules (forge-btn, category-tab, drop-zone, mutate-item, vcm-tab-btn, vcm-sell-all-junk, vcm-drop-zone, vcm-catalog-buy-btn, vcm-gamble-btn, power-card) now use explicit `transition: background, color, border-color, box-shadow` lists at their original durations. Eliminates browser overhead of watching every animatable property; no visual change.
+
+### Documentation Overhaul
+
+The repository documentation is now release-ready for the Foundry registry.
+
+- **Dual-track structure** — GM-facing guide at top-level `docs/` (5 files: `crawl-loop.md`, `combat.md`, `exploration.md`, `crafting-loot.md`, `session-tracking.md`, plus the existing `player-quickref.md`). Contributor / technical reference moved to `docs/dev/` (the previous top-level reference files: `crawl-system.md`, `combat-tools.md`, `exploration-tools.md`, `utilities.md`).
+- **10 headliner sections + 1 mini-headliner** — Crawl Strip, Encounter System, Monster Creator, Light Tracker, Loot Generator, Relic Forge, Spell Scroll Forge, Merchant Shop, Session Recap, plus NPC Abilities mini-headliner, each ~600–900 words following a consistent template (What it does / How to use / Settings / Tips & Gotchas) with embedded gif placeholders for the next release cycle.
+- **13 stubs** — smaller features (Crawl Clock, Rest & Breather, Flanking, Countdown Dice, Morale, Animation FX, Chat Dice Tooltips, Trap Builder, Inventory System, Party Inventory, Item Drops, XP Counter, Rollback Movement) get tight 80–150 word entries.
+- **README as landing page** — trimmed from 321 lines to 90 lines. Headline features grid with cross-links into the guide, install instructions, requirements, authors.
+- **CLAUDE.md updated** — new Documentation section describing the dual-track structure; new Design Context summary pointing at `.impeccable.md`.
+- **Stale content removed** — `docs/alchemist-cookbook.md` (the alchemy subsystem moved to the Character Enhancer module in an earlier release). `alchemistCookbook` setting row removed from the moved `docs/dev/utilities.md`.
+
 ## v1.10.0
 
 ### Animation FX System
