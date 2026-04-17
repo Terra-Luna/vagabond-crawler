@@ -105,11 +105,37 @@ No world settings. The power catalog lives in `scripts/relic-powers.mjs` (`RELIC
 
 ### What it does
 
+Creates one-shot consumable **spell scrolls** from any entry in the `vagabond.spells` compendium. Pick a spell, configure its delivery/dice/effects exactly as if casting it, and the Forge produces a **Scroll of [Spell]** item — gear-type, consumable, with a baked-in chat-card subtitle (delivery text + dice). Anyone can use it: right-click the scroll in their inventory → **Use Scroll** — no mana cost, no Cast Check, auto-success, plays the configured spell FX, rolls damage, posts a full chat card, then vaporizes.
+
+The cost formula is simple: **5g + 5g × mana cost**. A zero-mana spell scroll is 5 gold. A 2-mana spell is 15 gold. A heavily-boosted 7-mana Fireball scroll is 40 gold. The scroll stores every piece of cast configuration (damage dice, delivery type, delivery increase, FX flag, status riders, crit status riders, explode values) at forge time, so every use produces identical output.
+
 ### How to use
+
+1. Open via **Forge & Loot** → **Scroll Forge**, or `game.vagabondCrawler.scrollForge.open()`.
+2. Optionally **drop an actor** onto the Forge window to target that actor's inventory; otherwise the created scroll lands in World Items.
+3. Pick a spell from the sorted dropdown (populated from `vagabond.spells`).
+4. Configure:
+   - **Delivery type** — touch, ranged, area, cone, etc. (from `CONFIG.VAGABOND.deliveryTypes`).
+   - **Delivery increase** — +/- buttons to extend range or area; cost scales per type.
+   - **Damage dice** — for damaging spells, how many d6 are rolled. Dice above 1 cost extra mana.
+   - **FX** — checkbox for the spell's visual effect (adds 1 mana on damaging spells).
+5. Live gold value updates as you adjust. Click **Forge Scroll** — the item is created with `skipStack: true` (so it never merges with existing scrolls), a chat card posts, and a notification confirms destination.
+6. In play: right-click the scroll in inventory → **Use Scroll**. The module loads the stored spell, rolls damage if configured, plays FX via `VagabondSpellSequencer`, posts the chat card, then deletes the scroll (or decrements quantity if it somehow stacked).
 
 ### Settings
 
+No dedicated settings — the Forge reads `CONFIG.VAGABOND.deliveryTypes`, `deliveryDefaults`, `deliveryIncreaseCost`, and `deliveryIncrement` from the Vagabond system. Anything that affects spell costs there (module extensions, homebrew) flows into Scroll pricing automatically.
+
+The **Use Scroll** context menu entry is added by the scroll-forge module as part of the inventory item context-menu patch in `scripts/vagabond-crawler.mjs` — no toggle, always on for items carrying the `vagabond-crawler.spellScroll` flag.
+
 ### Tips & Gotchas
+
+- **Scrolls don't stack.** Creation uses `skipStack: true` and each scroll's flag payload is unique (even two "Scroll of Fireball" entries differ if you configured different dice), so they remain separate items. The inventory slot rule still pools scrolls into a single "Scrolls" slot for encumbrance.
+- **Use Scroll bypasses Cast Check.** There's no attack roll, no targeting requirement on the caster — scrolls auto-hit. Targets are read from `game.user.targets` at use time, so the player still picks whom to aim at via the standard target tool.
+- **Spell FX play on use.** If the spell ships with Sequencer data, the sequencer plays from the user's token. Missing the systems/vagabond spell-sequencer module means the scroll still works but without the VFX.
+- **Status riders carry through.** Crit status riders (e.g., Burning on a damage crit) and explode-values (dice explosion on max) from the source spell are preserved in the scroll's flag payload, so consumables behave identically to the first-party cast.
+- **Looted scrolls just work.** Loot Generator rolls that produce scrolls use the same flag shape, so any scroll — bought, forged, or looted — is usable via the same context-menu action.
+- For the source spell list, `vagabond.spells` compendium is the authoritative source — add or edit entries there and they appear in the Forge dropdown on next render.
 
 ---
 
