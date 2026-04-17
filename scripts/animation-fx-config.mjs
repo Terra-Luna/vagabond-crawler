@@ -93,12 +93,21 @@ export class AnimationFxConfigApp extends HandlebarsApplicationMixin(Application
   static async #onAddPreset(event, target) {
     const tab = this._activeTab;
     if (tab === "settings") return;
-    const name = await foundry.applications.api.DialogV2.prompt({
+    // Persist any in-flight edits on the active tab so the re-render after add doesn't wipe them
+    this._saveFormToWorking();
+    const rawName = await foundry.applications.api.DialogV2.prompt({
       window: { title: "New Preset Key" },
-      content: '<label>Key (lowercase, unique): <input name="key" type="text" required/></label>',
-      ok: { callback: (ev, btn, dialog) => dialog.querySelector('input[name=key]').value.trim().toLowerCase() },
+      content: '<p>Enter a unique, lowercase key for the new preset (e.g. <code>longspear</code>, <code>hurl</code>, <code>tentacle</code>).</p>'
+             + '<label style="display:block;margin-top:6px;">Key <input name="key" type="text" required autofocus style="width:100%;margin-top:2px;"/></label>',
+      ok: { callback: (event, button) => (button.form?.elements?.key?.value ?? "").trim().toLowerCase() },
+      rejectClose: false,
     });
+    const name = (rawName || "").trim().toLowerCase();
     if (!name) return;
+    if (!/^[a-z0-9_\-]+$/.test(name)) {
+      ui.notifications.warn(`Invalid key "${name}". Use lowercase letters, numbers, underscore, or hyphen.`);
+      return;
+    }
     if (this._workingConfig[tab][name]) {
       ui.notifications.warn(`Preset "${name}" already exists in ${tab}.`);
       return;
