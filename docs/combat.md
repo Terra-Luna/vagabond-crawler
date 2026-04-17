@@ -33,16 +33,26 @@ For the full dashboard of which abilities are automated across every monster in 
 
 <!-- gif: docs/assets/flanking.png -->
 
+Automatic flanking detection during combat. When two or more allied tokens are Close (within 5 ft) to a foe — and the foe is no more than one size larger than the flankers — the foe gains the **Vulnerable** condition. Bidirectional: heroes flank NPCs *and* NPCs flank heroes. Only the GM client evaluates (to avoid races); the checker tracks an actor flag `flankedBy` so it only removes Vulnerable it actually applied — a Vulnerable pushed on by a spell or ability stays put. Size hierarchy (small < medium < large < huge < giant < colossal) is resolved from `actor.system.size` for NPCs and `actor.system.attributes.size` for PCs. For unlinked tokens, the checker also mirrors `outgoingSavesModifier` changes back to the world actor so saves still work correctly.
+
 ### Countdown Dice Auto-Roller
 
 <!-- gif: docs/assets/countdown-dice.png -->
+
+Auto-rolls every combat-linked countdown die at the start of each round. Replicates the Vagabond system's `CountdownDice._onRollDice` logic from combat hooks, so burning, poison, bleeding, recharge timers, and any other system-recognized countdown die tick without the GM clicking a dozen overlays. A roll of 1 shrinks or expires the die; tick damage applies to the carrier via the system's `StatusHelper`; chat cards post through `VagabondChatCard`. Dice So Nice animations get a 2.5-second pad between rolls so results don't overlap visually. On combat end, the roller cleans up any lingering combat-linked dice so they don't persist to the next encounter. The hook is always on — no enable/disable toggle.
 
 ### Morale Check
 
 <!-- gif: docs/assets/morale.png -->
 
+Auto-triggers morale checks in three cases: (1) first NPC death in a group fight, (2) half of the starting NPC count is defeated, (3) a *solo* NPC drops to half HP or below. The module counts the initial NPC combatant list at combat start and tracks which triggers have fired with in-memory flags, so a rapid double-kill only fires the "first death" prompt once. Each prompt is a simple GM dialog — "The goblins check morale?" — with yes/no buttons that roll the morale check per the Vagabond rules. Morale interacts with the [Encounter System](exploration.md#encounter-system): failed checks usually mean the surviving NPCs flee, turning a combat back into an exploration beat.
+
 ### Animation FX
 
 <!-- gif: docs/assets/animation-fx.png -->
 
+Unified animation resolver and playback for weapons, alchemical items, gear, and NPC actions. A single chat hook watches for attack / action / cast messages and plays the configured animation through Sequencer + JB2A if both are installed. Per-item and per-action override flags (`item.system.itemFx`) let you author custom FX without touching global config; the config window (**Animation FX Config** — `game.vagabondCrawler.animationFxConfig.open()`) provides six tabs covering Weapons, Skill Fallbacks, Alchemical, Gear, NPC Actions, and Settings. JB2A-aware defaults ship in `animation-fx-defaults.mjs` and activate automatically when JB2A is installed. For persistent light-on/light-off effects, see `game.vagabondCrawler.animationFx.startPersistent()` / `stopPersistent()`. See the [dev reference](dev/combat-tools.md) for the trigger setting and full config surface.
+
 ### Chat Dice Tooltips
+
+Hover any rolled die in a chat card to see its formula and individual roll results — e.g. hovering `2d6` damage reveals `2d6 → [4, 2]` as a tooltip. Attack-roll tooltips show the d20 and every modifier (favor/hinder, stat, proficiency, item bonus, etc.). Registered on the v13 `renderChatMessageHTML` hook; also enriches any messages already rendered at module load so the tooltips persist through refreshes.
