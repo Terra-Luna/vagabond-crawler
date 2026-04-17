@@ -63,6 +63,19 @@ export function buildDefaultAnimationFxConfig() {
           soundVolume: 0.6,
         },
       },
+      breath_attack: {
+        label: "Breath Attack",
+        patterns: "breath\\s*attack|breath\\s*weapon|\\bbreath\\b|exhale|cone\\s*of",
+        type: "cone",
+        target: "target",
+        hit: {
+          file: "jb2a.breath_weapons.fire.cone.orange.01",
+          scale: 1,
+          duration: 1500,
+          sound: "modules/psfx/library/1st-level-spells/burning-hands/v1/burning-hands-01.ogg",
+          soundVolume: 0.6,
+        },
+      },
       buckler: {
         label: "Buckler",
         patterns: "\\bbuckler\\b",
