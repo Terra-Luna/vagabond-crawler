@@ -81,6 +81,10 @@ Every card shows HP bar (green → yellow → orange → red), current-turn chev
 
 <!-- gif: docs/assets/crawl-clock.png -->
 
+An SVG 6-segment progress clock anchored to the canvas, driven by the Vagabond system's `ProgressClock` API. Each segment represents one Scene of dungeon time; filling a segment triggers the Encounter Check, and at 6/6 the clock resets. Size (Tiny / Small / Medium / Large / Huge) and default position (bottom-left, bottom-right, etc.) persist in the `clockConfig` world setting, so the clock stays put across deletion, combat hiding, and new crawls. The clock hides itself during combat to free up canvas space and returns when combat ends. A GM-only right-click menu exposes size and position toggles.
+
 ### Rest & Breather
 
 <!-- gif: docs/assets/rest-breather.png -->
+
+One combined recovery dialog that rolls up every PC's current state — HP, Luck, Mana, Fatigue, Might, and ration count — into a single table, then offers two choices. **Rest** restores HP, Luck, and Mana to max; if HP was already full it also removes one stack of Fatigue. **Breather** deducts a ration and heals HP equal to the character's Might stat. Rations are auto-detected by scanning every PC for `equipment` items with `system.isSupply` — if a character has no rations, Breather is still available but their row shows "None!" in red so the GM can see at a glance who's going hungry. Cancel closes the dialog with no changes. Launched from the Crawl Bar's **Rest / Breather** button.
