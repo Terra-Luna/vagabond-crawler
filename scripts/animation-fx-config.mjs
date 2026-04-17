@@ -223,6 +223,9 @@ export class AnimationFxConfigApp extends HandlebarsApplicationMixin(Application
           if (!this._workingConfig[tab]) this._workingConfig[tab] = {};
           if (!this._workingConfig[tab][key]) this._workingConfig[tab][key] = {};
           foundry.utils.mergeObject(this._workingConfig[tab][key], preset);
+          // Auto-fill sensible defaults on blank numeric fields so durations
+          // etc. never silently save as 0/NaN/"".
+          this._fillPresetDefaults(this._workingConfig[tab][key]);
         }
       }
     }
@@ -230,6 +233,38 @@ export class AnimationFxConfigApp extends HandlebarsApplicationMixin(Application
     if (data.settings) {
       // will be written to game settings on submit; just update context
     }
+  }
+
+  /**
+   * Apply type-appropriate defaults to a preset's hit/miss blocks when numeric
+   * fields arrive blank/NaN/0/empty-string from the form. Called from
+   * _saveFormToWorking after the merge so defaults are baked into storage.
+   */
+  _fillPresetDefaults(preset) {
+    if (!preset || typeof preset !== "object") return;
+    const type = preset.type ?? "onToken";
+    const hitDurDefault = (type === "projectile" || type === "cone") ? 1500 : 800;
+    const missDurDefault = 600;
+    const fix = (block, durDefault) => {
+      if (!block || typeof block !== "object") return;
+      const clean = (val, fallback) => {
+        if (val === undefined || val === null) return fallback;
+        if (typeof val === "string" && val.trim() === "") return fallback;
+        const n = Number(val);
+        if (!Number.isFinite(n) || n <= 0) return fallback;
+        return n;
+      };
+      // Only fill when there's an active file (otherwise leave empty blocks alone)
+      if (block.file && String(block.file).trim() !== "") {
+        block.duration    = clean(block.duration,    durDefault);
+        block.scale       = clean(block.scale,       1);
+        if (block.sound && String(block.sound).trim() !== "") {
+          block.soundVolume = clean(block.soundVolume, 0.6);
+        }
+      }
+    };
+    fix(preset.hit,  hitDurDefault);
+    fix(preset.miss, missDurDefault);
   }
 
   _flashSaved() {
