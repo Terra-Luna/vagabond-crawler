@@ -386,8 +386,21 @@ export const AnimationFx = {
 
     if (preset.type === "projectile") {
       hardDuration = block.duration || 1500;
+      // Distance-aware Y scale, matching the system's _beamEffect formula
+      // (systems/vagabond/module/helpers/item-sequencer.mjs). Y shrinks with
+      // distance^0.73, floored at 3 grids so short beams don't look bloated.
+      const baseScale = (block.scale ?? 1) * globalScale;
+      const sx = sourceToken.x + ((sourceToken.w ?? 0) / 2);
+      const sy = sourceToken.y + ((sourceToken.h ?? 0) / 2);
+      const tx = target.x + ((target.w ?? 0) / 2);
+      const ty = target.y + ((target.h ?? 0) / 2);
+      const dist = Math.hypot(tx - sx, ty - sy);
+      const gridSize = canvas?.grid?.size || 100;
+      const gridsAway = Math.max(3, dist / gridSize);
+      const scaleY = baseScale / Math.pow(gridsAway, 0.73);
       effect
         .atLocation(sourceToken).stretchTo(target)
+        .scale({ y: scaleY })
         .fadeIn(100).fadeOut(100).opacity(opacity)
         .duration(hardDuration)
         .name(safetyName);
