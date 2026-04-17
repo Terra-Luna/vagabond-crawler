@@ -315,8 +315,8 @@ export const AnimationFx = {
     if (equipType === "armor" || equipType === "relic") return null;
 
     if (equipType === "weapon") return this._resolveWeapon(item, config);
-    if (item.type === "alchemical") return this._resolveAlchemical(item, config);
-    if (item.type === "gear" || equipType === "gear") return this._resolveGear(item, config);
+    if (equipType === "alchemical" || item.type === "alchemical") return this._resolveAlchemical(item, config);
+    if (equipType === "gear" || item.type === "gear") return this._resolveGear(item, config);
 
     return null;
   },
