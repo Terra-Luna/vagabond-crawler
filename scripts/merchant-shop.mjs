@@ -96,6 +96,9 @@ export const MerchantShop = {
       hint: "Display name shown on the shop window.",
       scope: "world", config: true, type: String, default: "The Merchant",
     });
+    game.settings.register(MODULE_ID, "savedShopConfigs", {
+      scope: "world", config: false, type: Object, default: {},
+    });
   },
 
   // ── Init (socket listeners) ───────────────────────────────────────────────
@@ -235,9 +238,13 @@ export const MerchantShop = {
     }
 
     // Update inventory stock in local app
-    if (data.success && data.stockUpdate && this._app?._inventory) {
-      const entry = this._app._inventory.find(e => e.id === data.stockUpdate.id);
-      if (entry) entry.stock = data.stockUpdate.newStock;
+    if (data.success && this._app?._inventory) {
+      if (data.inventory) {
+        this._app._inventory = data.inventory;
+      } else if (data.stockUpdate) {
+        const entry = this._app._inventory.find(e => e.id === data.stockUpdate.id);
+        if (entry) entry.stock = data.stockUpdate.newStock;
+      }
     }
 
     // Re-render the app if open
@@ -366,6 +373,12 @@ export const MerchantShop = {
     const totalCopper = _toCopper(unitSellPrice) * quantity;
     const totalSellPrice = _fromCopper(totalCopper);
 
+    const originalUuid = item.uuid;
+    const itemData = foundry.utils.deepClone(item.toObject());
+    delete itemData._id;
+    delete itemData.uuid;
+    itemData.system.quantity = quantity;
+
     // Remove item(s)
     const currentQty = item.system.quantity ?? 1;
     if (quantity >= currentQty) {
@@ -381,6 +394,18 @@ export const MerchantShop = {
       "system.currency.silver": newTotal.silver,
       "system.currency.copper": newTotal.copper,
     });
+
+    // Restock the merchant with the sold item
+    await this._restockMerchantInventory(itemData, quantity, originalUuid);
+
+    // Refresh open shop inventory if applicable
+    if (this._app?.rendered) {
+      this._app._inventory = this._buildInventory(
+        this._app._mode ?? "compendium",
+        this._app._actorId ?? null,
+      );
+      this._app.render();
+    }
 
     // Log
     await this.logTransaction({
@@ -417,6 +442,11 @@ export const MerchantShop = {
       </div>`,
     });
 
+    const updatedInventory = this._buildInventory(
+      this._app?._mode ?? "compendium",
+      this._app?._actorId ?? null,
+    );
+
     // Broadcast
     game.socket.emit(`module.${MODULE_ID}`, {
       action: "shop:result",
@@ -428,12 +458,14 @@ export const MerchantShop = {
       price: totalSellPrice,
       userId,
       stockUpdate: null,
+      inventory: updatedInventory,
     });
     this._onResult({
       success: true, txAction: "sell",
       playerName: seller.name, itemName: item.name,
       quantity, price: totalSellPrice, userId,
       stockUpdate: null,
+      inventory: updatedInventory,
     });
   },
 
@@ -506,6 +538,11 @@ export const MerchantShop = {
       </div>`,
     });
 
+    const updatedInventory = this._buildInventory(
+      this._app?._mode ?? "compendium",
+      this._app?._actorId ?? null,
+    );
+
     // Broadcast result
     const result = {
       action: "shop:result",
@@ -517,6 +554,7 @@ export const MerchantShop = {
       price: totalCost,
       userId,
       stockUpdate: null,
+      inventory: updatedInventory,
     };
     game.socket.emit(`module.${MODULE_ID}`, result);
     this._onResult(result);
@@ -699,6 +737,41 @@ export const MerchantShop = {
         await game.settings.set(MODULE_ID, "shopInventory", inv);
       }
     }
+  },
+
+  async _restockMerchantInventory(itemData, quantity, originalUuid = null) {
+    const mode = this._app?._mode ?? "compendium";
+    if (mode === "actor" && this._app?._actorId) {
+      const merchant = game.actors.get(this._app._actorId);
+      if (!merchant) return;
+      itemData.system.quantity = quantity;
+      await Item.create(itemData, { parent: merchant });
+      return;
+    }
+
+    const inv = game.settings.get(MODULE_ID, "shopInventory") || [];
+    const existing = inv.find(
+      e => (originalUuid && e.uuid === originalUuid) || (e.name === itemData.name && e.type === itemData.type),
+    );
+    if (existing) {
+      if (existing.stock !== -1) {
+        existing.stock = (existing.stock ?? 0) + quantity;
+      }
+    } else {
+      itemData.system.quantity = quantity;
+      inv.push({
+        id: foundry.utils.randomID(),
+        name: itemData.name,
+        img: itemData.img,
+        uuid: originalUuid,
+        type: itemData.type,
+        baseCost: foundry.utils.deepClone(itemData.system.baseCost ?? { gold: 0, silver: 0, copper: 0 }),
+        stock: quantity,
+        itemData,
+        category: itemData.system?.gearCategory || itemData.system?.equipmentType || "Other",
+      });
+    }
+    await game.settings.set(MODULE_ID, "shopInventory", inv);
   },
 
   _broadcastError(error, userId) {
@@ -1186,6 +1259,7 @@ class MerchantShopApp extends HandlebarsApplicationMixin(ApplicationV2) {
         ...Array.from({ length: 10 }, (_, i) => ({ id: `loot-level:${i + 1}`, label: `Loot Level ${i + 1}` })),
         ...game.tables.contents.map(t => ({ id: t.uuid, label: t.name })),
       ],
+      savedConfigs: game.settings.get(MODULE_ID, "savedShopConfigs") || {},
     };
   }
 
@@ -1674,6 +1748,86 @@ class MerchantShopApp extends HandlebarsApplicationMixin(ApplicationV2) {
         MerchantShop._isOpenForPlayers = false;
         game.socket.emit(`module.${MODULE_ID}`, { action: "shop:close" });
         ui.notifications.info("Shop closed for all players.");
+        this.render();
+      }, { signal });
+
+      // Load saved config
+      el.querySelector(".vcm-load-merchant-btn")?.addEventListener("click", async () => {
+        const select = el.querySelector(".vcm-load-config-select");
+        const configName = select?.value;
+        if (!configName) { ui.notifications.warn("Select a configuration to load."); return; }
+
+        const configs = game.settings.get(MODULE_ID, "savedShopConfigs") || {};
+        const config = configs[configName];
+        if (!config) { ui.notifications.warn("Configuration not found."); return; }
+
+        // Apply the config
+        this._mode = config.mode || "compendium";
+        this._actorId = config.actorId || null;
+        this._shopName = config.shopName || "The Merchant";
+        this._sellRatio = config.sellRatio ?? 50;
+        this._buyMultiplier = config.buyMultiplier ?? 100;
+        this._catalogEnabled = config.catalogEnabled ?? true;
+        this._gambleEnabled = config.gambleEnabled ?? false;
+        this._inventory = config.inventory || [];
+
+        // Update settings
+        await game.settings.set(MODULE_ID, "shopName", this._shopName);
+        await game.settings.set(MODULE_ID, "shopSellRatio", this._sellRatio);
+        if (this._mode === "compendium") {
+          await game.settings.set(MODULE_ID, "shopInventory", this._inventory);
+        }
+        await game.settings.set(MODULE_ID, "gambleOptions", config.gambleOptions || []);
+
+        ui.notifications.info(`Loaded configuration "${configName}".`);
+        this.render();
+      }, { signal });
+
+      // Delete saved config
+      el.querySelector(".vcm-delete-merchant-btn")?.addEventListener("click", async () => {
+        const select = el.querySelector(".vcm-load-config-select");
+        const configName = select?.value;
+        if (!configName) { ui.notifications.warn("Select a configuration to delete."); return; }
+
+        const confirmed = await foundry.applications.api.DialogV2.confirm({
+          window: { title: "Delete Merchant Configuration" },
+          content: `<p>Delete the configuration <strong>${configName}</strong>? This cannot be undone.</p>`,
+          rejectClose: false,
+        });
+        if (!confirmed) return;
+
+        const configs = game.settings.get(MODULE_ID, "savedShopConfigs") || {};
+        delete configs[configName];
+        await game.settings.set(MODULE_ID, "savedShopConfigs", configs);
+
+        ui.notifications.info(`Deleted configuration "${configName}".`);
+        this.render();
+      }, { signal });
+
+      // Save config (uses current shop name)
+      el.querySelector(".vcm-save-config")?.addEventListener("click", async () => {
+        const configName = this._shopName;
+        if (!configName) {
+          ui.notifications.warn("Shop name is required to save configuration.");
+          return;
+        }
+
+        const configs = game.settings.get(MODULE_ID, "savedShopConfigs") || {};
+        configs[configName] = {
+          name: configName,
+          mode: this._mode,
+          actorId: this._actorId,
+          shopName: this._shopName,
+          sellRatio: this._sellRatio,
+          buyMultiplier: this._buyMultiplier,
+          catalogEnabled: this._catalogEnabled,
+          gambleEnabled: this._gambleEnabled,
+          inventory: foundry.utils.deepClone(this._inventory),
+          gambleOptions: foundry.utils.deepClone(game.settings.get(MODULE_ID, "gambleOptions") || []),
+        };
+
+        await game.settings.set(MODULE_ID, "savedShopConfigs", configs);
+        ui.notifications.info(`Saved configuration "${configName}".`);
         this.render();
       }, { signal });
 

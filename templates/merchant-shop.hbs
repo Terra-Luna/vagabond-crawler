@@ -5,9 +5,9 @@
     <i class="fas fa-shop vcm-header-icon"></i>
     <h2 class="vcm-title">{{shopName}}</h2>
     {{#if hasActor}}
-      <span class="vcm-wallet"><i class="fas fa-coins"></i> {{actorName}}: {{walletDetail}}</span>
+    <span class="vcm-wallet"><i class="fas fa-coins"></i> {{actorName}}: {{walletDetail}}</span>
     {{else}}
-      <span class="vcm-wallet vcm-no-actor"><i class="fas fa-user-slash"></i> No character</span>
+    <span class="vcm-wallet vcm-no-actor"><i class="fas fa-user-slash"></i> No character</span>
     {{/if}}
   </div>
 
@@ -41,30 +41,33 @@
       {{!-- Item list --}}
       <div class="vcm-item-list">
         {{#if inventory.length}}
-          {{#each inventory}}
-          <div class="vcm-item-row {{#if outOfStock}}vcm-out-of-stock{{/if}} {{#unless canAfford}}vcm-cant-afford{{/unless}}" data-shop-item-id="{{id}}">
-            <img class="vcm-item-icon" src="{{img}}" alt="{{name}}" width="32" height="32">
-            <div class="vcm-item-info">
-              <span class="vcm-item-name">{{name}}</span>
-              <span class="vcm-item-cat">{{category}}</span>
-            </div>
-            <span class="vcm-item-price">{{priceDisplay}}</span>
-            <span class="vcm-item-stock" title="{{#if outOfStock}}Out of stock{{else}}{{#if (eq stockDisplay "∞")}}Unlimited{{else}}{{stockDisplay}} remaining{{/if}}{{/if}}">
-              {{stockDisplay}}
-            </span>
-            <div class="vcm-item-actions">
-              <input type="number" class="vcm-qty-input" value="1" min="1" max="99">
-              <button class="vcm-buy-btn" type="button" {{#unless canAfford}}disabled{{/unless}}>
-                <i class="fas fa-cart-plus"></i> Buy
-              </button>
-            </div>
+        {{#each inventory}}
+        <div
+          class="vcm-item-row {{#if outOfStock}}vcm-out-of-stock{{/if}} {{#unless canAfford}}vcm-cant-afford{{/unless}}"
+          data-shop-item-id="{{id}}">
+          <img class="vcm-item-icon" src="{{img}}" alt="{{name}}" width="32" height="32">
+          <div class="vcm-item-info">
+            <span class="vcm-item-name">{{name}}</span>
+            <span class="vcm-item-cat">{{category}}</span>
           </div>
-          {{/each}}
+          <span class="vcm-item-price">{{priceDisplay}}</span>
+          <span class="vcm-item-stock" title="{{#if outOfStock}}Out of stock{{else}}{{#if (eq stockDisplay "
+            ∞")}}Unlimited{{else}}{{stockDisplay}} remaining{{/if}}{{/if}}">
+            {{stockDisplay}}
+          </span>
+          <div class="vcm-item-actions">
+            <input type="number" class="vcm-qty-input" value="1" min="1" max="99">
+            <button class="vcm-buy-btn" type="button" {{#unless canAfford}}disabled{{/unless}}>
+              <i class="fas fa-cart-plus"></i> Buy
+            </button>
+          </div>
+        </div>
+        {{/each}}
         {{else}}
-          <div class="vcm-empty">
-            <i class="fas fa-shop-slash"></i>
-            <p>No items available.</p>
-          </div>
+        <div class="vcm-empty">
+          <i class="fas fa-shop-slash"></i>
+          <p>No items available.</p>
+        </div>
         {{/if}}
       </div>
     </div>
@@ -77,7 +80,7 @@
       {{!-- Filters --}}
       <div class="vcm-catalog-filters">
         <select class="vcm-catalog-pack">
-          <option value="all" {{#if (eq catalogPack "all")}}selected{{/if}}>All Packs</option>
+          <option value="all" {{#if (eq catalogPack "all" )}}selected{{/if}}>All Packs</option>
           {{#each catalogPacks}}
           <option value="{{id}}" {{#if selected}}selected{{/if}}>{{label}}</option>
           {{/each}}
@@ -85,7 +88,7 @@
 
         {{#if showFolderFilter}}
         <select class="vcm-catalog-folder">
-          <option value="all" {{#if (eq catalogFolder "all")}}selected{{/if}}>All Folders</option>
+          <option value="all" {{#if (eq catalogFolder "all" )}}selected{{/if}}>All Folders</option>
           {{#each catalogFolders}}
           <option value="{{id}}" {{#if selected}}selected{{/if}}>{{name}}</option>
           {{/each}}
@@ -95,39 +98,39 @@
         <input type="text" class="vcm-catalog-search" placeholder="Search items…" value="{{catalogSearch}}">
 
         <select class="vcm-catalog-sort">
-          <option value="name" {{#if (eq catalogSort "name")}}selected{{/if}}>Name</option>
-          <option value="value-asc" {{#if (eq catalogSort "value-asc")}}selected{{/if}}>Value ↑</option>
-          <option value="value-desc" {{#if (eq catalogSort "value-desc")}}selected{{/if}}>Value ↓</option>
+          <option value="name" {{#if (eq catalogSort "name" )}}selected{{/if}}>Name</option>
+          <option value="value-asc" {{#if (eq catalogSort "value-asc" )}}selected{{/if}}>Value ↑</option>
+          <option value="value-desc" {{#if (eq catalogSort "value-desc" )}}selected{{/if}}>Value ↓</option>
         </select>
       </div>
 
       {{!-- Item list --}}
       <div class="vcm-item-list">
         {{#if catalogItems.length}}
-          {{#each catalogItems}}
-          <div class="vcm-item-row {{#unless canAfford}}vcm-cant-afford{{/unless}}" data-item-uuid="{{uuid}}">
-            <img class="vcm-item-icon" src="{{img}}" alt="{{name}}" width="32" height="32">
-            <div class="vcm-item-info">
-              <span class="vcm-item-name">{{name}}</span>
-              <span class="vcm-item-cat">
-                <span class="vcm-catalog-tag">{{packLabel}}</span>
-                {{#if folderName}}<span class="vcm-catalog-tag vcm-folder-tag">{{folderName}}</span>{{/if}}
-              </span>
-            </div>
-            <span class="vcm-item-price">{{priceDisplay}}</span>
-            <div class="vcm-item-actions">
-              <input type="number" class="vcm-qty-input" value="1" min="1" max="99">
-              <button class="vcm-catalog-buy-btn" type="button" {{#unless canAfford}}disabled{{/unless}}>
-                <i class="fas fa-cart-plus"></i> Buy
-              </button>
-            </div>
+        {{#each catalogItems}}
+        <div class="vcm-item-row {{#unless canAfford}}vcm-cant-afford{{/unless}}" data-item-uuid="{{uuid}}">
+          <img class="vcm-item-icon" src="{{img}}" alt="{{name}}" width="32" height="32">
+          <div class="vcm-item-info">
+            <span class="vcm-item-name">{{name}}</span>
+            <span class="vcm-item-cat">
+              <span class="vcm-catalog-tag">{{packLabel}}</span>
+              {{#if folderName}}<span class="vcm-catalog-tag vcm-folder-tag">{{folderName}}</span>{{/if}}
+            </span>
           </div>
-          {{/each}}
+          <span class="vcm-item-price">{{priceDisplay}}</span>
+          <div class="vcm-item-actions">
+            <input type="number" class="vcm-qty-input" value="1" min="1" max="99">
+            <button class="vcm-catalog-buy-btn" type="button" {{#unless canAfford}}disabled{{/unless}}>
+              <i class="fas fa-cart-plus"></i> Buy
+            </button>
+          </div>
+        </div>
+        {{/each}}
         {{else}}
-          <div class="vcm-empty">
-            <i class="fas fa-book-open"></i>
-            <p>No items match your filters.</p>
-          </div>
+        <div class="vcm-empty">
+          <i class="fas fa-book-open"></i>
+          <p>No items match your filters.</p>
+        </div>
         {{/if}}
       </div>
     </div>
@@ -137,28 +140,29 @@
     {{#if (eq tab "gamble")}}
     <div class="vcm-tab-content vcm-gamble-tab">
       <div class="vcm-gamble-header">
-        <i class="fas fa-dice"></i> Pay gold to roll on a loot table. You might get treasure, weapons, armor, or alchemy!
+        <i class="fas fa-dice"></i> Pay gold to roll on a loot table. You might get treasure, weapons, armor, or
+        alchemy!
       </div>
       <div class="vcm-item-list">
         {{#if gambleOptions.length}}
-          {{#each gambleOptions}}
-          <div class="vcm-item-row {{#unless canAfford}}vcm-cant-afford{{/unless}}" data-gamble-id="{{id}}">
-            <div class="vcm-item-info">
-              <span class="vcm-item-name">{{name}}</span>
-            </div>
-            <span class="vcm-item-price">{{costDisplay}}</span>
-            <div class="vcm-item-actions">
-              <button class="vcm-gamble-btn" type="button" {{#unless canAfford}}disabled{{/unless}}>
-                <i class="fas fa-dice"></i> Gamble
-              </button>
-            </div>
+        {{#each gambleOptions}}
+        <div class="vcm-item-row {{#unless canAfford}}vcm-cant-afford{{/unless}}" data-gamble-id="{{id}}">
+          <div class="vcm-item-info">
+            <span class="vcm-item-name">{{name}}</span>
           </div>
-          {{/each}}
+          <span class="vcm-item-price">{{costDisplay}}</span>
+          <div class="vcm-item-actions">
+            <button class="vcm-gamble-btn" type="button" {{#unless canAfford}}disabled{{/unless}}>
+              <i class="fas fa-dice"></i> Gamble
+            </button>
+          </div>
+        </div>
+        {{/each}}
         {{else}}
-          <div class="vcm-empty">
-            <i class="fas fa-dice"></i>
-            <p>No gamble options configured. The GM can set them up on the Manage tab.</p>
-          </div>
+        <div class="vcm-empty">
+          <i class="fas fa-dice"></i>
+          <p>No gamble options configured. The GM can set them up on the Manage tab.</p>
+        </div>
         {{/if}}
       </div>
     </div>
@@ -180,27 +184,29 @@
 
       <div class="vcm-item-list">
         {{#if sellItems.length}}
-          {{#each sellItems}}
-          <div class="vcm-item-row {{#if isJunk}}vcm-junk-item{{/if}}" data-item-id="{{id}}">
-            <img class="vcm-item-icon" src="{{img}}" alt="{{name}}" width="32" height="32">
-            <div class="vcm-item-info">
-              <span class="vcm-item-name">{{#if isJunk}}<i class="fas fa-trash-can" style="color:#e74c3c;margin-right:4px;"></i>{{/if}}{{name}}{{#if (gt quantity 1)}} ×{{quantity}}{{/if}}</span>
-              <span class="vcm-item-cat">Value: {{baseCostDisplay}}</span>
-            </div>
-            <span class="vcm-item-price vcm-sell-price">{{sellPriceDisplay}}</span>
-            <div class="vcm-item-actions">
-              <input type="number" class="vcm-qty-input" value="1" min="1" max="{{quantity}}">
-              <button class="vcm-sell-btn" type="button">
-                <i class="fas fa-coins"></i> Sell
-              </button>
-            </div>
+        {{#each sellItems}}
+        <div class="vcm-item-row {{#if isJunk}}vcm-junk-item{{/if}}" data-item-id="{{id}}">
+          <img class="vcm-item-icon" src="{{img}}" alt="{{name}}" width="32" height="32">
+          <div class="vcm-item-info">
+            <span class="vcm-item-name">{{#if isJunk}}<i class="fas fa-trash-can"
+                style="color:#e74c3c;margin-right:4px;"></i>{{/if}}{{name}}{{#if (gt quantity 1)}}
+              ×{{quantity}}{{/if}}</span>
+            <span class="vcm-item-cat">Value: {{baseCostDisplay}}</span>
           </div>
-          {{/each}}
+          <span class="vcm-item-price vcm-sell-price">{{sellPriceDisplay}}</span>
+          <div class="vcm-item-actions">
+            <input type="number" class="vcm-qty-input" value="1" min="1" max="{{quantity}}">
+            <button class="vcm-sell-btn" type="button">
+              <i class="fas fa-coins"></i> Sell
+            </button>
+          </div>
+        </div>
+        {{/each}}
         {{else}}
-          <div class="vcm-empty">
-            <i class="fas fa-box-open"></i>
-            <p>Nothing to sell.</p>
-          </div>
+        <div class="vcm-empty">
+          <i class="fas fa-box-open"></i>
+          <p>Nothing to sell.</p>
+        </div>
         {{/if}}
       </div>
     </div>
@@ -226,23 +232,23 @@
 
       <div class="vcm-log-list">
         {{#if logEntries.length}}
-          {{#each logEntries}}
-          <div class="vcm-log-entry">
-            <span class="vcm-log-time">{{time}}</span>
-            <span class="vcm-log-icon {{#if isBuy}}vcm-log-buy{{else}}vcm-log-sell{{/if}}">
-              <i class="fas {{#if isBuy}}fa-cart-shopping{{else}}fa-coins{{/if}}"></i>
-            </span>
-            <span class="vcm-log-player">{{player}}</span>
-            <span class="vcm-log-action">{{#if isBuy}}bought{{else}}sold{{/if}}</span>
-            <span class="vcm-log-detail">{{item}}{{qtyStr}}</span>
-            <span class="vcm-log-price">{{priceDisplay}}</span>
-          </div>
-          {{/each}}
+        {{#each logEntries}}
+        <div class="vcm-log-entry">
+          <span class="vcm-log-time">{{time}}</span>
+          <span class="vcm-log-icon {{#if isBuy}}vcm-log-buy{{else}}vcm-log-sell{{/if}}">
+            <i class="fas {{#if isBuy}}fa-cart-shopping{{else}}fa-coins{{/if}}"></i>
+          </span>
+          <span class="vcm-log-player">{{player}}</span>
+          <span class="vcm-log-action">{{#if isBuy}}bought{{else}}sold{{/if}}</span>
+          <span class="vcm-log-detail">{{item}}{{qtyStr}}</span>
+          <span class="vcm-log-price">{{priceDisplay}}</span>
+        </div>
+        {{/each}}
         {{else}}
-          <div class="vcm-empty">
-            <i class="fas fa-clipboard-list"></i>
-            <p>No transactions recorded.</p>
-          </div>
+        <div class="vcm-empty">
+          <i class="fas fa-clipboard-list"></i>
+          <p>No transactions recorded.</p>
+        </div>
         {{/if}}
       </div>
     </div>
@@ -261,7 +267,8 @@
         <div class="vcm-manage-row">
           <label>Buy Markup (%)</label>
           <input type="number" class="vcm-markup-input" value="{{buyMultiplier}}" min="10" max="500" step="10">
-          <span style="font-size:0.85em;color:var(--vcb-text-muted,#666);">100 = normal, 150 = markup, 80 = discount</span>
+          <span style="font-size:0.85em;color:var(--vcb-text-muted,#666);">100 = normal, 150 = markup, 80 =
+            discount</span>
         </div>
         <div class="vcm-manage-row">
           <label>Sell Ratio (%)</label>
@@ -288,13 +295,13 @@
         <h3>Inventory Source</h3>
         <div class="vcm-mode-selector">
           <label>
-            <input type="radio" class="vcm-mode-radio" name="vcm-mode" value="compendium"
-              {{#if (eq mode "compendium")}}checked{{/if}}>
+            <input type="radio" class="vcm-mode-radio" name="vcm-mode" value="compendium" {{#if (eq mode "compendium"
+              )}}checked{{/if}}>
             Compendium Inventory
           </label>
           <label>
-            <input type="radio" class="vcm-mode-radio" name="vcm-mode" value="actor"
-              {{#if (eq mode "actor")}}checked{{/if}}>
+            <input type="radio" class="vcm-mode-radio" name="vcm-mode" value="actor" {{#if (eq mode "actor"
+              )}}checked{{/if}}>
             NPC Actor Inventory
           </label>
         </div>
@@ -309,13 +316,37 @@
         {{/if}}
       </div>
 
+      {{#if (eq mode "compendium")}}
+      {{!-- Saved merchants --}}
+      <div class="vcm-manage-section">
+        <h3>Saved Merchants</h3>
+        <div class="vcm-saved-configs-row">
+          <select class="vcm-load-config-select">
+            <option value="">— Select merchant —</option>
+            {{#each savedConfigs}}
+            <option value="{{@key}}">{{this.name}}</option>
+            {{/each}}
+          </select>
+          <button class="vcm-load-merchant-btn" type="button">
+            <i class="fas fa-upload"></i> Load
+          </button>
+          <button class="vcm-delete-merchant-btn" type="button">
+            <i class="fas fa-trash"></i> Delete
+          </button>
+        </div>
+      </div>
+      {{/if}}
+
       {{!-- Broadcast controls --}}
       <div class="vcm-manage-section vcm-broadcast-controls">
         <button class="vcm-open-for-all" type="button">
-          <i class="fas fa-bullhorn"></i> Open Shop for All Players
+          <i class="fas fa-bullhorn"></i>Open Shop for All Players
         </button>
         <button class="vcm-close-for-all" type="button">
-          <i class="fas fa-door-closed"></i> Close Shop for All
+          <i class="fas fa-door-closed"></i>Close Shop for All
+        </button>
+        <button class="vcm-save-config" type="button">
+          <i class="fas fa-book"></i>Save
         </button>
       </div>
 
@@ -336,11 +367,14 @@
             <img src="{{img}}" alt="{{name}}" width="24" height="24">
             <span class="vcm-manage-item-name">{{name}}</span>
             <div class="vcm-manage-price">
-              <input type="number" class="vcm-price-gold" value="{{baseCost.gold}}" min="0" title="Gold" placeholder="g">
+              <input type="number" class="vcm-price-gold" value="{{baseCost.gold}}" min="0" title="Gold"
+                placeholder="g">
               <span>g</span>
-              <input type="number" class="vcm-price-silver" value="{{baseCost.silver}}" min="0" title="Silver" placeholder="s">
+              <input type="number" class="vcm-price-silver" value="{{baseCost.silver}}" min="0" title="Silver"
+                placeholder="s">
               <span>s</span>
-              <input type="number" class="vcm-price-copper" value="{{baseCost.copper}}" min="0" title="Copper" placeholder="c">
+              <input type="number" class="vcm-price-copper" value="{{baseCost.copper}}" min="0" title="Copper"
+                placeholder="c">
               <span>c</span>
             </div>
             <div class="vcm-manage-stock">
@@ -390,9 +424,11 @@
           <div class="vcm-manage-item-row" data-gamble-config-id="{{id}}">
             <span class="vcm-manage-item-name">{{name}}</span>
             <div class="vcm-manage-price">
-              <input type="number" class="vcm-gamble-cost-gold" value="{{cost.gold}}" min="0" title="Gold" placeholder="g">
+              <input type="number" class="vcm-gamble-cost-gold" value="{{cost.gold}}" min="0" title="Gold"
+                placeholder="g">
               <span>g</span>
-              <input type="number" class="vcm-gamble-cost-silver" value="{{cost.silver}}" min="0" title="Silver" placeholder="s">
+              <input type="number" class="vcm-gamble-cost-silver" value="{{cost.silver}}" min="0" title="Silver"
+                placeholder="s">
               <span>s</span>
             </div>
             <button class="vcm-gamble-remove-btn" type="button" title="Remove">
