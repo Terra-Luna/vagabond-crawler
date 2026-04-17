@@ -134,6 +134,26 @@ class MyApp extends HandlebarsApplicationMixin(ApplicationV2) {
 
 All colors use CSS custom properties defined on `:root` (dark default) with `body.theme-light` overrides. Organized into sections: surfaces, borders, accents, text, shadows, phase colors (`--vcb-heroes`, `--vcb-gm`, `--vcb-combat`). Single file: `styles/vagabond-crawler.css`.
 
+## Design Context
+
+Full design guidelines live in `.impeccable.md` at the repo root — read that file for the complete context before any visual/UI work. Summary:
+
+- **Users:** GMs running dungeon-crawl sessions at the table. Decisions made in seconds; fiction momentum is priority.
+- **Personality:** Gritty, atmospheric, functional. GM-to-GM voice. Confident, concise.
+- **Emotional goal:** GM feels in control and confident — informative density without visual chaos.
+- **Reference corpus:** Video game RPG UIs — Baldur's Gate 3, Pathfinder: WotR, Darkest Dungeon. Worn textures, ornamental borders, strong typography on chrome.
+- **Anti-references:** Modern SaaS aesthetic (Linear/Notion), neon/cyber palettes, generic AI-polish look (purple gradients, emoji decoration).
+
+**Five principles:**
+
+1. **Legibility over mood.** The Crawl Strip must pass the "one-second glance" test during combat. If atmosphere slows the read, cut it.
+2. **Phase semantics are sacred.** Heroes green / GM blue / Combat red is game grammar. Never recolor; extend scales instead.
+3. **Atmosphere lives in the chrome, not the data.** Textures and ornaments on window frames, headers, banners. Never on HP bars, portraits, settings, data cards.
+4. **Dark is the pilot, light is the co-pilot.** Dark mode is primary; light must stay functional but doesn't need to match mood intensity.
+5. **WCAG AA + reduced motion.** Meet AA text/UI contrast. Never rely on color alone — always pair with icon/label. Respect `prefers-reduced-motion`.
+
+**Never hardcode hex colors in new CSS** — use the `--vcb-*` token system exclusively. Additions go in the matching subsystem's section of `styles/vagabond-crawler.css` with a comment banner.
+
 ## Commits
 
 Conventional Commits: `feat:`, `fix:`, `refactor:`, `docs:`, `chore:`. Short imperative description.
