@@ -4754,17 +4754,15 @@ body.theme-light .vcb-phase-badge {
   height: 100%;
 }
 
-.sr-section h4 {
-  margin: 12px 0 6px;
-  color: var(--vcb-accent, #c9a54a);
-  font-size: 0.9em;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
+/* .sr-section h4 base rule removed — was using text-transform: uppercase
+ * + letter-spacing with higher specificity than the .sr-section-title
+ * class, silently overriding the /typeset treatment. All section headings
+ * are now class-based (.sr-section-title, .sr-xp-player h4, .sr-party-name)
+ * for explicit specificity. */
 
 .sr-empty {
   text-align: center;
-  color: var(--vcb-text-dim, #9aa0a6);
+  color: var(--vcb-text-muted);
   padding: 30px;
   font-style: italic;
 }
@@ -5060,9 +5058,10 @@ body.theme-light .vcb-phase-badge {
   cursor: pointer;
   background: rgba(88,101,242,0.3);
   border: 1px solid rgba(88,101,242,0.6);
-  color: #7289da;
+  color: var(--vcb-ext-discord);
   border-radius: 4px;
   font-size: 0.85em;
+  transition: background 0.15s;
 }
 
 .sr-copy-btn:hover { background: rgba(88,101,242,0.5); }
@@ -5072,9 +5071,10 @@ body.theme-light .vcb-phase-badge {
   cursor: pointer;
   background: rgba(192,57,43,0.2);
   border: 1px solid rgba(192,57,43,0.4);
-  color: #e74c3c;
+  color: var(--vcb-action-sell);
   border-radius: 4px;
   font-size: 0.85em;
+  transition: background 0.15s;
 }
 
 .sr-clear-btn:hover { background: rgba(192,57,43,0.4); }
@@ -5116,15 +5116,16 @@ body.theme-light .vcb-phase-badge {
 .sr-history-delete {
   background: none;
   border: none;
-  color: #888;
+  color: var(--vcb-text-muted);
   cursor: pointer;
   padding: 4px 6px;
   border-radius: 3px;
   font-size: 0.85em;
+  transition: color 0.15s, background 0.15s;
 }
 
 .sr-history-delete:hover {
-  color: #e74c3c;
+  color: var(--vcb-action-sell);
   background: rgba(192,57,43,0.15);
 }
 
