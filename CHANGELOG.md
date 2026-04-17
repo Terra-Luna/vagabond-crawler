@@ -2,6 +2,41 @@
 
 ## v1.10.0
 
+### Animation FX System
+
+Centralized animation configuration for weapon, alchemical, gear, and NPC action effects. Absorbs and extends the standalone `vagabond-item-fx` module. One place to tune; no more per-item sheet editing.
+
+- **Unified config window** — ApplicationV2 with tabs for Weapons, Skill Fallbacks, Alchemical, Gear, NPC Actions, and Settings. Opens from the **Forge & Loot → Animation FX** button on the CrawlBar.
+- **Curated defaults** — 50 weapons (imported from the `Weapon Animations.xlsx` preset library) with JB2A Melee/Ranged file paths and psfx sound pairings, 25 alchemical entries, 3 gear entries, 7 NPC action starters.
+- **Hit + Miss blocks** — every preset supports separate file/scale/duration/sound for hit and miss outcomes.
+- **Three animation types per preset** — `onToken` for swings/impacts, `projectile` for bolts/arrows (distance-aware Y-scale matching the system's `_beamEffect`), `cone` for breath weapons. Smart-default type detection when creating new NPC action presets.
+- **Per-item + per-action overrides** — "Animation FX" header button on weapon/alchemical/gear item sheets and a ⚡ button next to each NPC action row. Writes to `flags.vagabond-crawler.animationOverride` or `actionOverrides[index]`.
+- **Sync to Items** — one-click push of the crawler's matched preset data into each world weapon's `system.itemFx`, so the Vagabond system's built-in animation pipeline plays everything at the right size. ~49 weapons across ~18 actors synced per click.
+- **Testing tools** — Test All in Tab (sequentially previews every preset with a 2.5s gap), Clear All FX (ends every lingering crawler-owned Sequencer effect on the scene).
+- **Resolver chain** — per-item override flag → name-pattern regex (weapons/npcActions) or key-substring match (alchemical/gear) → weapon-skill fallback → `_default` → null. NPC actions always treated as hit (they don't roll to hit).
+- **Retired the cone patch** in `npc-abilities.mjs`. All three animation types now flow through the unified playback.
+- **Defensive transient cleanup** — every non-persistent effect is named and force-ended at duration + fade + 200ms buffer, preventing runaway lingering webms.
+- **Master FX toggles** — per-client enable / global scale (0.25–3.0) / sound enable / master volume; world-scoped `triggerOn` = always | hit.
+
+### Light Sources Configuration
+
+Per-light-source Foundry light property editor.
+
+- **Right-click** the CrawlBar **Lights** button to open the config window.
+- Editable per-source (all 12 types — torch, hooded lantern, bullseye lantern, 4 candle variants, sunrod, 4 torch variants):
+  - Dim / Bright radius, Emission Angle
+  - Light Color (color picker) + Color Intensity
+  - Priority + Is Darkness Source
+  - Animation Type (sourced from `CONFIG.Canvas.lightAnimations` at runtime), Speed, Intensity, Reverse Direction
+  - Longevity (seconds), Consumable flag
+- **Test on Token** button — applies the config to a selected token's light so you can preview before saving.
+- **Reset This Source** / **Reset All** with confirm.
+- Hardcoded defaults become the initial world setting; `_getLightDef()` merges stored overrides on top, so `match` and `fuel` regex stay in code while Foundry light properties live in settings.
+
+### Light-Tracker / Animation FX Integration
+
+`_lightItem` / `_douseLight` / `_burnOut` / `_doPickup` now call `AnimationFx.startPersistent()` and `.stopPersistent()` on light transitions, so lighting a torch via the tracker also plays the flame webm (and extinguishing ends it). Both methods are idempotent — no accidental toggle-off on double-call.
+
 ### XP Counter Patch
 
 Monkey-patches the base system's Level Up dialog so the XP questionnaire uses unlimited numeric counters instead of simple on/off checkboxes.
