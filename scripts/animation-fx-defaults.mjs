@@ -785,7 +785,7 @@ export function buildDefaultAnimationFxConfig() {
         target: "self",
         hit: {
           file: `${R}/Generic/Smoke/SmokePuff01_01_Regular_Grey_400x400.webm`,
-          scale: 8,
+          scale: 1,
           duration: 1500,
         },
       },
@@ -795,7 +795,7 @@ export function buildDefaultAnimationFxConfig() {
         target: "self",
         hit: {
           file: `${R}/Generic/Explosion/Explosion_01_Blue_400x400.webm`,
-          scale: 8,
+          scale: 1,
           duration: 1500,
         },
       },
@@ -805,7 +805,7 @@ export function buildDefaultAnimationFxConfig() {
         target: "self",
         hit: {
           file: `${R}/Generic/Healing/HealingAbility_01_Blue_400x400.webm`,
-          scale: 8,
+          scale: 1,
           duration: 1500,
         },
       },
@@ -815,7 +815,7 @@ export function buildDefaultAnimationFxConfig() {
         target: "self",
         hit: {
           file: `${R}/Generic/Healing/HealingAbility_01_Blue_400x400.webm`,
-          scale: 8,
+          scale: 1,
           duration: 1500,
         },
       },
@@ -825,7 +825,7 @@ export function buildDefaultAnimationFxConfig() {
         target: "self",
         hit: {
           file: `${R}/Generic/Healing/HealingAbility_01_Blue_400x400.webm`,
-          scale: 8,
+          scale: 1,
           duration: 1500,
         },
       },
@@ -835,7 +835,7 @@ export function buildDefaultAnimationFxConfig() {
         target: "self",
         hit: {
           file: `${R}/Generic/Healing/HealingAbility_01_Blue_400x400.webm`,
-          scale: 8,
+          scale: 1,
           duration: 1500,
         },
       },
@@ -845,7 +845,7 @@ export function buildDefaultAnimationFxConfig() {
         target: "self",
         hit: {
           file: `${R}/Generic/Smoke/SmokePuff01_01_Regular_Grey_400x400.webm`,
-          scale: 8,
+          scale: 1,
           duration: 1000,
         },
       },
@@ -855,7 +855,7 @@ export function buildDefaultAnimationFxConfig() {
         target: "self",
         hit: {
           file: `${R}/Generic/Explosion/Explosion_01_Orange_400x400.webm`,
-          scale: 8,
+          scale: 1,
           duration: 1500,
         },
       },
@@ -865,7 +865,7 @@ export function buildDefaultAnimationFxConfig() {
         target: "self",
         hit: {
           file: `${R}/Generic/Healing/HealingAbility_01_Blue_400x400.webm`,
-          scale: 8,
+          scale: 1,
           duration: 1500,
         },
       },
@@ -875,7 +875,7 @@ export function buildDefaultAnimationFxConfig() {
         target: "self",
         hit: {
           file: `${R}/Generic/Healing/HealingAbility_01_Blue_400x400.webm`,
-          scale: 8,
+          scale: 1,
           duration: 1500,
         },
       },
@@ -885,7 +885,7 @@ export function buildDefaultAnimationFxConfig() {
         target: "self",
         hit: {
           file: `${R}/Generic/Smoke/SmokePuff01_01_Regular_Grey_400x400.webm`,
-          scale: 6,
+          scale: 1,
           duration: 800,
         },
       },
@@ -895,7 +895,7 @@ export function buildDefaultAnimationFxConfig() {
         target: "self",
         hit: {
           file: `${R}/Generic/Smoke/SmokePuff01_01_Regular_Grey_400x400.webm`,
-          scale: 6,
+          scale: 1,
           duration: 800,
         },
       },
@@ -905,7 +905,7 @@ export function buildDefaultAnimationFxConfig() {
         target: "self",
         hit: {
           file: `${R}/Generic/Smoke/SmokePuff01_01_Regular_Grey_400x400.webm`,
-          scale: 6,
+          scale: 1,
           duration: 800,
         },
       },
@@ -915,7 +915,7 @@ export function buildDefaultAnimationFxConfig() {
         target: "self",
         hit: {
           file: `${R}/Generic/Healing/HealingAbility_01_Blue_400x400.webm`,
-          scale: 8,
+          scale: 1,
           duration: 1500,
         },
       },
@@ -935,7 +935,7 @@ export function buildDefaultAnimationFxConfig() {
         persist: true,
         hit: {
           file: `${R}/Generic/Fire/GroundCrackLoop_03_Regular_Orange_600x600.webm`,
-          scale: 4,
+          scale: 1,
           duration: 0,
         },
       },
@@ -946,7 +946,7 @@ export function buildDefaultAnimationFxConfig() {
         persist: true,
         hit: {
           file: `${R}/Generic/Fire/GroundCrackLoop_03_Regular_Orange_600x600.webm`,
-          scale: 4,
+          scale: 1,
           duration: 0,
         },
       },
@@ -957,7 +957,7 @@ export function buildDefaultAnimationFxConfig() {
         persist: true,
         hit: {
           file: `${R}/Generic/Fire/GroundCrackLoop_03_Regular_Orange_600x600.webm`,
-          scale: 4,
+          scale: 1,
           duration: 0,
         },
       },
@@ -971,7 +971,7 @@ export function buildDefaultAnimationFxConfig() {
         target: "target",
         hit: {
           file: `${R}/Generic/Creature/Bite_01_Regular_Red_400x400.webm`,
-          scale: 8,
+          scale: 1,
           duration: 800,
         },
       },
@@ -982,7 +982,7 @@ export function buildDefaultAnimationFxConfig() {
         target: "target",
         hit: {
           file: `${R}/Generic/Creature/Claw/CreatureAttackClaw_001_001_Red_800x600.webm`,
-          scale: 8,
+          scale: 1,
           duration: 800,
         },
       },
@@ -993,7 +993,7 @@ export function buildDefaultAnimationFxConfig() {
         target: "target",
         hit: {
           file: `${R}/Generic/Weapon_Attacks/Melee/DmgBludgeoning_01_Regular_Yellow_1Handed_800x600.webm`,
-          scale: 8,
+          scale: 1,
           duration: 800,
         },
       },
@@ -1004,7 +1004,7 @@ export function buildDefaultAnimationFxConfig() {
         target: "target",
         hit: {
           file: `${R}/Generic/Weapon_Attacks/Melee/DmgSlashing_01_Regular_Yellow_1Handed_800x600.webm`,
-          scale: 8,
+          scale: 1,
           duration: 700,
         },
       },
@@ -1015,7 +1015,7 @@ export function buildDefaultAnimationFxConfig() {
         target: "target",
         hit: {
           file: `${R}/Generic/Weapon_Attacks/Melee/DmgBludgeoning_01_Regular_Yellow_1Handed_800x600.webm`,
-          scale: 10,
+          scale: 1,
           duration: 900,
         },
       },
@@ -1036,7 +1036,7 @@ export function buildDefaultAnimationFxConfig() {
         target: "target",
         hit: {
           file: `${R}/Generic/Weapon_Attacks/Melee/GenericSlash01_01_Regular_BluePurple_800x600.webm`,
-          scale: 8,
+          scale: 1,
           duration: 800,
         },
       },

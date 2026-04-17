@@ -61,6 +61,55 @@ export const AnimationFx = {
     // finishes its own async wrap chain (which uses multiple await-import steps).
     // 100ms is enough for all pending microtask chains to complete.
     setTimeout(() => this._wrapNpcAction(), 100);
+    // Run scale migration non-blocking (fixes stale scale values from pre-fix config)
+    this._migrateScaleValues().catch(e => console.warn("[vagabond-crawler] scale migration failed:", e));
+  },
+
+  async _migrateScaleValues() {
+    if (!game.user.isGM) return;
+    const MIGRATION_FLAG = "scaleMigration_v1";
+    const stored = game.settings.get(MODULE_ID, "animationFxConfig") ?? {};
+    if (stored.__migrations?.[MIGRATION_FLAG]) return;
+
+    let changed = false;
+
+    // Delete the 11 legacy weapon keys (superseded by xlsx-imported entries)
+    const legacyKeys = ["sword", "dagger", "axe", "hammer", "polearm", "whip", "fist", "shield", "bow", "firearm", "thrown"];
+    if (stored.weapons) {
+      for (const k of legacyKeys) {
+        if (stored.weapons[k]) { delete stored.weapons[k]; changed = true; }
+      }
+    }
+
+    // Normalize onToken/self scales > 1 in non-weapon categories
+    for (const cat of ["weaponSkillFallbacks", "alchemical", "gear", "npcActions"]) {
+      const entries = stored[cat];
+      if (!entries) continue;
+      for (const [key, preset] of Object.entries(entries)) {
+        const t = preset?.type ?? "onToken";
+        if (t === "onToken" || t === "self") {
+          if (preset?.hit?.scale > 1) { preset.hit.scale = 1; changed = true; }
+          if (preset?.miss?.scale > 1) { preset.miss.scale = 1; changed = true; }
+        }
+      }
+    }
+
+    // Also normalize weapon onToken scales > 1 in stored config
+    if (stored.weapons) {
+      for (const [key, preset] of Object.entries(stored.weapons)) {
+        if ((preset?.type === "onToken" || !preset?.type) && preset?.hit?.scale > 1) {
+          preset.hit.scale = 1;
+          changed = true;
+        }
+      }
+    }
+
+    // Mark migration done and persist
+    stored.__migrations = { ...(stored.__migrations ?? {}), [MIGRATION_FLAG]: true };
+    await game.settings.set(MODULE_ID, "animationFxConfig", stored);
+    if (changed) {
+      console.log("[vagabond-crawler] Animation FX scale migration v1 applied.");
+    }
   },
 
   async _wrapNpcAction() {
@@ -306,7 +355,7 @@ export const AnimationFx = {
       seq.effect()
         .file(block.file)
         .atLocation(sourceToken)
-        .scaleToObject(block.scale * globalScale)
+        .scale(block.scale * globalScale)
         .fadeIn(fadeIn)
         .fadeOut(fadeOut)
         .opacity(opacity)
@@ -359,7 +408,7 @@ export const AnimationFx = {
       const anchorToken = preset.target === "self" ? sourceToken : target;
       effect
         .atLocation(anchorToken)
-        .scaleToObject(block.scale * globalScale)
+        .scale(block.scale * globalScale)
         .fadeIn(fadeIn).fadeOut(fadeOut).duration(hardDuration).opacity(opacity)
         .name(safetyName);
       if (typeof block.offsetX === "number") effect.spriteOffset({ x: block.offsetX });
@@ -634,7 +683,7 @@ export const AnimationFx = {
     seq.effect()
       .file(preset.hit.file)
       .atLocation(token)
-      .scaleToObject(preset.hit.scale * globalScale)
+      .scale(preset.hit.scale * globalScale)
       .fadeIn(fadeIn)
       .fadeOut(fadeOut)
       .opacity(opacity)
