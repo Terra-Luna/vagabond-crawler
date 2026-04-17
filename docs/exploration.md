@@ -48,11 +48,33 @@ Each result card has separate **reroll count / distance / reaction** buttons and
 
 ### What it does
 
+A dedicated ApplicationV2 window for authoring NPC actors from scratch or by pre-filling from a bestiary monster. Ten collapsible sections cover the full NPC sheet — Bestiary loader, Identity, Stats, Damage Immunities, Weaknesses, Status Immunities, Actions, Abilities, Mutations, and Description — with live HP and Threat-Level recalculation as you edit. Saved NPCs land as world actors; the source compendium is never modified.
+
+The creator absorbs what used to be a standalone **Monster Mutator**. Apply one or more of 64 mutations with stat recalculation and auto-generated naming ("Ember Plaguewyrm"), or hand-edit every field. Action and Ability **Quick Picks** come from curated catalogs (`scripts/monster-creator/action-templates.mjs` / `ability-templates.mjs`) — drop in "Claws 2d6 piercing" or "Magic Ward II" in one click. Abilities with a green ✓ badge are live-automated by the module; ⚠ means the Quick Pick is not yet automated; 📖 marks flavor-only abilities that exist for GM reference.
+
 ### How to use
+
+1. **Open.** Encounter Roller → Monster Creator tab, or call `game.vagabondCrawler.monsterCreator.open()`. The panel mounts inline in the roller window, so you can hop between Build Table and Creator without losing state.
+2. **Load from Bestiary (optional).** Pick a source (Bestiary, Humanlike, VCE Beasts, your own packs), filter by name / creature type / TL, and click a row to pre-fill every Creator section with that monster's data. Portrait, token image, senses (parsed into Foundry sight modes), speed modes, actions, and abilities all come across.
+3. **Fill Identity.** Name, size, being type, zone (frontline / midline / backline), HD, morale, appearing, speed, senses, armor, portrait, and token images.
+4. **Tune Stats.** Base stats (might / dexterity / awareness / reason / presence / luck) feed the live HP and TL preview. Crank a stat up and watch HP + DPR shift in real time.
+5. **Set Immunities & Weaknesses.** Damage immunities, weaknesses (including `coldIron` and `silver`), and status immunities are checkbox lists pulled from the canonical Vagabond vocabulary.
+6. **Build Actions.** Use a Quick Pick (Claws, Bite, Bow Shot, Venom Spit, etc.) or author from scratch — name, damage formula, damage type, range, status rider, countdown, drain, target count. Quick Picks live-update the action list.
+7. **Build Abilities.** Quick Picks cover the whole [NPC Abilities](combat.md#npc-abilities) catalog: Magic Ward I-VI, Pack Instincts / Tactics / Hunter, Nimble, Soft Underbelly, and narrative options like Regeneration or Flight. The automation badge tells you at a glance whether picking this ability actually *does* anything at the table.
+8. **Apply Mutations.** The Mutations section picks from 64 mutation templates — each applies stat deltas, new actions, new abilities, and name fragments (Elder, Blighted, Corrupted…). Conflicts between mutations are detected automatically. Full boon/bane lists are in [`docs/audit/abilities.md`](audit/abilities.md).
+9. **Save.** One click creates a new world NPC actor with the full Vagabond `npc` system shape. The sheet opens immediately; drop the actor into the scene or onto a Build Table slot.
 
 ### Settings
 
+No user-facing settings — the Creator uses per-session UI state for open/closed sections (restored on re-render) and the audit dataset in `docs/audit/` for ability automation status. The ability automation status is updated each time `scripts/audit/analyze.mjs` is re-run against the compendium.
+
 ### Tips & Gotchas
+
+- **Green ✓ means automated.** Passing an ability through Quick Pick doesn't guarantee automation — check the badge. ✓ = `scripts/npc-abilities.mjs` actively hooks that ability name; ⚠ = planned but not wired; 📖 = flavor only.
+- **Saving never modifies the compendium.** The creator explicitly creates a *new* world actor. If you want to update a bestiary entry, do it in the compendium directly.
+- **Mutations recalculate HP and DPR** — mutated stat boosts flow through `calculateHP` / `calculateDPR` from `scripts/monster-mutator.mjs`, and mutated names are generated via `generateMutatedName` so "Elder Orc Warlord" is one click.
+- **Senses parse automatically.** Loading from a monster whose senses text says "Darksight 60'" sets the token's Darkvision to 60 ft. Edit the senses field and re-save to tweak.
+- For a full dashboard of which abilities are implemented across all 348 bestiary monsters, see [`docs/audit/abilities.md`](audit/abilities.md) — that's the ground truth for automation coverage.
 
 ---
 
