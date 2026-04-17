@@ -211,7 +211,7 @@ export const MerchantShop = {
     this._app._sellRatio = data.sellRatio;
     this._app._mode = data.mode;
     this._app._actorId = data.actorId;
-    this._app._inventory = data.inventory;
+    this._app._inventory = foundry.utils.deepClone(data.inventory || []);
     this._app._catalogEnabled = data.catalogEnabled ?? true;
     this._app._buyMultiplier = data.buyMultiplier ?? 100;
     this._app._gambleEnabled = data.gambleEnabled ?? false;
@@ -240,7 +240,7 @@ export const MerchantShop = {
     // Update inventory stock in local app
     if (data.success && this._app?._inventory) {
       if (data.inventory) {
-        this._app._inventory = data.inventory;
+        this._app._inventory = foundry.utils.deepClone(data.inventory);
       } else if (data.stockUpdate) {
         const entry = this._app._inventory.find(e => e.id === data.stockUpdate.id);
         if (entry) entry.stock = data.stockUpdate.newStock;
@@ -749,7 +749,7 @@ export const MerchantShop = {
       return;
     }
 
-    const inv = game.settings.get(MODULE_ID, "shopInventory") || [];
+    const inv = foundry.utils.deepClone(game.settings.get(MODULE_ID, "shopInventory") || []);
     const existing = inv.find(
       e => (originalUuid && e.uuid === originalUuid) || (e.name === itemData.name && e.type === itemData.type),
     );
@@ -1769,7 +1769,7 @@ class MerchantShopApp extends HandlebarsApplicationMixin(ApplicationV2) {
         this._buyMultiplier = config.buyMultiplier ?? 100;
         this._catalogEnabled = config.catalogEnabled ?? true;
         this._gambleEnabled = config.gambleEnabled ?? false;
-        this._inventory = config.inventory || [];
+        this._inventory = foundry.utils.deepClone(config.inventory || []);
 
         // Update settings
         await game.settings.set(MODULE_ID, "shopName", this._shopName);
@@ -1805,7 +1805,7 @@ class MerchantShopApp extends HandlebarsApplicationMixin(ApplicationV2) {
       }, { signal });
 
       // Save config (uses current shop name)
-      el.querySelector(".vcm-save-config")?.addEventListener("click", async () => {
+      el.querySelector(".vcm-save-config-btn")?.addEventListener("click", async () => {
         const configName = this._shopName;
         if (!configName) {
           ui.notifications.warn("Shop name is required to save configuration.");
