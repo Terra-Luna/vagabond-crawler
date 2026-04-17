@@ -84,11 +84,51 @@ No user-facing settings — the Creator uses per-session UI state for open/close
 
 ### What it does
 
+Tracks burn time and Foundry light settings for every torch, candle, and lantern the party carries. Twelve source types ship with the module, each with its own bright/dim radius, color, animation, and fuel behavior. Burn time deducts from the world time — either per crawl turn (`Time Passes` button) or in real time while Foundry is unpaused. Lanterns consume oil when burn time reaches zero (and auto-refuel if the carrier has more oil), while torches and candles simply go out.
+
 ### How to use
+
+1. **Light a source.** Right-click any supported item in inventory → **Light**. The token's Foundry light properties switch to the configured bright/dim/color/animation, and burn time starts counting down.
+2. **Advance time.** Either click **Time Passes** on the Crawl Bar (default 10 minutes) or enable **Real-Time Light Burn** to have 1 real second equal 1 game second while the scene is active.
+3. **Extinguish.** Right-click the item again → **Douse**. Burn time pauses; any remaining fuel carries over to the next light.
+4. **Drop on canvas.** Drag a lit light source from the character sheet onto the scene — a temporary Actor token materializes at the drop point, carrying the light with it. Token HUD shows a **Pick Up** button for any owner.
+5. **Transfer to a party token.** Merging characters into a party token transfers carried lights; extracting a character takes their lights back.
+
+### Source Types
+
+| Source | Bright | Dim | Duration | Notes |
+|---|---:|---:|---|---|
+| Torch | 15 ft | 30 ft | 1 hr | Standard hand-carried; consumed on burnout |
+| Lantern, Hooded | 15 ft | 30 ft | 1 hr | 90° cone; needs oil |
+| Lantern, Bullseye | 30 ft | 60 ft | 1 hr | Longer reach; needs oil |
+| Candle (Basic) | 5 ft | 10 ft | 1 hr | Quiet, short radius |
+| Candle, Calming | 5 ft | 10 ft | 1 hr | Blue flame, flavor |
+| Candle, Insectbane | 5 ft | 10 ft | 1 hr | Green flame, flavor |
+| Candle, Restful | 5 ft | 10 ft | 1 hr | Warm flame, flavor |
+| Sunrod | 15 ft | 30 ft | 1 hr | Bright daylight-style sunburst |
+| Torch, Tindertwig | 15 ft | 30 ft | ∞ | Never burns out |
+| Torch, Sentry | 15 ft | 30 ft | 1 hr | Suspends Invisible in its light |
+| Torch, Repel Beast | 15 ft | 30 ft | 1 hr | Red flame |
+| Torch, Frigidflame | 15 ft | 30 ft | 1 hr | Cold blue flame |
+
+Want to tweak the Foundry light properties (color, animation, angle)? Open the **Light Sources Configuration** window via `game.vagabondCrawler.lightTracker.openSourcesConfig()` — stored as world overrides on top of the module defaults.
 
 ### Settings
 
+| Setting | Effect | Default |
+|---|---|---|
+| Real-Time Light Burn | 1 real second = 1 game second while unpaused | Off |
+
+Per-source properties (dim/bright/color/animation) live in the **Light Sources Configuration** window (no CLI toggle — use the window or `game.vagabondCrawler.lightTracker.getLightSourcesConfig()` to inspect current overrides).
+
 ### Tips & Gotchas
+
+- **Lighting a stacked torch splits one off.** If you have 5 torches stacked, lighting one creates a "Torch (lit)" item and leaves 4 unlit behind — the inventory auto-stack rule recognizes lit state.
+- **Tindertwig torches never burn out** — longevity is effectively infinite, so they show their burn time counting down but never actually zero.
+- **Sentry torches suppress Invisible** — any creature with the Invisible condition loses it while inside the sentry torch's light radius. Flavor text in chat confirms when a target breaks invisibility.
+- **Lantern fuel preference is explicit.** When a lantern runs dry, the tracker searches inventory for oil and prefers "Oil, flask" (plain) over "Oil, Basic" (alchemical). A chat card reports the remaining oil count.
+- **Dropped lights are real actors.** They live on the scene until picked up — you can illuminate a room by drag-dropping a lit torch onto a brazier sprite, for example.
+- **Party tokens carry lights correctly** even when unlinked. The tracker walks the party actor's member list and re-applies lights to whichever token is currently visible.
 
 ---
 
