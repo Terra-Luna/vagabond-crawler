@@ -71,11 +71,31 @@ Per-NPC table + chance overrides live as actor flags (`vagabond-crawler.lootTabl
 
 ### What it does
 
+A three-column workbench for upgrading any weapon, armor, trinket, or other equipment into a magical relic. The **left column** is the power browser — 11 categories (Ace, Bane, Bonus, Cursed, Fabled, Movement, Protection, Resistance, Senses, Strike, Utility) containing the full Vagabond Relic Naming Procedure catalog. The **middle column** holds the base item plus user-input fields for parameterized powers (creature type for Bane, damage type for Resistance, spell name for utility scrolls). The **right column** is the selection list with per-power costs and a running total.
+
+Forging updates the item in place: rename follows each power's `nameFormat` (prefix "Brutal", suffix "of Climbing", or wrap template like "Goblin's Bane Shortsword"), Active Effects attach with `transfer: true` so the bonuses flow onto whoever equips it, and the item's `properties` array grows to include anything the relic conveys (Brutal, Cleave, etc.). Effects are **equip-gated** — a forged `+2` cuirass doesn't grant its bonus while it's in the rogue's backpack.
+
 ### How to use
+
+1. Open via **Forge & Loot** → **Relic Forge**, or click the forge icon on any equipment item's sheet (shortcut for `RelicForge.open(item)`).
+2. Drag an equipment item into the middle column, or use the **Base Item Browser** (search across all world items) to pick one. Non-equipment item types are rejected.
+3. Browse the left column by category. Click a power to add it to the right column; click again to remove. Powers with a `requiresInput: true` flag prompt for text (creature type, damage type, etc.) before they're valid.
+4. The right column shows each selected power's description, any required input field, and its gold cost. Running total at the bottom includes the base item cost plus every power.
+5. Optionally add **Custom Powers** — free-form name + description + changes array for homebrew effects not in the catalog.
+6. Click **Forge** — the item is renamed using all the prefix/suffix fragments in order, Active Effects are created as embedded documents, costs update on `system.baseCost`, and the item's properties array grows. A chat card posts the newly forged relic.
 
 ### Settings
 
+No world settings. The power catalog lives in `scripts/relic-powers.mjs` (`RELIC_POWERS`) — add new entries there and they appear in the browser automatically. Categories are defined in the same file under `RELIC_POWER_CATEGORIES`. The Forge cleans up its own state between sessions; there's no persistence between Foundry loads beyond whatever you've saved onto items.
+
 ### Tips & Gotchas
+
+- **Equip-gating is automatic.** The module hooks `updateItem` on the equipped flag — toggle an item equipped and its relic effects enable; unequip and they disable. You don't need to do anything special.
+- **Loot Generator relics auto-forge.** When the Loot Generator rolls a relic from a Level 2+ table, it matches the power text against `RELIC_POWERS` via the alias table and attaches the Active Effects automatically, without a Forge round-trip. This means most treasure items are functional out of the box.
+- **Rename templates stack.** Adding Brutal (prefix), "of Climbing" (suffix), and Goblin Bane (wrap) produces something like "Brutal Shortsword of Climbing — Goblin's Bane". Power order in the right column dictates the order in the final name.
+- **Custom powers need explicit `changes`.** Foundry's Active Effect change format — `{ key, mode, value }` — is the right shape. Use `"{input}"` as a placeholder that the Forge replaces with user-supplied text.
+- **Relics are per-item.** Forging the same template twice produces two independent items with independent effects; nothing links them back to the catalog entry, so editing `RELIC_POWERS` later doesn't retroactively update existing forged items.
+- For the full catalog of powers (names, descriptions, costs, application modes), see [`scripts/relic-powers.mjs`](../scripts/relic-powers.mjs).
 
 ---
 
