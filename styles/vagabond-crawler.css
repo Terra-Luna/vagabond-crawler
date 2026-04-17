@@ -102,6 +102,33 @@
   --vcfx-preset-border: var(--vcb-border);
   --vcfx-hit-accent: #4ade80;
   --vcfx-miss-accent: #f87171;
+
+  /* ── Aliases for consistency ──────────────────────────────────────────────
+   * These aliases point at existing theme-aware tokens so descendants in
+   * body.theme-light automatically get the light value without needing a
+   * duplicate override here. */
+  --vcb-text-primary:   var(--vcb-text-bright);
+  --vcb-text-secondary: var(--vcb-text);
+  --vcb-text-faint:     var(--vcb-text-muted);
+  --vcb-border-light:   var(--vcb-border);
+  --vcb-bg-card:        var(--vcb-surface-2);
+  --vcb-input-hover:    var(--vcb-bg-hover);
+  --vcb-tl-bg1:         var(--vcb-gm);  /* tiered-loot widget bg, matches GM phase slate-blue */
+
+  /* ── Action / transaction colors (Merchant, Loot, Mutator, Forge) ────────── */
+  --vcb-action-buy:      #4caf50;  /* buy / confirm / positive */
+  --vcb-action-buy-dim:  #2e7d32;  /* buy hover / emphasis */
+  --vcb-action-sell:     #e74c3c;  /* sell / delete / negative */
+  --vcb-action-sell-dim: #c0392b;  /* sell hover */
+  --vcb-action-save:     #9b59b6;  /* save preset (purple) */
+  --vcb-action-load:     #3498db;  /* load preset (blue) */
+  --vcb-ext-discord:     #7289da;  /* Discord brand — "Copy for Discord" buttons */
+  --vcb-price-gold:      #daa520;  /* gold-denominated prices */
+  --vcb-price-gold-hi:   #f4c542;  /* gold hover / bright */
+  --vcb-forge-bg-1:      #2c1810;  /* Forge window header bg start (maroon) */
+  --vcb-forge-bg-2:      #4a2520;  /* Forge window header bg end */
+  --vcb-mutator-bg:      #1a1a2e;  /* Mutator dark panel bg */
+  --vcb-bg-deep:         #0b1a23;  /* general deep-dark surface used in 4+ places */
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════
@@ -178,6 +205,27 @@ body.theme-light {
   --vcfx-preset-bg: rgba(0,0,0,0.02);
   --vcfx-hit-accent: #16a34a;
   --vcfx-miss-accent: #dc2626;
+
+  /* HP gradient light-mode overrides (deeper/more-saturated for pale surfaces) */
+  --vcb-hp-ok:       #2a8a2a;
+  --vcb-hp-mid:      #9a8010;
+  --vcb-hp-low:      #a83820;
+  --vcb-hp-critical: #6a0a0a;
+
+  /* Action / transaction colors (light theme — more legible on pale surfaces) */
+  --vcb-action-buy:      #2e7d32;
+  --vcb-action-buy-dim:  #1b5e20;
+  --vcb-action-sell:     #c0392b;
+  --vcb-action-sell-dim: #a5281a;
+  --vcb-action-save:     #6a3d8a;
+  --vcb-action-load:     #2679c0;
+  --vcb-ext-discord:     #5865f2;
+  --vcb-price-gold:      #b8860b;
+  --vcb-price-gold-hi:   #8a6810;
+  --vcb-forge-bg-1:      #e8d8c8;
+  --vcb-forge-bg-2:      #d8c5ac;
+  --vcb-mutator-bg:      #e8e0d2;
+  --vcb-bg-deep:         #d8d0bc;
 }
 
 /* ── Light-mode element overrides (hardcoded rgba backgrounds) ───────────── */
@@ -1503,7 +1551,7 @@ body.theme-light .vcb-phase-badge {
 
 /* Header */
 .forge-header {
-  background: linear-gradient(135deg, #2c1810, #4a2520);
+  background: linear-gradient(135deg, var(--vcb-forge-bg-1), var(--vcb-forge-bg-2));
   border-radius: 6px;
   padding: 8px 16px;
   text-align: center;
@@ -1514,13 +1562,13 @@ body.theme-light .vcb-phase-badge {
 .forge-header .preview-name {
   font-size: 1.2rem;
   font-weight: bold;
-  color: #f4c542;
+  color: var(--vcb-price-gold-hi);
   text-shadow: 0 1px 3px rgba(0,0,0,0.6);
 }
 .forge-header .preview-name i { margin-right: 8px; }
 .forge-header .preview-cost {
   font-size: 1rem;
-  color: #daa520;
+  color: var(--vcb-price-gold);
   font-weight: bold;
 }
 .forge-header .preview-cost i { margin-right: 4px; }
@@ -1544,7 +1592,7 @@ body.theme-light .vcb-phase-badge {
   padding: 6px 8px;
   background: rgba(0,0,0,0.2);
   border-radius: 4px;
-  color: #ccc;
+  color: var(--vcb-text);
 }
 .forge-column h3 i { margin-right: 4px; }
 
@@ -1562,13 +1610,13 @@ body.theme-light .vcb-phase-badge {
   font-size: 0.85rem;
   border: 1px solid rgba(255,255,255,0.15);
   background: rgba(0,0,0,0.25);
-  color: #aaa;
+  color: var(--vcb-text-muted);
   border-radius: 3px;
   cursor: pointer;
   transition: all 0.15s;
 }
-.category-tab:hover { background: rgba(255,255,255,0.1); color: #fff; }
-.category-tab.active { background: rgba(244,197,66,0.25); color: #f4c542; border-color: #f4c542; }
+.category-tab:hover { background: rgba(255,255,255,0.1); color: var(--vcb-text-bright); }
+.category-tab.active { background: rgba(244,197,66,0.25); color: var(--vcb-price-gold-hi); border-color: var(--vcb-price-gold-hi); }
 .category-tab i { margin-right: 2px; }
 
 .power-browser-list {
@@ -1593,17 +1641,17 @@ body.theme-light .vcb-phase-badge {
 .power-card:hover { background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.2); }
 .power-card.selected { background: rgba(244,197,66,0.15); border-color: rgba(244,197,66,0.4); }
 
-.power-icon { width: 28px; text-align: center; color: #f4c542; font-size: 1rem; }
+.power-icon { width: 28px; text-align: center; color: var(--vcb-price-gold-hi); font-size: 1rem; }
 .power-info { flex: 1; min-width: 0; }
-.power-name { font-size: 0.95rem; font-weight: bold; color: #eee; }
-.power-cost-tag { font-size: 0.75rem; font-weight: normal; color: #daa520; margin-left: 6px; }
-.power-desc { font-size: 0.85rem; color: #999; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.power-name { font-size: 0.95rem; font-weight: bold; color: var(--vcb-text-bright); }
+.power-cost-tag { font-size: 0.75rem; font-weight: normal; color: var(--vcb-price-gold); margin-left: 6px; }
+.power-desc { font-size: 0.85rem; color: var(--vcb-text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .power-input-row { display: flex; align-items: center; gap: 6px; margin-top: 4px; }
-.power-input-row label { font-size: 0.8rem; color: #aaa; white-space: nowrap; }
-.power-input-row input, .power-input-row select { flex: 1; padding: 3px 6px; font-size: 0.85rem; background: rgba(0,0,0,0.3); border: 1px solid rgba(244,197,66,0.3); border-radius: 3px; color: #f4c542; }
-.power-input-row input::placeholder { color: #777; }
-.power-input-row select option { background: #2c1810; color: #eee; }
-.power-check { width: 20px; color: #4caf50; }
+.power-input-row label { font-size: 0.8rem; color: var(--vcb-text-muted); white-space: nowrap; }
+.power-input-row input, .power-input-row select { flex: 1; padding: 3px 6px; font-size: 0.85rem; background: rgba(0,0,0,0.3); border: 1px solid rgba(244,197,66,0.3); border-radius: 3px; color: var(--vcb-price-gold-hi); }
+.power-input-row input::placeholder { color: var(--vcb-text-muted); }
+.power-input-row select option { background: var(--vcb-forge-bg-1); color: var(--vcb-text-bright); }
+.power-check { width: 20px; color: var(--vcb-action-buy); }
 
 /* Config (center) */
 .forge-config { flex: 0.9; }
@@ -1619,10 +1667,10 @@ body.theme-light .vcb-phase-badge {
   justify-content: center;
   transition: all 0.2s;
 }
-.drop-zone.drag-hover { border-color: #f4c542; background: rgba(244,197,66,0.1); }
+.drop-zone.drag-hover { border-color: var(--vcb-price-gold-hi); background: rgba(244,197,66,0.1); }
 .drop-zone.has-item { border-style: solid; border-color: rgba(244,197,66,0.4); background: rgba(0,0,0,0.2); }
 
-.drop-prompt { color: #777; }
+.drop-prompt { color: var(--vcb-text-muted); }
 .drop-prompt i { font-size: 1.5rem; margin-bottom: 4px; display: block; }
 .drop-prompt p { margin: 0; font-size: 0.9rem; }
 
@@ -1700,15 +1748,15 @@ body.theme-light .vcb-phase-badge {
 }
 .dropped-item img { border-radius: 4px; border: 1px solid rgba(255,255,255,0.2); }
 .item-details { flex: 1; text-align: left; }
-.item-name { font-weight: bold; color: #f4c542; font-size: 1rem; }
+.item-name { font-weight: bold; color: var(--vcb-price-gold-hi); font-size: 1rem; }
 .item-meta { display: flex; gap: 8px; font-size: 0.85rem; }
-.item-type { color: #999; text-transform: capitalize; }
-.item-metal { color: #b8860b; }
-.item-cost { color: #daa520; }
+.item-type { color: var(--vcb-text-muted); text-transform: capitalize; }
+.item-metal { color: var(--vcb-price-gold); }
+.item-cost { color: var(--vcb-price-gold); }
 .clear-btn {
   background: rgba(192,57,43,0.3);
   border: 1px solid rgba(192,57,43,0.5);
-  color: #e74c3c;
+  color: var(--vcb-action-sell);
   padding: 4px 8px;
   border-radius: 3px;
   cursor: pointer;
@@ -1733,14 +1781,14 @@ body.theme-light .vcb-phase-badge {
   background: rgba(0,0,0,0.3);
   border: 1px solid rgba(255,255,255,0.15);
   border-radius: 3px;
-  color: #ddd;
+  color: var(--vcb-text-bright);
 }
 .add-custom-btn {
   padding: 6px 10px;
   font-size: 0.9rem;
   background: rgba(76,175,80,0.2);
   border: 1px solid rgba(76,175,80,0.4);
-  color: #4caf50;
+  color: var(--vcb-action-buy);
   border-radius: 3px;
   cursor: pointer;
 }
@@ -1752,16 +1800,16 @@ body.theme-light .vcb-phase-badge {
   padding: 10px;
   font-size: 1rem;
   font-weight: bold;
-  background: linear-gradient(135deg, #b8860b, #daa520);
-  border: 2px solid #f4c542;
-  color: #1a0a00;
+  background: linear-gradient(135deg, var(--vcb-price-gold), var(--vcb-price-gold));
+  border: 2px solid var(--vcb-price-gold-hi);
+  color: var(--vcb-bg);
   border-radius: 6px;
   cursor: pointer;
   text-transform: uppercase;
   letter-spacing: 1px;
   transition: all 0.2s;
 }
-.forge-btn:hover:not(.disabled) { background: linear-gradient(135deg, #daa520, #f4c542); box-shadow: 0 0 12px rgba(244,197,66,0.4); }
+.forge-btn:hover:not(.disabled) { background: linear-gradient(135deg, var(--vcb-price-gold), var(--vcb-price-gold-hi)); box-shadow: 0 0 12px rgba(244,197,66,0.4); }
 .forge-btn.disabled { opacity: 0.4; cursor: not-allowed; }
 
 /* Selected Panel (right) */
@@ -1789,7 +1837,7 @@ body.theme-light .vcb-phase-badge {
 .remove-btn {
   background: rgba(192,57,43,0.2);
   border: 1px solid rgba(192,57,43,0.4);
-  color: #e74c3c;
+  color: var(--vcb-action-sell);
   padding: 4px 8px;
   border-radius: 3px;
   cursor: pointer;
@@ -1802,14 +1850,14 @@ body.theme-light .vcb-phase-badge {
   padding: 1px 4px;
   background: rgba(76,175,80,0.3);
   border-radius: 2px;
-  color: #4caf50;
+  color: var(--vcb-action-buy);
   margin-left: 4px;
 }
 
 .empty-state {
   text-align: center;
   padding: 20px;
-  color: #666;
+  color: var(--vcb-text-muted);
 }
 .empty-state i { font-size: 1.5rem; margin-bottom: 6px; display: block; }
 .empty-state p { margin: 0; font-size: 0.9rem; }
@@ -1843,19 +1891,19 @@ body.theme-light .vcb-phase-badge {
   padding: 4px 6px;
   background: rgba(0,0,0,0.2);
   border-radius: 3px;
-  color: #ccc;
+  color: var(--vcb-text);
 }
 .loot-filter-row { display: flex; flex-direction: column; gap: 2px; }
-.loot-filter-row label { font-size: 0.8rem; color: #aaa; }
+.loot-filter-row label { font-size: 0.8rem; color: var(--vcb-text-muted); }
 .loot-filter-row select,
 .loot-filter-row input[type="text"],
 .loot-filter-row input[type="number"] {
   padding: 4px 6px;
   font-size: 0.85rem;
-  background: #1a1a2e;
+  background: var(--vcb-mutator-bg);
   border: 1px solid rgba(255,255,255,0.15);
   border-radius: 3px;
-  color: #ddd;
+  color: var(--vcb-text-bright);
 }
 
 .loot-apply-btn {
@@ -1863,7 +1911,7 @@ body.theme-light .vcb-phase-badge {
   font-size: 0.85rem;
   background: rgba(76,175,80,0.2);
   border: 1px solid rgba(76,175,80,0.4);
-  color: #4caf50;
+  color: var(--vcb-action-buy);
   border-radius: 3px;
   cursor: pointer;
 }
@@ -1909,7 +1957,7 @@ body.theme-light .vcb-phase-badge {
   background: rgba(0,0,0,0.4);
   padding: 4px 6px;
   text-align: left;
-  color: #aaa;
+  color: var(--vcb-text-muted);
   font-weight: normal;
   font-size: 0.8rem;
 }
@@ -1927,7 +1975,7 @@ body.theme-light .vcb-phase-badge {
   cursor: pointer;
   user-select: none;
 }
-.loot-npc-name:hover { color: #f4c542; }
+.loot-npc-name:hover { color: var(--vcb-price-gold-hi); }
 .loot-npc-name {
   white-space: nowrap;
   overflow: hidden;
@@ -1937,7 +1985,7 @@ body.theme-light .vcb-phase-badge {
 .browse-add-btn {
   background: rgba(76,175,80,0.2);
   border: 1px solid rgba(76,175,80,0.4);
-  color: #4caf50;
+  color: var(--vcb-action-buy);
   padding: 2px 6px;
   border-radius: 3px;
   cursor: pointer;
@@ -1946,24 +1994,24 @@ body.theme-light .vcb-phase-badge {
 .browse-add-btn:hover { background: rgba(76,175,80,0.4); }
 
 .loot-sortable { cursor: pointer; user-select: none; }
-.loot-sortable:hover { color: #f4c542; }
+.loot-sortable:hover { color: var(--vcb-price-gold-hi); }
 .loot-sortable i { font-size: 0.7em; margin-left: 2px; opacity: 0.5; }
 
 .loot-npc-table select,
 .loot-npc-table input[type="number"] {
   padding: 2px 4px;
   font-size: 0.8rem;
-  background: #1a1a2e;
+  background: var(--vcb-mutator-bg);
   border: 1px solid rgba(255,255,255,0.1);
   border-radius: 2px;
-  color: #ddd;
+  color: var(--vcb-text-bright);
   width: 100%;
 }
 .loot-npc-table select option,
 .loot-filter-panel select option,
 .loot-assign-table option {
-  background: #1a1a2e;
-  color: #ddd;
+  background: var(--vcb-mutator-bg);
+  color: var(--vcb-text-bright);
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════
@@ -1988,9 +2036,9 @@ body.theme-light .vcb-phase-badge {
   background: rgba(0,0,0,0.3);
   border: 1px solid rgba(255,255,255,0.15);
   border-radius: 3px;
-  color: #ddd;
+  color: var(--vcb-text-bright);
 }
-.mutate-base-row select option { background: #1a1a2e; color: #ddd; }
+.mutate-base-row select option { background: var(--vcb-mutator-bg); color: var(--vcb-text-bright); }
 
 .mutate-stats-row {
   display: flex;
@@ -2003,12 +2051,12 @@ body.theme-light .vcb-phase-badge {
   border: 1px solid rgba(255,255,255,0.1);
   border-radius: 4px;
   font-size: 0.85em;
-  color: #ccc;
+  color: var(--vcb-text);
 }
-.stat-chip strong { color: #f4c542; }
-.mutate-new-tl { color: #4caf50; }
-.stat-up { color: #4caf50; }
-.stat-down { color: #e74c3c; }
+.stat-chip strong { color: var(--vcb-price-gold-hi); }
+.mutate-new-tl { color: var(--vcb-action-buy); }
+.stat-up { color: var(--vcb-action-buy); }
+.stat-down { color: var(--vcb-action-sell); }
 
 .mutate-mutations-grid {
   display: flex;
@@ -2030,8 +2078,8 @@ body.theme-light .vcb-phase-badge {
   border-radius: 4px;
   margin: 0 0 4px 0;
 }
-.boon-header { background: rgba(76,175,80,0.15); color: #4caf50; }
-.bane-header { background: rgba(231,76,60,0.15); color: #e74c3c; }
+.boon-header { background: rgba(76,175,80,0.15); color: var(--vcb-action-buy); }
+.bane-header { background: rgba(231,76,60,0.15); color: var(--vcb-action-sell); }
 
 .mutate-list {
   flex: 1;
@@ -2057,15 +2105,15 @@ body.theme-light .vcb-phase-badge {
 .mutate-item:hover { background: rgba(255,255,255,0.05); }
 .mutate-item.active { background: rgba(244,197,66,0.1); border-color: rgba(244,197,66,0.3); }
 .mutate-item input[type="checkbox"] { margin: 0; }
-.mutate-name { flex: 1; color: #ddd; }
+.mutate-name { flex: 1; color: var(--vcb-text-bright); }
 .mutate-tl-tag {
   font-size: 0.8em;
   padding: 1px 4px;
   border-radius: 2px;
   font-weight: bold;
 }
-.mutate-tl-tag.on-formula { background: rgba(244,197,66,0.2); color: #f4c542; }
-.mutate-tl-tag.off-formula { background: rgba(150,150,150,0.15); color: #888; }
+.mutate-tl-tag.on-formula { background: rgba(244,197,66,0.2); color: var(--vcb-price-gold-hi); }
+.mutate-tl-tag.off-formula { background: rgba(150,150,150,0.15); color: var(--vcb-text-muted); }
 
 .mutate-output-section {
   display: flex;
@@ -2087,7 +2135,7 @@ body.theme-light .vcb-phase-badge {
   background: rgba(0,0,0,0.3);
   border: 1px solid rgba(255,255,255,0.15);
   border-radius: 3px;
-  color: #f4c542;
+  color: var(--vcb-price-gold-hi);
   font-weight: bold;
 }
 .mutate-prompt-row { align-items: flex-start; }
@@ -2097,14 +2145,14 @@ body.theme-light .vcb-phase-badge {
   background: rgba(0,0,0,0.3);
   border: 1px solid rgba(255,255,255,0.15);
   border-radius: 3px;
-  color: #aaa;
+  color: var(--vcb-text-muted);
   font-size: 0.8em;
   resize: none;
 }
 .mutate-copy-prompt {
   background: rgba(88,101,242,0.3);
   border: 1px solid rgba(88,101,242,0.5);
-  color: #7289da;
+  color: var(--vcb-ext-discord);
   padding: 4px 8px;
   border-radius: 3px;
   cursor: pointer;
@@ -2118,19 +2166,19 @@ body.theme-light .vcb-phase-badge {
 }
 .mutate-create-btn {
   padding: 6px 14px;
-  background: linear-gradient(135deg, #2e7d32, #4caf50);
-  border: 1px solid #4caf50;
+  background: linear-gradient(135deg, var(--vcb-action-buy-dim), var(--vcb-action-buy));
+  border: 1px solid var(--vcb-action-buy);
   color: white;
   border-radius: 4px;
   cursor: pointer;
   font-weight: bold;
 }
-.mutate-create-btn:hover { background: linear-gradient(135deg, #4caf50, #66bb6a); }
+.mutate-create-btn:hover { background: linear-gradient(135deg, var(--vcb-action-buy), #66bb6a); }
 .mutate-reset-btn {
   padding: 6px 10px;
   background: rgba(150,150,150,0.15);
   border: 1px solid rgba(150,150,150,0.3);
-  color: #aaa;
+  color: var(--vcb-text-muted);
   border-radius: 4px;
   cursor: pointer;
 }
@@ -2139,7 +2187,7 @@ body.theme-light .vcb-phase-badge {
 .mutate-empty-state {
   text-align: center;
   padding: 30px;
-  color: #888;
+  color: var(--vcb-text-muted);
 }
 
 /* ── Loot Generator ──────────────────────────────────────── */
@@ -2188,7 +2236,7 @@ body.theme-light .vcb-phase-badge {
   border: none;
   border-radius: 4px;
   background: var(--vcb-accent, #c9aa58);
-  color: #111;
+  color: var(--vcb-bg);
   font-weight: bold;
   font-size: 16px;
   cursor: pointer;
@@ -2209,7 +2257,7 @@ body.theme-light .vcb-phase-badge {
 }
 
 .vcl-gen-result {
-  border-left: 4px solid #666;
+  border-left: 4px solid var(--vcb-text-muted);
   padding: 8px 12px;
   background: var(--vcb-surface-1, #1a1a1a);
   border-radius: 0 6px 6px 0;
@@ -2236,15 +2284,15 @@ body.theme-light .vcb-phase-badge {
 }
 
 .vcl-gen-arrow {
-  color: #555;
+  color: var(--vcb-text-muted);
 }
 
 .vcl-gen-trace-label {
-  color: #aaa;
+  color: var(--vcb-text-muted);
 }
 
 .vcl-gen-trace-dice {
-  color: #666;
+  color: var(--vcb-text-muted);
 }
 
 .vcl-gen-item {
@@ -2258,7 +2306,7 @@ body.theme-light .vcb-phase-badge {
 .vcl-gen-item-value {
   font-weight: normal;
   font-size: 0.85em;
-  color: #daa520;
+  color: var(--vcb-price-gold);
   margin-left: 8px;
 }
 
@@ -2296,8 +2344,8 @@ body.theme-light .vcb-phase-badge {
 }
 
 .vcl-gen-clear:hover {
-  color: #d86a6a;
-  border-color: #d86a6a;
+  color: var(--vcb-danger-light);
+  border-color: var(--vcb-danger-light);
 }
 
 .vcl-gen-empty {
@@ -2334,10 +2382,10 @@ body.theme-light .vcb-phase-badge {
 .vcl-gen-give-app {
   height: 30px;
   padding: 0 12px;
-  border: 1px solid #4caf50;
+  border: 1px solid var(--vcb-action-buy);
   border-radius: 3px;
   background: transparent;
-  color: #4caf50;
+  color: var(--vcb-action-buy);
   font-size: 14px;
   cursor: pointer;
   transition: background 0.15s;
@@ -2373,7 +2421,7 @@ body.theme-light .vcb-phase-badge {
 
 .vcl-gen-roll-token:hover {
   background: var(--vcb-accent, #c9aa58);
-  color: #111;
+  color: var(--vcb-bg);
 }
 
 .vcl-gen-token-hint {
@@ -2407,7 +2455,7 @@ body.theme-light .vcb-phase-badge {
   gap: 10px;
 }
 
-.vcl-gen-claim-gold { color: #daa520; }
+.vcl-gen-claim-gold { color: var(--vcb-price-gold); }
 .vcl-gen-claim-silver { color: #c0c0c0; }
 .vcl-gen-claim-copper { color: #cd7f32; }
 
@@ -2417,7 +2465,7 @@ body.theme-light .vcb-phase-badge {
   gap: 8px;
   font-size: 16px;
   font-weight: bold;
-  color: #0b1a23;
+  color: var(--vcb-bg-deep);
   padding: 2px 0;
 }
 
@@ -2427,16 +2475,16 @@ body.theme-light .vcb-phase-badge {
 }
 
 .vcl-gen-claim-item i.fa-coins {
-  color: #0b1a23;
+  color: var(--vcb-bg-deep);
 }
 
 .vcl-gen-claim-btn {
   margin-top: 4px;
   padding: 6px 14px;
-  border: 2px solid #0b1a23;
+  border: 2px solid var(--vcb-bg-deep);
   border-radius: 4px;
   background: rgba(11, 26, 35, 0.08);
-  color: #0b1a23;
+  color: var(--vcb-bg-deep);
   font-size: 15px;
   font-weight: bold;
   cursor: pointer;
@@ -2454,8 +2502,8 @@ body.theme-light .vcb-phase-badge {
 }
 
 .vcl-gen-claim-btn--done {
-  border-color: #888;
-  color: #888;
+  border-color: var(--vcb-text-muted);
+  color: var(--vcb-text-muted);
   background: rgba(0, 0, 0, 0.04);
 }
 
@@ -2463,10 +2511,10 @@ body.theme-light .vcb-phase-badge {
 .vcl-gen-give-btn {
   margin: 2px;
   padding: 4px 10px;
-  border: 1px solid #0b1a23;
+  border: 1px solid var(--vcb-bg-deep);
   border-radius: 3px;
   background: rgba(11, 26, 35, 0.06);
-  color: #0b1a23;
+  color: var(--vcb-bg-deep);
   font-size: 14px;
   cursor: pointer;
   transition: background 0.15s;
@@ -2482,7 +2530,7 @@ body.theme-light .vcb-phase-badge {
   bottom: 2px;
   right: 2px;
   background: rgba(0, 0, 0, 0.75);
-  color: #fff;
+  color: var(--vcb-overlay-text);
   font-size: 11px;
   font-weight: 700;
   line-height: 1;
@@ -2638,13 +2686,13 @@ body.theme-light .vcb-phase-badge {
 .vcm-title { margin: 0; font-size: 1.1em; color: var(--vcb-text-bright, #e8eaed); flex: 1; }
 .vcm-wallet {
   font-size: 1em;
-  color: #daa520;
+  color: var(--vcb-price-gold);
   background: rgba(218, 165, 32, 0.1);
   padding: 3px 8px;
   border-radius: 4px;
   border: 1px solid rgba(218, 165, 32, 0.25);
 }
-.vcm-wallet.vcm-no-actor { color: #888; background: rgba(0,0,0,0.15); border-color: rgba(255,255,255,0.1); }
+.vcm-wallet.vcm-no-actor { color: var(--vcb-text-muted); background: rgba(0,0,0,0.15); border-color: rgba(255,255,255,0.1); }
 
 /* ── Tabs ──────────────────────────────────────────────────────────────── */
 
@@ -2715,8 +2763,8 @@ body.theme-light .vcb-phase-badge {
 .vcm-item-name { color: var(--vcb-text-bright, #e8eaed); font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .vcm-item-cat { color: var(--vcb-text-muted, #666); font-size: 0.9em; }
 
-.vcm-item-price { color: #daa520; font-weight: 600; min-width: 55px; text-align: right; }
-.vcm-sell-price { color: #4caf50; }
+.vcm-item-price { color: var(--vcb-price-gold); font-weight: 600; min-width: 55px; text-align: right; }
+.vcm-sell-price { color: var(--vcb-action-buy); }
 
 .vcm-item-stock { color: var(--vcb-text-muted, #666); min-width: 30px; text-align: center; }
 
@@ -2741,7 +2789,7 @@ body.theme-light .vcb-phase-badge {
 }
 .vcm-buy-btn {
   background: rgba(76, 175, 80, 0.15);
-  color: #4caf50;
+  color: var(--vcb-action-buy);
   border-color: rgba(76, 175, 80, 0.3);
 }
 .vcm-buy-btn:hover:not([disabled]) { background: rgba(76, 175, 80, 0.3); }
@@ -2749,7 +2797,7 @@ body.theme-light .vcb-phase-badge {
 
 .vcm-sell-btn {
   background: rgba(218, 165, 32, 0.15);
-  color: #daa520;
+  color: var(--vcb-price-gold);
   border-color: rgba(218, 165, 32, 0.3);
 }
 .vcm-sell-btn:hover { background: rgba(218, 165, 32, 0.3); }
@@ -2770,13 +2818,13 @@ body.theme-light .vcb-phase-badge {
   border: 1px solid rgba(231, 76, 60, 0.4);
   border-radius: 4px;
   background: rgba(231, 76, 60, 0.12);
-  color: #e74c3c;
+  color: var(--vcb-action-sell);
   cursor: pointer;
   font-size: 1em;
   transition: all 0.15s;
 }
 .vcm-sell-all-junk:hover { background: rgba(231, 76, 60, 0.25); }
-.vcm-junk-item { border-left: 3px solid #e74c3c; opacity: 0.7; }
+.vcm-junk-item { border-left: 3px solid var(--vcb-action-sell); opacity: 0.7; }
 .vcm-junk-item:hover { opacity: 1; }
 
 /* ── Log tab ───────────────────────────────────────────────────────────── */
@@ -2792,19 +2840,19 @@ body.theme-light .vcb-phase-badge {
 .vcm-copy-discord {
   background: rgba(88, 101, 242, 0.2);
   border-color: rgba(88, 101, 242, 0.5);
-  color: #7289da;
+  color: var(--vcb-ext-discord);
 }
 .vcm-copy-discord:hover { background: rgba(88, 101, 242, 0.35); }
 .vcm-copy-session {
   background: rgba(76, 175, 80, 0.2);
   border-color: rgba(76, 175, 80, 0.5);
-  color: #4caf50;
+  color: var(--vcb-action-buy);
 }
 .vcm-copy-session:hover { background: rgba(76, 175, 80, 0.35); }
 .vcm-clear-log {
   background: rgba(192, 57, 43, 0.15);
   border-color: rgba(192, 57, 43, 0.35);
-  color: #e74c3c;
+  color: var(--vcb-action-sell);
 }
 .vcm-clear-log:hover { background: rgba(192, 57, 43, 0.3); }
 
@@ -2818,14 +2866,14 @@ body.theme-light .vcb-phase-badge {
   border-radius: 4px;
   font-size: 1em;
 }
-.vcm-log-time { color: #888; font-size: 0.9em; width: 50px; flex-shrink: 0; }
+.vcm-log-time { color: var(--vcb-text-muted); font-size: 0.9em; width: 50px; flex-shrink: 0; }
 .vcm-log-icon { width: 18px; text-align: center; flex-shrink: 0; }
-.vcm-log-buy i { color: #4caf50; }
-.vcm-log-sell i { color: #daa520; }
-.vcm-log-player { color: #f4c542; font-weight: bold; min-width: 80px; }
+.vcm-log-buy i { color: var(--vcb-action-buy); }
+.vcm-log-sell i { color: var(--vcb-price-gold); }
+.vcm-log-player { color: var(--vcb-price-gold-hi); font-weight: bold; min-width: 80px; }
 .vcm-log-action { color: var(--vcb-text-muted, #666); font-size: 0.9em; }
 .vcm-log-detail { flex: 1; color: var(--vcb-text, #BDC1C6); }
-.vcm-log-price { color: #daa520; font-weight: 600; }
+.vcm-log-price { color: var(--vcb-price-gold); font-weight: 600; }
 
 /* ── Manage tab ────────────────────────────────────────────────────────── */
 
@@ -2891,19 +2939,19 @@ body.theme-light .vcb-phase-badge {
 .vcm-open-for-all {
   background: rgba(76, 175, 80, 0.15);
   border-color: rgba(76, 175, 80, 0.3);
-  color: #4caf50;
+  color: var(--vcb-action-buy);
 }
 .vcm-open-for-all:hover { background: rgba(76, 175, 80, 0.3); }
 .vcm-close-for-all {
   background: rgba(192, 57, 43, 0.12);
   border-color: rgba(192, 57, 43, 0.3);
-  color: #e74c3c;
+  color: var(--vcb-action-sell);
 }
 .vcm-close-for-all:hover { background: rgba(192, 57, 43, 0.25); }
 .vcm-save-merchant-btn {
   background: rgba(155, 89, 182, 0.15);
   border-color: rgba(155, 89, 182, 0.3);
-  color: #9b59b6;
+  color: var(--vcb-action-save);
 }
 .vcm-save-merchant-btn:hover { background: rgba(155, 89, 182, 0.3); }
 
@@ -2927,7 +2975,7 @@ body.theme-light .vcb-phase-badge {
   background: rgba(52, 152, 219, 0.15);
   border: 1px solid rgba(52, 152, 219, 0.3);
   border-radius: 4px;
-  color: #3498db;
+  color: var(--vcb-action-load);
   cursor: pointer;
   font-size: 1em;
   transition: all 0.15s;
@@ -2938,7 +2986,7 @@ body.theme-light .vcb-phase-badge {
   background: rgba(52, 152, 219, 0.15);
   border: 1px solid rgba(52, 152, 219, 0.3);
   border-radius: 4px;
-  color: #3498db;
+  color: var(--vcb-action-load);
   cursor: pointer;
   font-size: 1em;
   transition: all 0.15s;
@@ -2949,7 +2997,7 @@ body.theme-light .vcb-phase-badge {
   background: rgba(231, 76, 60, 0.12);
   border: 1px solid rgba(231, 76, 60, 0.3);
   border-radius: 4px;
-  color: #e74c3c;
+  color: var(--vcb-action-sell);
   cursor: pointer;
   font-size: 1em;
   transition: all 0.15s;
@@ -2969,7 +3017,7 @@ body.theme-light .vcb-phase-badge {
   background: rgba(155, 89, 182, 0.15);
   border: 1px solid rgba(155, 89, 182, 0.3);
   border-radius: 4px;
-  color: #9b59b6;
+  color: var(--vcb-action-save);
   cursor: pointer;
   font-size: 1em;
   transition: all 0.15s;
@@ -3018,7 +3066,7 @@ body.theme-light .vcb-phase-badge {
   background: var(--vcb-input-bg, #111418);
   border: 1px solid var(--vcb-border, #3a3d44);
   border-radius: 3px;
-  color: #daa520;
+  color: var(--vcb-price-gold);
   font-size: 1em;
 }
 .vcm-manage-price span { color: var(--vcb-text-muted, #666); font-size: 0.9em; }
@@ -3041,7 +3089,7 @@ body.theme-light .vcb-phase-badge {
   background: rgba(192, 57, 43, 0.12);
   border: 1px solid rgba(192, 57, 43, 0.3);
   border-radius: 3px;
-  color: #e74c3c;
+  color: var(--vcb-action-sell);
   cursor: pointer;
   font-size: 1em;
 }
@@ -3079,7 +3127,7 @@ body.theme-light .vcb-phase-badge {
   background: rgba(76, 175, 80, 0.12);
   border: 1px solid rgba(76, 175, 80, 0.3);
   border-radius: 3px;
-  color: #4caf50;
+  color: var(--vcb-action-buy);
   cursor: pointer;
   font-size: 1em;
 }
@@ -3138,7 +3186,7 @@ body.theme-light .vcb-phase-badge {
   cursor: pointer;
   font-size: 1em;
   background: rgba(76, 175, 80, 0.15);
-  color: #4caf50;
+  color: var(--vcb-action-buy);
   transition: all 0.15s;
 }
 .vcm-catalog-buy-btn:hover:not([disabled]) { background: rgba(76, 175, 80, 0.3); }
@@ -3209,7 +3257,7 @@ body.theme-light .vcb-phase-badge {
   background: rgba(76, 175, 80, 0.12);
   border: 1px solid rgba(76, 175, 80, 0.3);
   border-radius: 4px;
-  color: #4caf50;
+  color: var(--vcb-action-buy);
   cursor: pointer;
   font-size: 1em;
 }
@@ -3253,7 +3301,7 @@ body.theme-light .vcb-phase-badge {
 .vcp-avatar { border-radius: 4px; flex-shrink: 0; }
 .vcp-header-info { display: flex; flex-direction: column; gap: 2px; }
 .vcp-member-name { font-size: 1em; font-weight: 700; color: var(--vcb-text-bright, #e8eaed); }
-.vcp-member-meta { font-size: 0.85em; color: #daa520; }
+.vcp-member-meta { font-size: 0.85em; color: var(--vcb-price-gold); }
 
 .vcp-item-list {
   flex: 1;
@@ -3276,11 +3324,11 @@ body.theme-light .vcb-phase-badge {
 .vcp-item:hover { background: rgba(255, 255, 255, 0.04); }
 .vcp-item img { border-radius: 2px; flex-shrink: 0; }
 .vcp-item-name { flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.vcp-item-cost { color: #daa520; font-size: 0.85em; flex-shrink: 0; }
+.vcp-item-cost { color: var(--vcb-price-gold); font-size: 0.85em; flex-shrink: 0; }
 
-.vcp-equipped { border-left: 2px solid #4caf50; }
+.vcp-equipped { border-left: 2px solid var(--vcb-action-buy); }
 .vcp-equipped .vcp-item-name { font-weight: 600; }
-.vcp-junk { opacity: 0.5; border-left: 2px solid #e74c3c; }
+.vcp-junk { opacity: 0.5; border-left: 2px solid var(--vcb-action-sell); }
 
 .vcp-empty { text-align: center; color: var(--vcb-text-muted, #666); padding: 20px; font-size: 0.9em; }
 
