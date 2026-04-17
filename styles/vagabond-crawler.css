@@ -2950,33 +2950,6 @@ body.theme-light .vcb-phase-badge {
 }
 
 .vcm-broadcast-controls { display: flex; gap: 8px; }
-.vcm-open-for-all, .vcm-close-for-all, .vcm-save-merchant-btn {
-  flex: 1;
-  padding: 8px;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 1em;
-  border: 1px solid;
-  transition: all 0.15s;
-}
-.vcm-open-for-all {
-  background: rgba(76, 175, 80, 0.15);
-  border-color: rgba(76, 175, 80, 0.3);
-  color: var(--vcb-action-buy);
-}
-.vcm-open-for-all:hover { background: rgba(76, 175, 80, 0.3); }
-.vcm-close-for-all {
-  background: rgba(192, 57, 43, 0.12);
-  border-color: rgba(192, 57, 43, 0.3);
-  color: var(--vcb-action-sell);
-}
-.vcm-close-for-all:hover { background: rgba(192, 57, 43, 0.25); }
-.vcm-save-merchant-btn {
-  background: rgba(155, 89, 182, 0.15);
-  border-color: rgba(155, 89, 182, 0.3);
-  color: var(--vcb-action-save);
-}
-.vcm-save-merchant-btn:hover { background: rgba(155, 89, 182, 0.3); }
 
 .vcm-saved-configs-row {
   display: flex;
@@ -2993,39 +2966,7 @@ body.theme-light .vcb-phase-badge {
   color: var(--vcb-text, #BDC1C6);
   font-size: 1em;
 }
-.vcm-load-config-btn {
-  padding: 4px 10px;
-  background: rgba(52, 152, 219, 0.15);
-  border: 1px solid rgba(52, 152, 219, 0.3);
-  border-radius: 4px;
-  color: var(--vcb-action-load);
-  cursor: pointer;
-  font-size: 1em;
-  transition: all 0.15s;
-}
-.vcm-load-config-btn:hover { background: rgba(52, 152, 219, 0.3); }
-.vcm-load-merchant-btn, .vcm-load-config-btn {
-  padding: 4px 10px;
-  background: rgba(52, 152, 219, 0.15);
-  border: 1px solid rgba(52, 152, 219, 0.3);
-  border-radius: 4px;
-  color: var(--vcb-action-load);
-  cursor: pointer;
-  font-size: 1em;
-  transition: all 0.15s;
-}
-.vcm-load-merchant-btn:hover, .vcm-load-config-btn:hover { background: rgba(52, 152, 219, 0.3); }
-.vcm-delete-merchant-btn {
-  padding: 4px 10px;
-  background: rgba(231, 76, 60, 0.12);
-  border: 1px solid rgba(231, 76, 60, 0.3);
-  border-radius: 4px;
-  color: var(--vcb-action-sell);
-  cursor: pointer;
-  font-size: 1em;
-  transition: all 0.15s;
-}
-.vcm-delete-merchant-btn:hover { background: rgba(231, 76, 60, 0.2); }
+
 .vcm-save-config-name {
   flex: 1;
   padding: 4px 8px;
@@ -3035,17 +2976,58 @@ body.theme-light .vcb-phase-badge {
   color: var(--vcb-text, #BDC1C6);
   font-size: 1em;
 }
-.vcm-save-config-btn {
-  padding: 4px 10px;
-  background: rgba(155, 89, 182, 0.15);
-  border: 1px solid rgba(155, 89, 182, 0.3);
-  border-radius: 4px;
-  color: var(--vcb-action-save);
+
+/* All Manage-tab action buttons share the neutral .vcb-btn aesthetic —
+ * icons + labels carry semantic meaning; colors stay muted for visual
+ * coherence with the rest of the module. Addresses the rainbow-UI
+ * anti-pattern from /audit. Delete keeps a subtle red-tint hover
+ * as the only color callout (destructive-action convention). */
+.vcm-open-for-all,
+.vcm-close-for-all,
+.vcm-save-merchant-btn,
+.vcm-save-config-btn,
+.vcm-load-merchant-btn,
+.vcm-load-config-btn,
+.vcm-delete-merchant-btn {
+  padding: 6px 14px;
+  background: linear-gradient(135deg, var(--vcb-btn-1) 0%, var(--vcb-btn-2) 100%);
+  border: 1px solid var(--vcb-border);
+  border-radius: var(--vcb-radius);
+  color: var(--vcb-text);
   cursor: pointer;
   font-size: 1em;
-  transition: all 0.15s;
+  line-height: 1.3;
+  transition: background 0.15s, border-color 0.15s, color 0.15s, box-shadow 0.15s;
+  box-shadow: 1px 1px 2px var(--vcb-shadow-md);
+  text-shadow: 1px 1px 2px var(--vcb-text-shadow);
 }
-.vcm-save-config-btn:hover { background: rgba(155, 89, 182, 0.3); }
+
+/* Broadcast row buttons stretch to fill — Open / Close / Save */
+.vcm-open-for-all,
+.vcm-close-for-all,
+.vcm-save-merchant-btn,
+.vcm-save-config-btn {
+  flex: 1;
+  padding: 8px 14px;
+}
+
+.vcm-open-for-all:hover,
+.vcm-close-for-all:hover,
+.vcm-save-merchant-btn:hover,
+.vcm-save-config-btn:hover,
+.vcm-load-merchant-btn:hover,
+.vcm-load-config-btn:hover {
+  background: linear-gradient(135deg, var(--vcb-btn-hover-1) 0%, var(--vcb-btn-hover-2) 100%);
+  border-color: var(--vcb-accent-dim);
+  color: var(--vcb-text-bright);
+}
+
+/* Delete is destructive — subtle red border + text tint on hover only */
+.vcm-delete-merchant-btn:hover {
+  background: linear-gradient(135deg, var(--vcb-btn-hover-1) 0%, var(--vcb-btn-hover-2) 100%);
+  border-color: var(--vcb-action-sell);
+  color: var(--vcb-action-sell);
+}
 
 /* ── Drop zone ─────────────────────────────────────────────────────────── */
 
