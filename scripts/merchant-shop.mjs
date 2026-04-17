@@ -141,10 +141,13 @@ export const MerchantShop = {
     const shopName = game.settings.get(MODULE_ID, "shopName") || "The Merchant";
     const sellRatio = game.settings.get(MODULE_ID, "shopSellRatio") ?? 50;
     const inventory = this._buildInventory(mode, actorId);
+    const shopNameForMode = (mode === "actor" && actorId)
+      ? game.actors.get(actorId)?.name || shopName
+      : shopName;
 
     // Open locally for GM only — no broadcast until "Open for All" is clicked
     this._ensureApp();
-    this._app._shopName = shopName;
+    this._app._shopName = shopNameForMode;
     this._app._sellRatio = sellRatio;
     this._app._mode = mode;
     this._app._actorId = actorId;
@@ -207,10 +210,12 @@ export const MerchantShop = {
     if (game.user.isGM) return;
 
     this._ensureApp();
-    this._app._shopName = data.shopName;
     this._app._sellRatio = data.sellRatio;
     this._app._mode = data.mode;
     this._app._actorId = data.actorId;
+    this._app._shopName = (data.mode === "actor" && data.actorId)
+      ? game.actors.get(data.actorId)?.name || data.shopName
+      : data.shopName;
     this._app._inventory = foundry.utils.deepClone(data.inventory || []);
     this._app._catalogEnabled = data.catalogEnabled ?? true;
     this._app._buyMultiplier = data.buyMultiplier ?? 100;
@@ -1059,7 +1064,26 @@ class MerchantShopApp extends HandlebarsApplicationMixin(ApplicationV2) {
     const status = game.user.isGM
       ? (MerchantShop._isOpenForPlayers ? "Open" : "Closed")
       : null;
-    return status ? `${this._shopName} — ${status}` : this._shopName;
+    const shopName = (this._mode === "actor" && this._actorId)
+      ? game.actors.get(this._actorId)?.name || this._shopName
+      : this._shopName;
+    return status ? `${shopName} — ${status}` : shopName;
+  }
+
+  async render(...args) {
+    const result = await super.render(...args);
+    this._refreshWindowTitle();
+    return result;
+  }
+
+  _refreshWindowTitle() {
+    const titleText = this.title;
+    if (typeof this._setTitle === "function") {
+      this._setTitle(titleText);
+      return;
+    }
+    const titleEl = this.element?.querySelector(".window-title");
+    if (titleEl) titleEl.textContent = titleText;
   }
 
   // ── Data ────────────────────────────────────────────────────────────────
@@ -1565,6 +1589,8 @@ class MerchantShopApp extends HandlebarsApplicationMixin(ApplicationV2) {
         this._actorId = ev.currentTarget.value || null;
         if (this._mode === "actor" && this._actorId) {
           this._inventory = MerchantShop._buildActorInventory(this._actorId);
+          const actor = game.actors.get(this._actorId);
+          if (actor) this._shopName = actor.name;
         }
         this.render();
       }, { signal });
@@ -1727,12 +1753,15 @@ class MerchantShopApp extends HandlebarsApplicationMixin(ApplicationV2) {
           : MerchantShop._buildCompendiumInventory();
 
         MerchantShop._isOpenForPlayers = true;
+        const currentShopName = (this._mode === "actor" && this._actorId)
+          ? game.actors.get(this._actorId)?.name || this._shopName
+          : this._shopName;
 
         game.socket.emit(`module.${MODULE_ID}`, {
           action: "shop:open",
           mode: this._mode,
           actorId: this._actorId,
-          shopName: this._shopName,
+          shopName: currentShopName,
           sellRatio: this._sellRatio,
           inventory: this._inventory,
           catalogEnabled: this._catalogEnabled,
