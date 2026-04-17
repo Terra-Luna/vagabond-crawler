@@ -4840,13 +4840,26 @@ body.theme-light .vcb-phase-badge {
   opacity: 0.7;
 }
 
-/* Section title below the chapter header — paired with the rule above */
+/* Section title — chapter-marker feel with a small gold rule prefix.
+ * Used for all subsection headings inside tabs (Party, Roll & Damage Stats,
+ * etc). The leading bar serves the same chapter-ornament role as the
+ * gradient rule under the chapter header. */
 .sr-section-title {
-  margin: 10px 0 8px;
-  font-size: 0.95em;
+  margin: 14px 0 10px;
+  font-size: 1.05em;
   font-weight: 700;
   color: var(--vcb-accent);
-  letter-spacing: 0.8px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.sr-section-title::before {
+  content: "";
+  flex: 0 0 auto;
+  width: 14px;
+  height: 2px;
+  background: var(--vcb-accent-dim);
+  border-radius: 1px;
 }
 
 /* ── Overview: Party record cards ──────────────────────────────────────────
@@ -4943,7 +4956,7 @@ body.theme-light .vcb-phase-badge {
   font-size: 0.85em;
 }
 
-.sr-enemy.defeated { color: #e74c3c; }
+.sr-enemy.defeated { color: var(--vcb-action-sell); }
 .sr-enemy em { font-size: 0.85em; color: var(--vcb-text-dim, #9aa0a6); }
 
 /* ── Stats table ───────────────────────────────────────────────────────── */
@@ -4956,11 +4969,13 @@ body.theme-light .vcb-phase-badge {
 
 .sr-stats-table th {
   text-align: left;
-  padding: 5px 8px;
-  border-bottom: 1px solid var(--vcb-border, #3a3d44);
-  color: var(--vcb-text-dim, #9aa0a6);
-  font-size: 0.85em;
-  text-transform: uppercase;
+  padding: 6px 8px;
+  border-bottom: 1px solid var(--vcb-accent-dim);
+  color: var(--vcb-accent);
+  font-size: 0.82em;
+  font-weight: 700;
+  /* Removed text-transform: uppercase (SaaS tell per /critique).
+   * Weight + gold color + accent border-bottom carry the hierarchy instead. */
 }
 
 .sr-stats-table td {
@@ -4984,15 +4999,22 @@ body.theme-light .vcb-phase-badge {
   font-size: 0.9em;
 }
 
-.sr-loot-time { color: #888; font-size: 0.8em; width: 45px; flex-shrink: 0; }
+.sr-loot-time { color: var(--vcb-text-muted); font-size: 0.8em; width: 45px; flex-shrink: 0; font-style: italic; }
 .sr-loot-icon { width: 20px; text-align: center; flex-shrink: 0; }
 .sr-loot-player { color: var(--vcb-accent, #c9a54a); font-weight: bold; min-width: 80px; }
 .sr-loot-detail { flex: 1; }
-.sr-loot-source { color: #888; font-size: 0.8em; }
+.sr-loot-source { color: var(--vcb-text-muted); font-size: 0.8em; font-style: italic; }
 
 /* ── XP tab ────────────────────────────────────────────────────────────── */
-.sr-xp-player { margin-bottom: 12px; }
-.sr-xp-player h4 { margin: 0 0 6px; }
+.sr-xp-player { margin-bottom: 14px; }
+/* Player-block heading — matches sr-party-name for cross-tab consistency. */
+.sr-xp-player h4 {
+  margin: 0 0 6px;
+  font-size: 1em;
+  font-weight: 700;
+  color: var(--vcb-accent);
+  letter-spacing: 0.2px;
+}
 
 .sr-xp-award {
   padding: 6px 8px;
