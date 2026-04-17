@@ -14,7 +14,18 @@ A comprehensive dungeon crawl management module for the **Vagabond RPG** system 
 
 ## Headline Features
 
-<!-- headline-features-grid: Task 18 fills this block -->
+- **[Crawl Strip](docs/crawl-loop.md#crawl-strip)** — Top-of-screen HUD for all players. Portraits, HP, status, one-click actions, movement budgets, combat dropdown.
+- **[Encounter System](docs/exploration.md#encounter-system)** — Random checks, Roll Table builder, NPC browser with filters, inline Monster Creator.
+- **[Monster Creator](docs/exploration.md#monster-creator)** — Build or mutate NPCs in a dedicated window with automation-status badges on abilities.
+- **[Light Tracker](docs/exploration.md#light-tracker)** — 12 light sources, lantern fuel, real-time burn, canvas drop/pickup, party token transfer.
+- **[Loot Generator](docs/crafting-loot.md#loot-generator)** — Roll on core Vagabond Level 1-10 tables; "Give to Player" chat buttons; auto-drop on NPC defeat.
+- **[Relic Forge](docs/crafting-loot.md#relic-forge)** — Craft custom equipment with relic powers, auto-generated names, equip-gated effects.
+- **[Spell Scroll Forge](docs/crafting-loot.md#spell-scroll-forge)** — One-shot spell scrolls from any compendium spell; no mana, no Cast Check.
+- **[Merchant Shop](docs/crafting-loot.md#merchant-shop)** — Compendium or NPC merchants; players buy, sell, and gamble on loot tables.
+- **[Session Recap](docs/session-tracking.md#session-recap)** — Combat stats, loot log, XP tracking, per-player breakdowns, Discord export.
+- **[NPC Abilities](docs/combat.md#npc-abilities)** — Magic Ward, Pack Instincts/Tactics/Hunter, Nimble, Soft Underbelly — automated at the table.
+- **[Flanking & Countdown Dice](docs/combat.md#flanking-checker)** — Auto-apply Vulnerable on flanks; auto-roll round-start countdown dice with tick damage.
+- **[Trap Builder](docs/exploration.md#trap-builder)** — Visual authoring for Scene-Region macro traps with save, VFX, damage, status effects.
 
 ---
 
