@@ -28,6 +28,7 @@ import { PartyInventory }  from "./party-inventory.mjs";
 import { MonsterCreator }  from "./monster-creator/monster-creator-app.mjs";
 import { XpCounterPatch }  from "./xp-counter-patch.mjs";
 import { SessionRecap }    from "./session-recap.mjs";
+import { AnimationFx }    from "./animation-fx.mjs";
 
 export const MODULE_ID = "vagabond-crawler";
 
@@ -128,6 +129,7 @@ Hooks.once("init", () => {
   });
 
   // Register all sub-module settings
+  AnimationFx.registerSettings();
   MovementTracker.registerSettings();
   LightTracker.registerSettings();
   ItemDrops.registerSettings();
@@ -150,6 +152,20 @@ Hooks.once("init", () => {
     },
   });
 
+  // Register Handlebars helpers for template conditionals
+  if (!Handlebars.helpers.eq) {
+    Handlebars.registerHelper("eq", (a, b) => a === b);
+  }
+  if (!Handlebars.helpers.or) {
+    Handlebars.registerHelper("or", (...args) => args.slice(0, -1).some(x => !!x));
+  }
+
+  // Preload templates
+  foundry.applications.handlebars.loadTemplates([
+    "modules/vagabond-crawler/templates/animation-fx-config.hbs",
+    "modules/vagabond-crawler/templates/light-sources-config.hbs",
+  ]);
+
   console.log(`${MODULE_ID} | Initialized.`);
 });
 
@@ -165,7 +181,8 @@ Hooks.once("ready", async () => {
     encounter: EncounterTools,
     morale:    MoraleChecker,
     rest:      RestBreather,
-    light:     LightTracker,
+    light:        LightTracker,
+    lightTracker: LightTracker,
     clock:     CrawlClock,
     flanking:  FlankingChecker,
     itemDrops: ItemDrops,
@@ -181,6 +198,7 @@ Hooks.once("ready", async () => {
     partyInventory: PartyInventory,
     monsterCreator: MonsterCreator,
     recap: SessionRecap,
+    animationFx: AnimationFx,
     debugCombat: () => {
       const combat = game.combat;
       if (!combat) return "No active combat";
@@ -246,6 +264,9 @@ Hooks.once("ready", async () => {
 
   // Session recap
   SessionRecap.init();
+
+  // Animation FX subsystem
+  await AnimationFx.init();
 
   // XP questionnaire counter patch (replaces checkboxes with numeric counters)
   XpCounterPatch.init();

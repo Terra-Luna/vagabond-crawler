@@ -1,0 +1,148 @@
+<div class="vcls-wrapper">
+
+  <div class="vcls-config">
+
+    {{!-- Left sidebar: source list --}}
+    <nav class="vcls-sidebar">
+      <div class="vcls-sidebar-header">Light Sources</div>
+      {{#each sourceList as |source|}}
+        <div class="vcls-source-item {{#if source.active}}active{{/if}}"
+             data-action="selectSource" data-key="{{source.key}}">
+          {{source.label}}
+        </div>
+      {{/each}}
+    </nav>
+
+    {{!-- Right pane: editor --}}
+    <div class="vcls-editor">
+      <div class="vcls-editor-header">
+        <span class="vcls-editor-title">{{selectedLabel}}</span>
+        <div class="vcls-editor-header-actions">
+          <button type="button" data-action="testOnToken" class="vcls-btn-small"
+                  title="Apply this config to the selected token on canvas">
+            &#9654; Test on Token
+          </button>
+          <button type="button" data-action="resetSource" class="vcls-btn-small vcls-btn-warn"
+                  title="Reset this source to built-in defaults">
+            &#8635; Reset This Source
+          </button>
+        </div>
+      </div>
+
+      <div class="vcls-body">
+
+        {{!-- Light Radii & Angle --}}
+        <fieldset class="vcls-section">
+          <legend>Radii &amp; Angle</legend>
+          <div class="vcls-row">
+            <label class="vcls-field">
+              <span>Bright (ft)</span>
+              <input type="number" name="src.bright" value="{{src.bright}}" min="0" step="5"/>
+            </label>
+            <label class="vcls-field">
+              <span>Dim (ft)</span>
+              <input type="number" name="src.dim" value="{{src.dim}}" min="0" step="5"/>
+            </label>
+            <label class="vcls-field">
+              <span>Emission Angle (°)</span>
+              <input type="number" name="src.angle" value="{{src.angle}}" min="1" max="360" step="1"/>
+            </label>
+          </div>
+        </fieldset>
+
+        {{!-- Color --}}
+        <fieldset class="vcls-section">
+          <legend>Color</legend>
+          <div class="vcls-row">
+            <label class="vcls-field">
+              <span>Color</span>
+              <input type="color" name="src.color" value="{{src.color}}"/>
+            </label>
+            <label class="vcls-field vcls-field-wide">
+              <span>Color Intensity <em class="vcls-hint">({{src.colorIntensity}})</em></span>
+              <input type="range" name="src.colorIntensity"
+                     value="{{src.colorIntensity}}" min="0" max="1" step="0.05"
+                     class="vcls-range"/>
+            </label>
+          </div>
+        </fieldset>
+
+        {{!-- Animation --}}
+        <fieldset class="vcls-section">
+          <legend>Animation</legend>
+          <div class="vcls-row">
+            <label class="vcls-field">
+              <span>Type</span>
+              <select name="src.animation.type">
+                {{#each animTypes as |at|}}
+                  <option value="{{at.value}}" {{#if at.selected}}selected{{/if}}>{{at.label}}</option>
+                {{/each}}
+              </select>
+            </label>
+            <label class="vcls-field">
+              <span>Speed (1–10)</span>
+              <input type="number" name="src.animation.speed"
+                     value="{{anim.speed}}" min="1" max="10" step="1"/>
+            </label>
+            <label class="vcls-field">
+              <span>Intensity (1–10)</span>
+              <input type="number" name="src.animation.intensity"
+                     value="{{anim.intensity}}" min="1" max="10" step="1"/>
+            </label>
+            <label class="vcls-field vcls-field-check">
+              <input type="checkbox" name="src.animation.reverse"
+                     {{#if anim.reverse}}checked{{/if}}/>
+              <span>Reverse Direction</span>
+            </label>
+          </div>
+        </fieldset>
+
+        {{!-- Priority & Darkness --}}
+        <fieldset class="vcls-section">
+          <legend>Priority &amp; Darkness</legend>
+          <div class="vcls-row">
+            <label class="vcls-field">
+              <span>Priority</span>
+              <input type="number" name="src.priority" value="{{src.priority}}" step="1"/>
+            </label>
+            <label class="vcls-field vcls-field-check">
+              <input type="checkbox" name="src.isDarkness"
+                     {{#if src.isDarkness}}checked{{/if}}/>
+              <span>Is Darkness Source</span>
+            </label>
+          </div>
+        </fieldset>
+
+        {{!-- Longevity & Consumable --}}
+        <fieldset class="vcls-section">
+          <legend>Burn Behaviour</legend>
+          <div class="vcls-row">
+            <label class="vcls-field">
+              <span>Longevity (secs)</span>
+              <input type="number" name="src.longevitySecs"
+                     value="{{src.longevitySecs}}" min="0" step="60"/>
+            </label>
+            <label class="vcls-field vcls-field-check">
+              <input type="checkbox" name="src.consumable"
+                     {{#if src.consumable}}checked{{/if}}/>
+              <span>Consumable (destroyed on burn-out)</span>
+            </label>
+          </div>
+        </fieldset>
+
+      </div>{{!-- .vcls-body --}}
+    </div>{{!-- .vcls-editor --}}
+
+  </div>{{!-- .vcls-config --}}
+
+  <footer class="vcls-footer">
+    <span class="vcls-save-flash">Saved!</span>
+    <button type="button" data-action="resetAll" class="vcls-btn-warn">
+      &#8635; Reset All to Defaults
+    </button>
+    <button type="submit">Save</button>
+    <button type="button" data-action="saveAndClose">Save &amp; Close</button>
+    <button type="button" data-action="cancel">Cancel</button>
+  </footer>
+
+</div>{{!-- .vcls-wrapper --}}

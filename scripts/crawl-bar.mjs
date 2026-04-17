@@ -22,6 +22,7 @@ import { ScrollForge }     from "./scroll-forge.mjs";
 import { MerchantShop }    from "./merchant-shop.mjs";
 import { PartyInventory } from "./party-inventory.mjs";
 import { SessionRecap }   from "./session-recap.mjs";
+import { AnimationFx }    from "./animation-fx.mjs";
 
 const BAR_ID = "vagabond-crawler-bar";
 
@@ -156,7 +157,8 @@ export const CrawlBar = {
                 title="Left-click: Open encounter roller&#10;Right-click: Enc. check & threshold${tableName ? "&#10;Table: " + tableName : ""}">
           ${ICONS.encounter} Encounter${tableName ? ` <span class="vcb-enc-table-indicator">●</span>` : ""}
         </button>
-        <button class="vcb-btn" data-action="lightTracker">
+        <button class="vcb-btn" data-action="lightTracker"
+                title="Left-click: Tracker | Right-click: Configure light sources">
           ${ICONS.lights} Lights
         </button>
         <button class="vcb-btn" data-action="restBreather">
@@ -202,6 +204,16 @@ export const CrawlBar = {
         ev.preventDefault();
         ev.stopPropagation();
         this._showForgeLootMenu(ev);
+      });
+    }
+
+    // Right-click on Lights button → open Light Sources Config
+    const lightsBtn = this._el.querySelector('[data-action="lightTracker"]');
+    if (lightsBtn) {
+      lightsBtn.addEventListener("contextmenu", ev => {
+        ev.preventDefault();
+        ev.stopPropagation();
+        LightTracker.openSourcesConfig();
       });
     }
   },
@@ -415,6 +427,9 @@ export const CrawlBar = {
         <button class="vcb-forge-tab" data-tool="partyInventory">
           <i class="fas fa-users"></i> Party Inventory
         </button>
+        <button class="vcb-forge-tab" data-tool="animationFx">
+          <i class="fas fa-film"></i> Animation FX
+        </button>
       </div>
     `;
 
@@ -434,6 +449,7 @@ export const CrawlBar = {
     open("lootGenerator", () => LootGenerator.open());
     open("merchantShop",  () => MerchantShop.open());
     open("partyInventory",() => PartyInventory.open());
+    open("animationFx",   () => AnimationFx.open());
 
     _attachDismiss(this, panel, "_forgeToolbar", "_forgeToolbarDismiss", btn);
   },
@@ -475,6 +491,9 @@ export const CrawlBar = {
       </div>
       <div class="vcb-clock-menu-item" data-fl="partyInventory">
         <i class="fas fa-users"></i> Party Inventory
+      </div>
+      <div class="vcb-clock-menu-item" data-fl="animationFx">
+        <i class="fas fa-film"></i> Animation FX
       </div>
       <div class="vcb-enc-menu-divider"></div>
       <div class="vcb-clock-menu-item" data-fl="toggleLoot">
@@ -537,6 +556,12 @@ export const CrawlBar = {
     menu.querySelector('[data-fl="partyInventory"]')?.addEventListener("click", () => {
       this._dismissForgeLootMenu();
       PartyInventory.open();
+    });
+
+    // Animation FX
+    menu.querySelector('[data-fl="animationFx"]')?.addEventListener("click", () => {
+      this._dismissForgeLootMenu();
+      AnimationFx.open();
     });
 
     // Toggle loot drops
