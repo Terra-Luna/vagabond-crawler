@@ -371,6 +371,10 @@ async function _doPickup(lightActor, token, targetActor) {
     if (targetToken) {
       await targetToken.document.update({ light: _lightConfig(def) });
       await newItem.update({ [`flags.${MODULE_ID}.tokenId`]: targetToken.id });
+      try {
+        const preset = game.vagabondCrawler?.animationFx?.resolveGearPresetByLightType(sourceKey);
+        if (preset) await game.vagabondCrawler.animationFx.startPersistent(preset, targetToken);
+      } catch (e) { console.warn("[vagabond-crawler] light FX pickup start failed:", e); }
     }
   }
 
@@ -595,17 +599,28 @@ export const LightTracker = {
       if (tokens.length) {
         for (const token of tokens) {
           await token.document.update({ light: _lightConfig(def) });
+          try {
+            const preset = game.vagabondCrawler?.animationFx?.resolveGearPresetByLightType(key);
+            if (preset) await game.vagabondCrawler.animationFx.startPersistent(preset, token);
+          } catch (e) { console.warn("[vagabond-crawler] light FX start failed:", e); }
         }
       } else {
         // No tokens on canvas — check if gathered into a party token
         const partyToken = _findPartyToken(actor);
-        if (partyToken) await partyToken.document.update({ light: _lightConfig(def) });
+        if (partyToken) {
+          await partyToken.document.update({ light: _lightConfig(def) });
+          try {
+            const preset = game.vagabondCrawler?.animationFx?.resolveGearPresetByLightType(key);
+            if (preset) await game.vagabondCrawler.animationFx.startPersistent(preset, partyToken);
+          } catch (e) { console.warn("[vagabond-crawler] light FX start failed:", e); }
+        }
       }
     }
     ui.notifications.info(`${item.name} lit. ${this._formatTime(remaining)} remaining.`);
   },
 
   async _douseLight(item) {
+    const sourceKey = item.getFlag(MODULE_ID, "sourceKey");
     await item.setFlag(MODULE_ID, "lit", false);
     const actor = item.parent;
     if (actor) {
@@ -613,6 +628,10 @@ export const LightTracker = {
       if (tokens.length) {
         for (const token of tokens) {
           await token.document.update({ light: DARK_LIGHT });
+          try {
+            const preset = game.vagabondCrawler?.animationFx?.resolveGearPresetByLightType(sourceKey);
+            if (preset) await game.vagabondCrawler.animationFx.stopPersistent(preset, token);
+          } catch (e) { console.warn("[vagabond-crawler] light FX stop failed:", e); }
         }
       } else {
         // No tokens on canvas — remove light from party token if gathered
@@ -620,7 +639,13 @@ export const LightTracker = {
         if (partyToken) {
           // Only douse if no other gathered member has a lit light source
           const stillLit = _anyGatheredMemberLit(partyToken, actor);
-          if (!stillLit) await partyToken.document.update({ light: DARK_LIGHT });
+          if (!stillLit) {
+            await partyToken.document.update({ light: DARK_LIGHT });
+            try {
+              const preset = game.vagabondCrawler?.animationFx?.resolveGearPresetByLightType(sourceKey);
+              if (preset) await game.vagabondCrawler.animationFx.stopPersistent(preset, partyToken);
+            } catch (e) { console.warn("[vagabond-crawler] light FX stop failed:", e); }
+          }
         }
       }
     }
@@ -631,28 +656,55 @@ export const LightTracker = {
     await item.setFlag(MODULE_ID, "lit",          false);
     await item.setFlag(MODULE_ID, "remainingSecs", 0);
 
+    const key = item.getFlag(MODULE_ID, "sourceKey");
+    const def = key ? LIGHT_SOURCES[key] : null;
+
     // Helper: apply light config to actor's tokens or party token fallback
-    const _applyLight = async (lightCfg) => {
+    // fxMode: "start" or "stop" — drives persistent FX alongside the light update
+    const _applyLight = async (lightCfg, fxMode) => {
       const tokens = actor.getActiveTokens();
       if (tokens.length) {
-        for (const token of tokens) await token.document.update({ light: lightCfg });
+        for (const token of tokens) {
+          await token.document.update({ light: lightCfg });
+          if (fxMode && key) {
+            try {
+              const preset = game.vagabondCrawler?.animationFx?.resolveGearPresetByLightType(key);
+              if (preset) {
+                if (fxMode === "stop") await game.vagabondCrawler.animationFx.stopPersistent(preset, token);
+                else if (fxMode === "start") await game.vagabondCrawler.animationFx.startPersistent(preset, token);
+              }
+            } catch (e) { console.warn("[vagabond-crawler] light FX burnOut failed:", e); }
+          }
+        }
       } else {
         const pt = _findPartyToken(actor);
         if (pt) {
           if (lightCfg === DARK_LIGHT) {
             const stillLit = _anyGatheredMemberLit(pt, actor);
-            if (!stillLit) await pt.document.update({ light: DARK_LIGHT });
+            if (!stillLit) {
+              await pt.document.update({ light: DARK_LIGHT });
+              if (fxMode === "stop" && key) {
+                try {
+                  const preset = game.vagabondCrawler?.animationFx?.resolveGearPresetByLightType(key);
+                  if (preset) await game.vagabondCrawler.animationFx.stopPersistent(preset, pt);
+                } catch (e) { console.warn("[vagabond-crawler] light FX burnOut failed:", e); }
+              }
+            }
           } else {
             await pt.document.update({ light: lightCfg });
+            if (fxMode === "start" && key) {
+              try {
+                const preset = game.vagabondCrawler?.animationFx?.resolveGearPresetByLightType(key);
+                if (preset) await game.vagabondCrawler.animationFx.startPersistent(preset, pt);
+              } catch (e) { console.warn("[vagabond-crawler] light FX burnOut failed:", e); }
+            }
           }
         }
       }
     };
 
-    await _applyLight(DARK_LIGHT);
+    await _applyLight(DARK_LIGHT, "stop");
 
-    const key = item.getFlag(MODULE_ID, "sourceKey");
-    const def = key ? LIGHT_SOURCES[key] : null;
     if (def?.consumable) {
       const qty = item.system.quantity ?? 1;
       if (qty <= 1) {
@@ -676,7 +728,7 @@ export const LightTracker = {
         await _consumeFuel(fuelItem);
         await item.setFlag(MODULE_ID, "lit", true);
         await item.setFlag(MODULE_ID, "remainingSecs", def.longevitySecs);
-        await _applyLight(_lightConfig(def));
+        await _applyLight(_lightConfig(def), "start");
         const remaining = (fuelItem.system?.quantity ?? 1) - 1;
         await ChatMessage.create({
           content: `<div class="vagabond-crawler-chat light-out"><i class="fas fa-fire-flame-curved"></i> <strong>${actor.name}'s ${item.name} oil burned out — refueled automatically.</strong> (${remaining} oil remaining)</div>`,

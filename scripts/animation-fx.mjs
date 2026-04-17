@@ -612,6 +612,77 @@ export const AnimationFx = {
     return { updated, actors: byActor.size, errored };
   },
 
+  // ── Persistent light FX helpers ────────────────────────────────────────────
+
+  _persistentNameFor(preset, token) {
+    return `vagabond-crawler-fx-${preset.label}-${token.id}`;
+  },
+
+  async startPersistent(preset, token) {
+    if (!preset || !preset.hit?.file || !token) return;
+    if (!preset.persist) return;
+    if (typeof Sequencer === "undefined") return;
+    if (!game.settings.get(MODULE_ID, "animationFxEnabled")) return;
+    const name = this._persistentNameFor(preset, token);
+    const existing = Sequencer.EffectManager.getEffects({ name }) ?? [];
+    if (existing.length > 0) return; // already running
+    const globalScale = this._getClientScale();
+    const fadeIn = preset.fadeIn ?? 200;
+    const fadeOut = preset.fadeOut ?? 200;
+    const opacity = preset.opacity ?? 1.0;
+    const seq = new Sequence(MODULE_ID);
+    seq.effect()
+      .file(preset.hit.file)
+      .atLocation(token)
+      .scaleToObject(preset.hit.scale * globalScale)
+      .fadeIn(fadeIn)
+      .fadeOut(fadeOut)
+      .opacity(opacity)
+      .persist()
+      .name(name);
+    try {
+      await seq.play();
+    } catch (e) {
+      console.warn("[vagabond-crawler] startPersistent failed:", e);
+    }
+    this._playSound(preset.hit);
+  },
+
+  async stopPersistent(preset, token) {
+    if (!preset || !token) return;
+    if (typeof Sequencer === "undefined") return;
+    const name = this._persistentNameFor(preset, token);
+    const existing = Sequencer.EffectManager.getEffects({ name }) ?? [];
+    if (existing.length === 0) return; // already stopped
+    try {
+      await Sequencer.EffectManager.endEffects({ name });
+    } catch (e) {
+      console.warn("[vagabond-crawler] stopPersistent failed:", e);
+    }
+  },
+
+  resolveGearPresetByLightType(lightType) {
+    // Maps light-tracker's LIGHT_SOURCES key → gear preset key in the AnimationFx config
+    const keyByLightType = {
+      torch:              "torch",
+      "torch-tindertwig": "torch",
+      "torch-sentry":     "torch",
+      "torch-repel-beast":"torch",
+      "torch-frigidflame":"torch",
+      candle:             "torch",
+      "candle-calming":   "torch",
+      "candle-insectbane":"torch",
+      "candle-restful":   "torch",
+      "lantern-hooded":   "lantern",
+      "lantern-bullseye": "lantern",
+      lantern:            "lantern",
+      sunrod:             "sunrod",
+    };
+    const gearKey = keyByLightType[lightType] ?? lightType;
+    const config = this.getConfig();
+    return config.gear?.[gearKey] ?? null;
+  },
+
   // ── FX cleanup ──────────────────────────────────────────────────────────────
 
   clearAllFx() {

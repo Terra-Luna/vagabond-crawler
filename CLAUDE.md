@@ -151,6 +151,8 @@ game.vagabondCrawler.debugCombat()    // active combat summary
 game.vagabondCrawler.debugSpeed()     // selected token's speed data
 game.vagabondCrawler.scrollForge.open()  // open Scroll Forge
 game.vagabondCrawler.animationFx.syncToItems()  // push config → item.system.itemFx for all world weapons
+game.vagabondCrawler.animationFx.startPersistent(preset, token)  // idempotent light-on
+game.vagabondCrawler.animationFx.stopPersistent(preset, token)   // idempotent light-off
 game.vagabondCrawler.movement._turnStartPos  // rollback position snapshots
 game.patrol                           // Patrol module instances (if installed)
 ```
