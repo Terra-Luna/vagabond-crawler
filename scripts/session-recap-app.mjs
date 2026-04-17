@@ -133,13 +133,36 @@ export class SessionRecapApp extends HandlebarsApplicationMixin(ApplicationV2) {
       total,
     }));
 
+    const totalCombats = data.combats.length;
+    const totalEnemiesDefeated = data.combats.reduce((sum, c) => sum + c.enemies.filter(e => e.defeated).length, 0);
+
+    // Chapter-header context — session debrief framing (BG3-style)
+    const sessionDisplayName = viewingSession
+      ? viewingSession.name
+      : data.sessionStart
+        ? SessionRecap._generateSessionName(data.sessionStart)
+        : "Session";
+    const sessionStatusLabel = viewingSession
+      ? "Archived"
+      : data.sessionState === "active"
+        ? "In Progress"
+        : data.sessionStart ? "Idle" : "Not Started";
+    const sessionStats = [
+      { label: sessionDuration },
+      { label: totalCombats === 1 ? "1 combat" : `${totalCombats} combats` },
+      { label: `${totalEnemiesDefeated} defeated` },
+    ];
+
     return {
       activeTab: this.activeTab,
       isGM: game.user.isGM,
       hasDamageLog,
       sessionDuration,
-      totalCombats: data.combats.length,
-      totalEnemiesDefeated: data.combats.reduce((sum, c) => sum + c.enemies.filter(e => e.defeated).length, 0),
+      totalCombats,
+      totalEnemiesDefeated,
+      sessionDisplayName,
+      sessionStatusLabel,
+      sessionStats,
       playerSummaries,
       hasPlayerSummaries: playerSummaries.length > 0,
       combats,

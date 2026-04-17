@@ -32,32 +32,43 @@
     {{! ─── Overview ─── }}
     {{#if (eq activeTab 'overview')}}
       <section class="sr-section">
-        <div class="sr-overview-header">
-          <div class="sr-stat-card">
-            <span class="sr-stat-label">Session Duration</span>
-            <span class="sr-stat-value">{{sessionDuration}}</span>
+        <header class="sr-chapter-header">
+          <div class="sr-chapter-kicker">{{sessionStatusLabel}}</div>
+          <h1 class="sr-chapter-title">{{sessionDisplayName}}</h1>
+          <div class="sr-chapter-stats">
+            {{#each sessionStats}}
+              {{#unless @first}}<span class="sr-chapter-sep" aria-hidden="true">·</span>{{/unless}}
+              <span>{{label}}</span>
+            {{/each}}
           </div>
-          <div class="sr-stat-card">
-            <span class="sr-stat-label">Combats</span>
-            <span class="sr-stat-value">{{totalCombats}}</span>
-          </div>
-          <div class="sr-stat-card">
-            <span class="sr-stat-label">Enemies Defeated</span>
-            <span class="sr-stat-value">{{totalEnemiesDefeated}}</span>
-          </div>
-        </div>
+          <hr class="sr-chapter-rule" />
+        </header>
 
         {{#if hasPlayerSummaries}}
-          <h4>Player Summary</h4>
-          <div class="sr-player-summaries">
+          <h4 class="sr-section-title">The Party</h4>
+          <div class="sr-party-grid">
             {{#each playerSummaries}}
-              <div class="sr-player-row">
-                <span class="sr-player-name">{{name}}</span>
-                <span class="sr-player-stat"><i class="fas fa-skull"></i> {{kills}} kills</span>
-                <span class="sr-player-stat"><i class="fas fa-sword"></i> {{damageDealt}} dealt</span>
-                <span class="sr-player-stat"><i class="fas fa-heart-crack"></i> {{damageTaken}} taken</span>
-                <span class="sr-player-stat"><i class="fas fa-star"></i> {{totalXp}} XP</span>
-              </div>
+              <article class="sr-party-card">
+                <h4 class="sr-party-name">{{name}}</h4>
+                <dl class="sr-party-stats">
+                  <div class="sr-party-stat">
+                    <dt>Kills</dt>
+                    <dd>{{kills}}</dd>
+                  </div>
+                  <div class="sr-party-stat">
+                    <dt>Dealt</dt>
+                    <dd>{{damageDealt}}</dd>
+                  </div>
+                  <div class="sr-party-stat">
+                    <dt>Taken</dt>
+                    <dd>{{damageTaken}}</dd>
+                  </div>
+                  <div class="sr-party-stat">
+                    <dt>XP</dt>
+                    <dd>{{totalXp}}</dd>
+                  </div>
+                </dl>
+              </article>
             {{/each}}
           </div>
         {{else}}

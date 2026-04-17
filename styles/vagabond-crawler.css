@@ -4780,58 +4780,131 @@ body.theme-light .vcb-phase-badge {
 }
 
 /* ── Overview stat cards ───────────────────────────────────────────────── */
-.sr-overview-header {
+/* ── Overview: Chapter header ──────────────────────────────────────────────
+ * BG3 end-of-act debrief framing — status kicker → large session title →
+ * muted stat strip → gold rule. Replaces the earlier dashboard-style
+ * .sr-stat-card grid (audit P1 anti-pattern). */
+.sr-chapter-header {
   display: flex;
-  gap: 8px;
-  margin-bottom: 12px;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  padding: 4px 2px 4px;
+  margin-bottom: 8px;
 }
 
-.sr-stat-card {
-  flex: 1;
-  background: var(--vcb-bg-alt, #1f2226);
-  border: 1px solid var(--vcb-border, #3a3d44);
-  border-radius: 6px;
-  padding: 10px;
-  text-align: center;
-}
-
-.sr-stat-label {
-  display: block;
-  font-size: 0.75em;
-  color: var(--vcb-text-dim, #9aa0a6);
+.sr-chapter-kicker {
+  font-size: 0.7em;
+  letter-spacing: 2.5px;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  color: var(--vcb-text-muted);
+  font-weight: 600;
 }
 
-.sr-stat-value {
-  display: block;
-  font-size: 1.4em;
+.sr-chapter-title {
+  margin: 2px 0 0;
+  font-size: 1.7em;
   font-weight: 700;
-  color: var(--vcb-accent, #c9a54a);
-  margin-top: 2px;
+  color: var(--vcb-text-bright);
+  line-height: 1.15;
+  letter-spacing: 0.2px;
 }
 
-/* ── Player summary rows ───────────────────────────────────────────────── */
-.sr-player-summaries { display: flex; flex-direction: column; gap: 4px; }
-
-.sr-player-row {
+.sr-chapter-stats {
+  margin-top: 8px;
   display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 6px 10px;
-  background: var(--vcb-bg-alt, #1f2226);
-  border-radius: 4px;
-  font-size: 0.85em;
+  flex-wrap: wrap;
+  gap: 10px;
+  font-size: 0.9em;
+  color: var(--vcb-text);
+  font-variant-numeric: tabular-nums;
+}
+.sr-chapter-sep {
+  color: var(--vcb-accent-dim);
+  user-select: none;
 }
 
-.sr-player-name {
+.sr-chapter-rule {
+  width: 100%;
+  height: 1px;
+  margin: 14px 0 2px;
+  border: none;
+  background: linear-gradient(
+    to right,
+    transparent 0%,
+    var(--vcb-accent-dim) 22%,
+    var(--vcb-accent) 50%,
+    var(--vcb-accent-dim) 78%,
+    transparent 100%
+  );
+  opacity: 0.7;
+}
+
+/* Section title below the chapter header — paired with the rule above */
+.sr-section-title {
+  margin: 10px 0 8px;
+  font-size: 0.95em;
   font-weight: 700;
-  color: var(--vcb-accent, #c9a54a);
-  min-width: 100px;
+  color: var(--vcb-accent);
+  letter-spacing: 0.8px;
 }
 
-.sr-player-stat { color: var(--vcb-text-dim, #9aa0a6); white-space: nowrap; }
-.sr-player-stat i { margin-right: 3px; }
+/* ── Overview: Party record cards ──────────────────────────────────────────
+ * Each player becomes a compact record card — name as heading, stats as
+ * a labeled grid. Replaces the earlier flex-row of icon+number chips. */
+.sr-party-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 10px;
+}
+
+.sr-party-card {
+  background: var(--vcb-bg-alt);
+  border: 1px solid var(--vcb-border);
+  border-top: 2px solid var(--vcb-accent-dim);
+  border-radius: 2px 2px 4px 4px;
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.sr-party-name {
+  margin: 0;
+  font-size: 1em;
+  font-weight: 700;
+  color: var(--vcb-accent);
+  letter-spacing: 0.3px;
+}
+
+.sr-party-stats {
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2px 8px;
+}
+
+.sr-party-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0;
+}
+
+.sr-party-stat dt {
+  margin: 0;
+  font-size: 0.72em;
+  color: var(--vcb-text-muted);
+  font-weight: 600;
+}
+
+.sr-party-stat dd {
+  margin: 0;
+  font-size: 1.1em;
+  font-weight: 700;
+  color: var(--vcb-text-bright);
+  font-variant-numeric: tabular-nums;
+}
 
 /* ── Combat encounters ─────────────────────────────────────────────────── */
 .sr-encounter {
