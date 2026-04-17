@@ -145,11 +145,42 @@ The **Use Scroll** context menu entry is added by the scroll-forge module as par
 
 ### What it does
 
+A shared shop window the GM opens for the whole table. Two modes:
+- **Compendium mode** — the shop sells from a GM-curated global inventory stored in world settings. Prices, stock, and markup are authored up front.
+- **Actor mode** — point the shop at any NPC actor and it sells that NPC's `items` collection. Drop a wizard onto the window and it's suddenly a magic shop. The inventory refreshes on the actor's next update, so restocking is "edit the NPC's items".
+
+Buy, sell, and a third mode — **Gamble** — rolls on the core Vagabond loot tables (Levels 1-10) for a fixed price per level (1g / 2g / 3g / 4g / 5g / 6g / 8g / 12g / 15g / 50g by default, tunable per entry). It's a loot-table-as-mystery-box: your 5g gets you one roll on the Level 5 table, whatever comes up.
+
+Transactions route through the GM via socket (`shop:buy`, `shop:sell`, `shop:gamble`) so players can't write to GM-owned data directly. Everything is logged to a shop transaction history (`shopLog` setting) with time, buyer, item, and price — Discord-exportable.
+
 ### How to use
+
+1. **Configure.** In Settings, set **Merchant Shop Name**, **Sell Ratio %** (50% default), and optionally pre-author the gamble options. Build the compendium-mode inventory by GM actions in the window (or by editing the `shopInventory` setting directly if you're scripting).
+2. **Open as GM.** Crawl Bar → **Forge & Loot** → **Merchant Shop**. Pick mode: **Compendium** (global inventory) or drop an NPC onto the window for **Actor** mode.
+3. **Open for players.** Click **Open for Party** — a `shop:open` socket broadcast makes the shop appear simultaneously on every player's client.
+4. **Players buy.** Click Buy on an item card, optionally adjust quantity, confirm. The socket handler on the GM client validates currency, deducts the cost, and creates the item on the player's actor with `skipStack: true`.
+5. **Players sell.** Drag an item from the character sheet onto the shop window. The GM handler applies the Sell Ratio, refunds currency, deletes the item from the seller's inventory, and logs the trade.
+6. **Players gamble.** In the Gamble tab, pick a level, pay the cost, and the Loot Generator resolves that level's table — the result drops into the player's inventory as if rolled from the Forge & Loot → Loot Generator path (same history, same relic-power hydration).
+7. **Close shop.** GM clicks **Close** — `shop:close` broadcast tears down the window on every client.
 
 ### Settings
 
+| Setting | Effect | Default |
+|---|---|---|
+| Merchant Shop Name | Window title + in-chat label | "The Merchant" |
+| Merchant Sell Ratio (%) | Refund percentage when players sell items back | 50 |
+| Gamble Options | Per-level entries (source + cost) used by the Gamble tab | 10 preset levels (1g-50g) |
+| Shop Inventory | Compendium-mode global stock (edited via the window, not the settings UI) | empty |
+| Shop Log | Transaction history (time, buyer, item, price) | empty |
+
 ### Tips & Gotchas
+
+- **GM must be online for transactions.** All buy/sell/gamble requests route through the GM socket handler; if the GM is offline, the window is read-only.
+- **Actor mode is live.** Editing the actor's items during a shop session updates the shop on next render — handy when the merchant dynamically restocks after a storyline beat.
+- **Gamble is a feature, not a bug.** It turns the Loot Generator into an in-world mechanic: PCs spend coin, they get the loot, and you didn't have to place anything on the map. Use it for shady bazaar stalls, wizardly mystery boxes, gambling dens.
+- **Sell ratio is per-shop-session.** Changing the ratio mid-session only applies to subsequent sells; previously-sold items stay at their old price.
+- **Skip-stack on buy.** Purchased items use `skipStack: true`, so a freshly-bought torch doesn't silently merge with the lit torch already on the character. The [Inventory System](#inventory-system) auto-stack rule handles it sanely on the next item touch.
+- **Discord export.** The shop log (and the Session Recap's loot log) are both Discord-exportable — drop the chronology straight into your table's channel for record-keeping.
 
 ---
 
