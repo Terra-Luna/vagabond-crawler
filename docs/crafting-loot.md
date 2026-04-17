@@ -13,6 +13,8 @@ Item generation, distribution, and inventory management.
 - **Loot Manager** — see [Loot Generator](#loot-generator)
 - **Session Recap** — see [Session Recap](session-tracking.md#session-recap)
 - **Loot Generator** — see [Loot Generator](#loot-generator)
+- **Merchant Shop** — see [Merchant Shop](#merchant-shop)
+- **Party Inventory** — see [Party Inventory](#party-inventory)
 
 ---
 

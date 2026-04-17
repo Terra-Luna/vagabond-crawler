@@ -14,7 +14,7 @@ Passive combat hooks that make NPC abilities fire automatically — no GM effort
 
 | Ability | Effect |
 |---|---|
-| **Magic Ward I-VI** | Each level adds +N Mana surcharge to any spell cast at a warded target (first time per round). I = +1 Mana, VI = +6 Mana. Displays live in the Cast Spell Dialog mana total. |
+| **Magic Ward I-VI** | Each level adds +N Mana surcharge to any spell cast at a warded target (first time per round). I through VI = +1 through +6 Mana. Displays live in the Cast Spell Dialog mana total. |
 | **Pack Instincts / Pack Tactics / Pack Hunter** | Saves against attacks from a packing NPC get Hinder when the NPC has an ally adjacent to the target. Same mechanic, three flavored names. |
 | **Nimble** | Clamps favor to *none* against the NPC while it can still move — no gang-up Favor, no situational Favor. Suspended when the NPC is Incapacitated, Paralyzed, Restrained, or Unconscious. |
 | **Soft Underbelly** | Zeroes the NPC's armor while it has the Prone condition. The damage helper reads `actor.system.armor` directly, so Active Effects using the `system.armor` OVERRIDE mode kick in transparently. |
@@ -51,7 +51,7 @@ Auto-triggers morale checks in three cases: (1) first NPC death in a group fight
 
 <!-- gif: docs/assets/animation-fx.png -->
 
-Unified animation resolver and playback for weapons, alchemical items, gear, and NPC actions. A single chat hook watches for attack / action / cast messages and plays the configured animation through Sequencer + JB2A if both are installed. Per-item and per-action override flags (`item.system.itemFx`) let you author custom FX without touching global config; the config window (**Animation FX Config** — `game.vagabondCrawler.animationFxConfig.open()`) provides six tabs covering Weapons, Skill Fallbacks, Alchemical, Gear, NPC Actions, and Settings. JB2A-aware defaults ship in `animation-fx-defaults.mjs` and activate automatically when JB2A is installed. For persistent light-on/light-off effects, see `game.vagabondCrawler.animationFx.startPersistent()` / `stopPersistent()`. See the [dev reference](dev/combat-tools.md) for the trigger setting and full config surface.
+Unified animation resolver and playback for weapons, alchemical items, gear, and NPC actions. A single chat hook watches for attack / action / cast messages and plays the configured animation through Sequencer + JB2A if both are installed. Per-item and per-action override flags (`item.system.itemFx`) let you author custom FX without touching global config; the config window (**Animation FX Config** — `game.vagabondCrawler.animationFx.open()`) provides six tabs covering Weapons, Skill Fallbacks, Alchemical, Gear, NPC Actions, and Settings. JB2A-aware defaults ship in `animation-fx-defaults.mjs` and activate automatically when JB2A is installed. For persistent light-on/light-off effects, see `game.vagabondCrawler.animationFx.startPersistent()` / `stopPersistent()`. See the [dev reference](dev/combat-tools.md) for the trigger setting and full config surface.
 
 ### Chat Dice Tooltips
 

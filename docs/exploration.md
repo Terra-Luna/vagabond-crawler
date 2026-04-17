@@ -66,7 +66,7 @@ The creator absorbs what used to be a standalone **Monster Mutator**. Apply one 
 
 ### Settings
 
-No user-facing settings — the Creator uses per-session UI state for open/closed sections (restored on re-render) and the audit dataset in `docs/audit/` for ability automation status. The ability automation status is updated each time `scripts/audit/analyze.mjs` is re-run against the compendium.
+No user-facing settings — the Creator uses per-session UI state for open/closed sections (restored on re-render) and the audit dataset in `docs/audit/` for ability automation status.
 
 ### Tips & Gotchas
 
@@ -90,7 +90,7 @@ Tracks burn time and Foundry light settings for every torch, candle, and lantern
 
 1. **Light a source.** Right-click any supported item in inventory → **Light**. The token's Foundry light properties switch to the configured bright/dim/color/animation, and burn time starts counting down.
 2. **Advance time.** Either click **Time Passes** on the Crawl Bar (default 10 minutes) or enable **Real-Time Light Burn** to have 1 real second equal 1 game second while the scene is active.
-3. **Extinguish.** Right-click the item again → **Douse**. Burn time pauses; any remaining fuel carries over to the next light.
+3. **Extinguish.** Right-click the item again → **Extinguish**. Burn time pauses; any remaining fuel carries over to the next light.
 4. **Drop on canvas.** Drag a lit light source from the character sheet onto the scene — a temporary Actor token materializes at the drop point, carrying the light with it. Token HUD shows a **Pick Up** button for any owner.
 5. **Transfer to a party token.** Merging characters into a party token transfers carried lights; extracting a character takes their lights back.
 
