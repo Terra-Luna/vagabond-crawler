@@ -15,30 +15,29 @@ export function jb2aRoot() {
 }
 
 /**
- * Build the full default animation FX config using the current JB2A root.
- * Returns null if JB2A is not installed/active.
- * @returns {object|null}
+ * Build the full default animation FX config.
+ * All paths are inlined verbatim from the user's curated world setting.
+ * jb2aRoot() is kept for any future runtime-resolved additions.
+ * @returns {object}
  */
 export function buildDefaultAnimationFxConfig() {
-  const R = jb2aRoot();
-  if (!R) return null;
-
   return {
 
     weapons: {
-      arbalest: {
+      "arbalest": {
         label: "Arbalest",
         patterns: "arbalest",
         type: "projectile",
         target: "target",
         hit: {
           file: "modules/JB2A_DnD5e/Library/Generic/Weapon_Attacks/Ranged/Bolt01_01_Regular_Orange_Physical_15ft_1000x400.webm",
-          scale: 1,
+          scale: 3,
           sound: "modules/psfx/library/ranged-weapons/longbow/v1/longbow-003-60ft.ogg",
           soundVolume: 0.6,
-        },
+          duration: 1500
+        }
       },
-      battleaxe: {
+      "battleaxe": {
         label: "Battleaxe",
         patterns: "battleaxe|battle axe",
         type: "onToken",
@@ -46,24 +45,25 @@ export function buildDefaultAnimationFxConfig() {
         hit: {
           file: "modules/JB2A_DnD5e/Library/Generic/Weapon_Attacks/Melee/Group02/MeleeAttack02_BattleAxe01_02_800x600.webm",
           scale: 1,
-          duration: 800,
+          duration: 1250,
           sound: "modules/psfx/library/impacts/slashing/v1/meleeattack-impacts-slashing-00.ogg",
-          soundVolume: 0.6,
-        },
+          soundVolume: 0.6
+        }
       },
-      bottle_glass: {
+      "bottle_glass": {
         label: "Bottle, glass",
         patterns: "bottle.*glass|glass.*bottle|\\bbottle\\b",
         type: "projectile",
         target: "target",
         hit: {
           file: "modules/JB2A_DnD5e/Library/Generic/Weapon_Attacks/Ranged/ThrowFlask01_01_Regular_Orange_05ft_600x400.webm",
-          scale: 1,
+          scale: 3,
           sound: "modules/psfx/library/impacts/magicaleffects/generic/002/impact-magicaleffects-generic-001-03.ogg",
-          soundVolume: 0.6,
-        },
+          soundVolume: 0.3,
+          duration: 1500
+        }
       },
-      breath_attack: {
+      "breath_attack": {
         label: "Breath Attack",
         patterns: "breath\\s*attack|breath\\s*weapon|\\bbreath\\b|exhale|cone\\s*of",
         type: "cone",
@@ -71,12 +71,12 @@ export function buildDefaultAnimationFxConfig() {
         hit: {
           file: "jb2a.breath_weapons.fire.cone.orange.01",
           scale: 1,
-          duration: 1500,
+          duration: 5000,
           sound: "modules/psfx/library/1st-level-spells/burning-hands/v1/burning-hands-01.ogg",
-          soundVolume: 0.6,
-        },
+          soundVolume: 0.6
+        }
       },
-      buckler: {
+      "buckler": {
         label: "Buckler",
         patterns: "\\bbuckler\\b",
         type: "onToken",
@@ -84,25 +84,25 @@ export function buildDefaultAnimationFxConfig() {
         hit: {
           file: "modules/JB2A_DnD5e/Library/Generic/Weapon_Attacks/Melee/Group06/MeleeAttack06_Shield01_01_Regular_White_800x600.webm",
           scale: 1,
-          duration: 800,
+          duration: 1250,
           sound: "modules/psfx/library/impacts/bludgeoning/v1/meleeattack-impacts-bludgeoning-00.ogg",
-          soundVolume: 0.6,
-        },
+          soundVolume: 0.6
+        }
       },
-      caestus: {
+      "caestus": {
         label: "Caestus",
         patterns: "caestus|cestus",
         type: "onToken",
         target: "target",
         hit: {
           file: "modules/JB2A_DnD5e/Library/Generic/Creature/Fist/CreatureAttackFist_001_001_Red_800x600.webm",
-          scale: 1,
-          duration: 800,
+          scale: 0.5,
+          duration: 1000,
           sound: "modules/psfx/library/impacts/slashing/v1/meleeattack-impacts-slashing-01.ogg",
-          soundVolume: 0.6,
-        },
+          soundVolume: 0.6
+        }
       },
-      club: {
+      "club": {
         label: "Club",
         patterns: "\\bclub\\b",
         type: "onToken",
@@ -110,36 +110,38 @@ export function buildDefaultAnimationFxConfig() {
         hit: {
           file: "modules/JB2A_DnD5e/Library/Generic/Weapon_Attacks/Melee/Club01_05_Regular_White_800x600.webm",
           scale: 1,
-          duration: 800,
+          duration: 1500,
           sound: "modules/psfx/library/impacts/bludgeoning/v1/meleeattack-impacts-bludgeoning-01.ogg",
-          soundVolume: 0.6,
-        },
+          soundVolume: 0.6
+        }
       },
-      crossbow: {
+      "crossbow": {
         label: "Crossbow",
-        patterns: "\\bcrossbow\\b(?!.*light)",
+        patterns: "crossbow|arbalest",
         type: "projectile",
         target: "target",
         hit: {
           file: "modules/JB2A_DnD5e/Library/Generic/Weapon_Attacks/Ranged/Bolt01_01_Regular_Orange_Physical_15ft_1000x400.webm",
-          scale: 1,
+          scale: 3,
           sound: "modules/psfx/library/ranged-weapons/longbow/v1/longbow-003-60ft.ogg",
           soundVolume: 0.6,
-        },
+          duration: 1500
+        }
       },
-      crossbow_light: {
+      "crossbow_light": {
         label: "Crossbow, light",
         patterns: "crossbow.*light|light.*crossbow",
         type: "projectile",
         target: "target",
         hit: {
           file: "modules/JB2A_DnD5e/Library/Generic/Weapon_Attacks/Ranged/Bolt01_01_Regular_Orange_Physical_15ft_1000x400.webm",
-          scale: 1,
+          scale: 3,
           sound: "modules/psfx/library/ranged-weapons/longbow/v1/longbow-003-60ft.ogg",
           soundVolume: 0.6,
-        },
+          duration: 1500
+        }
       },
-      dagger: {
+      "dagger": {
         label: "Dagger",
         patterns: "\\bdagger\\b(?!.*thrown|.*finesse)",
         type: "onToken",
@@ -147,12 +149,12 @@ export function buildDefaultAnimationFxConfig() {
         hit: {
           file: "modules/JB2A_DnD5e/Library/Generic/Weapon_Attacks/Melee/Dagger02_01_Regular_White_800x600.webm",
           scale: 1,
-          duration: 800,
+          duration: 1500,
           sound: "modules/psfx/library/impacts/slashing/v1/meleeattack-impacts-slashing-02.ogg",
-          soundVolume: 0.6,
-        },
+          soundVolume: 0.6
+        }
       },
-      dagger_finesse: {
+      "dagger_finesse": {
         label: "Dagger (Finesse)",
         patterns: "dagger.*finesse|finesse.*dagger",
         type: "onToken",
@@ -160,24 +162,25 @@ export function buildDefaultAnimationFxConfig() {
         hit: {
           file: "modules/JB2A_DnD5e/Library/Generic/Weapon_Attacks/Melee/Dagger02_01_Regular_White_800x600.webm",
           scale: 1,
-          duration: 800,
+          duration: 1500,
           sound: "modules/psfx/library/impacts/slashing/v1/meleeattack-impacts-slashing-02.ogg",
-          soundVolume: 0.6,
-        },
+          soundVolume: 0.6
+        }
       },
-      dagger_thrown: {
+      "dagger_thrown": {
         label: "Dagger (Thrown)",
         patterns: "dagger.*thrown|thrown.*dagger",
         type: "projectile",
         target: "target",
         hit: {
           file: "modules/JB2A_DnD5e/Library/Generic/Weapon_Attacks/Ranged/Dagger01_01_Regular_White_15ft_1000x400.webm",
-          scale: 1,
+          scale: 3,
           sound: "modules/psfx/library/impacts/slashing/v1/meleeattack-impacts-slashing-02.ogg",
           soundVolume: 0.6,
-        },
+          duration: 1500
+        }
       },
-      flail: {
+      "flail": {
         label: "Flail",
         patterns: "\\bflail\\b",
         type: "onToken",
@@ -185,38 +188,38 @@ export function buildDefaultAnimationFxConfig() {
         hit: {
           file: "modules/JB2A_DnD5e/Library/Generic/Weapon_Attacks/Melee/Mace01_06_Regular_White_800x600.webm",
           scale: 1,
-          duration: 800,
+          duration: 2500,
           sound: "modules/psfx/library/impacts/bludgeoning/v1/meleeattack-impacts-bludgeoning-02.ogg",
-          soundVolume: 0.6,
-        },
+          soundVolume: 0.6
+        }
       },
-      garotte_wire: {
+      "garotte_wire": {
         label: "Garotte wire",
         patterns: "garotte|garrote",
         type: "onToken",
         target: "target",
         hit: {
           file: "modules/JB2A_DnD5e/Library/Generic/Unarmed_Attacks/Unarmed_Strike/UnarmedStrike_01_Regular_Blue_Physical02_800x600.webm",
-          scale: 1,
-          duration: 800,
+          scale: 0.5,
+          duration: 1200,
           sound: "modules/psfx/library/impacts/bludgeoning/v1/meleeattack-impacts-bludgeoning-03.ogg",
-          soundVolume: 0.6,
-        },
+          soundVolume: 0.6
+        }
       },
-      gauntlet: {
+      "gauntlet": {
         label: "Gauntlet",
         patterns: "\\bgauntlet\\b",
         type: "onToken",
         target: "target",
         hit: {
           file: "modules/JB2A_DnD5e/Library/Generic/Creature/Fist/CreatureAttackFist_002_001_Blue_800x600.webm",
-          scale: 1,
+          scale: 0.5,
           duration: 800,
           sound: "modules/psfx/library/impacts/bludgeoning/v1/meleeattack-impacts-bludgeoning-00.ogg",
-          soundVolume: 0.6,
-        },
+          soundVolume: 0.6
+        }
       },
-      greataxe: {
+      "greataxe": {
         label: "Greataxe",
         patterns: "greataxe|great axe",
         type: "onToken",
@@ -224,12 +227,12 @@ export function buildDefaultAnimationFxConfig() {
         hit: {
           file: "modules/JB2A_DnD5e/Library/Generic/Weapon_Attacks/Melee/GreatAxe01_01_Regular_White_800x600.webm",
           scale: 1,
-          duration: 800,
+          duration: 2500,
           sound: "modules/psfx/library/impacts/slashing/v1/meleeattack-impacts-slashing-03.ogg",
-          soundVolume: 0.6,
-        },
+          soundVolume: 0.6
+        }
       },
-      greatclub: {
+      "greatclub": {
         label: "Greatclub",
         patterns: "greatclub|great club",
         type: "onToken",
@@ -237,12 +240,12 @@ export function buildDefaultAnimationFxConfig() {
         hit: {
           file: "modules/JB2A_DnD5e/Library/Generic/Weapon_Attacks/Melee/GreatClub01_01_Regular_White_800x600.webm",
           scale: 1,
-          duration: 800,
+          duration: 1500,
           sound: "modules/psfx/library/impacts/bludgeoning/v1/meleeattack-impacts-bludgeoning-01.ogg",
-          soundVolume: 0.6,
-        },
+          soundVolume: 0.6
+        }
       },
-      greatshield: {
+      "greatshield": {
         label: "Greatshield",
         patterns: "greatshield|great shield",
         type: "onToken",
@@ -250,12 +253,12 @@ export function buildDefaultAnimationFxConfig() {
         hit: {
           file: "modules/JB2A_DnD5e/Library/Generic/Weapon_Attacks/Melee/Group06/MeleeAttack06_Shield01_01_Regular_White_800x600.webm",
           scale: 1,
-          duration: 800,
+          duration: 1500,
           sound: "modules/psfx/library/impacts/bludgeoning/v1/meleeattack-impacts-bludgeoning-02.ogg",
-          soundVolume: 0.6,
-        },
+          soundVolume: 0.6
+        }
       },
-      greatsword: {
+      "greatsword": {
         label: "Greatsword",
         patterns: "greatsword|great sword",
         type: "onToken",
@@ -263,12 +266,12 @@ export function buildDefaultAnimationFxConfig() {
         hit: {
           file: "modules/JB2A_DnD5e/Library/Generic/Weapon_Attacks/Melee/GreatSword01_01_Regular_White_800x600.webm",
           scale: 1,
-          duration: 800,
+          duration: 2500,
           sound: "modules/psfx/library/impacts/slashing/v1/meleeattack-impacts-slashing-00.ogg",
-          soundVolume: 0.6,
-        },
+          soundVolume: 0.6
+        }
       },
-      handaxe: {
+      "handaxe": {
         label: "Handaxe",
         patterns: "handaxe(?!.*thrown)|hand axe(?!.*thrown)",
         type: "onToken",
@@ -276,36 +279,38 @@ export function buildDefaultAnimationFxConfig() {
         hit: {
           file: "modules/JB2A_DnD5e/Library/Generic/Weapon_Attacks/Melee/HandAxe02_01_Regular_White_800x600.webm",
           scale: 1,
-          duration: 800,
+          duration: 2500,
           sound: "modules/psfx/library/impacts/slashing/v1/meleeattack-impacts-slashing-01.ogg",
-          soundVolume: 0.6,
-        },
+          soundVolume: 0.6
+        }
       },
-      handaxe_thrown: {
+      "handaxe_thrown": {
         label: "Handaxe (Thrown)",
         patterns: "handaxe.*thrown|thrown.*handaxe|hand axe.*thrown",
         type: "projectile",
         target: "target",
         hit: {
           file: "modules/JB2A_DnD5e/Library/Generic/Weapon_Attacks/Ranged/Dagger01_01_Regular_White_15ft_1000x400.webm",
-          scale: 1,
+          scale: 3,
           sound: "modules/psfx/library/impacts/slashing/v1/meleeattack-impacts-slashing-01.ogg",
           soundVolume: 0.6,
-        },
+          duration: 1500
+        }
       },
-      handgun: {
+      "handgun": {
         label: "Handgun",
         patterns: "handgun|pistol",
         type: "projectile",
         target: "target",
         hit: {
           file: "modules/JB2A_DnD5e/Library/Generic/Weapon_Attacks/Ranged/Bullet_01_Regular_Orange_15ft_1000x400.webm",
-          scale: 1,
+          scale: 3,
           sound: "modules/psfx/library/ranged-weapons/guns/revolver/single-fire/revolver-single-fire-001-03.ogg",
           soundVolume: 0.6,
-        },
+          duration: 500
+        }
       },
-      javelin: {
+      "javelin": {
         label: "Javelin",
         patterns: "javelin(?!.*thrown)",
         type: "onToken",
@@ -313,24 +318,25 @@ export function buildDefaultAnimationFxConfig() {
         hit: {
           file: "modules/JB2A_DnD5e/Library/Generic/Weapon_Attacks/Melee/Spear01_04_Regular_White_800x600.webm",
           scale: 1,
-          duration: 800,
+          duration: 2200,
           sound: "modules/psfx/library/impacts/bludgeoning/v1/meleeattack-impacts-bludgeoning-03.ogg",
-          soundVolume: 0.6,
-        },
+          soundVolume: 0.6
+        }
       },
-      javelin_thrown: {
+      "javelin_thrown": {
         label: "Javelin (Thrown)",
         patterns: "javelin.*thrown|thrown.*javelin",
         type: "projectile",
         target: "target",
         hit: {
           file: "modules/JB2A_DnD5e/Library/Generic/Weapon_Attacks/Ranged/Dagger01_01_Regular_White_15ft_1000x400.webm",
-          scale: 1,
+          scale: 3,
           sound: "modules/psfx/library/impacts/bludgeoning/v1/meleeattack-impacts-bludgeoning-03.ogg",
           soundVolume: 0.6,
-        },
+          duration: 1500
+        }
       },
-      katar: {
+      "katar": {
         label: "Katar",
         patterns: "\\bkatar\\b",
         type: "onToken",
@@ -338,12 +344,12 @@ export function buildDefaultAnimationFxConfig() {
         hit: {
           file: "modules/JB2A_DnD5e/Library/Generic/Weapon_Attacks/Melee/Dagger02_01_Regular_White_800x600.webm",
           scale: 1,
-          duration: 800,
+          duration: 1500,
           sound: "modules/psfx/library/impacts/bludgeoning/v1/meleeattack-impacts-bludgeoning-00.ogg",
-          soundVolume: 0.6,
-        },
+          soundVolume: 0.6
+        }
       },
-      lance: {
+      "lance": {
         label: "Lance",
         patterns: "\\blance\\b",
         type: "onToken",
@@ -351,12 +357,12 @@ export function buildDefaultAnimationFxConfig() {
         hit: {
           file: "modules/JB2A_DnD5e/Library/Generic/Weapon_Attacks/Melee/Spear01_01_Regular_White_800x600.webm",
           scale: 1,
-          duration: 800,
+          duration: 2000,
           sound: "modules/psfx/library/impacts/slashing/v1/meleeattack-impacts-slashing-02.ogg",
-          soundVolume: 0.6,
-        },
+          soundVolume: 0.6
+        }
       },
-      light_hammer: {
+      "light_hammer": {
         label: "Light hammer",
         patterns: "light hammer(?!.*thrown)|light.*hammer(?!.*thrown)",
         type: "onToken",
@@ -364,12 +370,12 @@ export function buildDefaultAnimationFxConfig() {
         hit: {
           file: "modules/JB2A_DnD5e/Library/Generic/Weapon_Attacks/Melee/Group02/MeleeAttack02_Hammer01_01_800x600.webm",
           scale: 1,
-          duration: 800,
+          duration: 1500,
           sound: "modules/psfx/library/impacts/bludgeoning/v1/meleeattack-impacts-bludgeoning-01.ogg",
-          soundVolume: 0.6,
-        },
+          soundVolume: 0.6
+        }
       },
-      light_hammer_thrown: {
+      "light_hammer_thrown": {
         label: "Light hammer (Thrown)",
         patterns: "light hammer.*thrown|thrown.*light hammer",
         type: "onToken",
@@ -377,24 +383,25 @@ export function buildDefaultAnimationFxConfig() {
         hit: {
           file: "modules/JB2A_DnD5e/Library/Generic/Weapon_Attacks/Melee/Group02/MeleeAttack02_Hammer01_01_800x600.webm",
           scale: 1,
-          duration: 800,
+          duration: 1500,
           sound: "modules/psfx/library/impacts/bludgeoning/v1/meleeattack-impacts-bludgeoning-01.ogg",
-          soundVolume: 0.6,
-        },
+          soundVolume: 0.6
+        }
       },
-      longbow: {
+      "longbow": {
         label: "Longbow",
         patterns: "longbow|long bow",
         type: "projectile",
         target: "target",
         hit: {
           file: "modules/JB2A_DnD5e/Library/Generic/Weapon_Attacks/Ranged/Arrow01_01_Regular_White_15ft_1000x400.webm",
-          scale: 1,
+          scale: 3,
           sound: "modules/psfx/library/ranged-weapons/longbow/v1/longbow-003-60ft.ogg",
           soundVolume: 0.6,
-        },
+          duration: 1500
+        }
       },
-      longsword: {
+      "longsword": {
         label: "Longsword",
         patterns: "longsword|long sword",
         type: "onToken",
@@ -402,12 +409,12 @@ export function buildDefaultAnimationFxConfig() {
         hit: {
           file: "modules/JB2A_DnD5e/Library/Generic/Weapon_Attacks/Melee/Sword01_05_Regular_White_800x600.webm",
           scale: 1,
-          duration: 800,
+          duration: 2200,
           sound: "modules/psfx/library/impacts/slashing/v1/meleeattack-impacts-slashing-03.ogg",
-          soundVolume: 0.6,
-        },
+          soundVolume: 0.6
+        }
       },
-      lucerne: {
+      "lucerne": {
         label: "Lucerne",
         patterns: "\\blucerne\\b",
         type: "onToken",
@@ -415,12 +422,12 @@ export function buildDefaultAnimationFxConfig() {
         hit: {
           file: "modules/JB2A_DnD5e/Library/Generic/Weapon_Attacks/Melee/Warhammer01_05_Regular_White_800x600.webm",
           scale: 1,
-          duration: 800,
+          duration: 1500,
           sound: "modules/psfx/library/impacts/bludgeoning/v1/meleeattack-impacts-bludgeoning-02.ogg",
-          soundVolume: 0.6,
-        },
+          soundVolume: 0.6
+        }
       },
-      mace: {
+      "mace": {
         label: "Mace",
         patterns: "\\bmace\\b",
         type: "onToken",
@@ -428,12 +435,12 @@ export function buildDefaultAnimationFxConfig() {
         hit: {
           file: "modules/JB2A_DnD5e/Library/Generic/Weapon_Attacks/Melee/Mace01_01_Regular_White_800x600.webm",
           scale: 1,
-          duration: 800,
+          duration: 2000,
           sound: "modules/psfx/library/impacts/bludgeoning/v1/meleeattack-impacts-bludgeoning-03.ogg",
-          soundVolume: 0.6,
-        },
+          soundVolume: 0.6
+        }
       },
-      morningstar: {
+      "morningstar": {
         label: "Morningstar",
         patterns: "morningstar|morning star",
         type: "onToken",
@@ -441,12 +448,12 @@ export function buildDefaultAnimationFxConfig() {
         hit: {
           file: "modules/JB2A_DnD5e/Library/Generic/Weapon_Attacks/Melee/Mace01_06_Regular_White_800x600.webm",
           scale: 1,
-          duration: 800,
+          duration: 2500,
           sound: "modules/psfx/library/impacts/bludgeoning/v1/meleeattack-impacts-bludgeoning-00.ogg",
-          soundVolume: 0.6,
-        },
+          soundVolume: 0.6
+        }
       },
-      net: {
+      "net": {
         label: "Net",
         patterns: "\\bnet\\b",
         type: "onToken",
@@ -454,12 +461,12 @@ export function buildDefaultAnimationFxConfig() {
         hit: {
           file: "modules/JB2A_DnD5e/Library/Generic/Marker/MarkerChainSpectralStandard01_02_Regular_Blue_Complete_400x400.webm",
           scale: 1,
-          duration: 800,
+          duration: 2500,
           sound: "modules/psfx/library/impacts/bludgeoning/v1/meleeattack-impacts-bludgeoning-01.ogg",
-          soundVolume: 0.6,
-        },
+          soundVolume: 0.6
+        }
       },
-      pike: {
+      "pike": {
         label: "Pike",
         patterns: "\\bpike\\b",
         type: "onToken",
@@ -467,12 +474,12 @@ export function buildDefaultAnimationFxConfig() {
         hit: {
           file: "modules/JB2A_DnD5e/Library/Generic/Weapon_Attacks/Melee/Group03/TrailAttack03_01_01_Regular_BlueYellow_800x600.webm",
           scale: 1,
-          duration: 800,
+          duration: 2500,
           sound: "modules/psfx/library/impacts/slashing/v1/meleeattack-impacts-slashing-00.ogg",
-          soundVolume: 0.6,
-        },
+          soundVolume: 0.6
+        }
       },
-      poleblade: {
+      "poleblade": {
         label: "Poleblade",
         patterns: "poleblade|pole blade",
         type: "onToken",
@@ -480,36 +487,38 @@ export function buildDefaultAnimationFxConfig() {
         hit: {
           file: "modules/JB2A_DnD5e/Library/Generic/Weapon_Attacks/Melee/Group04/TrailAttack04_01_04_Regular_BlueYellow_800x600.webm",
           scale: 1,
-          duration: 800,
+          duration: 1500,
           sound: "modules/psfx/library/impacts/slashing/v1/meleeattack-impacts-slashing-01.ogg",
-          soundVolume: 0.6,
-        },
+          soundVolume: 0.6
+        }
       },
-      rifle: {
+      "rifle": {
         label: "Rifle",
         patterns: "\\brifle\\b",
         type: "projectile",
         target: "target",
         hit: {
           file: "modules/JB2A_DnD5e/Library/Generic/Weapon_Attacks/Ranged/Snipe_01_Regular_Blue_15ft_1000x400.webm",
-          scale: 1,
+          scale: 3,
           sound: "modules/psfx/library/ranged-weapons/guns/revolver/single-fire/revolver-single-fire-001-03.ogg",
           soundVolume: 0.6,
-        },
+          duration: 1000
+        }
       },
-      shortbow: {
+      "shortbow": {
         label: "Shortbow",
         patterns: "shortbow|short bow",
         type: "projectile",
         target: "target",
         hit: {
           file: "modules/JB2A_DnD5e/Library/Generic/Weapon_Attacks/Ranged/Arrow01_01_Regular_White_15ft_1000x400.webm",
-          scale: 1,
+          scale: 3,
           sound: "modules/psfx/library/ranged-weapons/longbow/v1/longbow-003-60ft.ogg",
           soundVolume: 0.6,
-        },
+          duration: 1500
+        }
       },
-      shortsword: {
+      "shortsword": {
         label: "Shortsword",
         patterns: "shortsword|short sword",
         type: "onToken",
@@ -517,48 +526,51 @@ export function buildDefaultAnimationFxConfig() {
         hit: {
           file: "modules/JB2A_DnD5e/Library/Generic/Weapon_Attacks/Melee/Shortsword01_03_Regular_White_800x600.webm",
           scale: 1,
-          duration: 800,
+          duration: 1500,
           sound: "modules/psfx/library/impacts/slashing/v1/meleeattack-impacts-slashing-02.ogg",
-          soundVolume: 0.6,
-        },
+          soundVolume: 0.6
+        }
       },
-      shotgun: {
+      "shotgun": {
         label: "Shotgun",
         patterns: "shotgun(?!.*sawed|.*sawn)",
         type: "projectile",
         target: "target",
         hit: {
           file: "modules/JB2A_DnD5e/Library/Generic/Weapon_Attacks/Ranged/Bullet_02_Regular_Orange_05ft_600x400.webm",
-          scale: 1,
+          scale: 3,
           sound: "modules/psfx/library/ranged-weapons/guns/revolver/single-fire/revolver-single-fire-001-03.ogg",
           soundVolume: 0.6,
-        },
+          duration: 500
+        }
       },
-      shotgun_sawed_off: {
+      "shotgun_sawed_off": {
         label: "Shotgun, sawed-off",
         patterns: "shotgun.*sawed|shotgun.*sawn|sawed.off shotgun",
         type: "projectile",
         target: "target",
         hit: {
           file: "modules/JB2A_DnD5e/Library/Generic/Weapon_Attacks/Ranged/Bullet_02_Regular_Orange_05ft_600x400.webm",
-          scale: 1,
+          scale: 3,
           sound: "modules/psfx/library/ranged-weapons/guns/revolver/single-fire/revolver-single-fire-001-03.ogg",
           soundVolume: 0.6,
-        },
+          duration: 500
+        }
       },
-      sling: {
+      "sling": {
         label: "Sling",
         patterns: "\\bsling\\b",
         type: "projectile",
         target: "target",
         hit: {
-          file: "modules/JB2A_DnD5e/Library/Generic/Weapon_Attacks/Ranged/Bullet_03_Regular_Blue_15ft_1000x400.webm",
+          file: "jb2a.bullet.01.orange",
           scale: 1,
-          sound: "modules/psfx/library/ranged-weapons/guns/revolver/single-fire/revolver-single-fire-001-03.ogg",
-          soundVolume: 0.6,
-        },
+          sound: "",
+          soundVolume: null,
+          duration: 500
+        }
       },
-      spear: {
+      "spear": {
         label: "Spear",
         patterns: "\\bspear\\b(?!.*thrown)",
         type: "onToken",
@@ -566,12 +578,12 @@ export function buildDefaultAnimationFxConfig() {
         hit: {
           file: "modules/JB2A_DnD5e/Library/Generic/Weapon_Attacks/Melee/Spear01_01_Regular_White_800x600.webm",
           scale: 1,
-          duration: 800,
+          duration: 2000,
           sound: "modules/psfx/library/impacts/slashing/v1/meleeattack-impacts-slashing-03.ogg",
-          soundVolume: 0.6,
-        },
+          soundVolume: 0.6
+        }
       },
-      spear_thrown: {
+      "spear_thrown": {
         label: "Spear (Thrown)",
         patterns: "spear.*thrown|thrown.*spear",
         type: "onToken",
@@ -579,12 +591,12 @@ export function buildDefaultAnimationFxConfig() {
         hit: {
           file: "modules/JB2A_DnD5e/Library/Generic/Weapon_Attacks/Melee/Spear01_01_Regular_White_800x600.webm",
           scale: 1,
-          duration: 800,
+          duration: 1500,
           sound: "modules/psfx/library/impacts/slashing/v1/meleeattack-impacts-slashing-03.ogg",
-          soundVolume: 0.6,
-        },
+          soundVolume: 0.6
+        }
       },
-      staff: {
+      "staff": {
         label: "Staff",
         patterns: "\\bstaff\\b|quarterstaff",
         type: "onToken",
@@ -592,12 +604,12 @@ export function buildDefaultAnimationFxConfig() {
         hit: {
           file: "modules/JB2A_DnD5e/Library/Generic/Weapon_Attacks/Melee/Quarterstaff01_03_Regular_White_800x600.webm",
           scale: 1,
-          duration: 800,
+          duration: 1500,
           sound: "modules/psfx/library/impacts/bludgeoning/v1/meleeattack-impacts-bludgeoning-02.ogg",
-          soundVolume: 0.6,
-        },
+          soundVolume: 0.6
+        }
       },
-      standard_shield: {
+      "standard_shield": {
         label: "Standard shield",
         patterns: "standard shield|\\bshield\\b(?!.*great|.*buckler)",
         type: "onToken",
@@ -605,12 +617,12 @@ export function buildDefaultAnimationFxConfig() {
         hit: {
           file: "modules/JB2A_DnD5e/Library/Generic/Weapon_Attacks/Melee/Group06/MeleeAttack06_Shield01_01_Regular_White_800x600.webm",
           scale: 1,
-          duration: 800,
+          duration: 1500,
           sound: "modules/psfx/library/impacts/bludgeoning/v1/meleeattack-impacts-bludgeoning-03.ogg",
-          soundVolume: 0.6,
-        },
+          soundVolume: 0.6
+        }
       },
-      unarmed: {
+      "unarmed": {
         label: "Unarmed",
         patterns: "unarmed|unarmed strike",
         type: "onToken",
@@ -618,12 +630,12 @@ export function buildDefaultAnimationFxConfig() {
         hit: {
           file: "modules/JB2A_DnD5e/Library/Generic/Unarmed_Attacks/Unarmed_Strike/UnarmedStrike_01_Regular_Blue_Physical01_800x600.webm",
           scale: 1,
-          duration: 800,
+          duration: 1000,
           sound: "modules/psfx/library/impacts/bludgeoning/v1/meleeattack-impacts-bludgeoning-00.ogg",
-          soundVolume: 0.6,
-        },
+          soundVolume: 0.6
+        }
       },
-      warhammer: {
+      "warhammer": {
         label: "Warhammer",
         patterns: "warhammer|war hammer",
         type: "onToken",
@@ -631,104 +643,100 @@ export function buildDefaultAnimationFxConfig() {
         hit: {
           file: "modules/JB2A_DnD5e/Library/Generic/Weapon_Attacks/Melee/Warhammer01_05_Regular_White_800x600.webm",
           scale: 1,
-          duration: 800,
+          duration: 2500,
           sound: "modules/psfx/library/impacts/bludgeoning/v1/meleeattack-impacts-bludgeoning-01.ogg",
-          soundVolume: 0.6,
-        },
+          soundVolume: 0.6
+        }
       },
-      whip_chain: {
+      "whip_chain": {
         label: "Whip, chain",
         patterns: "whip.*chain|chain.*whip",
-        type: "onToken",
+        type: "projectile",
         target: "target",
         hit: {
           file: "modules/JB2A_DnD5e/Library/Generic/RangedSpell/02/RangedInstant02_01_Regular_Yellow_30ft_1600x400.webm",
-          scale: 1,
+          scale: 3,
           duration: 800,
           sound: "modules/psfx/library/impacts/bludgeoning/v1/meleeattack-impacts-bludgeoning-02.ogg",
-          soundVolume: 0.6,
-        },
+          soundVolume: 0.6
+        }
       },
-      whip_leather: {
+      "whip_leather": {
         label: "Whip, leather",
         patterns: "whip.*leather|leather.*whip|\\bwhip\\b(?!.*chain)",
-        type: "onToken",
+        type: "projectile",
         target: "target",
         hit: {
           file: "modules/JB2A_DnD5e/Library/Generic/RangedSpell/03/RangedProjectile03_01_Regular_BlueGreen_30ft_1600x400.webm",
-          scale: 1,
+          scale: 3,
           duration: 800,
           sound: "modules/psfx/library/impacts/bludgeoning/v1/meleeattack-impacts-bludgeoning-03.ogg",
-          soundVolume: 0.6,
-        },
-      },
+          soundVolume: 0.6
+        }
+      }
     },
 
     weaponSkillFallbacks: {
-      // melee → longsword
-      melee: {
+      "melee": {
         label: "Melee (generic)",
         type: "onToken",
         target: "target",
         hit: {
-          file: "modules/JB2A_DnD5e/Library/Generic/Weapon_Attacks/Melee/Sword01_05_Regular_White_800x600.webm",
+          file: "modules/jb2a_patreon/Library/Generic/Weapon_Attacks/Melee/GenericSlash01_01_Regular_BluePurple_800x600.webm",
           scale: 1,
-          duration: 800,
-          sound: "modules/psfx/library/impacts/slashing/v1/meleeattack-impacts-slashing-03.ogg",
-          soundVolume: 0.6,
-        },
+          duration: 600,
+          sound: "",
+          soundVolume: null
+        }
       },
-      // finesse → dagger
-      finesse: {
+      "finesse": {
         label: "Finesse (generic)",
         type: "onToken",
         target: "target",
         hit: {
-          file: "modules/JB2A_DnD5e/Library/Generic/Weapon_Attacks/Melee/Dagger02_01_Regular_White_800x600.webm",
+          file: "modules/jb2a_patreon/Library/Generic/Weapon_Attacks/Melee/GenericSlash01_01_Regular_Orange_800x600.webm",
           scale: 1,
-          duration: 800,
-          sound: "modules/psfx/library/impacts/slashing/v1/meleeattack-impacts-slashing-02.ogg",
-          soundVolume: 0.6,
-        },
+          duration: 500,
+          sound: "",
+          soundVolume: null
+        }
       },
-      // brawl → unarmed
-      brawl: {
+      "brawl": {
         label: "Brawl (generic)",
         type: "onToken",
         target: "target",
         hit: {
-          file: "modules/JB2A_DnD5e/Library/Generic/Unarmed_Attacks/Unarmed_Strike/UnarmedStrike_01_Regular_Blue_Physical01_800x600.webm",
+          file: "modules/jb2a_patreon/Library/Generic/Unarmed_Attacks/Unarmed_Strike/UnarmedStrike_01_Regular_Blue_Physical01_800x600.webm",
           scale: 1,
-          duration: 800,
-          sound: "modules/psfx/library/impacts/bludgeoning/v1/meleeattack-impacts-bludgeoning-00.ogg",
-          soundVolume: 0.6,
-        },
+          duration: 500,
+          sound: "",
+          soundVolume: null
+        }
       },
-      // ranged → longbow
-      ranged: {
+      "ranged": {
         label: "Ranged (generic)",
         type: "projectile",
         target: "target",
         hit: {
-          file: "modules/JB2A_DnD5e/Library/Generic/Weapon_Attacks/Ranged/Arrow01_01_Regular_White_15ft_1000x400.webm",
+          file: "jb2a.arrow.physical.white",
           scale: 1,
-          sound: "modules/psfx/library/ranged-weapons/longbow/v1/longbow-003-60ft.ogg",
-          soundVolume: 0.6,
-        },
+          sound: "",
+          soundVolume: null,
+          duration: 800
+        }
       },
-      // _default → longsword
-      _default: {
+      "_default": {
         label: "Default Weapon",
         type: "onToken",
         target: "target",
         hit: {
-          file: "modules/JB2A_DnD5e/Library/Generic/Weapon_Attacks/Melee/Sword01_05_Regular_White_800x600.webm",
+          file: "modules/jb2a_patreon/Library/Generic/Weapon_Attacks/Melee/GenericSlash01_01_Regular_BluePurple_800x600.webm",
           scale: 1,
-          duration: 800,
-          sound: "modules/psfx/library/impacts/slashing/v1/meleeattack-impacts-slashing-03.ogg",
-          soundVolume: 0.6,
-        },
-      },
+          duration: 600,
+          sound: "",
+          soundVolume: null
+        }
+      }
     },
 
     alchemical: {
@@ -736,303 +744,413 @@ export function buildDefaultAnimationFxConfig() {
         label: "Alchemist's Fire",
         type: "projectile",
         target: "target",
-        hit: { file: "jb2a.fire_bolt.orange", scale: 1, duration: 800 },
+        hit: {
+          file: "jb2a.fire_bolt.orange",
+          scale: 1,
+          duration: 800,
+          sound: "",
+          soundVolume: null
+        }
       },
       "acid": {
         label: "Acid",
         type: "projectile",
         target: "target",
-        hit: { file: "jb2a.fire_bolt.green", scale: 1, duration: 800 },
+        hit: {
+          file: "jb2a.fire_bolt.green",
+          scale: 1,
+          duration: 800,
+          sound: "",
+          soundVolume: null
+        }
       },
       "alkahest": {
         label: "Alkahest",
         type: "projectile",
         target: "target",
-        hit: { file: "jb2a.fire_bolt.green", scale: 1, duration: 800 },
+        hit: {
+          file: "jb2a.fire_bolt.green",
+          scale: 1,
+          duration: 800,
+          sound: "",
+          soundVolume: null
+        }
       },
       "frigid azote": {
         label: "Frigid Azote",
         type: "projectile",
         target: "target",
-        hit: { file: "jb2a.ray_of_frost.blue", scale: 1, duration: 800 },
+        hit: {
+          file: "jb2a.ray_of_frost.blue",
+          scale: 1,
+          duration: 800,
+          sound: "",
+          soundVolume: null
+        }
       },
       "levin shell": {
         label: "Levin Shell",
         type: "projectile",
         target: "target",
-        hit: { file: "jb2a.chain_lightning.primary.blue", scale: 1, duration: 800 },
+        hit: {
+          file: "jb2a.chain_lightning.primary.blue",
+          scale: 1,
+          duration: 800,
+          sound: "",
+          soundVolume: null
+        }
       },
       "thunderstone": {
         label: "Thunderstone",
         type: "projectile",
         target: "target",
-        hit: { file: "jb2a.fire_bolt.blue", scale: 1, duration: 600 },
+        hit: {
+          file: "jb2a.fire_bolt.blue",
+          scale: 1,
+          duration: 600,
+          sound: "",
+          soundVolume: null
+        }
       },
       "tanglefoot": {
         label: "Tanglefoot Bag",
         type: "projectile",
         target: "target",
-        hit: { file: "jb2a.fire_bolt.green", scale: 1, duration: 600 },
+        hit: {
+          file: "jb2a.fire_bolt.green",
+          scale: 1,
+          duration: 600,
+          sound: "",
+          soundVolume: null
+        }
       },
       "holy water": {
         label: "Holy Water",
         type: "projectile",
         target: "target",
-        hit: { file: "jb2a.fire_bolt.blue", scale: 1, duration: 800 },
+        hit: {
+          file: "jb2a.fire_bolt.blue",
+          scale: 1,
+          duration: 800,
+          sound: "",
+          soundVolume: null
+        }
       },
       "gravebane": {
         label: "Gravebane",
         type: "projectile",
         target: "target",
-        hit: { file: "jb2a.fire_bolt.blue", scale: 1, duration: 800 },
+        hit: {
+          file: "jb2a.fire_bolt.blue",
+          scale: 1,
+          duration: 800,
+          sound: "",
+          soundVolume: null
+        }
       },
       "splash catalyst": {
         label: "Splash Catalyst",
         type: "projectile",
         target: "target",
-        hit: { file: "jb2a.fire_bolt.orange", scale: 1, duration: 600 },
+        hit: {
+          file: "jb2a.fire_bolt.orange",
+          scale: 1,
+          duration: 600,
+          sound: "",
+          soundVolume: null
+        }
       },
       "smoke": {
         label: "Smoke Stick / Bomb",
         type: "onToken",
         target: "self",
         hit: {
-          file: `${R}/Generic/Smoke/SmokePuff01_01_Regular_Grey_400x400.webm`,
+          file: "modules/jb2a_patreon/Library/Generic/Smoke/SmokePuff01_01_Regular_Grey_400x400.webm",
           scale: 1,
           duration: 1500,
-        },
+          sound: "",
+          soundVolume: null
+        }
       },
       "dwarfblind": {
         label: "Dwarfblind Stone",
         type: "onToken",
         target: "self",
         hit: {
-          file: `${R}/Generic/Explosion/Explosion_01_Blue_400x400.webm`,
+          file: "modules/jb2a_patreon/Library/Generic/Explosion/Explosion_01_Blue_400x400.webm",
           scale: 1,
           duration: 1500,
-        },
+          sound: "",
+          soundVolume: null
+        }
       },
       "healing": {
         label: "Healing Potion",
         type: "onToken",
         target: "self",
         hit: {
-          file: `${R}/Generic/Healing/HealingAbility_01_Blue_400x400.webm`,
+          file: "modules/jb2a_patreon/Library/Generic/Healing/HealingAbility_01_Blue_400x400.webm",
           scale: 1,
           duration: 1500,
-        },
+          sound: "",
+          soundVolume: null
+        }
       },
       "mana": {
         label: "Mana Potion",
         type: "onToken",
         target: "self",
         hit: {
-          file: `${R}/Generic/Healing/HealingAbility_01_Blue_400x400.webm`,
+          file: "modules/jb2a_patreon/Library/Generic/Healing/HealingAbility_01_Blue_400x400.webm",
           scale: 1,
           duration: 1500,
-        },
+          sound: "",
+          soundVolume: null
+        }
       },
       "regeneration": {
         label: "Regeneration Potion",
         type: "onToken",
         target: "self",
         hit: {
-          file: `${R}/Generic/Healing/HealingAbility_01_Blue_400x400.webm`,
+          file: "modules/jb2a_patreon/Library/Generic/Healing/HealingAbility_01_Blue_400x400.webm",
           scale: 1,
           duration: 1500,
-        },
+          sound: "",
+          soundVolume: null
+        }
       },
       "antitoxin": {
         label: "Antitoxin",
         type: "onToken",
         target: "self",
         hit: {
-          file: `${R}/Generic/Healing/HealingAbility_01_Blue_400x400.webm`,
+          file: "modules/jb2a_patreon/Library/Generic/Healing/HealingAbility_01_Blue_400x400.webm",
           scale: 1,
           duration: 1500,
-        },
+          sound: "",
+          soundVolume: null
+        }
       },
       "speed": {
         label: "Speed Potion",
         type: "onToken",
         target: "self",
         hit: {
-          file: `${R}/Generic/Smoke/SmokePuff01_01_Regular_Grey_400x400.webm`,
+          file: "modules/jb2a_patreon/Library/Generic/Smoke/SmokePuff01_01_Regular_Grey_400x400.webm",
           scale: 1,
           duration: 1000,
-        },
+          sound: "",
+          soundVolume: null
+        }
       },
       "anger": {
         label: "Anger Potion",
         type: "onToken",
         target: "self",
         hit: {
-          file: `${R}/Generic/Explosion/Explosion_01_Orange_400x400.webm`,
+          file: "modules/jb2a_patreon/Library/Generic/Explosion/Explosion_01_Orange_400x400.webm",
           scale: 1,
           duration: 1500,
-        },
+          sound: "",
+          soundVolume: null
+        }
       },
       "resistance": {
         label: "Resistance Potion",
         type: "onToken",
         target: "self",
         hit: {
-          file: `${R}/Generic/Healing/HealingAbility_01_Blue_400x400.webm`,
+          file: "modules/jb2a_patreon/Library/Generic/Healing/HealingAbility_01_Blue_400x400.webm",
           scale: 1,
           duration: 1500,
-        },
+          sound: "",
+          soundVolume: null
+        }
       },
       "invulnerability": {
         label: "Invulnerability Potion",
         type: "onToken",
         target: "self",
         hit: {
-          file: `${R}/Generic/Healing/HealingAbility_01_Blue_400x400.webm`,
+          file: "modules/jb2a_patreon/Library/Generic/Healing/HealingAbility_01_Blue_400x400.webm",
           scale: 1,
           duration: 1500,
-        },
+          sound: "",
+          soundVolume: null
+        }
       },
       "smelling salts": {
         label: "Smelling Salts",
         type: "onToken",
         target: "self",
         hit: {
-          file: `${R}/Generic/Smoke/SmokePuff01_01_Regular_Grey_400x400.webm`,
+          file: "modules/jb2a_patreon/Library/Generic/Smoke/SmokePuff01_01_Regular_Grey_400x400.webm",
           scale: 1,
           duration: 800,
-        },
+          sound: "",
+          soundVolume: null
+        }
       },
       "oil": {
         label: "Oil (applied)",
         type: "onToken",
         target: "self",
         hit: {
-          file: `${R}/Generic/Smoke/SmokePuff01_01_Regular_Grey_400x400.webm`,
+          file: "modules/jb2a_patreon/Library/Generic/Smoke/SmokePuff01_01_Regular_Grey_400x400.webm",
           scale: 1,
           duration: 800,
-        },
+          sound: "",
+          soundVolume: null
+        }
       },
       "poison": {
         label: "Poison (applied)",
         type: "onToken",
         target: "self",
         hit: {
-          file: `${R}/Generic/Smoke/SmokePuff01_01_Regular_Grey_400x400.webm`,
+          file: "modules/jb2a_patreon/Library/Generic/Smoke/SmokePuff01_01_Regular_Grey_400x400.webm",
           scale: 1,
           duration: 800,
-        },
+          sound: "",
+          soundVolume: null
+        }
       },
       "potion": {
         label: "Generic Potion",
         type: "onToken",
         target: "self",
         hit: {
-          file: `${R}/Generic/Healing/HealingAbility_01_Blue_400x400.webm`,
+          file: "modules/jb2a_patreon/Library/Generic/Healing/HealingAbility_01_Blue_400x400.webm",
           scale: 1,
           duration: 1500,
-        },
+          sound: "",
+          soundVolume: null
+        }
       },
       "_default": {
         label: "Generic Alchemical (thrown)",
         type: "projectile",
         target: "target",
-        hit: { file: "jb2a.fire_bolt.orange", scale: 1, duration: 600 },
-      },
+        hit: {
+          file: "jb2a.fire_bolt.orange",
+          scale: 1,
+          duration: 600,
+          sound: "",
+          soundVolume: null
+        }
+      }
     },
 
     gear: {
-      torch: {
+      "torch": {
         label: "Torch",
         type: "onToken",
         target: "self",
         persist: true,
         hit: {
-          file: `${R}/Generic/Fire/GroundCrackLoop_03_Regular_Orange_600x600.webm`,
+          file: "",
           scale: 1,
           duration: 0,
-        },
+          sound: "",
+          soundVolume: null
+        }
       },
-      lantern: {
+      "lantern": {
         label: "Lantern",
         type: "onToken",
         target: "self",
         persist: true,
         hit: {
-          file: `${R}/Generic/Fire/GroundCrackLoop_03_Regular_Orange_600x600.webm`,
+          file: "",
           scale: 1,
           duration: 0,
-        },
+          sound: "",
+          soundVolume: null
+        }
       },
-      sunrod: {
+      "sunrod": {
         label: "Sunrod",
         type: "onToken",
         target: "self",
         persist: true,
         hit: {
-          file: `${R}/Generic/Fire/GroundCrackLoop_03_Regular_Orange_600x600.webm`,
+          file: "",
           scale: 1,
           duration: 0,
-        },
-      },
+          sound: "",
+          soundVolume: null
+        }
+      }
     },
 
     npcActions: {
-      bite: {
+      "bite": {
         label: "Bite",
         patterns: "bite|chomp|gnaw|maw",
         type: "onToken",
         target: "target",
         hit: {
-          file: `${R}/Generic/Creature/Bite_01_Regular_Red_400x400.webm`,
+          file: "modules/JB2A_DnD5e/Library/Generic/Creature/Bite_01_Regular_Red_400x400.webm",
           scale: 1,
           duration: 800,
-        },
+          sound: "",
+          soundVolume: null
+        }
       },
-      claw: {
+      "claw": {
         label: "Claw",
         patterns: "claw|slash|rake|rend",
         type: "onToken",
         target: "target",
         hit: {
-          file: `${R}/Generic/Creature/Claw/CreatureAttackClaw_001_001_Red_800x600.webm`,
+          file: "modules/JB2A_DnD5e/Library/Generic/Creature/Claws_01_Regular_Red_400x400.webm",
           scale: 1,
           duration: 800,
-        },
+          sound: "",
+          soundVolume: null
+        }
       },
-      slam: {
+      "slam": {
         label: "Slam",
         patterns: "slam|smash|pound|crush|bash",
         type: "onToken",
         target: "target",
         hit: {
-          file: `${R}/Generic/Weapon_Attacks/Melee/DmgBludgeoning_01_Regular_Yellow_1Handed_800x600.webm`,
+          file: "modules/JB2A_DnD5e/Library/Generic/Creature/Fist/CreatureAttackFist_001_001_Red_800x600.webm",
           scale: 1,
           duration: 800,
-        },
+          sound: "",
+          soundVolume: null
+        }
       },
-      tail: {
+      "tail": {
         label: "Tail",
         patterns: "tail|sting|whip",
         type: "onToken",
         target: "target",
         hit: {
-          file: `${R}/Generic/Weapon_Attacks/Melee/DmgSlashing_01_Regular_Yellow_1Handed_800x600.webm`,
+          file: "modules/jb2a_patreon/Library/Generic/Weapon_Attacks/Melee/DmgSlashing_01_Regular_Yellow_1Handed_800x600.webm",
           scale: 1,
           duration: 700,
-        },
+          sound: "",
+          soundVolume: null
+        }
       },
-      stomp: {
+      "stomp": {
         label: "Stomp",
         patterns: "stomp|trample|crush underfoot",
         type: "onToken",
         target: "target",
         hit: {
-          file: `${R}/Generic/Weapon_Attacks/Melee/DmgBludgeoning_01_Regular_Yellow_1Handed_800x600.webm`,
+          file: "modules/jb2a_patreon/Library/Generic/Weapon_Attacks/Melee/DmgBludgeoning_01_Regular_Yellow_1Handed_800x600.webm",
           scale: 1,
           duration: 900,
-        },
+          sound: "",
+          soundVolume: null
+        }
       },
-      breath: {
+      "breath": {
         label: "Breath Weapon",
         patterns: "breath|exhale|spray|cone of",
         type: "cone",
@@ -1040,20 +1158,25 @@ export function buildDefaultAnimationFxConfig() {
         hit: {
           file: "jb2a.breath_weapons.fire.line.orange",
           scale: 1,
-          duration: 1500,
-        },
+          duration: 5000,
+          sound: "",
+          soundVolume: null
+        }
       },
-      _default: {
+      "_default": {
         label: "Generic NPC Action",
         type: "onToken",
         target: "target",
         hit: {
-          file: `${R}/Generic/Weapon_Attacks/Melee/GenericSlash01_01_Regular_BluePurple_800x600.webm`,
+          file: "modules/jb2a_patreon/Library/Generic/Weapon_Attacks/Melee/GenericSlash01_01_Regular_BluePurple_800x600.webm",
           scale: 1,
           duration: 800,
+          sound: "",
+          soundVolume: null
         },
-      },
-    },
+        patterns: ""
+      }
+    }
 
   };
 }
