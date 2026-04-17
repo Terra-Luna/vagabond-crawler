@@ -57,3 +57,5 @@ Toggles are driven by lifecycle events, not config — start/pause/discard/save 
 ### XP Counter Patch
 
 <!-- gif: docs/assets/xp-counter.png -->
+
+Monkey-patches the Vagabond system's **Level Up Dialog** so each XP questionnaire entry is an unlimited numeric counter instead of a simple on/off checkbox. **Left-click** a question to increment the count; **right-click** to decrement (clamped at 0). A badge shows the current count next to each question, and the per-question XP subtotal is shown right-aligned so the GM can see exactly how much each answer contributes. Total XP awarded updates live as counts change. When the dialog is confirmed, the final award is auto-logged to **Session Recap → XP** with the full per-question breakdown, the character, and the awarding user — so you always know where every XP point came from during the post-game review.
