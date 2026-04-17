@@ -69,10 +69,7 @@ export const MerchantShop = {
       scope: "world", config: false, type: Array, default: [],
     });
     game.settings.register(MODULE_ID, "shopSellRatio", {
-      name: "Merchant Sell Ratio (%)",
-      hint: "Percentage of an item's value players receive when selling back to the shop.",
-      scope: "world", config: true, type: Number, default: 50,
-      range: { min: 0, max: 100, step: 5 },
+      scope: "world", config: false, type: Object, default: { sellRatio: 50, buyMultiplier: 100 },
     });
     game.settings.register(MODULE_ID, "shopLog", {
       scope: "world", config: false, type: Array, default: [],
@@ -139,13 +136,16 @@ export const MerchantShop = {
     const mode = opts.mode ?? "compendium";
     const actorId = opts.actorId ?? null;
     const shopName = game.settings.get(MODULE_ID, "shopName") || "The Merchant";
-    const sellRatio = game.settings.get(MODULE_ID, "shopSellRatio") ?? 50;
+    const ratios = game.settings.get(MODULE_ID, "shopSellRatio") ?? { sellRatio: 50, buyMultiplier: 100 };
+    const sellRatio = ratios.sellRatio ?? 50;
+    const buyMultiplier = ratios.buyMultiplier ?? 100;
     const inventory = this._buildInventory(mode, actorId);
 
     // Open locally for GM only — no broadcast until "Open for All" is clicked
     this._ensureApp();
     this._app._shopName = shopName;
     this._app._sellRatio = sellRatio;
+    this._app._buyMultiplier = buyMultiplier;
     this._app._mode = mode;
     this._app._actorId = actorId;
     this._app._inventory = inventory;
@@ -1577,14 +1577,19 @@ class MerchantShopApp extends HandlebarsApplicationMixin(ApplicationV2) {
 
       // Sell ratio
       // Buy markup
-      el.querySelector(".vcm-markup-input")?.addEventListener("change", (ev) => {
+      el.querySelector(".vcm-markup-input")?.addEventListener("change", async (ev) => {
         this._buyMultiplier = Math.max(10, Math.min(500, parseInt(ev.currentTarget.value) || 100));
+        const ratios = game.settings.get(MODULE_ID, "shopSellRatio") ?? { sellRatio: 50, buyMultiplier: 100 };
+        ratios.buyMultiplier = this._buyMultiplier;
+        await game.settings.set(MODULE_ID, "shopSellRatio", ratios);
         this.render();
       }, { signal });
 
       el.querySelector(".vcm-ratio-input")?.addEventListener("change", async (ev) => {
         this._sellRatio = Math.max(0, Math.min(100, parseInt(ev.currentTarget.value) || 50));
-        await game.settings.set(MODULE_ID, "shopSellRatio", this._sellRatio);
+        const ratios = game.settings.get(MODULE_ID, "shopSellRatio") ?? { sellRatio: 50, buyMultiplier: 100 };
+        ratios.sellRatio = this._sellRatio;
+        await game.settings.set(MODULE_ID, "shopSellRatio", ratios);
         this.render();
       }, { signal });
 
@@ -1773,7 +1778,8 @@ class MerchantShopApp extends HandlebarsApplicationMixin(ApplicationV2) {
 
         // Update settings
         await game.settings.set(MODULE_ID, "shopName", this._shopName);
-        await game.settings.set(MODULE_ID, "shopSellRatio", this._sellRatio);
+        const ratios = { sellRatio: this._sellRatio, buyMultiplier: this._buyMultiplier };
+        await game.settings.set(MODULE_ID, "shopSellRatio", ratios);
         if (this._mode === "compendium") {
           await game.settings.set(MODULE_ID, "shopInventory", this._inventory);
         }
