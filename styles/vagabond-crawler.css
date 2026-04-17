@@ -1613,7 +1613,7 @@ body.theme-light .vcb-phase-badge {
   color: var(--vcb-text-muted);
   border-radius: 3px;
   cursor: pointer;
-  transition: all 0.15s;
+  transition: background 0.15s, color 0.15s, border-color 0.15s, box-shadow 0.15s;
 }
 .category-tab:hover { background: rgba(255,255,255,0.1); color: var(--vcb-text-bright); }
 .category-tab.active { background: rgba(244,197,66,0.25); color: var(--vcb-price-gold-hi); border-color: var(--vcb-price-gold-hi); }
@@ -1636,7 +1636,7 @@ body.theme-light .vcb-phase-badge {
   border: 1px solid rgba(255,255,255,0.08);
   border-radius: 4px;
   cursor: pointer;
-  transition: all 0.15s;
+  transition: background 0.15s, color 0.15s, border-color 0.15s, box-shadow 0.15s;
 }
 .power-card:hover { background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.2); }
 .power-card.selected { background: rgba(244,197,66,0.15); border-color: rgba(244,197,66,0.4); }
@@ -1665,7 +1665,7 @@ body.theme-light .vcb-phase-badge {
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.2s;
+  transition: background 0.2s, color 0.2s, border-color 0.2s, box-shadow 0.2s;
 }
 .drop-zone.drag-hover { border-color: var(--vcb-price-gold-hi); background: rgba(244,197,66,0.1); }
 .drop-zone.has-item { border-style: solid; border-color: rgba(244,197,66,0.4); background: rgba(0,0,0,0.2); }
@@ -1807,7 +1807,7 @@ body.theme-light .vcb-phase-badge {
   cursor: pointer;
   text-transform: uppercase;
   letter-spacing: 1px;
-  transition: all 0.2s;
+  transition: background 0.2s, color 0.2s, border-color 0.2s, box-shadow 0.2s;
 }
 .forge-btn:hover:not(.disabled) { background: linear-gradient(135deg, var(--vcb-price-gold), var(--vcb-price-gold-hi)); box-shadow: 0 0 12px rgba(244,197,66,0.4); }
 .forge-btn.disabled { opacity: 0.4; cursor: not-allowed; }
@@ -2110,7 +2110,7 @@ body.theme-light .vcb-phase-badge {
   font-size: 0.85em;
   background: rgba(0,0,0,0.1);
   border: 1px solid transparent;
-  transition: all 0.1s;
+  transition: background 0.1s, color 0.1s, border-color 0.1s, box-shadow 0.1s;
 }
 .mutate-item:hover { background: rgba(255,255,255,0.05); }
 .mutate-item.active { background: rgba(244,197,66,0.1); border-color: rgba(244,197,66,0.3); }
@@ -2722,7 +2722,7 @@ body.theme-light .vcb-phase-badge {
   cursor: pointer;
   border-radius: 4px;
   font-size: 1em;
-  transition: all 0.15s;
+  transition: background 0.15s, color 0.15s, border-color 0.15s, box-shadow 0.15s;
 }
 .vcm-tab-btn:hover { color: var(--vcb-text, #BDC1C6); background: var(--vcb-bg-hover, #2a2d32); }
 .vcm-tab-btn.active {
@@ -2844,7 +2844,7 @@ body.theme-light .vcb-phase-badge {
   color: var(--vcb-action-sell);
   cursor: pointer;
   font-size: 1em;
-  transition: all 0.15s;
+  transition: background 0.15s, color 0.15s, border-color 0.15s, box-shadow 0.15s;
 }
 .vcm-sell-all-junk:hover { background: rgba(231, 76, 60, 0.25); }
 .vcm-junk-item { border-left: 3px solid var(--vcb-action-sell); opacity: 0.7; }
@@ -3039,7 +3039,7 @@ body.theme-light .vcb-phase-badge {
   color: var(--vcb-text-muted, #666);
   font-size: 1em;
   margin-bottom: 8px;
-  transition: all 0.15s;
+  transition: background 0.15s, color 0.15s, border-color 0.15s, box-shadow 0.15s;
 }
 .vcm-drop-zone:hover, .vcm-drop-zone.dragover {
   border-color: var(--vcb-accent-dim, #94913c);
@@ -3192,7 +3192,7 @@ body.theme-light .vcb-phase-badge {
   font-size: 1em;
   background: rgba(76, 175, 80, 0.15);
   color: var(--vcb-action-buy);
-  transition: all 0.15s;
+  transition: background 0.15s, color 0.15s, border-color 0.15s, box-shadow 0.15s;
 }
 .vcm-catalog-buy-btn:hover:not([disabled]) { background: rgba(76, 175, 80, 0.3); }
 .vcm-catalog-buy-btn[disabled] { cursor: not-allowed; opacity: 0.4; }
@@ -3235,7 +3235,7 @@ body.theme-light .vcb-phase-badge {
   color: var(--vcb-accent-dim, #94913c);
   cursor: pointer;
   font-size: 1em;
-  transition: all 0.15s;
+  transition: background 0.15s, color 0.15s, border-color 0.15s, box-shadow 0.15s;
 }
 .vcm-gamble-btn:hover:not([disabled]) { background: rgba(148, 145, 60, 0.3); }
 
