@@ -1,0 +1,138 @@
+{
+  "planPath": "docs/superpowers/plans/2026-04-17-release-docs.md",
+  "lastUpdated": "2026-04-17T00:00:00Z",
+  "tasks": [
+    {
+      "id": 1,
+      "subject": "Task 1: Phase 1 Scaffolding",
+      "status": "pending",
+      "description": "**Goal:** Restructure docs/, create 5 guide skeletons, migrate 4 dev files, delete stale alchemy doc, trim README to landing-page shell.\n\n**Files:**\n- Create: docs/crawl-loop.md, docs/combat.md, docs/exploration.md, docs/crafting-loot.md, docs/session-tracking.md\n- Move: docs/crawl-system.md → docs/dev/crawl-system.md\n- Move: docs/combat-tools.md → docs/dev/combat-tools.md\n- Move: docs/exploration-tools.md → docs/dev/exploration-tools.md\n- Move: docs/utilities.md → docs/dev/utilities.md\n- Modify: docs/dev/utilities.md (remove alchemistCookbook row)\n- Delete: docs/alchemist-cookbook.md\n- Modify: README.md (landing page shell)\n\n**Verify:** Glob docs/dev/*.md → 4; Glob docs/*.md → 6; Grep alchemistCookbook in docs/dev/ → 0.\n\n```json:metadata\n{\"files\": [\"docs/crawl-loop.md\", \"docs/combat.md\", \"docs/exploration.md\", \"docs/crafting-loot.md\", \"docs/session-tracking.md\", \"docs/dev/crawl-system.md\", \"docs/dev/combat-tools.md\", \"docs/dev/exploration-tools.md\", \"docs/dev/utilities.md\", \"README.md\"], \"verifyCommand\": \"\", \"acceptanceCriteria\": [\"docs/dev/ contains 4 moved reference files\", \"docs/alchemist-cookbook.md deleted\", \"docs/dev/utilities.md has no alchemistCookbook reference\", \"5 new guide skeletons exist at docs/ top level with full header structure and gif placeholders\", \"README trimmed to ~80-120 line landing shell\"]}\n```"
+    },
+    {
+      "id": 2,
+      "subject": "Task 2: Crawl Strip headliner (composite)",
+      "status": "pending",
+      "blockedBy": [1],
+      "description": "**Goal:** Fill Crawl Strip headliner covering Strip UI, Movement Tracker (with Rollback folded in), Combat Dropdown, HP+stats. 700-900 words.\n\n**Files:** Modify docs/crawl-loop.md\n\n**Verify:** wc -w on section in 700-900 range; Grep TODO|TBD → 0; all 4 subsections present.\n\n```json:metadata\n{\"files\": [\"docs/crawl-loop.md\"], \"verifyCommand\": \"\", \"acceptanceCriteria\": [\"Feature-section template followed\", \"700-900 words\", \"Movement subsection covers crawl+combat budgets, terrain, Rush, effective mode speed\", \"Rollback folded into Movement subsection\", \"Combat Dropdown covers tab layout, mana cost calc, spell dialog\", \"HP+Stats quick reference covers hero+NPC card details\", \"Settings table includes hideNpcNames, autoRemoveDefeated, npcActionMenu, enforceCrawlMovement, enforceCombatMovement, enforceNpcMovement\"]}\n```"
+    },
+    {
+      "id": 3,
+      "subject": "Task 3: Encounter System headliner",
+      "status": "pending",
+      "blockedBy": [1],
+      "description": "**Goal:** Fill Encounter System headliner covering Encounter Check, Roller 4 tabs, Morale+Distance integration. 600-900 words.\n\n**Files:** Modify docs/exploration.md\n\n```json:metadata\n{\"files\": [\"docs/exploration.md\"], \"verifyCommand\": \"\", \"acceptanceCriteria\": [\"Template followed\", \"600-900 words\", \"Covers Encounter Check + 4 roller tabs (Build Table / Browse NPC / Roll Tables / Mutator)\", \"Browse NPC filter details (name/type/TL)\", \"Morale+Distance integration noted\", \"Cross-link to Monster Creator and Morale Check\"]}\n```"
+    },
+    {
+      "id": 4,
+      "subject": "Task 4: Monster Creator headliner",
+      "status": "pending",
+      "blockedBy": [1],
+      "description": "**Goal:** Fill Monster Creator headliner covering build from scratch, load-from-bestiary, mutation workflow (absorbs Monster Mutator), automation badge on Quick-Picks. 600-900 words.\n\n**Files:** Modify docs/exploration.md\n\n```json:metadata\n{\"files\": [\"docs/exploration.md\"], \"verifyCommand\": \"\", \"acceptanceCriteria\": [\"Template followed\", \"600-900 words\", \"Covers build from scratch + all collapsible sections\", \"Covers load-from-bestiary filter panel\", \"Covers mutation workflow\", \"Explains green ✓ automation badge\", \"Explains world-actor save (compendium untouched)\"]}\n```"
+    },
+    {
+      "id": 5,
+      "subject": "Task 5: Light Tracker headliner",
+      "status": "pending",
+      "blockedBy": [1],
+      "description": "**Goal:** Fill Light Tracker headliner covering 12 source types table, lantern fuel, real-time burn, drop/pickup, party token behavior. 700-900 words.\n\n**Files:** Modify docs/exploration.md\n\n```json:metadata\n{\"files\": [\"docs/exploration.md\"], \"verifyCommand\": \"\", \"acceptanceCriteria\": [\"Template followed\", \"700-900 words\", \"12 source types table with bright/dim/duration/notes\", \"Lantern fuel system (oil, flask preferred, consumed on burn-out)\", \"Real-time burn setting\", \"Canvas drop+pickup via Token HUD\", \"Party token light transfer\", \"Stack splitting note\"]}\n```"
+    },
+    {
+      "id": 6,
+      "subject": "Task 6: Loot Generator headliner (+ Loot Manager)",
+      "status": "pending",
+      "blockedBy": [1],
+      "description": "**Goal:** Fill Loot Generator headliner including Loot Manager auto-drop. 600-900 words.\n\n**Files:** Modify docs/crafting-loot.md\n\n```json:metadata\n{\"files\": [\"docs/crafting-loot.md\"], \"verifyCommand\": \"\", \"acceptanceCriteria\": [\"Template followed\", \"600-900 words\", \"Covers core tables (Levels 1-10)\", \"Covers custom tables\", \"Covers compendium item creation + Give to Player buttons\", \"Covers Loot Manager auto-drop on NPC defeat with drop chance\", \"Explains Generator vs Manager split\"]}\n```"
+    },
+    {
+      "id": 7,
+      "subject": "Task 7: Relic Forge headliner",
+      "status": "pending",
+      "blockedBy": [1],
+      "description": "**Goal:** Fill Relic Forge headliner. 600-900 words.\n\n**Files:** Modify docs/crafting-loot.md\n\n```json:metadata\n{\"files\": [\"docs/crafting-loot.md\"], \"verifyCommand\": \"\", \"acceptanceCriteria\": [\"Template followed\", \"600-900 words\", \"Covers relic power selection\", \"Covers equipment targeting\", \"Covers active effect application\", \"Links to relic powers catalog\"]}\n```"
+    },
+    {
+      "id": 8,
+      "subject": "Task 8: Spell Scroll Forge headliner",
+      "status": "pending",
+      "blockedBy": [1],
+      "description": "**Goal:** Fill Spell Scroll Forge headliner. 600-900 words.\n\n**Files:** Modify docs/crafting-loot.md\n\n```json:metadata\n{\"files\": [\"docs/crafting-loot.md\"], \"verifyCommand\": \"\", \"acceptanceCriteria\": [\"Template followed\", \"600-900 words\", \"Covers spell pick from compendium\", \"Covers delivery/dice/effects config\", \"Covers cost formula (5g + 5g per mana)\", \"Covers Use Scroll context menu\", \"Covers one-shot consumption behavior\"]}\n```"
+    },
+    {
+      "id": 9,
+      "subject": "Task 9: Merchant Shop headliner",
+      "status": "pending",
+      "blockedBy": [1],
+      "description": "**Goal:** Fill Merchant Shop headliner including gamble-off-loot-tables mechanic. 600-900 words.\n\n**Files:** Modify docs/crafting-loot.md\n\n```json:metadata\n{\"files\": [\"docs/crafting-loot.md\"], \"verifyCommand\": \"\", \"acceptanceCriteria\": [\"Template followed\", \"600-900 words\", \"Compendium global-inventory mode\", \"NPC actor-inventory mode\", \"GM opens shop for all players\", \"Gamble-off-loot-tables mechanic\", \"Permissions + price/quantity\"]}\n```"
+    },
+    {
+      "id": 10,
+      "subject": "Task 10: Session Recap headliner",
+      "status": "pending",
+      "blockedBy": [1],
+      "description": "**Goal:** Fill Session Recap headliner covering all 5 tabs, Discord export, !recap command, lifecycle, Damage Log integration. 800-1000 words.\n\n**Files:** Modify docs/session-tracking.md\n\n```json:metadata\n{\"files\": [\"docs/session-tracking.md\"], \"verifyCommand\": \"\", \"acceptanceCriteria\": [\"Template followed\", \"800-1000 words\", \"All 5 tabs covered (Overview/Combat/Loot/XP/History)\", \"Discord markdown export\", \"!recap chat command\", \"Session lifecycle (start popup, pause, save, discard)\", \"Damage Log integration note\", \"Auto-capture gating\"]}\n```"
+    },
+    {
+      "id": 11,
+      "subject": "Task 11: NPC Abilities mini-headliner",
+      "status": "pending",
+      "blockedBy": [1],
+      "description": "**Goal:** Fill NPC Abilities mini-headliner with ability table. 300-400 words.\n\n**Files:** Modify docs/combat.md\n\n```json:metadata\n{\"files\": [\"docs/combat.md\"], \"verifyCommand\": \"\", \"acceptanceCriteria\": [\"Template followed (mini variant)\", \"300-400 words\", \"Ability table: Magic Ward I-VI, Nimble, Pack Instincts/Tactics/Hunter, Soft Underbelly\", \"Explains automation badge in Monster Creator\", \"Cross-link to docs/audit/abilities.md\", \"VCE wrap-chain note (brief)\"]}\n```"
+    },
+    {
+      "id": 12,
+      "subject": "Task 12: crawl-loop.md stubs",
+      "status": "pending",
+      "blockedBy": [2],
+      "description": "**Goal:** Fill Crawl Clock + Rest & Breather stubs. 80-150 words each.\n\n**Files:** Modify docs/crawl-loop.md\n\n```json:metadata\n{\"files\": [\"docs/crawl-loop.md\"], \"verifyCommand\": \"\", \"acceptanceCriteria\": [\"Each stub 80-150 words\", \"No subheaders inside stubs\", \"Crawl Clock: SVG, sizes, per-turn advance, reset, hideable\", \"Rest & Breather: recovery dialog, Breather/Rest distinction, ration detection\"]}\n```"
+    },
+    {
+      "id": 13,
+      "subject": "Task 13: combat.md stubs",
+      "status": "pending",
+      "blockedBy": [11],
+      "description": "**Goal:** Fill Flanking, Countdown Dice, Morale, Animation FX, Chat Dice Tooltips stubs. 80-150 words each (Chat Dice Tooltips shorter).\n\n**Files:** Modify docs/combat.md\n\n```json:metadata\n{\"files\": [\"docs/combat.md\"], \"verifyCommand\": \"\", \"acceptanceCriteria\": [\"5 stubs present\", \"Each stub 80-150 words (Chat Dice Tooltips may be shorter)\", \"No subheaders inside stubs\", \"Morale cross-links from Encounter System\"]}\n```"
+    },
+    {
+      "id": 14,
+      "subject": "Task 14: exploration.md stub (Trap Builder)",
+      "status": "pending",
+      "blockedBy": [3, 4, 5],
+      "description": "**Goal:** Fill Trap Builder stub. 80-150 words.\n\n**Files:** Modify docs/exploration.md\n\n```json:metadata\n{\"files\": [\"docs/exploration.md\"], \"verifyCommand\": \"\", \"acceptanceCriteria\": [\"Stub 80-150 words\", \"Covers macro-based traps via Scene Regions\", \"Covers dialog options (save type, VFX, damage, status, countdown, drain)\", \"Covers one-shot option\", \"Covers Sequencer integration\"]}\n```"
+    },
+    {
+      "id": 15,
+      "subject": "Task 15: crafting-loot.md stubs",
+      "status": "pending",
+      "blockedBy": [6, 7, 8, 9],
+      "description": "**Goal:** Fill Inventory System, Party Inventory, Item Drops stubs. 80-150 words each.\n\n**Files:** Modify docs/crafting-loot.md\n\n```json:metadata\n{\"files\": [\"docs/crafting-loot.md\"], \"verifyCommand\": \"\", \"acceptanceCriteria\": [\"3 stubs present\", \"Each stub 80-150 words\", \"Inventory System: auto-stack, qty badges, zero-slot pooling (10 units = 1 slot, scrolls pool), weightless flag\", \"Party Inventory: side-by-side loot redistribution\", \"Item Drops: canvas drops, Owner permission, skipStack on pickup\"]}\n```"
+    },
+    {
+      "id": 16,
+      "subject": "Task 16: session-tracking.md stub (XP Counter)",
+      "status": "pending",
+      "blockedBy": [10],
+      "description": "**Goal:** Fill XP Counter Patch stub. 80-150 words.\n\n**Files:** Modify docs/session-tracking.md\n\n```json:metadata\n{\"files\": [\"docs/session-tracking.md\"], \"verifyCommand\": \"\", \"acceptanceCriteria\": [\"Stub 80-150 words\", \"Covers level-up XP questionnaire enhancement\", \"Left-click increment / right-click decrement\", \"Counter badge + per-question XP subtotals\", \"Auto-logs to Session Recap\"]}\n```"
+    },
+    {
+      "id": 17,
+      "subject": "Task 17: Refresh player-quickref.md",
+      "status": "pending",
+      "blockedBy": [1],
+      "description": "**Goal:** Verify keybinds, update stale references, add See also block linking into GM guide.\n\n**Files:** Modify docs/player-quickref.md\n\n```json:metadata\n{\"files\": [\"docs/player-quickref.md\"], \"verifyCommand\": \"\", \"acceptanceCriteria\": [\"All keybinds verified against Foundry v13 + module registrations\", \"No stale feature references\", \"See also block at bottom linking into crawl-loop.md, combat.md, crafting-loot.md\"]}\n```"
+    },
+    {
+      "id": 18,
+      "subject": "Task 18: README headline features grid",
+      "status": "pending",
+      "blockedBy": [2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
+      "description": "**Goal:** Replace the headline-features-grid placeholder with 10+ feature bullets with working cross-links to guide sections.\n\n**Files:** Modify README.md\n\n```json:metadata\n{\"files\": [\"README.md\"], \"verifyCommand\": \"\", \"acceptanceCriteria\": [\"Placeholder comment removed\", \">=10 feature bullets\", \"Every bullet has working relative link to guide section\", \"Order matches headliner priority\"]}\n```"
+    },
+    {
+      "id": 19,
+      "subject": "Task 19: Update CLAUDE.md for new docs structure",
+      "status": "pending",
+      "blockedBy": [1],
+      "description": "**Goal:** Add a Documentation section to CLAUDE.md describing the dual-track structure.\n\n**Files:** Modify CLAUDE.md\n\n```json:metadata\n{\"files\": [\"CLAUDE.md\"], \"verifyCommand\": \"\", \"acceptanceCriteria\": [\"New ## Documentation section added near File Map\", \"Explains docs/*.md vs docs/dev/*.md vs docs/audit/ vs docs/superpowers/\", \"Notes that both tracks should be updated when module behavior changes\"]}\n```"
+    }
+  ]
+}
