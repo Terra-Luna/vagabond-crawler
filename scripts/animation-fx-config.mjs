@@ -20,6 +20,8 @@ export class AnimationFxConfigApp extends HandlebarsApplicationMixin(Application
       switchTab: AnimationFxConfigApp.#onSwitchTab,
       cancel: AnimationFxConfigApp.#onCancel,
       syncToItems: AnimationFxConfigApp.#onSyncToItems,
+      testAll: AnimationFxConfigApp.#onTestAll,
+      clearAllFx: AnimationFxConfigApp.#onClearAllFx,
     },
   };
 
@@ -233,5 +235,55 @@ export class AnimationFxConfigApp extends HandlebarsApplicationMixin(Application
     this._saveFormToWorking();
     await game.settings.set(MODULE_ID, "animationFxConfig", this._workingConfig);
     await game.vagabondCrawler.animationFx.syncToItems({ confirm: true });
+  }
+
+  static async #onTestAll(event, target) {
+    this._saveFormToWorking();
+    const tab = this._activeTab;
+    if (tab === "settings") {
+      ui.notifications.warn("Switch to a preset tab first.");
+      return;
+    }
+    const entries = Object.entries(this._workingConfig[tab] || {});
+    if (entries.length === 0) {
+      ui.notifications.warn("No presets to test in this tab.");
+      return;
+    }
+    const source = canvas.tokens.controlled[0];
+    if (!source) {
+      ui.notifications.warn("Select a token first.");
+      return;
+    }
+
+    ui.notifications.info(`Testing ${entries.length} preset(s) in "${tab}"... watch the canvas.`);
+    for (let i = 0; i < entries.length; i++) {
+      const [key, preset] = entries[i];
+      if (!preset?.hit?.file) continue;
+      const needsDir = preset.type === "projectile" || preset.type === "cone";
+      let previewTargets;
+      if (needsDir) {
+        previewTargets = [{
+          x: source.x + (source.w ?? 0) + 400,
+          y: source.y,
+          w: 1,
+          h: source.h ?? 1,
+          id: "_test_offset",
+        }];
+      } else {
+        previewTargets = [source];
+      }
+      console.log(`[vagabond-crawler] testing ${tab}.${key} (${preset.label || key})`);
+      try {
+        await game.vagabondCrawler.animationFx._play(preset, source, previewTargets, "hit");
+      } catch (e) {
+        console.warn(`[vagabond-crawler] test failed on ${tab}.${key}:`, e);
+      }
+      await new Promise(r => setTimeout(r, 2500));
+    }
+    ui.notifications.info(`Finished testing ${entries.length} preset(s) in "${tab}".`);
+  }
+
+  static async #onClearAllFx(event, target) {
+    game.vagabondCrawler.animationFx.clearAllFx();
   }
 }

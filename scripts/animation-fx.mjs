@@ -331,29 +331,52 @@ export const AnimationFx = {
     const seq = new Sequence(MODULE_ID);
     const effect = seq.effect().file(block.file);
 
+    // Unique name for belt-and-suspenders cleanup of transient effects
+    const safetyName = `${MODULE_ID}-fx-transient-${foundry.utils.randomID(8)}`;
+    let hardDuration;
+
     if (preset.type === "projectile") {
-      effect.atLocation(sourceToken).stretchTo(target).fadeIn(100).fadeOut(100).opacity(opacity);
+      hardDuration = block.duration || 1500;
+      effect
+        .atLocation(sourceToken).stretchTo(target)
+        .fadeIn(100).fadeOut(100).opacity(opacity)
+        .duration(hardDuration)
+        .name(safetyName);
     } else if (preset.type === "cone") {
+      hardDuration = block.duration ?? 1500;
       const angle = this._computeConeAngle(sourceToken, allTargets);
       effect
         .atLocation(sourceToken)
         .rotate(-angle)
         .scale(block.scale * globalScale)
         .anchor({ x: 0, y: 0.5 })
-        .duration(block.duration ?? 1500)
-        .fadeIn(fadeIn).fadeOut(fadeOut).opacity(opacity);
+        .duration(hardDuration)
+        .fadeIn(fadeIn).fadeOut(fadeOut).opacity(opacity)
+        .name(safetyName);
     } else {
       // onToken
+      hardDuration = block.duration ?? 800;
       const anchorToken = preset.target === "self" ? sourceToken : target;
       effect
         .atLocation(anchorToken)
         .scaleToObject(block.scale * globalScale)
-        .fadeIn(fadeIn).fadeOut(fadeOut).duration(block.duration ?? 800).opacity(opacity);
+        .fadeIn(fadeIn).fadeOut(fadeOut).duration(hardDuration).opacity(opacity)
+        .name(safetyName);
       if (typeof block.offsetX === "number") effect.spriteOffset({ x: block.offsetX });
     }
 
     try {
       await seq.play();
+      // Safety net: guarantee cleanup even if the webm has no natural end or is looped
+      const cleanupAfter = hardDuration + fadeOut + 200;
+      setTimeout(() => {
+        try {
+          const existing = Sequencer.EffectManager?.getEffects?.({ name: safetyName }) ?? [];
+          if (existing.length > 0) {
+            Sequencer.EffectManager.endEffects({ name: safetyName });
+          }
+        } catch (e) { /* silent */ }
+      }, cleanupAfter);
     } catch (e) {
       console.warn("[vagabond-crawler] animation play failed:", e);
     }
@@ -587,6 +610,32 @@ export const AnimationFx = {
 
     ui.notifications.info(`Animation FX synced: ${updated} weapon(s) across ${byActor.size} actor(s)${errored ? ` (${errored} failed)` : ""}.`);
     return { updated, actors: byActor.size, errored };
+  },
+
+  // ── FX cleanup ──────────────────────────────────────────────────────────────
+
+  clearAllFx() {
+    if (typeof Sequencer === "undefined") return 0;
+    const allEffects = Sequencer.EffectManager?.getEffects?.({}) ?? [];
+    const count = allEffects.filter(e =>
+      (e?.data?.moduleName === MODULE_ID) || /vagabond-crawler/i.test(e?.data?.name ?? "")
+    ).length;
+    try {
+      // End by module name (covers both persist and transient registered under MODULE_ID)
+      Sequencer.EffectManager.endEffects({ moduleName: MODULE_ID });
+      // Sweep by name prefix as a fallback
+      const remaining = Sequencer.EffectManager?.getEffects?.({}) ?? [];
+      for (const fx of remaining) {
+        const n = fx?.data?.name ?? "";
+        if (/^vagabond-crawler/.test(n)) {
+          try { fx.endEffect?.(); } catch {}
+        }
+      }
+    } catch (e) {
+      console.warn("[vagabond-crawler] clearAllFx failed:", e);
+    }
+    ui.notifications.info(`Cleared ${count} Animation FX effect(s).`);
+    return count;
   },
 
   // ── Config UI ───────────────────────────────────────────────────────────────
