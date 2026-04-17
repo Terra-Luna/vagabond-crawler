@@ -163,6 +163,7 @@ Hooks.once("init", () => {
   // Preload templates
   foundry.applications.handlebars.loadTemplates([
     "modules/vagabond-crawler/templates/animation-fx-config.hbs",
+    "modules/vagabond-crawler/templates/light-sources-config.hbs",
   ]);
 
   console.log(`${MODULE_ID} | Initialized.`);
@@ -180,7 +181,8 @@ Hooks.once("ready", async () => {
     encounter: EncounterTools,
     morale:    MoraleChecker,
     rest:      RestBreather,
-    light:     LightTracker,
+    light:        LightTracker,
+    lightTracker: LightTracker,
     clock:     CrawlClock,
     flanking:  FlankingChecker,
     itemDrops: ItemDrops,

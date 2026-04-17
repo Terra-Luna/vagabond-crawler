@@ -113,13 +113,60 @@ const LIGHT_SOURCES = {
   },
 };
 
+/**
+ * Build the default lightSourcesConfig object from the hardcoded LIGHT_SOURCES constant.
+ * Only editable fields are included — `match` and `fuel` functions are excluded.
+ */
+function _buildDefaultLightSourcesConfig() {
+  const cfg = {};
+  for (const [key, def] of Object.entries(LIGHT_SOURCES)) {
+    cfg[key] = {
+      bright:         def.bright,
+      dim:            def.dim,
+      color:          def.color,
+      colorIntensity: def.colorIntensity,
+      angle:          def.angle ?? 360,
+      animation: {
+        type:      def.animation?.type      ?? "torch",
+        speed:     def.animation?.speed     ?? 5,
+        intensity: def.animation?.intensity ?? 5,
+        reverse:   def.animation?.reverse   ?? false,
+      },
+      longevitySecs: def.longevitySecs,
+      consumable:    def.consumable ?? false,
+      priority:      def.priority    ?? 0,
+      isDarkness:    def.isDarkness  ?? false,
+    };
+  }
+  return cfg;
+}
+
 const VLT_LIGHT_ACTOR_FLAG = "vlt-light-actor";
 
 const DARK_LIGHT = { bright: 0, dim: 0, color: "#000000", alpha: 0, animation: { type: "none" } };
 
 function _getLightDef(itemName) {
   for (const [key, def] of Object.entries(LIGHT_SOURCES)) {
-    if (def.match(itemName)) return { key, def };
+    if (def.match(itemName)) {
+      // Merge stored overrides (editable fields only) on top of the hardcoded defaults.
+      // `match` and `fuel` are intentionally kept from the hardcoded constant.
+      let mergedDef = def;
+      try {
+        const stored = game.settings.get(MODULE_ID, "lightSourcesConfig");
+        const overrides = stored?.[key];
+        if (overrides) {
+          mergedDef = foundry.utils.mergeObject(
+            foundry.utils.deepClone(def),
+            overrides,
+            { inplace: false }
+          );
+          // Restore function properties that can't survive serialisation
+          mergedDef.match = def.match;
+          if (def.fuel) mergedDef.fuel = def.fuel;
+        }
+      } catch (_e) { /* settings not yet registered — use raw def */ }
+      return { key, def: mergedDef };
+    }
   }
   return null;
 }
@@ -399,7 +446,44 @@ export const LightTracker = {
 
   _trackerApp: null,
 
-  registerSettings() {},
+  registerSettings() {
+    game.settings.register(MODULE_ID, "lightSourcesConfig", {
+      scope:   "world",
+      config:  false,
+      type:    Object,
+      default: _buildDefaultLightSourcesConfig(),
+    });
+  },
+
+  /**
+   * Return the effective light sources config: stored overrides merged on top of defaults.
+   */
+  getLightSourcesConfig() {
+    const defaults = _buildDefaultLightSourcesConfig();
+    let stored = {};
+    try { stored = game.settings.get(MODULE_ID, "lightSourcesConfig") ?? {}; } catch (_e) {}
+    return foundry.utils.mergeObject(
+      foundry.utils.deepClone(defaults),
+      stored,
+      { inplace: false }
+    );
+  },
+
+  /**
+   * Expose the default config builder for use by LightSourcesConfigApp reset actions.
+   */
+  _getDefaultLightSourcesConfig() {
+    return _buildDefaultLightSourcesConfig();
+  },
+
+  /**
+   * Open the Light Sources Configuration window.
+   */
+  openSourcesConfig() {
+    import("./light-sources-config.mjs").then(({ LightSourcesConfigApp }) => {
+      new LightSourcesConfigApp().render(true);
+    });
+  },
 
   _intervalId: null,
   _tickAccum:  0,

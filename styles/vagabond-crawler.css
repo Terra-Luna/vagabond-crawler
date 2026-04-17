@@ -4897,3 +4897,263 @@ body.theme-light .vcb-phase-badge {
 .vcfx-action-override { margin-left: 0.3rem; padding: 0 0.3rem; font-size: 0.9em; opacity: 0.7; }
 .vcfx-action-override:hover { opacity: 1; }
 .vcfx-placeholder { opacity: 0.6; font-style: italic; padding: 2rem; text-align: center; }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   Light Sources Configuration  (vcls-*)
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  --vcls-sidebar-bg:    #1b1e24;
+  --vcls-sidebar-item:  #22252c;
+  --vcls-sidebar-hover: #2a2d34;
+  --vcls-active-bg:     var(--vcb-accent);
+  --vcls-active-text:   #1a1a1a;
+  --vcls-section-bg:    rgba(255,255,255,0.03);
+  --vcls-section-border: var(--vcb-border);
+  --vcls-hint-color:    #888;
+}
+
+body.theme-light {
+  --vcls-sidebar-bg:    #ececec;
+  --vcls-sidebar-item:  #f4f4f4;
+  --vcls-sidebar-hover: #e0e0e0;
+  --vcls-active-text:   #fff;
+  --vcls-section-bg:    rgba(0,0,0,0.02);
+  --vcls-hint-color:    #666;
+}
+
+/* Window layout */
+#vagabond-crawler-light-sources-config .window-content {
+  padding: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.vcls-wrapper {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+  background: var(--vcb-bg);
+  color: var(--vcb-text);
+}
+
+.vcls-config {
+  display: flex;
+  flex-direction: row;
+  flex: 1;
+  overflow: hidden;
+}
+
+/* Sidebar */
+.vcls-sidebar {
+  width: 200px;
+  flex-shrink: 0;
+  background: var(--vcls-sidebar-bg);
+  border-right: 1px solid var(--vcls-section-border);
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+.vcls-sidebar-header {
+  padding: 0.6rem 0.75rem;
+  font-weight: 600;
+  font-size: 0.85em;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--vcb-text-muted);
+  border-bottom: 1px solid var(--vcls-section-border);
+}
+
+.vcls-source-item {
+  padding: 0.55rem 0.75rem;
+  cursor: pointer;
+  font-size: 0.9em;
+  background: var(--vcls-sidebar-item);
+  border-bottom: 1px solid var(--vcls-section-border);
+  transition: background 0.15s;
+  user-select: none;
+}
+
+.vcls-source-item:hover {
+  background: var(--vcls-sidebar-hover);
+}
+
+.vcls-source-item.active {
+  background: var(--vcls-active-bg);
+  color: var(--vcls-active-text);
+  font-weight: 600;
+}
+
+/* Editor pane */
+.vcls-editor {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.vcls-editor-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5rem 0.75rem;
+  background: var(--vcb-bg-alt);
+  border-bottom: 1px solid var(--vcls-section-border);
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.vcls-editor-title {
+  font-weight: 700;
+  font-size: 1em;
+}
+
+.vcls-editor-header-actions {
+  display: flex;
+  gap: 0.4rem;
+}
+
+.vcls-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0.6rem 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+/* Sections */
+.vcls-section {
+  background: var(--vcls-section-bg);
+  border: 1px solid var(--vcls-section-border);
+  border-radius: 6px;
+  padding: 0.5rem 0.75rem;
+  margin: 0;
+}
+
+.vcls-section legend {
+  font-weight: 600;
+  font-size: 0.85em;
+  padding: 0 0.4rem;
+  color: var(--vcb-accent);
+}
+
+/* Row layout */
+.vcls-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 1.25rem;
+  align-items: flex-end;
+  margin-top: 0.4rem;
+}
+
+.vcls-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  font-size: 0.875em;
+}
+
+.vcls-field span {
+  color: var(--vcb-text);
+  font-weight: 500;
+}
+
+.vcls-field input[type="number"],
+.vcls-field select {
+  background: var(--vcb-input-bg);
+  border: 1px solid var(--vcls-section-border);
+  border-radius: 4px;
+  color: var(--vcb-text-bright);
+  padding: 0.25rem 0.4rem;
+  width: 90px;
+}
+
+.vcls-field input[type="color"] {
+  width: 60px;
+  height: 34px;
+  padding: 2px;
+  border: 1px solid var(--vcls-section-border);
+  border-radius: 4px;
+  background: var(--vcb-input-bg);
+  cursor: pointer;
+}
+
+.vcls-field-wide {
+  flex-grow: 1;
+  min-width: 160px;
+}
+
+.vcls-field-wide .vcls-range {
+  width: 100%;
+}
+
+.vcls-range {
+  accent-color: var(--vcb-accent);
+  cursor: pointer;
+}
+
+.vcls-field-check {
+  flex-direction: row;
+  align-items: center;
+  gap: 0.4rem;
+  cursor: pointer;
+}
+
+.vcls-hint {
+  color: var(--vcls-hint-color);
+  font-weight: 400;
+  font-style: normal;
+}
+
+/* Small buttons */
+.vcls-btn-small {
+  padding: 0.25rem 0.6rem;
+  font-size: 0.8em;
+  border: 1px solid var(--vcls-section-border);
+  border-radius: 4px;
+  background: var(--vcb-btn-1);
+  color: var(--vcb-text);
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.vcls-btn-small:hover {
+  background: var(--vcb-btn-hover-1);
+}
+
+.vcls-btn-warn {
+  border-color: #c0392b;
+  color: #e74c3c;
+}
+
+.vcls-btn-warn:hover {
+  background: rgba(231,76,60,0.15);
+}
+
+/* Footer */
+.vcls-footer {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.5rem 0.75rem;
+  border-top: 1px solid var(--vcls-section-border);
+  background: var(--vcb-bg-alt);
+  flex-shrink: 0;
+}
+
+.vcls-save-flash {
+  margin-right: auto;
+  color: #4ade80;
+  font-size: 0.9em;
+  font-weight: 500;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.vcls-save-flash.vcls-flash {
+  opacity: 1;
+}

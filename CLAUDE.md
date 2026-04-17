@@ -31,7 +31,7 @@ import { FeatureName } from "./feature-name.mjs";
 // Hooks.once("ready") → game.vagabondCrawler.featureName = FeatureName; FeatureName.init();
 ```
 
-Exceptions: `EncounterRollerApp`, `RelicForgeApp`, `LootManagerApp`, `LootTrackerApp`, `ScrollForgeApp`, `LootGeneratorApp`, `AnimationFxConfigApp` — these are `ApplicationV2` window classes using `HandlebarsApplicationMixin`.
+Exceptions: `EncounterRollerApp`, `RelicForgeApp`, `LootManagerApp`, `LootTrackerApp`, `ScrollForgeApp`, `LootGeneratorApp`, `AnimationFxConfigApp`, `LightSourcesConfigApp` — these are `ApplicationV2` window classes using `HandlebarsApplicationMixin`.
 
 ### State & Sync
 
@@ -85,6 +85,7 @@ class MyApp extends HandlebarsApplicationMixin(ApplicationV2) {
 | `npc-abilities.mjs` | Passive hooks: Pack Instincts/Tactics (save hinder), Magic Ward I/II/III (cast penalty), npcAction wrapper |
 | `animation-fx.mjs` | Animation FX subsystem — unified resolver + playback for weapons, alchemical, gear, NPC actions. Chat hook trigger. Per-item/per-action override flags. |
 | `animation-fx-config.mjs` | ApplicationV2 config window for Animation FX — 6 tabs (Weapons, Skill Fallbacks, Alchemical, Gear, NPC Actions, Settings) with hit/miss animation editor |
+| `light-sources-config.mjs` | Light Sources Configuration ApplicationV2 window — edit per-type Foundry light properties (dim/bright/color/animation) for the 12 light source types |
 | `animation-fx-defaults.mjs` | Default Animation FX preset data (JB2A-aware at runtime) |
 | `npc-action-menu.mjs` | Combat action dropdown + spell cast dialog with mana cost calc, CrawlerSpellDialog |
 | `combat-helpers.mjs` | Shared utilities for combat-related subsystems (plain module, not a singleton) |
@@ -154,6 +155,8 @@ game.vagabondCrawler.animationFx.syncToItems()  // push config → item.system.i
 game.vagabondCrawler.animationFx.startPersistent(preset, token)  // idempotent light-on
 game.vagabondCrawler.animationFx.stopPersistent(preset, token)   // idempotent light-off
 game.vagabondCrawler.movement._turnStartPos  // rollback position snapshots
+game.vagabondCrawler.lightTracker.openSourcesConfig()  // open light sources config
+game.vagabondCrawler.lightTracker.getLightSourcesConfig()  // inspect current overrides
 game.patrol                           // Patrol module instances (if installed)
 ```
 

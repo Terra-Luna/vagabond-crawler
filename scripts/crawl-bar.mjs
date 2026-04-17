@@ -157,7 +157,8 @@ export const CrawlBar = {
                 title="Left-click: Open encounter roller&#10;Right-click: Enc. check & threshold${tableName ? "&#10;Table: " + tableName : ""}">
           ${ICONS.encounter} Encounter${tableName ? ` <span class="vcb-enc-table-indicator">●</span>` : ""}
         </button>
-        <button class="vcb-btn" data-action="lightTracker">
+        <button class="vcb-btn" data-action="lightTracker"
+                title="Left-click: Tracker | Right-click: Configure light sources">
           ${ICONS.lights} Lights
         </button>
         <button class="vcb-btn" data-action="restBreather">
@@ -203,6 +204,16 @@ export const CrawlBar = {
         ev.preventDefault();
         ev.stopPropagation();
         this._showForgeLootMenu(ev);
+      });
+    }
+
+    // Right-click on Lights button → open Light Sources Config
+    const lightsBtn = this._el.querySelector('[data-action="lightTracker"]');
+    if (lightsBtn) {
+      lightsBtn.addEventListener("contextmenu", ev => {
+        ev.preventDefault();
+        ev.stopPropagation();
+        LightTracker.openSourcesConfig();
       });
     }
   },
