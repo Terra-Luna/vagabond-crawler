@@ -108,6 +108,16 @@ class MyApp extends HandlebarsApplicationMixin(ApplicationV2) {
 | `icons.mjs` | Centralized icon registry (FontAwesome + custom SVGs) |
 | `chat-tooltips.mjs` | Inline damage dice tooltips in chat |
 
+## Documentation
+
+- `docs/*.md` — **GM-facing guide.** Usage-first, with screenshots/gifs. Organized by use-case (`crawl-loop`, `combat`, `exploration`, `crafting-loot`, `session-tracking`, `player-quickref`). Landing page for module users; README cross-links into this track.
+- `docs/dev/*.md` — **Contributor / technical reference.** Architecture tables, state shapes, hook names, setting keys, file roles. The old top-level `docs/*.md` files (crawl-system, combat-tools, exploration-tools, utilities) live here now.
+- `docs/audit/` — Monster dataset (JSON + markdown views of the 348-monster bestiary, ability automation status, findings). Regenerated via `scripts/audit/`.
+- `docs/superpowers/` — Planning system. `specs/` holds design docs, `plans/` holds implementation plans and `.tasks.json` state files.
+- `README.md` — Short landing page. Headline features grid links into `docs/`.
+
+**When changing module behavior:** update the matching guide file under `docs/` (for user-visible changes) AND the matching reference file under `docs/dev/` (for architectural changes). The two tracks should stay in sync — one is what players and GMs read, the other is what future-Claude and contributors read.
+
 ## Naming Conventions
 
 - **Files**: `kebab-case.mjs`
