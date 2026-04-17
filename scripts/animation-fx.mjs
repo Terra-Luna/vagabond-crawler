@@ -126,11 +126,30 @@ export const AnimationFx = {
 
     const original = VCC.npcAction.bind(VCC);
     const wrapped = async function (actor, action, actionIndex, targets, ...rest) {
-      // Stash actionIndex on the next preCreateChatMessage that matches this actor
+      // Stash actionIndex and tokenId on the next preCreateChatMessage that matches this actor
       const preHook = Hooks.on("preCreateChatMessage", (msg, data, opts, userId) => {
         const flags = foundry.utils.getProperty(data, "flags.vagabond") ?? {};
-        if (flags.actorId === actor?.id && typeof flags.actionIndex !== "number") {
-          msg.updateSource({ "flags.vagabond.actionIndex": actionIndex });
+        if (flags.actorId === actor?.id) {
+          const update = {};
+          if (typeof flags.actionIndex !== "number") {
+            update["flags.vagabond.actionIndex"] = actionIndex;
+          }
+          if (!flags.tokenId) {
+            // Determine which token fired this NPC action:
+            // 1. Any controlled token matching the actor
+            // 2. First active token of the actor on the current scene
+            let tok = null;
+            const controlled = canvas.tokens?.controlled ?? [];
+            for (const c of controlled) {
+              if (c.actor?.id === actor.id) { tok = c; break; }
+            }
+            if (!tok) {
+              const tokens = actor.getActiveTokens?.(false, false) ?? [];
+              tok = tokens.find(t => t.scene?.id === canvas.scene?.id) ?? tokens[0] ?? null;
+            }
+            if (tok) update["flags.vagabond.tokenId"] = tok.id;
+          }
+          if (Object.keys(update).length > 0) msg.updateSource(update);
         }
         Hooks.off("preCreateChatMessage", preHook);
       });
@@ -204,10 +223,19 @@ export const AnimationFx = {
     return config.npcActions?._default ?? null;
   },
 
-  _getSourceToken(actor) {
+  _getSourceToken(actor, preferredTokenId = null) {
     if (!actor) return null;
-    const tokens = actor.getActiveTokens(true, true);
-    return tokens.find(t => t.parent?.id === canvas.scene?.id) ?? tokens[0] ?? null;
+    if (preferredTokenId) {
+      const tok = canvas.tokens.get(preferredTokenId);
+      if (tok && tok.actor?.id === actor.id) return tok;
+    }
+    const controlled = canvas.tokens.controlled;
+    for (const c of controlled) {
+      if (c.actor?.id === actor.id) return c;
+    }
+    const tokens = actor.getActiveTokens(false, false);
+    const sceneTok = tokens.find(t => t.scene?.id === canvas.scene?.id);
+    return sceneTok ?? tokens[0] ?? null;
   },
 
   _getTargets(message) {
@@ -249,11 +277,15 @@ export const AnimationFx = {
     }
     if (!preset) return;
 
-    const outcome = this._determineOutcome(message);
+    // Determine outcome, but for NPC actions (triggered via action menu)
+    // always treat as "hit" — they don't roll, so hit/miss is meaningless.
+    const isNpcAction = typeof message.flags?.vagabond?.actionIndex === "number"
+                      && !message.flags?.vagabond?.itemId;
+    const outcome = isNpcAction ? "hit" : this._determineOutcome(message);
     const triggerOn = game.settings.get("vagabond-crawler", "animationFxTriggerOn");
-    if (outcome === "miss" && triggerOn === "hit") return;
+    if (!isNpcAction && outcome === "miss" && triggerOn === "hit") return;
 
-    const sourceToken = this._getSourceToken(actor);
+    const sourceToken = this._getSourceToken(actor, message.flags?.vagabond?.tokenId ?? null);
     if (!sourceToken) return;
     const targets = this._getTargets(message);
 
