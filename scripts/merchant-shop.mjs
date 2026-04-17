@@ -1579,7 +1579,7 @@ class MerchantShopApp extends HandlebarsApplicationMixin(ApplicationV2) {
       // Buy markup
       el.querySelector(".vcm-markup-input")?.addEventListener("change", async (ev) => {
         this._buyMultiplier = Math.max(10, Math.min(500, parseInt(ev.currentTarget.value) || 100));
-        const ratios = game.settings.get(MODULE_ID, "shopSellRatio") ?? { sellRatio: 50, buyMultiplier: 100 };
+        const ratios = foundry.utils.deepClone(game.settings.get(MODULE_ID, "shopSellRatio") ?? { sellRatio: 50, buyMultiplier: 100 });
         ratios.buyMultiplier = this._buyMultiplier;
         await game.settings.set(MODULE_ID, "shopSellRatio", ratios);
         this.render();
@@ -1587,7 +1587,7 @@ class MerchantShopApp extends HandlebarsApplicationMixin(ApplicationV2) {
 
       el.querySelector(".vcm-ratio-input")?.addEventListener("change", async (ev) => {
         this._sellRatio = Math.max(0, Math.min(100, parseInt(ev.currentTarget.value) || 50));
-        const ratios = game.settings.get(MODULE_ID, "shopSellRatio") ?? { sellRatio: 50, buyMultiplier: 100 };
+        const ratios = foundry.utils.deepClone(game.settings.get(MODULE_ID, "shopSellRatio") ?? { sellRatio: 50, buyMultiplier: 100 });
         ratios.sellRatio = this._sellRatio;
         await game.settings.set(MODULE_ID, "shopSellRatio", ratios);
         this.render();
@@ -1802,7 +1802,7 @@ class MerchantShopApp extends HandlebarsApplicationMixin(ApplicationV2) {
         });
         if (!confirmed) return;
 
-        const configs = game.settings.get(MODULE_ID, "savedShopConfigs") || {};
+        const configs = foundry.utils.deepClone(game.settings.get(MODULE_ID, "savedShopConfigs") || {});
         delete configs[configName];
         await game.settings.set(MODULE_ID, "savedShopConfigs", configs);
 
@@ -1818,7 +1818,7 @@ class MerchantShopApp extends HandlebarsApplicationMixin(ApplicationV2) {
           return;
         }
 
-        const configs = game.settings.get(MODULE_ID, "savedShopConfigs") || {};
+        const configs = foundry.utils.deepClone(game.settings.get(MODULE_ID, "savedShopConfigs") || {});
         configs[configName] = {
           name: configName,
           mode: this._mode,
