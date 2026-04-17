@@ -30,7 +30,7 @@
   /* ── Text ──────────────────────────────────────────────────────────────── */
   --vcb-text:        #BDC1C6;
   --vcb-text-dim:    #f8eded;
-  --vcb-text-muted:  #666;
+  --vcb-text-muted:  #767676;  /* WCAG AA 4.5:1 on --vcb-bg #17191d (audit: P1 a11y) */
   --vcb-text-bright: #e8eaed;
 
   /* ── Shadows ───────────────────────────────────────────────────────────── */
@@ -632,7 +632,9 @@ body.theme-light .vcb-phase-badge {
   border-color: rgba(220,80,80,0.5);
 }
 .vcs-activate-btn:hover { filter: brightness(1.3); }
-.vcs-card-wrap:hover .vcs-activate-btn { display: flex; }
+/* a11y: show on hover OR keyboard focus (audit P1) */
+.vcs-card-wrap:hover .vcs-activate-btn,
+.vcs-card-wrap:focus-within .vcs-activate-btn { display: flex; }
 
 /* ── Members strip ────────────────────────────────────────────────────────── */
 
@@ -869,7 +871,8 @@ body.theme-light .vcb-phase-badge {
   right: 3px;
   background: none;
   border: none;
-  color: transparent;
+  /* a11y: minimally visible by default so keyboard users can tell it's there (audit P1) */
+  color: rgba(255,255,255,0.18);
   font-size: 16px;
   cursor: pointer;
   padding: 0 2px;
@@ -878,8 +881,10 @@ body.theme-light .vcb-phase-badge {
   z-index: 3;
   pointer-events: auto;
 }
-.vcs-member:hover .vcs-remove { color: var(--vcb-overlay-dim); }
-.vcs-remove:hover { color: #ff6060 !important; }
+.vcs-member:hover .vcs-remove,
+.vcs-remove:focus-visible { color: var(--vcb-overlay-dim); }
+.vcs-remove:hover,
+.vcs-remove:focus-visible:hover { color: #ff6060 !important; }
 
 /* Strip overlays the canvas — no margin push needed */
 
@@ -1271,6 +1276,12 @@ body.theme-light .vcb-phase-badge {
   color: var(--vcb-text);
   cursor: pointer;
   transition: background 0.1s, color 0.1s;
+  /* Button reset — panel items are <button> for keyboard a11y (audit P1) */
+  background: none;
+  border: none;
+  font: inherit;
+  text-align: left;
+  width: 100%;
 }
 .vcs-panel-item:hover { background: var(--vcb-bg-hover); color: var(--vcb-text-bright); }
 
@@ -3468,12 +3479,19 @@ body.theme-light .vcb-phase-badge {
   }
 }
 
-/* ── A11y: focus ring + sr-only (Monster Creator scope) ─────────────────────
- * Every interactive element inside the Creator gets a consistent, visible
- * focus ring when reached by keyboard. `:focus-visible` keeps mouse clicks
- * quiet (no ring on click) but lights up keyboard tabbing. */
+/* ── A11y: focus ring + sr-only (all module surfaces) ────────────────────────
+ * Every interactive element inside any Vagabond Crawler surface gets a
+ * consistent, visible focus ring when reached by keyboard. `:focus-visible`
+ * keeps mouse clicks quiet (no ring on click) but lights up keyboard tabbing.
+ * Expanded from Monster Creator / Encounter Roller scope only (audit P1). */
+#vagabond-crawler-bar :focus-visible,
+#vagabond-crawler-strip :focus-visible,
+#vagabond-crawler-light-tracker :focus-visible,
 #vagabond-crawler-monster-creator :focus-visible,
-.vagabond-encounter-roller :focus-visible {
+.application[id^="vagabond-crawler-"] :focus-visible,
+.vagabond-encounter-roller :focus-visible,
+.vagabond-crawler-spell-dialog :focus-visible,
+.vcs-action-panel :focus-visible {
   outline: 2px solid var(--vcb-accent, #c9a54a);
   outline-offset: 2px;
   border-color: var(--vcb-accent, #c9a54a);
@@ -5231,4 +5249,20 @@ body.theme-light {
 
 .vcls-save-flash.vcls-flash {
   opacity: 1;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+ * Reduced motion
+ * ═══════════════════════════════════════════════════════════════════════════
+ * Respect the user's OS-level motion preference. The `turn-pulse` ring
+ * animation and every UI transition are shortened to effectively-instant so
+ * vestibular-sensitive users don't get continuous motion during combat.
+ * (audit P1 — .impeccable.md Principle 5) */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+  }
 }

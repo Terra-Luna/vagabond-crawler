@@ -676,9 +676,9 @@ function _showPanel(stripEl, cardWrap, actor, isNPC, activeTab) {
           : it.goldSinkUuid
           ? `data-goldsink-uuid="${it.goldSinkUuid}"`
           : `data-index="${it.index ?? ""}"`;
-        return `<div class="vcs-panel-item" data-type="${it.type}" ${dataAttrs}>
+        return `<button type="button" class="vcs-panel-item" data-type="${it.type}" ${dataAttrs}>
           <span class="vcs-panel-name">${it.label}</span>${it.dmg}
-        </div>`;
+        </button>`;
       }).join("")
     : `<div class="vcs-panel-empty">None</div>`;
 
